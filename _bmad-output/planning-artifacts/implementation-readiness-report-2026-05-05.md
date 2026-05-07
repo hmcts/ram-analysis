@@ -144,7 +144,7 @@ workflowCompleted: false
 - **FR58**: NJI supports per-region phased activation — a region's user accounts can be activated for NJI use only when that region's feature-parity gate is passed; activation is a flag flip, not a data migration.
 - **FR59**: Every NJI service exposes a versioned API contract, a `/capabilities` endpoint, RFC 7807 problem-details for errors, and a published OpenAPI specification.
 - **FR60**: Every NJI service emits structured logs with correlation IDs and consistent error categorisation, retained for pilot incident triage.
-- **FR61**: Every NJI domain service has a manual user acceptance test (UAT) script for APEX-experienced users to walk through, comparing NJI vs APEX side-by-side; sign-off per role per region is the wave-cutover gate. There is no automated APEX-as-oracle harness. *(Revised 2026-05-06; supersedes earlier wording about real APEX running as the oracle in CI. See architecture changelog v1.7.)*
+- **FR61**: Every NJI domain service has a manual user acceptance test (UAT) script for APEX-experienced users to walk through, comparing NJI vs APEX side-by-side; sign-off per role per region is the wave-cutover gate. There is no automated APEX-comparison harness. *(Revised 2026-05-06; supersedes earlier wording about real APEX running as an automated comparison reference in CI. See architecture changelog v1.7.)*
 
 ### Non-Functional Requirements
 
@@ -370,7 +370,7 @@ When epics are authored, watch for these likely failure modes:
 
 - **Phase 0 cross-cutting epics** (Identity & Authorisation, Reference Data, API Platform) tend to look like technical milestones. They can be framed as user-value (e.g. "RSU users can log in to NJI via SSO and see their authorised regions" rather than "Setup SSO"). Frame them as user-facing capabilities even when their consumers are internal cross-cutting concerns.
 - **Forward dependencies between epics** are unlikely to occur given the strict DAG ordering, but the Sitting epic can be developed in parallel with Vacancy/Booking under Variant β — when authored, Sitting must explicitly state its dependency on Judge only (not on Vacancy or Booking) to preserve parallelism.
-- **Behavioural-parity UAT stories** (FR61 / NFR41 revised 2026-05-06) should appear within each domain epic, not as a separate technical epic. UAT script authoring (under `docs/uat/`) and per-wave UAT execution are owned by the service being tested. UAT is performed manually by APEX-experienced users (RSU, Court, Judge, Clerks, Finance, MI) comparing NJI vs APEX side-by-side; sign-off per role per region is the wave-cutover gate. There is no automated APEX-as-oracle test work to schedule.
+- **Behavioural-parity UAT stories** (FR61 / NFR41 revised 2026-05-06) should appear within each domain epic, not as a separate technical epic. UAT script authoring (under `docs/uat/`) and per-wave UAT execution are owned by the service being tested. UAT is performed manually by APEX-experienced users (RSU, Court, Judge, Clerks, Finance, MI) comparing NJI vs APEX side-by-side; sign-off per role per region is the wave-cutover gate. There is no automated APEX-comparison test work to schedule.
 - **UI replication stories** (per D4) should be co-located with the API stories of the same phase, not split into a separate UI epic. Each domain phase delivers API + UI + tests as a single increment.
 
 Epic quality review skipped due to missing artefact. Proceeding to final assessment.

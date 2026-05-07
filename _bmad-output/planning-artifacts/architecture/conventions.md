@@ -264,7 +264,7 @@ NJI uses **native PostgreSQL + JPA constructs** for retry safety and concurrency
 - Integration tests: `*IT.java`, Testcontainers for PostgreSQL, run on every commit.
 - Contract tests (Pact or equivalent): per-consumer / per-provider, run on every commit.
 - E2E tests (UI): Playwright, one suite per phase, run as a phase gate.
-- **Manual UAT — APEX-vs-NJI behavioural parity (FR61 / NFR41 revised 2026-05-06):** scripted walkthroughs maintained under `docs/uat/` per service. Performed by APEX-experienced users (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) opening APEX side-by-side with NJI, comparing behaviour for the workflows + edge cases the script enumerates, and signing off per role per region. Sign-off is the wave-cutover gate; there is no automated APEX-as-oracle harness in CI.
+- **Manual UAT — APEX-vs-NJI behavioural parity (FR61 / NFR41 revised 2026-05-06):** scripted walkthroughs maintained under `docs/uat/` per service. Performed by APEX-experienced users (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) opening APEX side-by-side with NJI, comparing behaviour for the workflows + edge cases the script enumerates, and signing off per role per region. Sign-off is the wave-cutover gate; there is no automated APEX-comparison harness in CI.
 - **Coverage target:** behaviour coverage, not line coverage. PRs include behaviour-test rationale, not coverage stats.
 
 **Logging conventions (per HMCTS Crime template):**

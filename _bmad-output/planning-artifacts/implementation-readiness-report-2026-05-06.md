@@ -136,7 +136,7 @@ The Architecture's Step 7 validation table maps every PRD FR capability area to 
 | Observability (NFR25–NFR29) | Logstash JSON logs + OpenTelemetry → Application Insights; correlation-ID MDC; Spring Actuator probes |
 | Data Privacy & Sovereignty (NFR30–NFR33) | Azure UK regions only; PostgreSQL Flexible Server in UK South; case-level data forbidden by schema; FOI scope by contract |
 | Reliability & Availability (NFR34–NFR38) | Operational hours availability; per-wave rollback via region activation flag (FR58); region-isolated AKS clusters; PostgreSQL HA configuration |
-| Maintainability (NFR39–NFR42) | API-as-Product standards (versioned, /capabilities, OpenAPI, RFC 7807); per-service deployment unit; **manual UAT scripts per domain service** (FR61 / NFR41 revised 2026-05-06 — APEX-experienced users compare NJI vs APEX side-by-side, sign-off per role per region as wave-cutover gate); Postman collections per phase. *(There is no automated APEX-as-oracle test suite — automated CI tests are unit, integration with Testcontainers, and contract tests only.)* |
+| Maintainability (NFR39–NFR42) | API-as-Product standards (versioned, /capabilities, OpenAPI, RFC 7807); per-service deployment unit; **manual UAT scripts per domain service** (FR61 / NFR41 revised 2026-05-06 — APEX-experienced users compare NJI vs APEX side-by-side, sign-off per role per region as wave-cutover gate); Postman collections per phase. *(There is no automated APEX-comparison test suite — automated CI tests are unit, integration with Testcontainers, and contract tests only.)* |
 
 **All 61 FRs and 42 NFRs have explicit architectural support.** None unaddressed.
 
@@ -238,7 +238,7 @@ When epics are authored, watch for:
 
 - **Phase 0 cross-cutting epics** (Identity & Authorisation, Reference Data, API Platform) tend to look like technical milestones. Frame them as user-value (e.g. "RSU users can log in to NJI via SSO and see their authorised regions" rather than "Setup SSO").
 - **Mock-to-real-IdP cutover** belongs in its own pre-Phase-9 epic, not bolted onto Phase 9 rollout.
-- **Behavioural-parity UAT stories** (FR61 / NFR41 revised 2026-05-06): per-service manual UAT script authoring (under `docs/uat/`) and per-wave UAT execution belong inside each domain epic, not as a separate technical epic. UAT is performed by APEX-experienced users (RSU, Court, Judge, Clerks, Finance, MI) comparing NJI vs APEX side-by-side; sign-off per role per region is the wave-cutover gate. There is no automated APEX-as-oracle test work to schedule.
+- **Behavioural-parity UAT stories** (FR61 / NFR41 revised 2026-05-06): per-service manual UAT script authoring (under `docs/uat/`) and per-wave UAT execution belong inside each domain epic, not as a separate technical epic. UAT is performed by APEX-experienced users (RSU, Court, Judge, Clerks, Finance, MI) comparing NJI vs APEX side-by-side; sign-off per role per region is the wave-cutover gate. There is no automated APEX-comparison test work to schedule.
 - **UI replication stories** (per D4) should be co-located with the API stories of the same phase.
 - **Data migration stories** (Reference Data + Users/Roles) belong in Phase 0; stories should reference the APEX-export → Flyway migration sequence.
 - **Whitelisted-table grant stories** (per Architecture Principle 1) belong in the table-owning service's epic — when Service B grants Service A access to one of its tables, Service B owns the grant story.

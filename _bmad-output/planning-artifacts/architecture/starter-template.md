@@ -124,7 +124,7 @@ The scaffolding script applies NJI-specific defaults on top of the HMCTS starter
 - Boilerplate `CapabilitiesController` (`@RestController` at root path `/capabilities`) — consumer-facing API-as-Product contract endpoint, distinct from Spring Actuator (ops). Build metadata from `gradle-git-properties`; per-service version/deprecation/feature fields from `application.yml`. Response shape per Step 4 *API Documentation* in [`../architecture.md`](../architecture.md).
 - Boilerplate `JWTFilter` + `AuthDetails` bean (per HMCTS template pattern); modified to call NJI Authorisation service per request (NJI variance from template's claims-only approach — required by FR58).
 - Boilerplate Reference Data direct-SQL access (JPA entities mapped to whitelisted Reference Data tables — 15 tables, see [`./data-tables.md`](./data-tables.md): `regions`, `offices`, `calendar_periods`, plus the 12 vocabulary tables); no client class.
-- *(removed 2026-05-06)* Boilerplate `@ApexOracle` test base class — retracted. Behavioural parity is verified via **manual UAT performed by APEX-experienced users** (FR61 / NFR41 revised). Per-service UAT scripts live under `docs/uat/` in the service repo, not as test code.
+- *(removed 2026-05-06)* Boilerplate APEX-comparison test base class — retracted. Behavioural parity is verified via **manual UAT performed by APEX-experienced users** (FR61 / NFR41 revised). Per-service UAT scripts live under `docs/uat/` in the service repo, not as test code.
 - Default port `8082` (per HMCTS template).
 
 These are **scaffolded once per service**; subsequent edits live in the service's own repo. There is no upstream library that can force a redeployment.
