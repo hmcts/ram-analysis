@@ -18,7 +18,7 @@ The flow is split into **seven phases** — each one driven by a different user 
 - Cross-service calls forward the user's JWT (token propagation; no service principals at MVP).
 
 ```mermaid
-%%{init: {'sequence': {'actorFontSize': 18, 'actorFontWeight': 'bold', 'messageFontSize': 18, 'noteFontSize': 16}}}%%
+%%{init: {'sequence': {'actorFontSize': 16, 'actorFontWeight': 'bold', 'messageFontSize': 15, 'noteFontSize': 13, 'mirrorActors': false, 'actorMargin': 30, 'boxMargin': 6, 'messageMargin': 30}}}%%
 sequenceDiagram
     autonumber
 
@@ -26,102 +26,73 @@ sequenceDiagram
     actor RSU
     actor PA as Payment Authoriser
 
-    participant UI as nji-ui
     participant Abs as nji-absence
     participant Vac as nji-vacancy
     participant Bk as nji-booking
     participant Pay as nji-payment
     participant Notif as nji-notification
-    participant Email as HMCTS Email
     participant JFEPS as JFEPS / Liberata
-    participant Judge as Judge
-
-    Note over Court,Judge: All UI→service calls flow through Azure APIM. Each service's JWTFilter validates the JWT against HMCTS IdP JWKS, then calls nji-authorisation per request. These cross-cutting steps are omitted below for clarity. The "Judge" lifeline represents the salaried judge in Phase 1 (whose absence is being logged) and the fee-paid judge in Phase 3 (booked to provide cover) — different people in practice.
 
     rect rgb(232, 240, 250)
-        Note over Court,Judge: Phase 1 — Absence logged on behalf of judge (Court User)
-        Court->>UI: Log absence (with "Request fee-paid cover")
-        UI->>Abs: POST /v1/absences (judgeId, dates, type, work-type, ticket-type)
-        Abs->>Abs: validate (FR15-style: ticket-type + start date required)
-        Abs-->>UI: 201 (status: pending)
-        UI-->>Court: success
-        Abs->>Notif: send absence acknowledgement
-        Notif->>Email: SMTP / Graph
-        Email->>Judge: ack email (salaried judge whose absence was logged)
+        Note over Court,JFEPS: Phase 1 — Court User logs absence (with cover request)
+        Court->>Abs: POST /v1/absences
+        Abs->>Abs: validate (FR15)
+        Abs-->>Court: 201 (pending)
+        Abs->>Notif: send absence ack
+        Notif->>Notif: dispatch to salaried judge via HMCTS Email
     end
 
     rect rgb(232, 250, 232)
-        Note over RSU,Vac: Phase 2 — Absence approved → vacancy auto-created (RSU)
-        RSU->>UI: open absence from Outstanding Actions tile, click Approve
-        UI->>Abs: POST /v1/absences/{id}/approve
-        Abs->>Abs: state transition: pending → approved
-        Note over Abs,Vac: R4 — absence approval triggers vacancy creation (the auto-creation business rule)
-        Abs->>Vac: POST /v1/vacancies (judge_type, work_type, ticket_type, dates)
-        Vac->>Vac: persist (status: needs-allocation)
-        Vac-->>Abs: 201
-        Abs-->>UI: 200 approved
-        UI-->>RSU: vacancy created, ready for advertising
+        Note over Court,JFEPS: Phase 2 — RSU approves absence, vacancy auto-created (R4)
+        RSU->>Abs: POST /v1/absences/{id}/approve
+        Abs->>Abs: pending to approved
+        Abs->>Vac: POST /v1/vacancies
+        Vac-->>Abs: 201 (needs-allocation)
+        Abs-->>RSU: 200
     end
 
     rect rgb(250, 240, 230)
-        Note over RSU,Judge: Phase 3 — Vacancy filled by fee-paid booking (RSU)
-        Note right of RSU: Advertising happens out-of-system via RSU's mailing list. A fee-paid judge replies confirming availability — the architectural sequence resumes when RSU records that booking.
-        RSU->>UI: open vacancy → Create Booking (pick fee-paid judge)
-        UI->>Bk: POST /v1/bookings (vacancyId, judgeId, session details)
-        Note over Bk,Vac: R5 — pessimistic row lock + in-transaction UPDATE on the linked vacancy
-        Bk->>Vac: SELECT … FOR UPDATE on vacancies.id
+        Note over Court,JFEPS: Phase 3 — RSU creates fee-paid booking, vacancy filled in-tx (R5)
+        Note right of RSU: Advertising is out-of-system. RSU records the booking once a fee-paid judge replies.
+        RSU->>Bk: POST /v1/bookings
+        Bk->>Vac: SELECT FOR UPDATE
         Bk->>Bk: INSERT booking
-        Bk->>Vac: UPDATE vacancies SET filled = true, filled_at = now()
+        Bk->>Vac: UPDATE filled = true
         Bk->>Bk: COMMIT
-        Bk-->>UI: 201 booking created
-        UI-->>RSU: booking confirmed
-        Bk->>Notif: send booking acknowledgement
-        Notif->>Email: SMTP / Graph
-        Email->>Judge: ack email (fee-paid judge — booked into the session)
+        Bk-->>RSU: 201 booking
+        Bk->>Notif: send booking ack
+        Notif->>Notif: dispatch to fee-paid judge via HMCTS Email
     end
 
     rect rgb(250, 232, 240)
-        Note over Court,Bk: Phase 4 — Sitting confirmed after the day (Court User)
-        Court->>UI: open Sittings/Bookings awaiting confirmation tile
-        Court->>UI: confirm yesterday's booking (one click)
-        UI->>Bk: POST /v1/bookings/{id}/confirm
-        Bk->>Bk: UPDATE bookings SET status = 'confirmed'
-        Bk-->>UI: 200
-        UI-->>Court: confirmed — eligible for payment
+        Note over Court,JFEPS: Phase 4 — Court User confirms sitting after the day
+        Court->>Bk: POST /v1/bookings/{id}/confirm
+        Bk->>Bk: status = confirmed
+        Bk-->>Court: 200 — eligible for payment
     end
 
     rect rgb(240, 232, 250)
-        Note over RSU,PA: Phase 5 — Payment processed and JFEPS schedule emailed (RSU)
-        RSU->>UI: navigate to Process Payments
-        RSU->>UI: select payment authoriser, click Process
-        UI->>Pay: POST /v1/payments/process (cycleId, runDate, authoriserId)
-        Pay->>Pay: SQL JOIN over confirmed bookings + sittings (read-only across shared schema)
-        Pay->>Pay: generate JFEPS-shaped Excel schedule
-        Pay->>Pay: INSERT payments + payment_schedules
-        Pay-->>UI: 201 cycle processed
-        UI-->>RSU: schedule generated and emailed
-        Pay->>Notif: send JFEPS schedule (Excel attachment) to authoriser
-        Notif->>Email: SMTP / Graph
-        Email->>PA: JFEPS Excel email
+        Note over Court,JFEPS: Phase 5 — RSU processes payments, JFEPS schedule emailed
+        RSU->>Pay: POST /v1/payments/process
+        Pay->>Pay: SQL JOIN bookings + sittings
+        Pay->>Pay: generate JFEPS Excel
+        Pay->>Pay: INSERT payments + schedules
+        Pay-->>RSU: 201 processed
+        Pay->>Notif: send JFEPS schedule
+        Notif->>PA: JFEPS Excel email
     end
 
     rect rgb(232, 250, 250)
-        Note over PA,JFEPS: Phase 6 — Authoriser uploads to Liberata (out-of-band)
-        Note right of PA: This step happens entirely outside NJI — the authoriser uses the existing JFEPS / Liberata workflow to upload and process. NJI is not in the loop until reconciliation.
-        PA->>JFEPS: upload JFEPS Excel schedule
-        JFEPS->>JFEPS: process payments
-        JFEPS->>Judge: payment delivered (to fee-paid judge's payroll account)
+        Note over Court,JFEPS: Phase 6 — Authoriser uploads to Liberata (out-of-band)
+        PA->>JFEPS: upload JFEPS Excel
+        JFEPS->>JFEPS: process payments and pay judge
     end
 
     rect rgb(250, 250, 232)
-        Note over RSU,Pay: Phase 7 — Reconciliation by RSU (manual at MVP)
-        Note right of RSU: At MVP reconciliation is a manual "mark as reconciled" action — there is no automated reconciliation feed from Liberata. Automated reconciliation is on the post-MVP roadmap.
-        RSU->>UI: open Unreconciled Payments tile
-        RSU->>UI: mark payment reconciled
-        UI->>Pay: POST /v1/payments/{id}/reconcile
-        Pay->>Pay: UPDATE payment_reconciliations SET status = 'matched'
-        Pay-->>UI: 200
-        UI-->>RSU: marked reconciled — cycle complete
+        Note over Court,JFEPS: Phase 7 — RSU marks payment reconciled (manual at MVP)
+        RSU->>Pay: POST /v1/payments/{id}/reconcile
+        Pay->>Pay: status = matched
+        Pay-->>RSU: 200
     end
 ```
 
