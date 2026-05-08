@@ -454,7 +454,7 @@ Extends Product Scope with MVP philosophy, phase-by-phase journey mapping, and r
 
 ### MVP Strategy
 
-The MVP is "enough for one region — every applicable role, every operational workflow — to move off APEX and stay off it." For a brownfield rebuild of an unsupported system, the MVP cannot be smaller; less than this means no region can migrate (D2 + D8).
+The MVP is "enough for one region — every applicable role, every operational workflow — to move off APEX and stay off it." For a greenfield rebuild of an unsupported system, the MVP cannot be smaller; less than this means no region can migrate (D2 + D8).
 
 **Resource requirements:** TBD (programme-management territory). Two viable structures:
 
