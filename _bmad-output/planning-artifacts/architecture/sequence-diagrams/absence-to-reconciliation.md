@@ -6,7 +6,7 @@ last_updated: 2026-05-07
 
 # Absence → Vacancy → Booking → Sitting → Reconciliation
 
-High-level sequence diagram of the **user-initiated** activities in the canonical NJI operational cycle: a Court User logs an absence on behalf of a salaried judge, the absence triggers a vacancy, RSU fills the vacancy with a fee-paid booking, the Court User confirms the sitting (marking it *ready for payment*), and finally RSU reconciles the payment after the downstream batch + external systems have completed.
+Sequence diagram of the user-initiated NJI operational cycle: a Court User logs an absence for a salaried judge; the absence triggers a vacancy; RSU fills the vacancy with a fee-paid booking; the Court User confirms the sitting (marking it ready for payment); RSU reconciles the payment after the batch and external systems complete.
 
 The flow is split into **five phases** — each one driven by a user action. Phases are colour-tinted in the diagram for visual separation.
 

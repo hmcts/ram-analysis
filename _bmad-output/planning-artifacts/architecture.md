@@ -72,7 +72,7 @@ date: '2026-05-06'
 
 ![NJI System Context — high-level service map and key interactions](./architecture/diagrams/system-context.png)
 
-*Birds-eye view of the NJI service set, key interactions, and external integrations. For low-level detail consult the relevant section in this document or its siblings.*
+*High-level service map. For detail, see the relevant section in this document or its siblings.*
 
 ## How this document is structured
 
@@ -96,32 +96,32 @@ Refactor history: the single-file `architecture.md` was split into the index + s
 
 ### Requirements Overview
 
-**Functional Requirements (61 across 9 capability areas).** NJI's functional surface is the **11-service decomposition** locked in the brainstorming session (revised v2.2 — `nji-configuration` dropped; per-service config now lives in Spring profiles + Key Vault, with a shared `configuration_values` table for cross-service policy values), in three clusters:
+**Functional Requirements (61, in 9 capability areas).** NJI is 11 services (revised v2.2 — `nji-configuration` dropped; per-service config in Spring profiles + Key Vault; a shared `configuration_values` table holds cross-service policy values), in three clusters:
 
-- **Domain services (write surfaces)** — Judge, Absence, Vacancy, Booking, Sitting, Payment. Canonical chain: Manage Judges → Absence → Vacancy → Booking → Sitting → Payment → Reconciliation.
-- **Cross-cutting services** — Reference Data (single-writer), Authorisation (gates every call), Notification (transactional email).
-- **Read-model services** — Itinerary, MI Feed (SQL JOINs over the shared database).
+- **Domain services** — Judge, Absence, Vacancy, Booking, Sitting, Payment. Operational chain: Manage Judges → Absence → Vacancy → Booking → Sitting → Payment → Reconciliation.
+- **Cross-cutting services** — Reference Data (single writer), Authorisation (gates every call), Notification (transactional email).
+- **Read-model services** — Itinerary, MI Feed. Both use SQL JOINs over the shared database.
 
 Architectural implications:
 
-- **Synchronous cross-service coordination at one point**: `POST /bookings` marks the linked vacancy as filled within the same transaction (FR30, R5) — direct DB UPDATE on `vacancies.filled` per Principle 1; retry safety from `SELECT … FOR UPDATE` + `uq_bookings_*` unique constraint.
-- **Read-model federation** is via SQL JOINs over the shared schema. Itinerary's Forward Look NFR (≤ 30 s p95, NFR8) is trivially achievable with indexed joins. No API fan-out, no Strategy A latency stacking.
-- **Working-pattern-driven sitting generation** (FR13, FR35) is owned by Judge; produces records that Sitting manages from Phase 5 onwards.
-- **Versioned content-type negotiation** is first-class for Payment (FR44 — `application/vnd.hmcts.jfeps+json` vs `+xlsx`); JFEPS shape is externally owned.
-- **Per-service authorisation enforcement** (FR2, NFR13) — every API call resolves principal → role + Region/Area scope through Authorisation. Cross-cutting middleware concern.
+- **One synchronous cross-service write**: `POST /bookings` marks the vacancy filled in the same transaction (FR30, R5) — direct UPDATE on `vacancies.filled` per Principle 1. Retry safety: `SELECT … FOR UPDATE` + `uq_bookings_*` unique constraint.
+- **Read-model federation**: SQL JOINs over the shared schema. Indexed joins meet the Forward Look NFR (≤ 30 s p95, NFR8).
+- **Working-pattern sitting generation** (FR13, FR35): owned by Judge; produces records that Sitting manages from Phase 5 onwards.
+- **Versioned content-type for Payment** (FR44 — `application/vnd.hmcts.jfeps+json` vs `+xlsx`). JFEPS shape is externally owned.
+- **Per-service authorisation** (FR2, NFR13): every API call resolves principal → role + Region/Area scope through Authorisation. Implemented as middleware.
 
-**Non-Functional Requirements (42 across 8 categories):**
+**Non-Functional Requirements (42, in 8 categories):**
 
-- **Performance** — APEX-baseline page-level NFRs (≤ 5 s dashboard, ≤ 30 s reports/Forward Look); API NFRs tighter (≤ 500 ms p95 read, ≤ 1 s p95 write). Bounded capacity (~50–100/region; ~200–500 national).
-- **Security** — TLS-only, encryption-at-rest, AuthN delegated to HMCTS IdP via SSO, AuthZ owned by JI, no bank details, no case-level data, GFS-7 alignment.
-- **Accessibility** — WCAG 2.2 AA mandatory; tested per UI page per phase.
-- **Integration** — OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9), JFEPS/Liberata unchanged, HMCTS email, DA&I MI Feed, no eLinks integration in MVP.
-- **Observability** — log-based MVP only (D7); structured logging + correlation IDs; OpenTelemetry → Application Insights.
+- **Performance** — page-level: ≤ 5 s dashboard, ≤ 30 s reports/Forward Look (APEX baseline). API: ≤ 500 ms p95 read, ≤ 1 s p95 write. Capacity ~50–100/region; ~200–500 national.
+- **Security** — TLS only; encryption at rest; AuthN via HMCTS IdP SSO; AuthZ owned by NJI; no bank details, no case-level data; aligned with GFS-7.
+- **Accessibility** — WCAG 2.2 AA; tested per UI page per phase.
+- **Integration** — OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9); JFEPS/Liberata unchanged; HMCTS email; DA&I MI Feed; no eLinks integration in MVP.
+- **Observability** — log-based MVP only (D7); structured logs + correlation IDs; OpenTelemetry → Application Insights.
 - **Data privacy & sovereignty** — Azure UK regions only; UK GDPR + DPA 2018; no case-level data.
-- **Reliability** — operational availability during HMCTS hours; per-wave rollback; **single Azure region (UK South) with multi-AZ HA**; HMCTS-judicial-region rollout isolation at app tier via FR58 activation flags. Disaster-recovery scope and design are an **open gap** — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
-- **Maintainability** — API-as-Product (versioned, OpenAPI, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details); per-service deployment; **manual UAT scripts per domain service** (FR61 / NFR41 revised 2026-05-06); per-phase Postman collections.
+- **Reliability** — available during HMCTS hours; per-wave rollback; single Azure region (UK South) with multi-AZ HA; HMCTS-judicial-region rollout isolation at the app tier via FR58 flags. DR is an **open gap** — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
+- **Maintainability** — API-as-Product (versioned, OpenAPI, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details); per-service deployment; manual UAT scripts per domain service (FR61 / NFR41); Postman collections per phase.
 
-**Scale & Complexity:** API backend (11 services) + first-class UI; **high complexity** driven by financial-integration criticality (JFEPS/Liberata), 11 services with cross-cutting authorisation, multi-region phased rollout, judicial regulatory environment, and behavioural-parity demand on a brownfield rebuild.
+**Scale & complexity:** 11-service API backend + UI. Complexity drivers: JFEPS/Liberata payment integration, cross-cutting authorisation, multi-region phased rollout, judicial regulatory environment, manual UAT against APEX.
 
 ### Technical Constraints & Dependencies
 
@@ -135,32 +135,32 @@ Architectural implications:
 - **No bank details, no case-level data** anywhere by contract.
 - **No automated eLinks/HR integration** in MVP scope.
 
-**External system inputs (not controlled by NJI):**
+**External systems (not controlled by NJI):**
 
 - **HMCTS IdP** — pre-Phase-9 hard dependency; mock auth covers Phase 0–8.
-- **JFEPS-compatible Excel format** for Payment — externally owned, treated as versioned content-type.
+- **JFEPS-compatible Excel format** for Payment — externally owned; treated as a versioned content-type.
 - **HMCTS email infrastructure** for transactional notifications.
-- **DA&I MI Feed consumers** post-MVP — they call NJI APIs.
-- **APEX (manual UAT only)** — APEX-experienced users compare side-by-side; no programmatic linkage to NJI's CI or runtime.
+- **DA&I MI Feed consumers** (post-MVP) — they call NJI APIs.
+- **APEX** — used by UAT users to compare behaviour. No programmatic linkage to NJI's CI or runtime.
 
-**Migration constraints (Phase 0 only):** Reference Data + Users/Roles migrate from APEX (D3 + D9). No transactional data migration. APEX ⇄ IdP identity reconciliation: every active APEX user must reconcile to an IdP principal; unmatched records require explicit handling (drop / hold / manual map).
+**Migration (Phase 0 only):** Reference Data + Users/Roles from APEX (D3 + D9). No transactional data. APEX ⇄ IdP reconciliation: every active APEX user reconciles to an IdP principal; unmatched records get explicit handling (drop / hold / manual map).
 
 ### Cross-Cutting Concerns Identified
 
-These functional concerns recur across most services and are addressed at the platform/architecture layer:
+Concerns that recur across most services and are addressed at the platform layer:
 
-- **Authorisation enforcement** — every API call resolves principal → roles + Region/Area scope through Authorisation (FR2, FR3); middleware applied uniformly.
-- **Reference Data is single-writer** — sole source of truth for Regions, Offices, vocabularies, calendar (FR6, FR7). Reads via direct SQL on the 15 Reference Data tables (no caching at MVP per Principle 2); writes via the Reference Data API (the seeding mechanism).
-- **Per-region scoping** — domain operations default-scope by Region/Area derived from Authorisation context (FR49). Cross-region operations explicit and rare.
-- **Per-region phased activation** — per D8, NJI access gated by per-region activation flag (FR58). Authorisation supports per-principal "active in NJI" state distinct from "exists in NJI."
-- **Retry safety via native DB primitives** — natural-key unique constraints (`uq_*`), JPA `@Version` optimistic locking, and `SELECT … FOR UPDATE` pessimistic locks. No custom `*_idempotency_keys` tables. See [`./architecture/conventions.md` → "Retry safety and concurrency control"](./architecture/conventions.md).
-- **API-as-Product compliance** — every service exposes a versioned contract, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details, OpenAPI (FR59).
-- **Behavioural-parity manual UAT** (FR61 / NFR41 revised) — APEX-experienced users compare NJI vs APEX side-by-side per service per region; sign-off is the wave-cutover gate. **No automated APEX-comparison harness in CI.**
-- **Forbidden-data invariants** — no bank details (FR47), no case-level data (FR54). Enforced at schema definition and API boundary.
+- **Authorisation enforcement** — every API call resolves principal → roles + Region/Area scope through Authorisation (FR2, FR3). Implemented as middleware.
+- **Reference Data is single-writer** — sole source of truth for Regions, Offices, vocabularies, calendar (FR6, FR7). Reads: direct SQL on the 15 Reference Data tables (no caching per Principle 2). Writes: via the Reference Data API.
+- **Per-region scoping** — domain operations default-scope by Region/Area from the Authorisation context (FR49). Cross-region operations are explicit.
+- **Per-region phased activation** — per D8, NJI access is gated by `auth_user_activation_flags` (FR58). Authorisation distinguishes "active in NJI" from "exists in NJI".
+- **Retry safety via native DB primitives** — `uq_*` unique constraints, JPA `@Version` optimistic locking, `SELECT … FOR UPDATE` pessimistic locks. No `*_idempotency_keys` tables. See [`./architecture/conventions.md`](./architecture/conventions.md) → "Retry safety and concurrency control".
+- **API-as-Product compliance** — versioned contract, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details, OpenAPI per service (FR59).
+- **Manual UAT** (FR61 / NFR41) — APEX-experienced users compare NJI vs APEX per service per region; sign-off is the wave-cutover gate. No automated APEX-comparison in CI.
+- **Forbidden data** — no bank details (FR47); no case-level data (FR54). Enforced at the schema and API boundary.
 
 ### Architecture-phase decisions still open
 
-The PRD surfaces 12 explicit TBDs. Programme-management decisions (capacity numbers, ops hours, pilot region, cross-region wave handling, migration owners) are tracked in the PRD/brainstorming risk register, not here. The 7 architecture-phase decisions resolved during this workflow:
+The PRD lists 12 TBDs. 5 are programme-management decisions (capacity, ops hours, pilot region, cross-region wave handling, migration owners) — tracked in the PRD risk register, not here. The 7 architecture-phase decisions resolved here:
 
 | # | TBD | Step where resolved |
 |---|---|---|
@@ -178,46 +178,46 @@ The PRD surfaces 12 explicit TBDs. Programme-management decisions (capacity numb
 
 #### Principle 1: API for Workflows, Shared Database for Simple Data Access
 
-**API is the boundary for workflow operations. The shared database is the integration mechanism for simple cross-service data access and read-model federation.**
+**APIs are the boundary for workflows. The shared database is the integration mechanism for simple cross-service reads and writes.**
 
-- **Workflows go via API** — multi-step operations with business rules / state transitions / orchestration (full Booking creation, Payment processing, Absence approval).
-- **Simple field-level cross-service updates can be direct DB writes** — single field changes without business-rule cascades (Booking marks `vacancies.filled = true`; Payment updates `bookings.payment_status`). Each owning service authorises which tables/columns may be written by which other services via explicit DB role grants.
-- **Cross-service reads are direct SQL JOINs** — read-model federation (Itinerary, MI Feed) and Reference Data lookups go directly against the shared schema, not via API + cache.
+- **Workflows go via API** — multi-step operations with business rules, state transitions, or orchestration (Booking creation, Payment processing, Absence approval).
+- **Single-field cross-service updates can be direct DB writes** — e.g. Booking marks `vacancies.filled = true`; Payment updates `bookings.payment_status`. Each owning service grants which tables/columns other services may write via explicit DB role grants.
+- **Cross-service reads are direct SQL JOINs** — Itinerary, MI Feed, and Reference Data reads query the shared schema directly. No API fan-out, no cache.
 
-The shared database is **one global PostgreSQL instance with a single shared schema**. Cross-service access is gated by **per-service DB roles with explicit grants**. Table ownership is encoded by a **table-name convention** (entity-plural for primary tables; service-prefix for service-internal) and enforced by ArchUnit-style fitness functions in CI.
+The database is **one global PostgreSQL instance with a single shared schema**. Cross-service access is gated by **per-service DB roles with explicit grants**. Table ownership is encoded in the table name (entity-plural for primary tables; service-prefix for service-internal) and enforced by ArchUnit fitness functions in CI.
 
-**Why one schema, not schema-per-service:** for 11 services owned by one team in one tightly-related domain, schema-per-service is premature optimisation — paying upfront cost (11 schemas + grants + cross-schema FK overhead + per-PR coordination) for a hypothetical future. Single shared schema supports the same DB-level access control via per-service roles.
+**Why one schema, not schema-per-service:** 11 services, one team, one domain. Schema-per-service costs 11 schemas + grants + cross-schema FK overhead + per-PR coordination, with no concrete benefit at MVP. One schema supports the same DB-level access control via per-service roles.
 
-**Why per-service DB roles, not a single shared role:** per-service roles are the **forward-compatibility hook** for any future schema-per-service or service extraction (~10 minutes/role to set up Day 1; expensive to retrofit). They also give defense-in-depth (a misconfigured Sitting repository can't write to Payment's tables — DB rejects), DB-layer signal for the post-MVP user-action audit (D7), and a reversible decision (grants start broad, tighten as patterns become visible).
+**Why per-service DB roles, not one shared role:** per-service roles are the seam for any future schema-per-service or service extraction. ~10 minutes/role on Day 1; expensive to retrofit. They also give defense-in-depth (a Sitting repo can't write to Payment tables — DB rejects), DB-layer signal for the post-MVP user-action audit (D7), and a reversible decision (start broad, tighten as patterns become visible).
 
-**There is no shared runtime code library.** Each service owns its own implementation of cross-cutting concerns, even when that means boilerplate duplication. Cost of duplication is accepted in exchange for: **changing a cross-cutting concern in one service never forces redeployment of any other service** (NFR40).
+**No shared runtime code library.** Each service owns its own cross-cutting concerns, even at the cost of boilerplate. **Changing a cross-cutting concern in one service never forces redeployment of any other** (NFR40).
 
 What is shared:
 
-- **The PostgreSQL database** (one global instance, single shared schema, per-service DB roles with explicit grants).
-- **API contracts** (OpenAPI specs per service, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) envelope, content-type negotiation patterns) — by specification, not runtime code.
-- **API spec Maven artefacts** (`uk.gov.hmcts.nji:api-nji-{service}:{version}`) — contract, not runtime code.
+- **The PostgreSQL database** (one instance, one schema, per-service roles with explicit grants).
+- **API contracts** — OpenAPI specs, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) envelope, content-type negotiation. Specification, not runtime code.
+- **API spec Maven artefacts** — `uk.gov.hmcts.nji:api-nji-{service}:{version}`. Contract, not runtime code.
 - **Runtime infrastructure services** (Authorisation, Reference Data, Notification) — by API call (workflows) or direct DB read (simple lookups).
 - **Scaffolding templates** (HMCTS Crime SpringBoot template) — at scaffold time, then forked.
 - **CI/CD and operational conventions** (Gradle idioms, OpenTelemetry → Application Insights ingestion contract, Flyway baseline) — by convention and tooling, not library.
 
-What is duplicated, by design: per-service custom `JWTFilter`, per-service `@ControllerAdvice` ([RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) + retry-safety status mapping), per-service structured-logging configuration. Estimated duplication: ~300–500 lines of boilerplate per service × 11 services. Mitigation: the HMCTS starter encodes most of this.
+Duplicated per service: custom `JWTFilter`; `@ControllerAdvice` ([RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) + retry-safety status mapping); structured-logging config. ~300–500 lines per service × 11 services. The HMCTS starter encodes most of it.
 
-#### Principle 2: No Premature Optimization
+#### Principle 2: No Premature Optimisation
 
-**Performance optimisations are introduced when measurement justifies them, not by default.** Specifically:
+**Performance optimisations are added when measurement justifies them.** At MVP:
 
-- **No Reference Data cache** at MVP — direct SELECT from the 15 Reference Data tables.
-- **No distributed cache (Redis)** at MVP.
-- **No service mesh (Istio/Linkerd)** at MVP — Spring Security + AKS DNS + JWTFilter sufficient.
-- **No read replicas** at MVP — single PostgreSQL instance adequate for bounded user count.
-- **No async messaging** — REST-first synchronous coordination is the default.
+- No Reference Data cache — direct SELECT from the 15 Reference Data tables.
+- No distributed cache (Redis).
+- No service mesh (Istio/Linkerd) — Spring Security + AKS DNS + JWTFilter are sufficient.
+- No read replicas — one PostgreSQL instance is adequate at this scale.
+- No async messaging — REST-first synchronous is the default.
 
-Each tool is introduced if and only if a measurement-backed need appears.
+Each is added only when measurement shows a need.
 
 ### Primary Technology Domain
 
-API backend (Java + Spring Boot 4) on AKS in Azure UK regions. The 11-service decomposition produces **11 independently-deployable Spring Boot services**, each scaffolded once from the HMCTS starter and thereafter owned independently. UI framework is a separate decision (Step 4 Frontend Architecture).
+API backend: Java + Spring Boot 4 on AKS in Azure UK regions. 11 independently-deployable Spring Boot services, each scaffolded once from the HMCTS starter and owned independently. UI framework is a separate decision (Step 4 Frontend Architecture).
 
 ### Starter Options & Selection
 
@@ -229,7 +229,7 @@ API backend (Java + Spring Boot 4) on AKS in Azure UK regions. The 11-service de
 | **Spring Cloud Microservices archetype** | ❌ Rejected. Service discovery / config server / circuit breakers — not needed under REST-first synchronous + Kubernetes. |
 | **Custom NJI Platform Library** | ❌ Rejected on the no-shared-runtime-library principle. |
 
-**Rationale for HMCTS starter:** scaffold-time inheritance, not runtime dependency — each service is forked at scaffold time and thereafter owns its own copy. Aligns with the foundational principles.
+**Why the HMCTS starter:** scaffold-time inheritance, not runtime dependency. Each service is forked at scaffold time and owns its own copy from then on. Consistent with the foundational principles.
 
 ### Initialisation Flow, Build Tool, Dependency Inventory, Per-service Conventions
 
@@ -247,28 +247,28 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 
 ### Data Architecture
 
-**Database technology: PostgreSQL on Azure Database for PostgreSQL Flexible Server, UK regions only.** Version 17 (latest GA on Flexible Server; downgrade to 16 acceptable). Rationale: relational domain, mature, lower-cost than Azure SQL, HMCTS open-source preference.
+**Database:** PostgreSQL on Azure Database for PostgreSQL Flexible Server, UK regions only. Version 17 (16 acceptable if HMCTS prefers). Reasons: relational domain; mature; lower-cost than Azure SQL; HMCTS open-source preference.
 
-**Database topology: one global shared instance, single shared schema, per-service DB roles.**
+**Topology:** one global instance, one shared schema, per-service DB roles.
 
-- **One global PostgreSQL Flexible Server instance** (not per-region, not per-service); sized for the full bounded user population.
-- **One logical database**, **one shared schema** (e.g. `nji`).
-- **Table ownership encoded by table-name convention** (below) + **per-service DB roles with explicit grants** (below).
+- **One PostgreSQL Flexible Server instance** (not per-region, not per-service); sized for the full user population.
+- **One logical database**, one shared schema (e.g. `nji`).
+- **Table ownership** encoded by table name (below) + per-service DB roles with explicit grants (below).
 
-**Table naming and ownership convention:**
+**Table naming and ownership:**
 
-- **Primary domain tables** — entity-plural without prefix: `judges`, `absences`, `vacancies`, `bookings`, `sittings`, `payments`, `payment_schedules`, `regions`, `offices`, `calendar_periods`, plus the 12 vocabulary tables.
+- **Primary domain tables** — entity-plural, no prefix: `judges`, `absences`, `vacancies`, `bookings`, `sittings`, `payments`, `payment_schedules`, `regions`, `offices`, `calendar_periods`, plus the 12 vocabulary tables.
 - **Service-internal or ambiguous tables** — service-prefixed: `payment_reconciliations`, `notification_dispatches`, `auth_user_roles`.
-- **Authoritative ownership table** in [`./architecture/data-tables.md`](./architecture/data-tables.md).
-- **The team that writes the Flyway migration creating the table is the owning team** (encoded in code: the `V*__*.sql` lives in the owning service's repo).
+- **Ownership table** in [`./architecture/data-tables.md`](./architecture/data-tables.md).
+- **The team that writes the Flyway migration creating the table owns it.** The `V*__*.sql` lives in the owning service's repo.
 
-**ArchUnit-style fitness functions enforce in CI:**
+**ArchUnit fitness functions in CI:**
 
 - No two services' migrations create overlapping tables.
-- DB role grants align with the documented ownership mapping.
-- Each service's role has appropriate privileges on owned tables and only explicitly-granted privileges on others.
+- DB role grants match the documented ownership.
+- Each service's role has full privileges on its own tables, and only explicitly-granted privileges on others.
 
-**Cross-service access (Principle 1 applied to data layer):**
+**Cross-service access:**
 
 | Access pattern | Allowed | Mechanism |
 |---|---|---|
@@ -279,100 +279,100 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 | Service performs a workflow on another service's data | ❌ Direct DB; ✅ via API | Owning service's REST endpoint |
 | Service writes non-granted columns/tables | ❌ Forbidden | DB rejects |
 
-**Foreign keys within the shared schema: allowed and encouraged** (e.g. `bookings.judge_id REFERENCES judges(id)`); no cross-schema FK overhead.
+**Foreign keys within the shared schema** are allowed and encouraged (e.g. `bookings.judge_id REFERENCES judges(id)`).
 
-**Per-service DB roles with explicit grants** — `nji_judge`, `nji_booking`, etc. (one per service, plus `nji_mock_auth` for dev/integration). `ALL` privileges on owned tables; cross-table access granted explicitly (`GRANT SELECT ON vacancies TO nji_booking; GRANT UPDATE (filled, filled_at) ON vacancies TO nji_booking;`). Grants codified in Flyway migrations owned by the table-owning service. **Day 1 stance: start broad, tighten as code makes patterns visible.**
+**Per-service DB roles with explicit grants** — `nji_judge`, `nji_booking`, etc. (one per service; `nji_mock_auth` for dev/integration). `ALL` privileges on owned tables. Cross-table access granted explicitly: `GRANT SELECT ON vacancies TO nji_booking; GRANT UPDATE (filled, filled_at) ON vacancies TO nji_booking;`. Grants live in Flyway migrations owned by the table-owning service. **Day 1: grants start broad, tighten as patterns become visible.**
 
-**Forward-compatibility framing:** per-service DB roles are the seam supporting a future schema-per-service or service-extraction *without* connection-layer code changes.
+**Forward compatibility:** per-service DB roles are the seam for future schema-per-service or service-extraction without connection-layer code changes.
 
-**Data modelling: Spring Data JPA + Hibernate.** Per-service entities/repositories/queries; no shared entity classes. Read-only views of another service's whitelisted tables are `@Immutable` JPA entities in the consuming service.
+**Data modelling:** Spring Data JPA + Hibernate. Per-service entities, repositories, and queries. No shared entity classes. Another service's whitelisted tables are `@Immutable` JPA entities in the consuming service.
 
-**Schema evolution: Flyway** (per HMCTS Crime template — `spring-boot-starter-flyway`, `flyway-core`, `flyway-database-postgresql`). Per-service `src/main/resources/db/migration/V*__*.sql`. Migrations run on application startup. **Flyway here is for NJI's own DDL only — it is *not* the mechanism for loading APEX data into NJI** (see Phase 0 ETL below).
+**Schema evolution: Flyway** (`spring-boot-starter-flyway`, `flyway-core`, `flyway-database-postgresql`). Per-service `src/main/resources/db/migration/V*__*.sql`. Migrations run on application startup. **Flyway is for NJI's DDL only — not for loading APEX data into NJI** (see Phase 0 ETL below).
 
-**Phase 0 Data Migration from APEX (a separate ETL activity, distinct from Flyway):**
+**Phase 0 Data Migration from APEX (separate from Flyway):**
 
-- **Source:** APEX SQL dumps for Reference Data and APEX user records + role/scope assignments. APEX schema is whatever it is; NJI does not own or constrain it.
-- **Target:** NJI tables (regions, offices, calendar_periods, the 12 vocabulary tables, `auth_users`, `auth_roles`, `auth_user_roles`, `auth_user_region_scopes`, `auth_user_activation_flags`) — all designed by NJI.
-- **Mechanism:** the migration tool reads APEX dumps, transforms each row into the NJI shape, and **loads via NJI service APIs** (`POST /v1/regions`, `POST /authz/users`, etc.). API is the seeding mechanism (per v1.6 decision); the migration tool is the bulk caller.
-- **Mechanism is *not* Flyway data-seeding** — APEX shape ≠ NJI shape; transform lives in code; per the v1.6 decision, writes go via the API so validation/idempotency/audit hooks fire; the migration is a Phase 0 deliverable, not part of per-service schema evolution.
-- **Tool location:** `nji-architecture/migration/` (CLI/script under the architecture repo). Phase 0 deliverable; retained for re-runs per rollout wave.
-- **Scope:** Reference Data (D3) + active APEX users with role/Region-Area scope (D9). **No transactional data migration.**
-- **Reconciliation:** every Reference Data list signed off by RSU/judicial-team owners (Risk #13); every migrated user reconciled against an IdP principal with explicit handling for unmatched (drop/hold/manual map per Risk #14).
-- **APEX revalidation scope:** the migration tool's APEX-side input mapping is revalidated against the APEX SQL dump when it lands — to confirm the tool covers every APEX field NJI needs, not to reshape NJI's tables. New APEX vocabulary values gain rows via the Reference Data API. Tracked as G4.6 / A33.
+- **Source:** APEX SQL dumps for Reference Data and APEX user records + role/scope assignments. NJI does not own or constrain APEX's schema.
+- **Target:** NJI tables — `regions`, `offices`, `calendar_periods`, the 12 vocabulary tables, `auth_users`, `auth_roles`, `auth_user_roles`, `auth_user_region_scopes`, `auth_user_activation_flags`.
+- **Mechanism:** the migration tool reads APEX dumps, transforms each row to NJI shape, and loads via NJI APIs (`POST /v1/regions`, `POST /authz/users`, etc.). The API is the seeding mechanism; the migration tool is the bulk caller.
+- **Not Flyway data-seeding.** APEX shape ≠ NJI shape; the transform is in code. Writes go via the API so validation, idempotency, and audit-logging hooks fire.
+- **Location:** `nji-architecture/migration/` (CLI/script). Phase 0 deliverable; re-runnable per rollout wave.
+- **Scope:** Reference Data (D3) + active APEX users with role/Region-Area scope (D9). No transactional data.
+- **Reconciliation:** Reference Data lists signed off by RSU/judicial-team owners (Risk #13); every migrated user reconciled against an IdP principal; unmatched records get drop/hold/manual map handling (Risk #14).
+- **APEX revalidation:** when the APEX SQL dump lands, validate the tool's APEX-side input mapping. Confirms the tool covers every APEX field NJI needs; does not reshape NJI's tables. New APEX vocabulary values are inserted via the Reference Data API. Tracked as G4.6 / A33.
 
-**Read-model strategy: SQL JOINs across the shared schema.** Itinerary and MI Feed services execute joins across `judges`, `absences`, `vacancies`, `bookings`, `sittings`, `payments` (read-only via SELECT grants). The ≤ 30 s Forward Look NFR (NFR8) is trivially achievable with indexed joins.
+**Read models:** SQL JOINs across the shared schema. Itinerary and MI Feed run joins across `judges`, `absences`, `vacancies`, `bookings`, `sittings`, `payments` (read-only via SELECT grants). Indexed joins meet the ≤ 30 s Forward Look NFR (NFR8).
 
-**Caching strategy: none at MVP** (per Principle 2). May be added per-service post-MVP if measurement shows degradation.
+**Caching:** none at MVP (per Principle 2). Added per-service post-MVP if measurement shows the need.
 
-**Validation strategy: JSR-380 (Bean Validation 3.0)** annotations on request DTOs and entity fields, enforced by Spring Web's `@Valid` integration.
+**Validation:** JSR-380 (Bean Validation 3.0) on request DTOs and entity fields, enforced by Spring Web's `@Valid`.
 
 ### Authoritative Table Ownership Mapping
 
-See [`./architecture/data-tables.md`](./architecture/data-tables.md). The fitness function operates against this inventory: every table created by Flyway must appear there with the matching owning service.
+See [`./architecture/data-tables.md`](./architecture/data-tables.md). The fitness function checks that every Flyway-created table appears there with the correct owning service.
 
 ### Authentication & Security
 
 #### Phasing of Authentication: Mock-First, Real IdP Later
 
-NJI's pre-production phases (0–8) use a **Mock Authentication Service** for all authentication needs. Real HMCTS IdP integration is a discrete **pre-Phase-9 deliverable**, executed as a configuration cutover.
+Phases 0–8 use `nji-mock-auth`. Real HMCTS IdP integration is a pre-Phase-9 deliverable — a configuration cutover.
 
-**Mock Authentication Service (`nji-mock-auth`, Phase 0 deliverable):**
+**`nji-mock-auth` (Phase 0 deliverable):**
 
-- Exposes OIDC `authorization_code` flow for human users (`/oauth2/authorize`, `/oauth2/token`, `/oauth2/jwks`, `/oauth2/userinfo`).
-- **Issues service tokens via OAuth `client_credentials` grant** for batch/scheduled components (initially `nji-payment-batch`) — restored v2.6 to support the payment batch, which has no upstream user context.
-- Issues JWTs for a fixed roster of test users covering all 11 user roles × representative Region/Area combinations.
-- Mirrors the user records seeded by Phase 0 dev/CI scripts into NJI Authorisation.
-- Spring Authorization Server-based; deployed to AKS dev/integration alongside other Phase 0 services.
-- **Production safeguard:** refuses to start when the `production` Spring profile is active. CI lint enforces production manifests reference the real-IdP issuer URL only.
+- OIDC `authorization_code` flow for human users (`/oauth2/authorize`, `/oauth2/token`, `/oauth2/jwks`, `/oauth2/userinfo`).
+- OAuth `client_credentials` grant for batch service principals (initially `nji-payment-batch`).
+- JWTs for a fixed roster of test users covering all 11 user roles × representative Region/Area combinations.
+- User roster mirrors what the Phase 0 dev/CI scripts seed into NJI Authorisation.
+- Spring Authorization Server. Deployed to AKS dev/integration alongside other Phase 0 services.
+- **Production safeguard:** refuses to start with the `production` Spring profile. CI lint blocks production manifests that reference the mock-auth issuer URL.
 
-**Use across environments:** local dev / CI / unit + integration tests = mock auth always; integration & staging start on mock then switch to real HMCTS IdP at the pre-Phase-9 cutover; production = real HMCTS IdP only.
+**Environments:** local dev, CI, unit and integration tests use mock auth. Integration and staging run on mock until the pre-Phase-9 cutover. Production runs on real HMCTS IdP only.
 
-**Why mock-first:** decouples NJI build from HMCTS IdP team's roadmap; enables full local/CI development without IdP credentials per developer; Risk #6 (HMCTS IdP integration timing) reduces from a Phase 0 blocker to a contained pre-Phase-9 prerequisite.
+**Why mock-first:** decouples NJI build from the HMCTS IdP team's roadmap; lets developers work without IdP credentials. Reduces Risk #6 (IdP integration timing) from a Phase 0 blocker to a pre-Phase-9 prerequisite.
 
-**Real HMCTS IdP integration (pre-Phase-9):**
+**Real HMCTS IdP cutover (pre-Phase-9):**
 
-- **Cutover triggers:** G1.1 (HMCTS IdP supports OIDC for human authN), G1.2 (HMCTS IdP supports OAuth `client_credentials` for batch service principals — *or* an alternative production issuer per G7.1), G1.3 (principal export/query API for migration reconciliation).
-- **Cutover mechanism:** Spring profile flip — every NJI service's OIDC `issuer-url` switches from mock auth to HMCTS IdP. **No code change.**
-- **Migration alignment:** user records loaded by Phase 0 ETL are keyed by email + employee number — issuer-agnostic.
-- **Reconciliation pass:** before staging cutover, a verification job confirms every migrated user maps to a real IdP principal.
-- **Test suite handover:** every automated suite (unit, integration with Testcontainers, contract) and per-service manual UAT must pass against real IdP in staging before Phase 9 pilot.
+- **Triggers:** G1.1 (HMCTS IdP supports OIDC for human authN), G1.2 (HMCTS IdP supports `client_credentials` for batch — or an alternative per G7.1), G1.3 (principal export/query API for migration reconciliation).
+- **Mechanism:** Spring profile flip. Every service's OIDC `issuer-url` switches from mock auth to HMCTS IdP. No code change.
+- **Migration:** Phase 0 ETL keys user records by email + employee number, which are issuer-agnostic.
+- **Reconciliation:** before staging cutover, a verification job confirms every migrated user maps to a real IdP principal.
+- **Test suite:** every automated suite (unit, Testcontainers integration, contract) and per-service manual UAT must pass against real IdP in staging before Phase 9 pilot.
 
 #### End-user Authentication
 
-**End-user authentication: OIDC.** **End-user authorisation: NJI Authorisation service.**
+End-user authentication: OIDC. End-user authorisation: NJI Authorisation service.
 
-Each NJI service implements its own **custom `JWTFilter`** (per HMCTS Crime template's `JWTFilter` pattern, `io.jsonwebtoken:jjwt`):
+Each service runs a custom `JWTFilter` (HMCTS Crime template pattern, `io.jsonwebtoken:jjwt`):
 
-1. Validates JWT signature and issuer **by fetching the issuer's JWKS public keys** (mock auth in Phase 0–8; HMCTS IdP from pre-Phase-9). Public keys cached per the issuer's headers.
-2. Extracts principal identity (sub, email, employee number) from JWT claims.
-3. Calls `POST /authz/check` against NJI Authorisation to resolve roles + Region/Area scope + per-region phased activation flag (FR58). **This step diverges from the HMCTS Crime template's claims-only authorisation** — NJI's authz state lives in Authorisation, not the IdP.
-4. Stores resolved authz context in a request-scoped `AuthDetails` bean.
+1. Validate JWT signature and issuer against the issuer's JWKS (mock auth in Phase 0–8; HMCTS IdP from pre-Phase-9). Public keys cached per the issuer's cache headers.
+2. Extract principal identity (sub, email, employee number) from JWT claims.
+3. Call `POST /authz/check` against NJI Authorisation for roles + Region/Area scope + activation flag (FR58). NJI's authz state lives in Authorisation, not the IdP — this differs from the template's claims-only approach.
+4. Store the result in a request-scoped `AuthDetails` bean.
 
-Filter caches authorisation decisions for the request lifecycle only.
+The filter caches authorisation decisions for the request lifecycle only.
 
-#### Inter-service Authentication — Two Patterns at MVP
+#### Inter-service Authentication
 
-*Revised v2.6 (2026-05-07; v2.5 had narrowed this to JWT propagation only — v2.6 widened it back to support the payment batch.)*
+Two patterns at MVP:
 
-**Pattern 1 — JWT propagation** (for user-initiated cross-service calls):
+**Pattern 1 — JWT propagation** (user-initiated cross-service calls):
 
-- The upstream service's outbound HTTP client copies the inbound `Authorization: Bearer <user-jwt>` header to the outbound call. The downstream service's `JWTFilter` validates the same user JWT against the IdP's JWKS and resolves authz via `POST /authz/check`.
-- Implementation: per-service Spring Boot 4 `RestClient` interceptor (~10 lines per service repo). See [`./architecture/conventions.md` → "JWT propagation"](./architecture/conventions.md).
+- The upstream service's outbound HTTP client copies the inbound `Authorization: Bearer <user-jwt>` header onto the outbound call. The downstream service's `JWTFilter` validates the same JWT against the IdP's JWKS and resolves authz via `POST /authz/check`.
+- Implementation: per-service Spring Boot 4 `RestClient` interceptor (~10 lines). See [`./architecture/conventions.md`](./architecture/conventions.md) → "JWT propagation".
 
-**Pattern 2 — Service-principal authentication** (for batch / scheduled components without an upstream user):
+**Pattern 2 — Service-principal authentication** (batch / scheduled components without an upstream user):
 
-- The MVP-relevant case is the **payment-processing batch** (`nji-payment-batch`) — runs on a schedule, picks up bookings ready for payment, generates the JFEPS Excel, dispatches via Notification.
-- Authenticates via OAuth 2.0 `client_credentials` grant against the OIDC issuer (`nji-mock-auth` in Phase 0–8 dev/CI/integration; **production issuer per [`./architecture/gaps.md` G7.1](./architecture/gaps.md), default recommendation Azure Workload Identity**).
-- Service token attached as `Authorization: Bearer <service-token>` on outbound calls. The receiving service's `JWTFilter` validates via the same JWKS path used for human user JWTs.
-- Service-principal records live in `auth_users` alongside humans (with a `principal_kind` flag); `nji-authorisation` resolves their permissions the same way. Service-principal registrations live in `mock_oauth_clients` at MVP.
+- The case at MVP is `nji-payment-batch` — runs on a schedule, picks up bookings ready for payment, generates the JFEPS Excel, dispatches via Notification.
+- Authenticates via OAuth 2.0 `client_credentials` against the OIDC issuer. `nji-mock-auth` in Phase 0–8; production issuer per [`./architecture/gaps.md` G7.1](./architecture/gaps.md) (default recommendation: Azure Workload Identity).
+- Service token attached as `Authorization: Bearer <service-token>` on outbound calls. The receiving service's `JWTFilter` validates via the same JWKS path as human JWTs.
+- Service-principal records live in `auth_users` (with a `principal_kind` flag); `nji-authorisation` resolves their permissions the same way. Registrations live in `mock_oauth_clients` at MVP.
 
-**Other non-runtime exceptions:** Phase 0 dev/CI seeding via one-off scripts (no runtime API call); Phase 0 production data migration via operator-initiated ETL with the operator's user JWT (MVP-acceptable; flagged for post-MVP refinement at G4.7).
+**Other non-runtime auth:** Phase 0 dev/CI seeding via one-off scripts (no runtime API call); Phase 0 production data migration via operator-initiated ETL with the operator's user JWT (G4.7 — flagged for post-MVP refinement).
 
-**Resolves PRD TBD #3:** JWT propagation for user-initiated calls; service principals (via mock-auth in non-prod) for the payment batch; production service-auth issuer per G7.1.
+**Resolves PRD TBD #3:** JWT propagation for user-initiated calls; service principals (mock-auth in non-prod) for the payment batch; production issuer per G7.1.
 
 #### Identity-key Scheme
 
-**APEX ⇄ IdP identity-key scheme: email primary, employee number fallback. (Resolves PRD TBD #7.)** During the Phase 0 ETL: match by email; fallback by employee number; flag unmatched for manual review. Reconciliation report (Risk #14 mitigation) is a Phase 0 deliverable.
+**APEX ⇄ IdP: email primary, employee number fallback.** (Resolves PRD TBD #7.) During the Phase 0 ETL: match by email; fall back to employee number; flag unmatched for manual review. The reconciliation report is a Phase 0 deliverable (Risk #14 mitigation).
 
 #### API Security Strategy
 
@@ -388,101 +388,101 @@ Filter caches authorisation decisions for the request lifecycle only.
 
 **API versioning: URI prefix major versioning. (Resolves PRD TBD #5.)** `/v1/judges`, `/v2/judges`. Backwards-compatible additions stay within the major version. Deprecation signalling: `Deprecation` header per [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) (date-stamp value, e.g. `Deprecation: @1735689600`) + `Sunset` header per [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) (RFC-date value); minimum 6-month internal / 12-month external window before removal.
 
-**Build / version metadata** is exposed only via Spring Boot Actuator's `/actuator/info` endpoint (populated by `gradle-git-properties`), gated to ops at the APIM layer. The API-as-Product standards (URI versioning, OpenAPI spec, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) error envelope, deprecation signalling via [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)) are the consumer-facing contract surface; the OpenAPI document is the API's self-description.
+**Build / version metadata** is served by Spring Boot Actuator's `/actuator/info` (populated by `gradle-git-properties`), ops-restricted at the APIM layer. The OpenAPI spec is the consumer-facing contract.
 
 **Rate limiting: Azure API Management at ingress. (Resolves PRD TBD #1.)** 100 req/sec/principal default; 10 req/sec/principal for MI Feed; 200 req/sec burst (sliding 1-second window). The `429 Too Many Requests` status code is per [RFC 6585](https://datatracker.ietf.org/doc/html/rfc6585); the `Retry-After` response header is per [RFC 9110 §10.2.3](https://datatracker.ietf.org/doc/html/rfc9110#section-10.2.3).
 
-**Error handling: [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details** (formerly [RFC 7807](https://datatracker.ietf.org/doc/html/rfc7807); RFC 9457 obsoletes 7807 — `application/problem+json` content type and field shape unchanged). Per-service `@ControllerAdvice` converts domain exceptions; standard `type` URIs `/errors/validation`, `/errors/authorisation`, `/errors/business-rule`, `/errors/dependency`, `/errors/conflict`. Correlation ID echoed for traceability.
+**Error handling:** [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details (`application/problem+json`). Per-service `@ControllerAdvice` converts domain exceptions. Standard `type` URIs: `/errors/validation`, `/errors/authorisation`, `/errors/business-rule`, `/errors/dependency`, `/errors/conflict`. Correlation ID echoed in the response.
 
-**API documentation: Swagger Core + HMCTS API spec artefact pattern.** Each NJI service's OpenAPI 3.x spec is published as a Maven artefact (`uk.gov.hmcts.nji:api-nji-{service}:{version}`); consumers pull at compile time for type-safe contract consumption. Per-phase Postman collections derived from the spec (FR42 / NFR42). API spec artefacts may be shared via Maven (they are *contract*, not runtime code).
+**API documentation:** Swagger Core. Each service's OpenAPI 3.x spec is published as a Maven artefact (`uk.gov.hmcts.nji:api-nji-{service}:{version}`); consumers pull it at compile time. Postman collections per phase derived from the spec (FR42 / NFR42). The artefact is contract, not runtime code.
 
-**Service-to-service communication:** REST over HTTPS; service discovery via Kubernetes DNS (`http://nji-judge.{namespace}.svc.cluster.local:8080`); no service mesh, no Eureka/Consul. Synchronous workflows only. Retry safety via native DB primitives (unique constraints + `@Version` + `SELECT … FOR UPDATE`).
+**Service-to-service communication:** REST over HTTPS. Service discovery via Kubernetes DNS (`http://nji-judge.{namespace}.svc.cluster.local:8080`). No service mesh. Synchronous workflows only. Retry safety via native DB primitives (unique constraints + `@Version` + `SELECT … FOR UPDATE`).
 
 ### Frontend Architecture
 
-**UI framework: React 18.x + TypeScript 5.x. (Resolves PRD TBD #2.)** Rationale: dominant in HMCTS internal applications; mature ecosystem; aligns with GOV.UK Design System component libraries (`govuk-react`).
+**Framework:** React 18.x + TypeScript 5.x. (Resolves PRD TBD #2.) Common in HMCTS applications; aligns with `govuk-react`.
 
-**Component library: GOV.UK Design System** — mandatory for accessibility (WCAG 2.2 AA per NFR17).
+**Component library:** GOV.UK Design System — required for WCAG 2.2 AA (NFR17).
 
-**State management:** TanStack Query (server state — caching, refetching, mutation, optimistic updates); Zustand or React Context (UI-only state); React Hook Form (form state, pairs with JSR-380 backend validation via OpenAPI-generated clients).
+**State management:** TanStack Query for server state; Zustand or React Context for UI state; React Hook Form for form state (pairs with JSR-380 backend validation via OpenAPI-generated clients).
 
 **Routing:** React Router 6.x.
 
-**API client generation:** per backend service, generate a TypeScript client from the OpenAPI spec (`openapi-typescript-codegen` or `orval`). Generated clients live in the UI repo, regenerated as part of UI CI. **No shared client library across services or repos.**
+**API client:** generated per backend service from the OpenAPI spec (`openapi-typescript-codegen` or `orval`). Generated clients live in the UI repo and are regenerated in UI CI. No shared client library across services.
 
 **Build tool:** Vite 5.x.
 
-**Styling:** GOV.UK Design System CSS (Sass-compiled) foundation; per-component CSS modules for extensions. No Tailwind.
+**Styling:** GOV.UK Design System CSS (Sass-compiled). Per-component CSS modules for extensions. No Tailwind.
 
-**Testing:** Vitest (unit, Vite-native) + React Testing Library (components) + Playwright (E2E, one suite per phase) + axe-core for accessibility.
+**Testing:** Vitest (unit) + React Testing Library (components) + Playwright (E2E, one suite per phase) + axe-core (accessibility).
 
-**Performance:** route-based code splitting via `React.lazy` + Suspense; Vite tree-shaking and minification. No PWA at MVP.
+**Performance:** route-based code splitting via `React.lazy` + Suspense. Vite tree-shaking and minification. No PWA at MVP.
 
 ### Infrastructure & Deployment
 
-**Hosting: Azure Kubernetes Service (AKS), single cluster in UK South, multi-AZ node pools.** Pod anti-affinity (`topology.kubernetes.io/zone`) keeps each service's replicas distributed across AZs. Min 2 replicas/service; HPA tunes upward. HMCTS-judicial-region rollout isolation enforced at app tier via FR58 activation flags, not infrastructure. DR scope and topology are an open gap — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
+**Hosting:** Azure Kubernetes Service (AKS), single cluster in UK South, multi-AZ node pools. Pod anti-affinity (`topology.kubernetes.io/zone`) distributes replicas across AZs. Min 2 replicas/service; HPA tunes upward. HMCTS-judicial-region rollout isolation is enforced at the app tier via FR58 flags, not infrastructure. DR is an open gap — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 
-**Database hosting: Azure Database for PostgreSQL Flexible Server**, **one global instance, zone-redundant HA in UK South.** Primary in one AZ, standby in another, synchronous replication, automatic failover (<60 s typical). Microsoft-managed continuous backup; PITR; encryption-at-rest by default. Geo-redundant backup configuration is part of the DR decision — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
+**Database hosting:** Azure Database for PostgreSQL Flexible Server. One global instance, zone-redundant HA in UK South — primary in one AZ, standby in another, synchronous replication, automatic failover (<60 s). Microsoft-managed continuous backup; PITR; encryption at rest. Geo-redundant backup is part of the DR decision (G3.6).
 
 **UI hosting:** Azure Static Web Apps (or Blob Storage + CDN if Static Web Apps is operationally complex for HMCTS).
 
-**Secret management:** Azure Key Vault, one namespace per service; secrets mounted at startup via Spring Cloud Azure Key Vault.
+**Secret management:** Azure Key Vault, one namespace per service. Secrets mounted at startup via Spring Cloud Azure Key Vault.
 
-**CI/CD:** per-service Azure DevOps Pipelines or GitHub Actions (HMCTS standard); each service has its own pipeline. Pipelines emit Docker images to ACR, then deploy via Helm to AKS.
+**CI/CD:** per-service Azure DevOps Pipelines or GitHub Actions (HMCTS standard). Each service has its own pipeline. Pipelines push Docker images to ACR, then deploy via Helm to AKS.
 
-**Environment configuration:** Spring profiles (`dev`, `staging`, `production`); secrets externalised to Key Vault. App Configuration only if runtime tuning without redeployment becomes important.
+**Environment configuration:** Spring profiles (`dev`, `staging`, `production`); secrets in Key Vault. App Configuration only if runtime tuning without redeployment becomes a need.
 
-**Observability (D7 log-based MVP, per HMCTS Crime template):**
+**Observability** (log-based MVP per D7, HMCTS Crime template):
 
-- **Logback with Logstash JSON encoder** for structured logs; async appender.
-- **OpenTelemetry** as observability abstraction; exports to Application Insights via OTel Collector.
-- Structured fields: `timestamp`, `level`, `service`, `correlation-id`, `principal-id`, `event-type`, `message`, `error-category`, `error-code`.
-- **Spring Boot Actuator** (`/actuator/health`, `/actuator/info` populated from `gradle-git-properties`, `/actuator/readiness`) — `/actuator/*` namespace ops-restricted at the APIM layer. `/actuator/metrics` and Prometheus endpoint not exposed at MVP per D7.
-- OTel trace sampling 100% in dev/staging; tunable in production.
+- Logback with Logstash JSON encoder; async appender.
+- OpenTelemetry exports to Application Insights via OTel Collector.
+- Log fields: `timestamp`, `level`, `service`, `correlation-id`, `principal-id`, `event-type`, `message`, `error-category`, `error-code`.
+- Spring Boot Actuator: `/actuator/health`, `/actuator/info` (from `gradle-git-properties`), `/actuator/readiness`. The `/actuator/*` namespace is ops-restricted at the APIM layer. `/actuator/metrics` and Prometheus endpoint are not exposed at MVP (D7).
+- OTel trace sampling: 100% in dev/staging; tunable in production.
 
-**Log retention: 30 days hot in App Insights; 90 days cold in Log Analytics archive. (Resolves PRD TBD #4.)** Pre-GA review against HMCTS retention policy may extend.
+**Log retention:** 30 days hot in App Insights; 90 days cold in Log Analytics archive. (Resolves PRD TBD #4.) Pre-GA review against HMCTS retention policy may extend it.
 
-**Historical-data access policy: read-only APEX bridge for 12 months post-region-cutover. (Resolves PRD TBD #6, partial.)** When a region cuts over, that region's users retain read-only APEX access for 12 months. After 12 months: HMCTS produces a one-shot extract; APEX read-only for that region is decommissioned. APEX retires fully when all regions have passed their 12-month window. 12-month window length pending programme confirmation.
+**Historical-data access:** read-only APEX bridge for 12 months after region cutover. (Resolves PRD TBD #6, partial.) After 12 months, HMCTS produces a one-shot extract; APEX read-only for that region is decommissioned. APEX retires fully when every region has passed its 12-month window. The 12-month length is pending programme confirmation.
 
-**Scaling:** Kubernetes HPA per service — CPU/memory triggers, min 2 replicas/service for redundancy, max replicas tuned per service after capacity numbers stabilise.
+**Scaling:** Kubernetes HPA per service. CPU/memory triggers; min 2 replicas; max replicas tuned per service after capacity stabilises.
 
 ### Deployment topology — single Azure region, multi-AZ HA
 
-NJI follows a **same-Azure-region multi-AZ** HA model — production in **UK South**, services across that region's three availability zones. Disaster-recovery scope and design are an open gap — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
+Production runs in UK South across three availability zones. DR is an open gap — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 
-Two distinct meanings of "region" run through this architecture and the PRD:
+"Region" has two meanings in this document and the PRD:
 
-| Concept | What it means | How it's enforced |
+| Concept | Meaning | Enforced by |
 |---|---|---|
-| **Azure region** | Geographic Azure deployment region. Each contains multiple **availability zones** (AZs) — physically separate datacentres on independent power/network. | Infrastructure decision: production = UK South. HA via multi-AZ within UK South. DR target region is held in [`./architecture/gaps.md` G3.6](./architecture/gaps.md). |
-| **HMCTS judicial region** | NJI's per-region phased-rollout boundary — the *business* region used by D8 (e.g. Northern, Western HMCTS jurisdictional regions). | Application-tier concern: per-user activation flag in `auth_user_activation_flags` (FR58). **No infrastructure isolation per HMCTS region.** |
+| **Azure region** | Geographic Azure deployment region. Each contains multiple availability zones (AZs) — physically separate datacentres on independent power/network. | Infrastructure: production = UK South. HA via multi-AZ within UK South. DR target region is held in G3.6. |
+| **HMCTS judicial region** | NJI's per-region phased-rollout boundary — the business region used by D8 (Northern, Western, etc.). | Application tier: per-user activation flag in `auth_user_activation_flags` (FR58). No infrastructure isolation per HMCTS region. |
 
-NFR38 ("region-isolated deployments") refers to the **HMCTS judicial region** sense — wave activation in HMCTS Region B does not disrupt Region A's users. Enforced at the application tier, *not* by separate Azure clusters or DNS endpoints.
+NFR38 ("region-isolated deployments") means the HMCTS judicial region sense — a wave in HMCTS Region B does not disrupt Region A's users. Enforced at the application tier, not by separate clusters or DNS endpoints.
 
 #### HA topology — multi-AZ within UK South
 
 | Component | Multi-AZ posture |
 |---|---|
-| **AKS** | One production cluster, **node pools spanning all three AZs**. Pod anti-affinity (`topology.kubernetes.io/zone`); min 2 replicas/service. AKS control plane Microsoft-managed and zone-redundant. |
-| **PostgreSQL Flexible Server** | **Zone-redundant HA** — primary + standby in different AZs, synchronous replication, automatic failover (<60 s typical). Single global instance is therefore *not* a single-AZ point of failure within UK South. (See G6.2 for residual full-region-loss risk and G3.6 for DR.) |
+| **AKS** | One production cluster; node pools span all three AZs. Pod anti-affinity (`topology.kubernetes.io/zone`); min 2 replicas/service. AKS control plane is Microsoft-managed and zone-redundant. |
+| **PostgreSQL Flexible Server** | Zone-redundant HA — primary + standby in different AZs, synchronous replication, automatic failover (<60 s). One instance is not a single-AZ point of failure within UK South. (G6.2 for full-region-loss residual risk; G3.6 for DR.) |
 | **Azure Key Vault** | Microsoft-managed zone-redundancy in UK South (Premium tier; verify Standard). One Key Vault per service (or per service-environment). |
-| **Application Insights / Log Analytics** | Microsoft-managed regional service; Microsoft handles AZ-level redundancy. One workspace shared across NJI services. |
-| **Azure API Management** | **Premium SKU with zone-redundancy enabled.** |
+| **Application Insights / Log Analytics** | Microsoft-managed regional service; AZ-level redundancy is Microsoft's responsibility. One workspace shared across NJI services. |
+| **Azure API Management** | Premium SKU with zone-redundancy enabled. |
 | **Azure Static Web Apps (UI)** | Microsoft-managed regional service; CDN-fronted globally. |
-| **Azure Container Registry** | Zone-redundant in UK South (Premium SKU). |
-| **Azure Front Door / DNS** | Single DNS endpoint (e.g. `nji.production.hmcts.gov.uk`) routes to UK South ingress. *Not* per-HMCTS-region. |
+| **Azure Container Registry** | Zone-redundant (Premium SKU). |
+| **Azure Front Door / DNS** | Single DNS endpoint (e.g. `nji.production.hmcts.gov.uk`) routes to UK South ingress. Not per-HMCTS-region. |
 
-A single-AZ failure within UK South is tolerated transparently — AKS reschedules pods; PostgreSQL fails over to the standby AZ. **Full-region UK South loss** is the residual risk at MVP — see G6.2 (residual risk acceptance) and G3.6 (DR scope) in [`./architecture/gaps.md`](./architecture/gaps.md).
+Single-AZ failure within UK South is tolerated transparently: AKS reschedules pods; PostgreSQL fails over to the standby AZ. Full UK South region loss is the residual risk at MVP — see G6.2 and G3.6.
 
 #### HMCTS-judicial-region rollout isolation — application tier only
 
 | Concern | Mechanism |
 |---|---|
-| Migrated HMCTS Region B users authenticate; non-migrated Region A users do not | `auth_user_activation_flags` per FR58; `JWTFilter` rejects non-activated users |
-| One HMCTS region's wave deployment doesn't disrupt another | Rolling deployments per-service across the cluster; activation flag does the per-region containment |
-| Cross-HMCTS-region workflow during partial rollout | Per-wave decision per Risk #1; some workflows operable mixed-mode, some gated, some manual |
+| Migrated Region B users authenticate; non-migrated Region A users do not | `auth_user_activation_flags` (FR58); `JWTFilter` rejects non-activated users |
+| One region's wave deployment doesn't disrupt another | Rolling deployments per-service across the cluster; the activation flag contains the change |
+| Cross-region workflow during partial rollout | Per-wave decision (Risk #1); some workflows operate mixed-mode, some are gated, some are manual |
 
-**Consequences:** no per-HMCTS-region AKS clusters, no per-HMCTS-region DNS, no per-HMCTS-region Key Vault. Per-service Helm values files are per-environment (`values-dev.yaml`, `values-staging.yaml`, `values-production.yaml`).
+**Consequences:** no per-HMCTS-region AKS clusters, DNS, or Key Vaults. Per-service Helm values are per-environment (`values-dev.yaml`, `values-staging.yaml`, `values-production.yaml`).
 
 ### Decision Impact Analysis
 
@@ -500,11 +500,11 @@ A single-AZ failure within UK South is tolerated transparently — AKS reschedul
 
 **Cross-Component Dependencies:**
 
-- **Authorisation service** — every service's `JWTFilter` calls it. Outage → outage of NJI. Mitigations: min-3 replicas; per-request lifetime caching; circuit-breaker fail-closed (deny for safety).
-- **Reference Data tables** — read directly via SQL JOINs by every service; no caching at MVP. Outage of Reference Data *service* (the API) does not block reads against the tables; only writes blocked. Mitigation: PostgreSQL HA.
+- **Authorisation service** — every `JWTFilter` calls it. Outage → outage of NJI. Mitigations: min 3 replicas; per-request-lifetime caching; circuit-breaker fail-closed (deny).
+- **Reference Data tables** — read directly via SQL JOINs by every service; no caching at MVP. The Reference Data *service* outage (the API) blocks writes only; reads are served from the tables. Mitigation: PostgreSQL HA.
 - **HMCTS IdP** — every authentication depends on it. IdP outage is HMCTS-wide.
-- **Azure API Management** — every external client request flows through it. Mitigation: Premium SKU with zone-redundancy.
-- **PostgreSQL (one shared global instance)** — DB outage affects every service simultaneously. Single-AZ failure tolerated by zone-redundant HA (see *HA topology* table above). Single-DB blast radius and full-region-loss residual risk are tracked in [`./architecture/gaps.md`](./architecture/gaps.md) — G6.2 (blast radius) and G3.6 (DR).
+- **Azure API Management** — all external client requests flow through it. Mitigation: Premium SKU with zone-redundancy.
+- **PostgreSQL (one shared global instance)** — outage affects every service. Single-AZ failure tolerated by zone-redundant HA. Single-DB blast radius and full-region-loss residual risk: G6.2 and G3.6 in [`./architecture/gaps.md`](./architecture/gaps.md).
 
 ### TBDs Resolved by This Step
 
@@ -520,7 +520,7 @@ A single-AZ failure within UK South is tolerated transparently — AKS reschedul
 
 ## Implementation Patterns & Consistency Rules
 
-See [`./architecture/conventions.md`](./architecture/conventions.md). Every pattern is enforced by code review, CI lint, contract tests, and ArchUnit fitness functions — *not* by a shared library.
+See [`./architecture/conventions.md`](./architecture/conventions.md). Patterns are enforced by code review, CI lint, contract tests, and ArchUnit fitness functions — not by a shared library.
 
 ## Project Structure & Boundaries
 
@@ -534,23 +534,23 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 
 ### Architectural Boundaries
 
-**API Boundaries:** every service exposed at `https://api.nji.{environment}.hmcts.gov.uk/{service-name}/v1/...` via APIM. Within AKS, services call each other via Kubernetes DNS. External traffic always TLS via APIM ingress; no service is reachable directly from outside the cluster.
+**API:** every service is exposed at `https://api.nji.{environment}.hmcts.gov.uk/{service-name}/v1/...` via APIM. Within AKS, services call each other via Kubernetes DNS. External traffic is TLS-only via APIM. No service is reachable directly from outside the cluster.
 
-**Service Boundaries:** one Spring Boot app per service; one container image; one Helm chart; **one shared PostgreSQL Flexible Server with single shared schema**; one Azure Key Vault namespace per service; one Application Insights resource shared by all services (correlation-ID joins).
+**Service:** one Spring Boot app per service; one container image; one Helm chart. One shared PostgreSQL Flexible Server with one shared schema. One Azure Key Vault namespace per service. One Application Insights workspace shared by all services (correlation IDs join logs).
 
-**Data Boundaries:**
+**Data:**
 
-- **A service owns its tables** — only writer of its own tables (with explicit cross-service single-field exceptions per Principle 1).
-- **Cross-service reads via SQL JOINs** on whitelisted tables.
-- **Cross-service writes via direct SQL** only for whitelisted columns (explicit `UPDATE` grants).
-- **FKs within the shared schema** are encouraged.
-- **Reference Data** is single-writer; every service reads directly via SQL.
-- **Forbidden-data invariants** enforced at schema level (no bank-detail / case-level columns anywhere).
+- A service owns its tables and is the only writer (except for cross-service single-field updates per Principle 1).
+- Cross-service reads: SQL JOINs on whitelisted tables.
+- Cross-service writes: direct SQL on whitelisted columns (explicit `UPDATE` grants).
+- FKs within the shared schema are encouraged.
+- Reference Data is single-writer; other services read directly via SQL.
+- Forbidden data: no bank-detail or case-level columns anywhere.
 - Migrated transactional history stays in APEX; NJI tables are empty at region cutover.
 
 **UI Boundaries:** single SPA, multiple per-domain modules; each module imports its generated API client; cross-module communication via TanStack Query cache + React Context.
 
-**External System Boundaries:** HMCTS IdP (every authentication request); JFEPS / Liberata (outbound only via Notification → email); HMCTS Email (outbound only); APEX during build (manual UAT only — no programmatic linkage); APEX during rollout (read-only for migrated users for 12 months, served separately); DA&I (inbound only post-MVP).
+**External Systems:** HMCTS IdP (every authentication); JFEPS/Liberata (outbound only via Notification → email); HMCTS Email (outbound only); APEX during build (manual UAT only); APEX during rollout (read-only for migrated users for 12 months, served separately); DA&I (inbound only, post-MVP).
 
 ### Requirements to Structure Mapping
 
@@ -635,9 +635,9 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 
 ### Data Flow — Canonical Operational Cycle (Journey 1 from PRD)
 
-All services share one global PostgreSQL DB (shared schema). Each service writes its own tables; cross-service simple writes go via DB role grants (Principle 1). Workflows go via API.
+All services share one PostgreSQL DB (one schema). Each service writes its own tables; cross-service simple writes use DB role grants (Principle 1). Workflows go via API.
 
-The end-to-end operational cycle has **two halves** — a user-initiated half (Court User and RSU driving the workflow) and a batch / external half (the payment-processing batch + Liberata). Each is documented as its own Mermaid sequence diagram.
+The cycle has two halves — user-initiated (Court User and RSU) and batch/external (payment batch + Liberata). Each has its own sequence diagram.
 
 **User-initiated half** — see [`./architecture/sequence-diagrams/absence-to-reconciliation.md`](./architecture/sequence-diagrams/absence-to-reconciliation.md)
 
@@ -675,17 +675,17 @@ Rollback path: revert the region's user activation flag (FR58) → users return 
 
 ### Coherence Validation ✅
 
-**Decision Compatibility:**
+**Decision compatibility:**
 
-- **Stack** (Java 25 + Spring Boot 4.0.6 + Gradle Groovy DSL + PostgreSQL 17 + Flyway + AKS + Azure UK regions + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime SpringBoot template) — every component is current GA, mutually compatible, Azure-native or first-class on Azure.
-- **Foundational principles** (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) are consistent with polyrepo, per-service Spring Boot, per-service Helm, single shared PostgreSQL with per-service roles, per-service OpenAPI specs as Maven artefacts, and the boilerplate-duplication pattern.
-- **REST-first synchronous + SQL-based read-model federation** — workflows traverse APIs; read models query the shared DB directly. No event bus.
-- **Mock-first authentication + OIDC for human users; two inter-service patterns (JWT propagation + service-principal `client_credentials` for batch)** — coherent. The OIDC contract is issuer-agnostic; switching from mock auth to real HMCTS IdP is a configuration change.
-- **GOV.UK Design System + WCAG 2.2 AA + axe-core** — coherent set; GDS components are built to WCAG 2.2 AA.
+- **Stack** (Java 25 + Spring Boot 4.0.6 + Gradle Groovy DSL + PostgreSQL 17 + Flyway + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.
+- **Foundational principles** (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) — consistent with polyrepo, per-service Spring Boot, per-service Helm, one PostgreSQL with per-service roles, per-service OpenAPI specs as Maven artefacts, and per-service boilerplate.
+- **REST-first synchronous + SQL read-model federation** — workflows go via API; read models query the shared DB directly. No event bus.
+- **Mock-first authentication + OIDC for humans + two inter-service patterns (JWT propagation, service-principal `client_credentials` for batch)** — issuer-agnostic OIDC contract; mock-to-real cutover is a configuration change.
+- **GOV.UK Design System + WCAG 2.2 AA + axe-core** — GDS components are built to WCAG 2.2 AA.
 
-**Pattern Consistency:** Step 5 patterns align with Step 4 decisions — DB naming (`snake_case`, plural tables, `uuid` PKs); API naming (`camelCase` JSON, plural resources, `/v1/`, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details, ISO 8601); Java package layout (`uk.gov.hmcts.nji.{service}.{layer}`); communication patterns (typed clients, correlation-ID propagation, native-DB retry safety).
+**Pattern consistency:** Step 5 patterns match Step 4 decisions — DB naming (`snake_case`, plural tables, `uuid` PKs); API naming (`camelCase` JSON, plural resources, `/v1/`, RFC 9457 problem-details, ISO 8601); Java package layout (`uk.gov.hmcts.nji.{service}.{layer}`); communication (typed clients, correlation-ID propagation, native DB retry safety).
 
-**Structure Alignment:** per-service repos enable per-region phased rollout and per-service deployment independence; per-environment Helm values + zone-redundant AKS in UK South provide HA for NFR34/NFR35/NFR37; NFR38 satisfied at app tier via FR58; per-service Postman collections for NFR42; `nji-architecture` repo holds ADRs and scaffolding without runtime coupling; `nji-mock-auth` isolated so production never references it.
+**Structure alignment:** per-service repos enable phased rollout and independent deployment; per-environment Helm values + zone-redundant AKS provide HA for NFR34/NFR35/NFR37; NFR38 is satisfied at the app tier via FR58; Postman collections per phase satisfy NFR42; `nji-architecture` holds ADRs and scaffolding without runtime coupling; `nji-mock-auth` is isolated so production never references it.
 
 No contradictions found.
 
@@ -698,11 +698,11 @@ All 61 FRs and 42 NFRs have explicit architectural support.
 
 ### Implementation Readiness Validation ✅
 
-All 7 architecture-phase TBDs from the PRD are resolved (see *TBDs Resolved by This Step* table above).
+All 7 architecture-phase TBDs from the PRD are resolved (see *TBDs Resolved by This Step*).
 
-**Structure Completeness:** complete polyrepo layout (14 repos with per-repo trees); per-service standard layout to file level; UI repo with per-domain modules; architecture repo with ADRs/scaffolding/aggregated specs; mock-auth repo isolated; integration points mapped; requirements-to-structure mapping covers all 9 FR capability areas.
+**Structure:** 14 repos with per-repo trees; per-service standard layout to file level; UI repo with per-domain modules; architecture repo with ADRs/scaffolding/aggregated specs; isolated mock-auth repo; integration points mapped; requirements-to-structure mapping covers all 9 FR capability areas.
 
-**Pattern Completeness:** naming, structure, format, communication, and process conventions all defined with examples; enforcement mechanisms named (CI lint, ArchUnit, Spectral OpenAPI lint, Pact, code review checklist).
+**Patterns:** naming, structure, format, communication, and process conventions defined with examples. Enforcement: CI lint, ArchUnit, Spectral, Pact, code review checklist.
 
 ### Documented Gaps
 
@@ -714,54 +714,54 @@ See [`./architecture/assumptions.md`](./architecture/assumptions.md).
 
 ### Architecture Readiness Assessment
 
-**Overall Status:** **READY WITH DOCUMENTED GAPS**. **Confidence: High.**
+**Status: READY WITH DOCUMENTED GAPS. Confidence: High.**
 
-All checklist items pass. No critical gaps block implementation. Mock-first authentication materially reduces what blocks Phase 0 — the largest cluster of HMCTS IdP dependencies (G1.1, G1.2, G1.3) is reclassified from Phase 0 blocker to pre-Phase-9 prerequisite. Phase 0 unblockers reduce from 5 HMCTS dependencies to 2 (G1.4 starter, G1.5 email). Risk #6 (HMCTS IdP integration timing) is materially mitigated.
+All checklist items pass. No critical gaps block implementation. Mock-first authentication reclassifies G1.1, G1.2, G1.3 from Phase 0 blockers to pre-Phase-9 prerequisites. Phase 0 HMCTS dependencies reduce from 5 to 2 (G1.4 starter, G1.5 email). Risk #6 (HMCTS IdP integration timing) is mitigated.
 
-**Drivers of high confidence:**
+**Why high confidence:**
 
-- Tight alignment with the PRD's locked decisions; the architecture phase formalised those decisions and resolved the 7 architecture-phase TBDs without contradiction.
-- The two foundational principles and the no-shared-library rule were articulated explicitly and applied consistently through Steps 3–6.
-- Step 5 pattern definitions are concrete and enforceable via CI tooling (Spotless, ArchUnit, Spectral, Pact, axe-core).
-- Polyrepo structure aligns with per-region phased rollout (D8) and per-service deployment independence (NFR40).
-- Mock-first authentication eliminates IdP-team-roadmap dependency from the Phase 0–8 critical path.
+- Aligned with PRD's locked decisions; the 7 architecture-phase TBDs are resolved without contradiction.
+- The two foundational principles and the no-shared-library rule are applied consistently through Steps 3–6.
+- Step 5 pattern definitions are concrete and CI-enforceable (Spotless, ArchUnit, Spectral, Pact, axe-core).
+- Polyrepo structure matches phased rollout (D8) and per-service deployment independence (NFR40).
+- Mock-first authentication removes the HMCTS IdP roadmap from the Phase 0–8 critical path.
 
-**Key Strengths:**
+**Strengths:**
 
-- **Decisive simplification** — rejected three classes of complexity (event bus, shared library, monorepo) on principled grounds.
-- **Same-Azure-region multi-AZ HA + per-HMCTS-region rollout independence at the application tier** — single-AZ failure tolerated transparently; HMCTS-region rollout independence (NFR38) at app tier via FR58, not per-region infrastructure.
-- **Explicit cross-cutting handling without inheritance** — addressed via per-service patterns, eliminating shared-library redeployment-coupling.
-- **API-as-Product enforcement** — versioning, OpenAPI spec, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details, deprecation policy ([RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset`) — all enforceable conventions with CI tooling.
-- **Behavioural-parity verification built into the rollout gate** — manual UAT under `docs/uat/` per service walked by APEX-experienced users; sign-off per role per region is the wave-cutover gate.
+- **Simplification** — event bus, shared library, and monorepo all rejected.
+- **Multi-AZ HA in UK South** — single-AZ failure is tolerated transparently. HMCTS-region rollout isolation (NFR38) is at the app tier (FR58), not per-region infrastructure.
+- **No shared library** — cross-cutting concerns are per-service, removing redeployment coupling.
+- **API-as-Product enforcement** — versioning, OpenAPI, RFC 9457 problem-details, RFC 9745 + RFC 8594 deprecation signalling — all CI-enforced.
+- **Manual UAT in the rollout gate** — `docs/uat/` per service; APEX-experienced users sign off per role per region as the wave-cutover gate.
 - **Mock-first authentication** decouples the build from the HMCTS IdP roadmap.
 
-**Areas for Future Enhancement (post-MVP, not blocking):** Mermaid / C4 diagrams in `nji-architecture/diagrams/`; sample ADRs; sample OpenAPI snippets per service; service mesh adoption (only if observability/mTLS demands grow); caching (only if measurement justifies); App Configuration centralised runtime tuning.
+**Post-MVP enhancements (not blocking):** Mermaid / C4 diagrams in `nji-architecture/diagrams/`; sample ADRs; per-service OpenAPI snippets; service mesh (only if observability or mTLS demands grow); caching (only if measurement shows the need); App Configuration for runtime tuning.
 
 ### Implementation Handoff
 
-**AI Agent Guidelines:**
+**For AI agents:**
 
-- Follow all architectural decisions exactly as documented in Steps 3–6.
-- Use [`./architecture/conventions.md`](./architecture/conventions.md) patterns consistently across all 11 services and the UI.
-- Respect the two foundational principles: **(1) API for workflows; shared DB for simple data access**; **(2) No premature optimisation**. No shared runtime library.
-- Per-service work happens in the service's own repo; cross-service work happens via API contracts.
-- All authentication in Phase 0–8 flows through `nji-mock-auth` (human users via `authorization_code`; the payment batch via `client_credentials`); never integrate against real HMCTS IdP until pre-Phase-9 cutover.
-- Raise gaps via PR against this document, not via shared-library backdoors.
+- Follow the architectural decisions in Steps 3–6.
+- Use the patterns in [`./architecture/conventions.md`](./architecture/conventions.md) across all 11 services and the UI.
+- Apply the two foundational principles: (1) API for workflows; shared DB for simple data access; (2) no premature optimisation. No shared runtime library.
+- Per-service work happens in the service's own repo. Cross-service work happens via API contracts.
+- Phase 0–8 authentication is `nji-mock-auth` only (`authorization_code` for humans; `client_credentials` for the payment batch). Real HMCTS IdP starts at the pre-Phase-9 cutover.
+- Raise gaps via PR against this document.
 
-**First Implementation Priority:**
+**First implementation steps:**
 
-1. **Confirm Phase 0 prerequisites** (Azure subscription + UK regions; HMCTS Java/Spring Boot starter availability; HMCTS Email infrastructure transport).
-2. **Build the NJI scaffolding script** at `nji-architecture/scaffolding/nji-scaffold.sh`, layered on the HMCTS starter, with NJI conventions baked in.
-3. **Scaffold and ship `nji-mock-auth`** as the first Phase 0 service. Spring Authorization Server-based; refuses to start with production profile; supports both `authorization_code` (human) and `client_credentials` (batch).
-4. **Scaffold and ship the three Phase 0 cross-cutting services in order:** Reference Data, Authorisation, Notification. *(A shared `configuration_values` table is created by `nji-architecture`'s Flyway baseline migration.)* **In parallel, build the Phase 0 Data Migration ETL** (`nji-architecture/migration/`) that loads NJI Reference Data + Users/Roles via the corresponding APIs.
-5. **Deploy Phase 0 to dev**, exercise the API-as-Product standards (versioning, OpenAPI spec, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details, deprecation signalling), validate Postman collections, run automated tests. Manual UAT begins per domain service from Phase 1 onwards.
-6. **Resolve programme-management dependencies** before Phase 9 readiness.
-7. **Begin Phase 1 (Judge service)** following the same scaffolding pattern; expand across Phases 2–8 in dependency order.
-8. **Pre-Phase-9: Real HMCTS IdP integration cutover** — verify G1.1, G1.2, G1.3; configure staging issuer-url to HMCTS IdP (and resolve the production service-principal issuer per G7.1); rehearse cutover; re-run full test suite + manual UAT against real IdP before opening pilot region.
+1. Confirm Phase 0 prerequisites: Azure subscription + UK regions; HMCTS Java/Spring Boot starter; HMCTS Email transport.
+2. Build the NJI scaffolding script at `nji-architecture/scaffolding/nji-scaffold.sh`, layered on the HMCTS starter, with NJI conventions baked in.
+3. Ship `nji-mock-auth` (Spring Authorization Server; refuses to start with `production` profile; supports `authorization_code` and `client_credentials`).
+4. Ship the three Phase 0 cross-cutting services: Reference Data, Authorisation, Notification. The shared `configuration_values` table is created by `nji-architecture`'s Flyway baseline. In parallel, build the Phase 0 Data Migration ETL at `nji-architecture/migration/` to load Reference Data + Users/Roles via the APIs.
+5. Deploy Phase 0 to dev. Exercise API-as-Product standards (versioning, OpenAPI, RFC 9457 problem-details, deprecation signalling). Validate Postman collections. Run automated tests. Manual UAT starts in Phase 1.
+6. Resolve programme-management dependencies before Phase 9.
+7. Begin Phase 1 (Judge service). Expand across Phases 2–8 in dependency order.
+8. Pre-Phase-9: real HMCTS IdP cutover — verify G1.1, G1.2, G1.3; switch staging `issuer-url` to HMCTS IdP (and resolve production service-principal issuer per G7.1); rehearse cutover; re-run automated tests + manual UAT against real IdP before opening the pilot region.
 
 ## External References
 
-Every IETF / standards reference cited in this architecture, with a verifiable canonical link:
+Every IETF / standards reference cited in this architecture, with canonical links:
 
 | Reference | Title / Subject | Link |
 |---|---|---|

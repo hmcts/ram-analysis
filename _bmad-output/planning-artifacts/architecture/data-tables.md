@@ -9,13 +9,13 @@ extracted_in: architecture.md v1.8 — Strategy B refactor
 
 > Sibling of [`../architecture.md`](../architecture.md). The parent file's *Data Architecture* (Step 4) section keeps the architectural strategy (single shared schema, per-service DB roles, table-name convention, Flyway migrations); this file keeps the per-table inventory.
 
-## Framing — these are NJI's tables, not APEX's
+## NJI tables, not APEX
 
-This is the canonical inventory of **NJI** database entities, grouped by the owning NJI service. **Every table in this inventory is owned, named, and shaped by NJI** — the table list, column shapes, FK relationships, and ownership boundaries are NJI design choices.
+This is the inventory of NJI database tables, grouped by owning service. The table list, column shapes, FK relationships, and ownership boundaries are NJI's design.
 
-APEX has its own (different) schema. APEX's schema is *not* in this inventory and is *not* owned by any NJI service. The Phase 0 ETL — described in [`../architecture.md` → *Phase 0 Data Migration from APEX*](../architecture.md) — reads APEX dumps, transforms each row into NJI shape, and loads via NJI service APIs. The APEX-side shape can differ arbitrarily; the transform absorbs the difference.
+APEX has its own (different) schema. APEX's schema is not in this inventory and is not owned by any NJI service. The Phase 0 ETL (see [`../architecture.md` → *Phase 0 Data Migration from APEX*](../architecture.md)) reads APEX dumps, transforms rows into NJI shape, and loads via NJI APIs.
 
-> ⚠️ **REVALIDATION SCOPE.** When the APEX SQL dump arrives in Phase 0, the migration tool's input-side mapping is revalidated against it. The validation checks: *does the migration tool's mapping cover every APEX field that NJI needs, and does NJI have a slot for every APEX value we expect to see?* It does **not** ask "is NJI's schema correct against APEX?" — NJI's schema is fixed by NJI design. If new APEX vocabulary values surface (e.g. an absence type the spec didn't mention), the appropriate NJI vocabulary table gains a row via the Reference Data API; the table itself does not change shape. Tracked as **G4.6** in [`./gaps.md`](./gaps.md) and **A33** in [`./assumptions.md`](./assumptions.md).
+> **Revalidation scope.** When the APEX SQL dump arrives in Phase 0, the migration tool's input-side mapping is revalidated against it: does the mapping cover every APEX field NJI needs, and does NJI have a slot for every APEX value? NJI's schema itself is not under revalidation — it is fixed by NJI design. New APEX vocabulary values are added as Reference Data rows via the API. Tracked as G4.6 in [`./gaps.md`](./gaps.md) and A33 in [`./assumptions.md`](./assumptions.md).
 
 For naming convention rules (entity-plural for primary domain tables, service-prefix for service-internal or potentially-ambiguous tables), see [`./conventions.md` → "Naming Patterns"](./conventions.md).
 

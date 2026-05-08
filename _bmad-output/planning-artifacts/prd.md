@@ -26,7 +26,7 @@ classification:
   domainNotes: 'UK HMCTS — judicial operations; CSV''s US-specific compliance terms (FedRAMP, Section 508) translate to UK equivalents (HMCTS/WCAG accessibility, GDS service standard, UK GDPR, FOI/transparency).'
   complexity: 'high'
   projectContext: 'brownfield-rebuild'
-  classificationRationale: 'Comparative Analysis Matrix during Advanced Elicitation: api_backend (24) vs web_app (22) vs saas_b2b (18); govtech (29) vs legaltech (10). api_backend reflects the 11-service API decomposition as the durable product surface; UX/journeys override is required because D4 makes UI replication in scope.'
+  classificationRationale: 'Scoring during Advanced Elicitation: api_backend (24) vs web_app (22) vs saas_b2b (18); govtech (29) vs legaltech (10). api_backend is composed of 11 APIs; UX/journeys is in scope because D4 requires UI replication.'
 ---
 
 # Product Requirements Document - ji-analysis
@@ -36,30 +36,28 @@ classification:
 
 ## Document Map
 
-This PRD describes NJI (New JI) — a greenfield rebuild of HMCTS's Judicial Itineraries system on an 11-service API-driven architecture with a modern UI, deployed on Azure, replacing the unsupported Oracle APEX (OPT) platform. The build is in isolation from APEX; cutover is phased per region.
+NJI (New JI) is a greenfield rebuild of HMCTS's Judicial Itineraries system. 11 services, modern UI, Azure-deployed. Replaces the unsupported Oracle APEX (OPT) platform. Built in isolation from APEX; cutover is phased per region.
 
-The document is organised so each section answers a distinct question:
-
-| Section | Question it answers |
+| Section | Contents |
 |---|---|
-| Executive Summary | What is NJI, and why is it being built? |
-| Project Classification | What kind of project is this (type / domain / complexity)? |
-| Success Criteria | What does "successful" look like, and how is it measured? |
-| Product Scope | What's in MVP, what's growth, what's vision? |
-| User Journeys | How do real users flow through NJI to do their work? |
-| Domain-Specific Requirements | What UK govtech compliance / technical / integration constraints apply? |
-| API Backend Specific Requirements | What does the 11-service API surface look like? |
-| Project Scoping & Phased Development | How do MVP philosophy, build phases, and rollout waves fit together? |
-| Functional Requirements (FR1–FR61) | The binding capability contract. |
-| Non-Functional Requirements (NFR1–NFR42) | The binding quality-attribute contract. |
-| Decisions Log (D1–D9) | The 9 programme-level decisions that govern scope and approach. |
-| Glossary, References | Acronyms and source documents. |
+| Executive Summary | What NJI is and why it is being built |
+| Project Classification | Project type, domain, complexity |
+| Success Criteria | Definition and measures of success |
+| Product Scope | MVP, growth, vision |
+| User Journeys | How users flow through NJI |
+| Domain-Specific Requirements | UK govtech compliance, technical, integration constraints |
+| API Backend Specific Requirements | The 11-service API surface |
+| Project Scoping & Phased Development | MVP scope, build phases, rollout waves |
+| Functional Requirements (FR1–FR61) | Capability contract |
+| Non-Functional Requirements (NFR1–NFR42) | Quality-attribute contract |
+| Decisions Log (D1–D9) | Programme-level decisions |
+| Glossary, References | Acronyms and source documents |
 
 ## Executive Summary
 
-JI (Judicial Itineraries) is HMCTS's system for planning, allocating, confirming, and paying for judicial sittings across Civil, Family, and Crown Courts. It is owned today by an unsupported Oracle APEX (OPT) platform and Board-endorsed for full replacement.
+JI (Judicial Itineraries) is HMCTS's system for planning, allocating, confirming, and paying judicial sittings across Civil, Family, and Crown Courts. It runs on an unsupported Oracle APEX (OPT) platform and is Board-endorsed for full replacement.
 
-This PRD describes the **greenfield rebuild** of JI — referred to throughout as **NJI (New JI)** — as a modern API-driven application. NJI replicates the functional surface of the existing APEX system on a 11-service decomposition (Domain / Cross-cutting / Read-model clusters), with a modern UI replacing the legacy APEX UI, and exposes first-class APIs that the wider HMCTS ecosystem (DA&I, finance, future Tribunals tooling, Actuals programme, Scheduling & Listing reforms) consumes directly — replacing today's brittle export-file-by-email integration model.
+This PRD describes the greenfield rebuild — **NJI (New JI)** — as an API-driven application. NJI replicates APEX's functional surface across 11 services (Domain / Cross-cutting / Read-model), with a modern UI replacing APEX's. NJI exposes APIs that HMCTS programmes (DA&I, finance, Tribunals, Actuals, Scheduling & Listing) consume directly, replacing today's export-file-by-email integration.
 
 **Target users (~11 roles, scoped by Region and Area):**
 
@@ -69,73 +67,71 @@ This PRD describes the **greenfield rebuild** of JI — referred to throughout a
 - Finance / Payment Authoriser
 - MI / Reporting User
 
-*Operational platform support (formerly OPT Support in the legacy system) is handled outside JI by external HMCTS roles and is not modelled as a JI user role.*
+*Operational platform support (OPT Support in the legacy system) is handled by external HMCTS roles and is not a JI user role.*
 
-**The problem being solved:**
+**Problems being solved:**
 
-1. OPT / APEX is unsupported legacy with a fixed end-of-life. Continuing investment is investment in a platform that cannot be operated long-term.
-2. The current export-only integration model (Excel, PDF, email) cannot scale to support pending HMCTS programmes (Tribunals coverage, Actuals, Scheduling & Listing reforms). Each new consumer must wedge itself into a manual export workflow.
-3. The legacy UI, while functional, is APEX-era — the user-experience baseline is set by 2000s-vintage tooling rather than a modern, accessible, performant interface.
+1. OPT / APEX is unsupported with a fixed end-of-life.
+2. The export-only integration model (Excel, PDF, email) does not scale to upcoming HMCTS programmes (Tribunals coverage, Actuals, Scheduling & Listing reforms).
+3. APEX's UI is dated. NJI provides a modern, accessible, performant UI.
 
-**What success looks like:** every region migrated to NJI; APEX retired; downstream consumers integrating via API rather than manual export; future HMCTS programmes building on JI's APIs as a strategic platform.
+**Success:** every region migrated to NJI; APEX retired; downstream consumers integrating via API; future HMCTS programmes building on JI's APIs.
 
-### What Makes This Special
+### Key characteristics
 
-This is a deliberately simplified greenfield rebuild, not a strangler decomposition or a cosmetic refresh. Five characteristics distinguish it:
+1. **Greenfield, not strangler.** APEX does not support strangler decomposition. NJI is built end-to-end before any user moves; APEX runs unchanged for non-migrated regions during phased rollout. No dual-write, no event bus, no synchronisation layer.
 
-1. **Greenfield-in-isolation, not strangler.** Oracle APEX is not amenable to strangler decomposition. NJI is built end-to-end before any user moves; APEX continues unchanged for non-migrated regions during phased rollout. This single decision cascaded into every architectural simplification — no dual-write, no event bus, no synchronisation layer.
+2. **Simplification.** REST-first synchronous coordination; Strategy A federated read models (Itinerary, MI Feed); no event stream; no webhook surface; log-based audit and observability for MVP (D7) with structured user-action audit on the post-MVP roadmap.
 
-2. **Aggressive simplification with explicit roadmap pay-back.** REST-first synchronous coordination, Strategy A federated read models (Itinerary, MI Feed), no domain event stream, no webhook surface, log-based audit and observability for MVP (D7) with structured user-action audit on the post-MVP roadmap. Each simplification is a deliberate trade — buying delivery velocity without pretending the trade isn't there.
+3. **APEX as the behavioural reference, verified by manual UAT (D5, revised 2026-05-06).** UAT is performed by users with hands-on APEX experience — RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI. They compare NJI behaviour against APEX side-by-side. No automated APEX-comparison harness; APEX is not co-managed (D6).
 
-3. **APEX as behavioural reference, verified by manual UAT (D5, revised 2026-05-06).** Behavioural parity is verified by **manual user acceptance testing performed by users who have hands-on experience with the existing Oracle APEX JI application** — RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, and MI users. These users compare NJI's behaviour against APEX behaviour as they reproduce it interactively in APEX, capturing edge cases that the documentation does not. There is no automated APEX-comparison test harness — the project does not co-manage APEX (D6) and the users themselves are the source of truth for behavioural parity.
+4. **Phase 0 as platform smoke-test.** Reference Data and Users + Roles migrate from APEX into NJI tables in Phase 0 (D3 + D9), via a dedicated ETL that reads APEX dumps, transforms rows, and loads via the Reference Data and Authorisation APIs. API-as-Product standards (versioning, OpenAPI, deprecation via [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)) are exercised on Reference Data writes and Authorisation lookups before any domain service is built.
 
-4. **Phase 0 as platform smoke-test.** Reference Data and Users + Roles are migrated from APEX into NJI's own (newly-designed) tables in Phase 0 (D3 + D9) — via a dedicated ETL that reads APEX dumps, transforms each row, and loads via the NJI Reference Data and Authorisation APIs. API-as-Product standards (versioning, OpenAPI spec, deprecation policy via [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset`) are battle-tested on Reference Data writes and Authorisation lookups before any domain service is built. Cross-cutting concerns are exercised before the team commits to the domain build pattern.
+5. **Per-region phased cutover (D8).** Each wave moves one region with all applicable user roles together. Migrated users do not use APEX; non-migrated users do not use NJI. No contention or synchronisation.
 
-5. **Per-region, full-role phased cutover (D8).** Each rollout wave is a discrete event — a whole region with all applicable user roles moving together. Risk is amortised across waves rather than concentrated at a single big-bang. Migrated users do not use APEX; non-migrated users do not use NJI. No contention, no synchronisation.
-
-**Why now:** OPT is unsupported; HMCTS programmes (Tribunals, Actuals, Scheduling & Listing) require integration patterns the export-only legacy cannot support; every month JI stays on APEX is a month the wider ecosystem cannot integrate via API.
+**Why now:** OPT is unsupported. HMCTS programmes need integration patterns the export-only legacy cannot deliver. Each month on APEX delays API integration for the wider ecosystem.
 
 ## Project Classification
 
 | Dimension | Value |
 |---|---|
-| **Project Type** | `api_backend` — the 11-service API decomposition is the durable product surface |
-| **Project Type override** | `ux_ui`, `visual_design`, `user_journeys` remain in scope per D4 (modern UI replicates APEX layouts using a modern UI stack) |
+| **Project Type** | `api_backend` — composed of 11 APIs |
+| **Project Type override** | `ux_ui`, `visual_design`, `user_journeys` are in scope per D4 (modern UI replicates APEX layouts) |
 | **Domain** | `govtech` (UK HMCTS — judicial operations) |
-| **Domain notes** | UK-translated compliance: HMCTS / WCAG accessibility, GDS service standard, UK GDPR, FOI / transparency. CSV's US-specific concerns (FedRAMP, Section 508) do not apply. |
+| **Domain notes** | UK compliance: HMCTS / WCAG accessibility, GDS service standard, UK GDPR, FOI / transparency. US-specific concerns (FedRAMP, Section 508) do not apply. |
 | **Complexity** | `high` |
 | **Project Context** | `brownfield-rebuild` |
-| **Classification rationale** | Comparative Analysis Matrix from Step 2 Advanced Elicitation: `api_backend` 24, `web_app` 22, `saas_b2b` 18; `govtech` 29, `legaltech` 10. The `api_backend` + UX-override is the cleanest workaround for the CSV's structural mismatch with API-first products that have first-class UI scope. |
+| **Classification rationale** | Scoring during Advanced Elicitation: `api_backend` 24, `web_app` 22, `saas_b2b` 18; `govtech` 29, `legaltech` 10. `api_backend` + UX override fits an API-first product with UI in scope. |
 
 ## Success Criteria
 
 ### User Success
 
-For each role on NJI, the equivalent legacy workflow can be completed without re-training, and faster or no slower than APEX. Specifically:
+Each role can complete its legacy workflow on NJI without re-training, and faster or no slower than APEX:
 
-- **RSU / Judicial Team**: maintain judge profiles, working patterns, tickets, absences, and vacancies via modern UI; vacancy auto-creation from approved absences works end-to-end (R4 from architecture); no manual reconciliation step needed beyond the legacy baseline.
-- **Court users**: confirm sittings and bookings (the daily operational task) with comparable or fewer clicks than APEX; AM/PM split, work-type editing, and verifier sign-off (County Courts) preserved.
-- **Judges and Judges' Clerks**: view itinerary and forward look filtered to authorised judges only (R2 — Authorisation gates every read); no case-level data exposure.
-- **Finance / Payment Authoriser**: receive JFEPS-compatible Excel payment schedule via the same email mechanism as APEX (zero-change-for-finance); JFEPS schedule shape unchanged.
-- **MI / Reporting**: standard reports run with same parameter filters as APEX; copy-to-Excel and PDF export preserved; aggregated-only, no case-level detail (REP-BR-NFR-03 from `functional-modules.md`).
-- **All roles**: modern UI on new technology delivers a measurable usability improvement over APEX-era UI — accessibility (HMCTS / WCAG), responsiveness, performance baseline at least matches APEX page-level NFRs (≤ 5 s dashboard refresh, ≤ 10 s list/filter, ≤ 15 s batch/annual, ≤ 30 s reports/Forward Look).
+- **RSU / Judicial Team**: maintain judges, working patterns, tickets, absences, vacancies. Vacancy auto-creation from approved absences works end-to-end (R4).
+- **Court users**: confirm sittings and bookings with comparable or fewer clicks than APEX. AM/PM split, work-type editing, and verifier sign-off (County Courts) preserved.
+- **Judges and Judges' Clerks**: itinerary and forward look filtered to authorised judges only (R2). No case-level data exposure.
+- **Finance / Payment Authoriser**: JFEPS-compatible Excel via the same email mechanism as APEX. JFEPS schedule shape unchanged.
+- **MI / Reporting**: standard reports with the same parameter filters as APEX. Excel and PDF export preserved. Aggregate-only.
+- **All roles**: WCAG-compliant UI; performance baseline meets APEX page-level NFRs (≤ 5 s dashboard refresh, ≤ 10 s list/filter, ≤ 15 s batch/annual, ≤ 30 s reports/Forward Look).
 
 ### Business Success
 
-- **APEX retirement** — every region migrated to NJI; Oracle APEX (OPT) decommissioned. Programme is not "successful" until the last region cuts over.
-- **Strategic integration platform** — at least one external HMCTS programme (Tribunals coverage, Actuals, or Scheduling & Listing) integrating with JI via API by **`TBD post-MVP date`**, replacing manual export workflow.
-- **Continuity of operations** — zero unpaid judges due to migration. Payment exports to JFEPS / Liberata continue uninterrupted across every rollout wave.
-- **Programme delivery** — phase-by-phase delivery cadence (Phase 0 → 8 build, then per-region rollout) on the schedule the programme commits to. Specific dates are programme-management territory and not set in this PRD.
+- **APEX retirement** — every region migrated; Oracle APEX (OPT) decommissioned.
+- **Strategic integration platform** — at least one HMCTS programme (Tribunals coverage, Actuals, Scheduling & Listing) integrating via API by `TBD post-MVP date`, replacing the export workflow.
+- **Continuity** — zero unpaid judges due to migration. Payment exports to JFEPS/Liberata continue uninterrupted across every rollout wave.
+- **Delivery** — phase-by-phase cadence (Phase 0 → 8 build, then per-region rollout). Specific dates are programme-management territory.
 
 ### Technical Success
 
-- **All 11 services live** — Reference Data, Authorisation (with SSO), Notification, Judge, Absence, Vacancy, Booking, Sitting, Payment, Itinerary, MI Feed deployed and operating per Phase 0 → 8. *(Per-service configuration uses Spring profiles + Azure Key Vault; cross-service policy values live in a shared `configuration_values` infrastructure table — no dedicated configuration service. Revised v2.2 2026-05-07.)*
-- **Phase 0 migration correctness** — 100% of in-scope APEX Reference Data lists ETL'd into NJI Reference Data tables and signed off by RSU / judicial-team owners (D3, Risk #13). 100% of active APEX user records loaded into NJI Authorisation and successfully mapped to IdP principals (D9, Risk #14); records that don't reconcile have an explicit handling decision (drop / hold / manual map), zero migrated as ambiguous.
-- **Behavioural parity with APEX** (D5, revised 2026-05-06) — every domain service has a **manual UAT script walked through by APEX-experienced users** (RSU, Court, Judge, Judges' Clerks, Finance, MI) who compare NJI's behaviour against APEX behaviour they reproduce interactively in APEX; the UAT sign-off is a wave gate before each rollout wave.
-- **API-as-Product standards** in force from Phase 0 — every domain and read-model service exposes a versioned contract, an OpenAPI spec, and a documented deprecation policy ([RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset` headers).
-- **Performance NFRs match or exceed APEX**: ≤ 5 s dashboard refresh; ≤ 10 s list / filter; ≤ 15 s batch / annual; ≤ 30 s reports and Forward Look (HOME-NFR, MJ-NFR, ABS-NFR, VAC-NFR, FPB-NFR, PAY-NFR, SIT-NFR, REP-BR-NFR, JFL-NFR from `functional-modules.md`).
-- **Strategy A federated read models** (Itinerary, MI Feed) meet their NFRs without requiring Strategy C cache fallback in the MVP — or the cache fallback is implemented and switched on by the time of the wave that needs it (Risk #9).
-- **Log-based audit / observability minimum** (D7) operational from Phase 1 onwards — structured logging, correlation IDs, error categorisation, retention sufficient for pilot incident triage.
+- **All 11 services live** — Reference Data, Authorisation, Notification, Judge, Absence, Vacancy, Booking, Sitting, Payment, Itinerary, MI Feed (Phases 0 → 8). Per-service config: Spring profiles + Key Vault. Cross-service policy values: shared `configuration_values` table.
+- **Phase 0 migration correctness** — 100% of in-scope Reference Data lists ETL'd into NJI and signed off by RSU/judicial-team owners (D3, Risk #13). 100% of active APEX users loaded into Authorisation and mapped to IdP principals (D9, Risk #14); unmatched records have an explicit decision (drop/hold/manual map). Zero ambiguous migrations.
+- **Behavioural parity** (D5) — manual UAT script per domain service, walked by APEX-experienced users (RSU, Court, Judge, Judges' Clerks, Finance, MI). Sign-off is the wave gate.
+- **API-as-Product** from Phase 0 — versioned contract, OpenAPI spec, deprecation policy ([RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset`) per service.
+- **Performance NFRs** met or exceeded (≤ 5 s dashboard refresh; ≤ 10 s list/filter; ≤ 15 s batch/annual; ≤ 30 s reports/Forward Look).
+- **Strategy A federated read models** (Itinerary, MI Feed) meet their NFRs at MVP, or Strategy C cache fallback is in place by the wave that needs it (Risk #9).
+- **Log-based observability** (D7) from Phase 1 — structured logs, correlation IDs, error categorisation, retention sufficient for pilot incident triage.
 
 ### Measurable Outcomes
 
@@ -193,102 +189,82 @@ The MVP is the smallest deliverable that supports phased per-region rollout (D8)
 
 ## User Journeys
 
-### Journey 1 — RSU Admin: cover-creation through payment (the canonical operational cycle)
+### Journey 1 — RSU Admin: cover-creation through payment (canonical operational cycle)
 
-**Persona:** Sam, an RSU Admin in a regional office. Sam runs the daily operational rhythm — converting absences into vacancies, allocating fee-paid judges, confirming bookings, reconciling payments after they've been processed. Today Sam does this in APEX, juggling tabs, copying between screens, and sending payment files via email. *(In NJI, payment-schedule generation is a scheduled batch — Sam confirms bookings/sittings (which marks them eligible) and reconciles payments (after Liberata has paid); the batch handles the JFEPS Excel generation and dispatch in between, with no Sam click required.)*
+**Persona:** Sam, RSU Admin in a regional office. Sam handles absences, vacancies, fee-paid allocations, booking confirmation, and reconciliation. (Payment-schedule generation is a scheduled batch — Sam confirms bookings/sittings, then reconciles after Liberata has paid; the batch generates and dispatches the JFEPS Excel in between.)
 
-**Opening scene.** A Court office logs an absence request for a salaried judge — leave with cover required. The request lands in Sam's "Outstanding Actions" tile on the Home dashboard.
+**Trigger:** A Court office logs an absence request for a salaried judge with cover required. The request appears in Sam's "Outstanding Actions" tile on the Home dashboard.
 
-**Rising action.**
+**Steps:**
 
-1. Sam opens the absence record from the dashboard tile. NJI shows the judge's profile, the requested dates, the work-type and ticket fields the Court captured, and a single *Approve* action.
-2. Sam approves. The system auto-creates a vacancy (per R4 — Absence approval triggers Vacancy creation), pre-populated with the judge type, work type, ticket, and dates. The vacancy appears in the Vacancies list with a *Needs allocation* status.
-3. Sam advertises the vacancy out-of-system using their own mailing list (advertising is not automated — same as APEX). A fee-paid judge replies confirming availability.
-4. Sam opens the vacancy, clicks *Create Booking*, picks the fee-paid judge, fills the booking session details. The system creates the booking and synchronously marks the vacancy as filled (R5 — Booking orchestrates `Vacancy.markFilled`). An acknowledgement email is queued to the booked judge.
-5. The Court confirms the sitting after it occurs. The booking moves to *Confirmed* status and becomes eligible for payment.
-6. *(End-of-week — no Sam action.)* The **payment-processing batch** runs on its schedule, picks up the now-confirmed bookings/sittings that don't yet have a payment record, generates the JFEPS-compatible Excel schedule, and emails it to the configured Payment Authoriser. Sam doesn't trigger this — it just happens. *(Revised v2.6, 2026-05-07: payment processing was reframed from RSU-clicks-*Process Payments* to a scheduled batch — see architecture changelog v2.6. The user-facing Sam touchpoints are confirming bookings/sittings (which marks them eligible) and reconciling payments (when Liberata has paid). Not the schedule generation itself.)*
+1. Sam opens the absence from the dashboard tile. NJI shows the judge's profile, dates, work-type and ticket fields, and an *Approve* action.
+2. Sam approves. The system auto-creates a vacancy (R4) pre-populated with judge type, work type, ticket, and dates. Status: *Needs allocation*.
+3. Sam advertises the vacancy out-of-system (same as APEX). A fee-paid judge replies.
+4. Sam clicks *Create Booking*, picks the judge, fills the session details. The booking is created and the vacancy is marked filled in the same transaction (R5). An acknowledgement email is queued to the booked judge.
+5. The Court confirms the sitting. Booking moves to *Confirmed* and becomes eligible for payment.
+6. The payment batch runs on schedule, picks up confirmed bookings/sittings without payment records, generates the JFEPS Excel, and emails it to the Payment Authoriser. No user action.
 
-**Critical moment.** Step 2 — the absence-to-vacancy auto-creation. In APEX this is a manual click-through dance across multiple screens; on NJI the workflow is one click and the vacancy lands pre-populated.
-
-**Resolution.** Sam completes the cycle in fewer clicks than APEX, with the same JFEPS output landing at the same finance team. The new reality: the operational task that defined Sam's morning takes less time and produces the same downstream artifacts.
-
-**Capabilities revealed:** Authorisation gating per role + Region/Area; Absence service with approval workflow; Vacancy auto-creation triggered by Absence; Booking with `Vacancy.markFilled` orchestration; Payment service with JFEPS-shaped Excel content-type; Notification service for booking acknowledgements; Home dashboard with role-scoped Outstanding Actions.
+**Outcome:** Sam completes the cycle in fewer clicks than APEX. JFEPS output lands at the same finance team.
 
 ### Journey 2 — Court user: daily sitting confirmation
 
-**Persona:** Priya, a Court user with Full Access in a Crown Court office. Priya's daily task is to confirm yesterday's sittings — verify that they took place, record the actual work type, adjust session duration if needed. Confirmed sittings drive both payment processing (for fee-paid recorders) and MI reporting.
+**Persona:** Priya, Court user (Full Access) in a Crown Court office. Priya confirms yesterday's sittings — verifying they took place, recording actual work type, adjusting session duration. Confirmed sittings drive payment and MI.
 
-**Opening scene.** Priya logs in via SSO. The Home dashboard shows a *Sittings awaiting confirmation* tile scoped to her office.
+**Trigger:** Priya logs in via SSO. Home shows a *Sittings awaiting confirmation* tile scoped to her office.
 
-**Rising action.**
+**Steps:**
 
-1. Priya clicks the tile, opens the sittings list filtered to *yesterday, this office*.
-2. For each sitting: confirm with one click if the planned work-type and session held; or open the row, change work-type from *Crime* to *Civil* (a real example — "remembered" on confirmation per functional-modules.md line 422), split AM/PM if the day was split.
-3. For one fee-paid Recorder, the booking required confirmation rather than a sitting; she confirms via the Bookings list with the same one-click flow.
+1. Priya opens the sittings list, filtered to *yesterday, this office*.
+2. For each sitting: confirm with one click; or open the row, change work-type (e.g. *Crime* → *Civil*, per functional-modules.md line 422), split AM/PM as needed.
+3. For one fee-paid Recorder, the booking required confirmation rather than a sitting; same one-click flow in the Bookings list.
 4. Priya finishes the day's confirmations in under five minutes.
 
-**Critical moment.** The list view itself — fast, filterable, modern UI — vs. APEX's older grid. Same data, same actions, lower friction.
-
-**Resolution.** Yesterday's data is locked in for payment and MI before Priya's first coffee.
-
-**Capabilities revealed:** Sitting confirmation with work-type override and AM/PM split; Booking confirmation as a Court-user action distinct from RSU; Authorisation scoping confirmations to the user's office; Home dashboard with outstanding-confirmation tiles.
+**Outcome:** Yesterday's data is locked in for payment and MI before Priya's first coffee.
 
 ### Journey 3 — Judge: view itinerary and request absence
 
-**Persona:** Justice Hawthorne, a salaried Circuit Judge. Justice Hawthorne uses JI to see their planned sittings and request absences (training, leave). Today they do this in APEX with a UI that's functional but visually dated and inconsistent on a tablet.
+**Persona:** Justice Hawthorne, salaried Circuit Judge. Uses JI to see planned sittings and request absences (training, leave).
 
-**Opening scene.** Justice Hawthorne logs in via SSO on a tablet between hearings. The Judge Itinerary view loads scoped to their own profile (per R2 — Authorisation gates every read; judges see only their own itinerary).
+**Trigger:** Logs in via SSO on a tablet between hearings. The Judge Itinerary view loads scoped to their own profile (R2).
 
-**Rising action.**
+**Steps:**
 
-1. The itinerary renders cleanly on the tablet — accessible, responsive, performant. APEX's session timeout warnings and grid-style layout are gone.
-2. Justice Hawthorne sees a planned training day next month, realises a clash, opens *Request Absence*.
-3. The form is short: dates, type (training), notes. Submit.
-4. The system routes the request to RSU for approval (via the Court-raised pattern in functional-modules.md §4.5). Acknowledgement email goes out (Notification service).
+1. Itinerary renders on tablet — accessible, responsive, performant.
+2. Justice Hawthorne sees a clash with planned training next month, opens *Request Absence*.
+3. Form: dates, type (training), notes. Submit.
+4. Request routes to RSU for approval (functional-modules.md §4.5). Acknowledgement email sent via Notification.
 
-**Critical moment.** The itinerary on a tablet — APEX is desktop-first and the difference is felt immediately by every judge using a mobile device.
-
-**Resolution.** Absence request lands with RSU; Justice Hawthorne moves to the next hearing without losing time to a clunky UI.
-
-**Capabilities revealed:** Modern, responsive, accessible UI per D4 — the user-experience uplift; Authorisation scoping to *own profile only*; Absence request routing to RSU approval queue; Notification service for acknowledgements.
+**Outcome:** Request lands with RSU; the judge moves on to the next hearing.
 
 ### Journey 4 — DA&I analyst: consume MI Feed API instead of Excel exports
 
-**Persona:** Riya, a DA&I analyst building monthly utilisation dashboards for HMCTS leadership. Today Riya gets sitting and utilisation data from JI by running APEX reports, copy-pasting to Excel, transforming, and feeding her dashboard tooling. The export-by-Excel chain is brittle, slow, and sensitive to APEX UI changes.
+**Persona:** Riya, DA&I analyst building monthly utilisation dashboards. Today she runs APEX reports, copy-pastes to Excel, transforms, then feeds her dashboard.
 
-**Opening scene.** Post-MVP, JI exposes the MI Feed API. Riya pulls her API credentials (her IdP principal authorised by JI's Authorisation service) and writes a small script.
+**Trigger:** Post-MVP, JI exposes the MI Feed API. Riya gets API credentials (her IdP principal, authorised by JI Authorisation) and writes a script.
 
-**Rising action.**
+**Steps:**
 
-1. Riya calls `GET /reporting/sittings` with parameters for region, judge type, date range. The API returns aggregated, case-level-stripped JSON (REP-BR-NFR-03 — no case-level exposure).
-2. The same call replaces three previous APEX-export-and-transform steps.
-3. Riya schedules the script to run nightly. The dashboard now updates without her copy-paste.
-4. When MI Feed's contract evolves, the versioned content-type, the published OpenAPI spec, and the `Deprecation` / `Sunset` response headers (per API-as-Product standards) tell Riya what changed and when.
+1. `GET /reporting/sittings` with region, judge type, date range. Returns aggregated JSON (no case-level data per REP-BR-NFR-03).
+2. Replaces three APEX-export-and-transform steps.
+3. Riya schedules the script nightly.
+4. When the contract changes, the OpenAPI spec, versioned content-type, and `Deprecation`/`Sunset` headers tell Riya what changed and when.
 
-**Critical moment.** The first nightly run that lands without Riya touching it. The export-and-transform manual chain is gone.
-
-**Resolution.** DA&I's monthly reporting cycle accelerates; future programmes (Tribunals, Actuals) onboard onto the same APIs without inventing new export workflows. The strategic-platform vision becomes operational.
-
-**Capabilities revealed:** MI Feed (Read-model service, Strategy A pull-based federation); versioned API contracts with published OpenAPI specs; aggregated-only data shape (REP-BR-NFR-03); machine-to-machine Authorisation via IdP principals.
+**Outcome:** The export-and-transform manual chain is gone. Future programmes (Tribunals, Actuals) onboard onto the same APIs.
 
 ### Journey 5 — Edge case: cross-region fee-paid booking during partial rollout (Risk #1)
 
-**Persona:** Sam (from Journey 1) needs to book an off-circuit fee-paid judge. The judge's home region (Region B) has migrated to NJI; Sam's region (Region A) is still on APEX. This scenario is unique to the rollout window — pre-rollout it doesn't apply (everyone on APEX), post-rollout it doesn't apply (everyone on NJI).
+**Persona:** Sam (from Journey 1) needs to book an off-circuit fee-paid judge. Judge's home region (B) is on NJI; Sam's region (A) is still on APEX. Only applies during the rollout window.
 
-**Opening scene.** Sam needs to allocate a Region B fee-paid judge to a Region A vacancy.
+**Trigger:** Sam needs to allocate a Region B fee-paid judge to a Region A vacancy.
 
-**Rising action.**
+**Steps:**
 
-1. APEX (Region A) has Sam's vacancy. NJI (Region B) has the judge's profile, ticket, and availability.
-2. Per the per-wave handling decision (Risk #1 mitigation in 1600 brainstorming), this cross-boundary workflow falls back to manual coordination during the rollout window: Sam phones Region B's RSU, who confirms the judge's availability, Sam records the booking in APEX with a manual reference to the Region B judge identifier.
-3. The booking processes in APEX as it always has. Region B's RSU records the booking against the judge's profile in NJI out-of-band (a known gap during the rollout).
-4. When Region A migrates in a later wave, the cross-boundary workflow disappears — both sides are on the same platform.
+1. APEX (Region A) has the vacancy. NJI (Region B) has the judge.
+2. Per Risk #1 mitigation, the workflow falls back to manual coordination: Sam phones Region B's RSU; Sam records the booking in APEX with a manual reference to the Region B judge identifier.
+3. APEX processes the booking. Region B's RSU records the booking in NJI out-of-band.
+4. When Region A migrates, the workflow disappears — both sides on NJI.
 
-**Critical moment.** The conscious decision NOT to build a transitional integration between APEX and NJI. The rollout window is bounded; the manual coordination is documented and time-limited; the simplification is preserved.
-
-**Resolution.** Cross-region operations continue with documented manual handling for the rollout window only. Risk #1 is operationally managed, not architecturally solved.
-
-**Capabilities revealed:** Per-wave cross-boundary handling decisions are programme-management deliverables, not application features. The system is deliberately simple about this — the edge case is paid for in operational coordination during a time-bounded window, not in transitional code.
+**Outcome:** Cross-region operations continue with documented manual handling for the rollout window only. Risk #1 is operationally managed, not architecturally solved.
 
 ### Journey Requirements Summary
 
@@ -338,7 +314,7 @@ The five journeys reveal these capability areas (mapped to the 11-service decomp
 - **Cloud platform:** Microsoft Azure — all services deployed on the Azure platform. Production runs in Azure UK South; data residency is restricted to Azure UK regions per NFR31. Azure-native service choices (e.g. AKS, Azure Container Registry, Azure Key Vault, Azure Application Insights, Azure database services) are implementation decisions in the architecture phase.
 - **UI stack:** modern UI per D4; specific framework family is an implementation decision in the architecture phase, not locked here.
 - **Implications worth carrying forward:**
-  - Spring Boot 4 + Java 25 align well with REST-first synchronous coordination (locked architecture decision); native HTTP client, JSON content-type negotiation, and OpenAPI tooling are first-class.
+  - Spring Boot 4 + Java 25 fits REST-first synchronous coordination. The HTTP client, JSON content-type negotiation, and OpenAPI tooling are all standard.
   - Spring Actuator endpoints serve build/version metadata (`/actuator/info`, populated by `gradle-git-properties`) and Kubernetes liveness/readiness probes (`/actuator/health`, `/actuator/readiness`); the `/actuator/*` namespace is ops-restricted at the APIM layer. The OpenAPI spec (Swagger Core, published as a Maven artefact) is the consumer-facing contract.
   - Kubernetes orchestration on Azure enables the per-region phased rollout (D8) — region-scoped deployments, rolling updates, isolated rollbacks per wave.
   - Azure UK regions support UK GDPR and HMCTS data-sovereignty requirements (data residency in-country); avoids the need for Standard Contractual Clauses or transfer impact assessments that would apply if data left the UK.
@@ -368,20 +344,20 @@ The five journeys reveal these capability areas (mapped to the 11-service decomp
 
 ### Project-Type Overview
 
-JI is decomposed into 11 services across three clusters (revised v2.2 — `nji-configuration` was dropped; cross-service policy values live in a shared `configuration_values` infrastructure table):
+JI is composed of 11 services in three clusters (revised v2.2 — `nji-configuration` dropped; cross-service policy values live in a shared `configuration_values` table):
 
-- **Domain services** (write surfaces): Judge, Absence, Vacancy, Booking, Sitting, Payment.
-- **Cross-cutting services**: Reference Data, Authorisation, Notification. *(Configuration is not a service — it's per-service Spring profiles + Key Vault, with a shared `configuration_values` infrastructure table for cross-service policy values.)*
-- **Read-model services** (federated): Itinerary, MI Feed.
+- **Domain services:** Judge, Absence, Vacancy, Booking, Sitting, Payment.
+- **Cross-cutting services:** Reference Data, Authorisation, Notification. (Configuration is not a service — per-service Spring profiles + Key Vault, with a shared `configuration_values` table for cross-service policy values.)
+- **Read-model services (federated):** Itinerary, MI Feed.
 
-Every service is API-first, exposes a versioned contract, and is callable by both the modern UI (per D4) and external consumers (DA&I, future programmes per the strategic-platform vision). The 11-service decomposition is the durable product surface.
+Every service is API-first with a versioned contract. Services are callable by the UI (per D4) and external consumers (DA&I, future programmes).
 
 ### Technical Architecture Considerations
 
-- **Coordination style: REST-first synchronous.** Domain services call each other directly when they need to coordinate (e.g. Booking → `Vacancy.markFilled`). No domain event stream, no message bus, no webhook fabric. This is a deliberate locked decision from the brainstorming session.
-- **Read-model federation strategy: Strategy A — fan-out at request time.** Itinerary and MI Feed hold no data of their own; every read fans out to the domain services in parallel and composes the answer. Strategy C (cached projection) is a designed fallback if Forward Look misses the ≤ 30 s NFR (Risk #9).
-- **Service-to-service trust:** internal calls within the cluster authenticate via service-token / mTLS (specific mechanism is an architecture-phase decision); external calls authenticate via the same SSO/IdP-derived principal as user calls.
-- **Idempotency:** write operations that may be retried (e.g. `POST /bookings`, `POST /payments/process`) accept an idempotency key. Specific mechanism is an architecture-phase decision.
+- **Coordination:** REST-first synchronous. Services call each other directly (e.g. Booking → `Vacancy.markFilled`). No event stream, message bus, or webhook fabric.
+- **Read-model federation:** Strategy A — fan-out at request time. Itinerary and MI Feed hold no data of their own. Strategy C (cached projection) is the designed fallback if Forward Look misses ≤ 30 s NFR (Risk #9).
+- **Service-to-service auth:** internal calls use service-token / mTLS (specifics in architecture phase); external calls use the same SSO/IdP-derived principal as user calls.
+- **Idempotency:** retryable writes (e.g. `POST /bookings`, `POST /payments/process`) accept an idempotency key. Mechanism in architecture phase.
 
 ### Endpoint Specifications
 
@@ -426,7 +402,7 @@ Endpoint shape is illustrative — definitive contracts are produced as Phase 0 
 
 Canonical representation: **JSON** for all REST endpoints. Specific resource schemas (Judge, Absence, Vacancy, Booking, Sitting, Payment, Itinerary, Reporting feed) are produced as Phase 0 paper contracts (per D1) and refined per phase.
 
-**Versioned content-types are first-class** for shape-sensitive resources:
+**Versioned content-types** for shape-sensitive resources:
 
 - `GET /payments/{id}/schedule` accepts `application/vnd.hmcts.jfeps+json` (canonical JI shape) or `application/vnd.hmcts.jfeps+xlsx` (format-shifted JFEPS Excel for Liberata workflow). The JFEPS shape evolves independently of Payment internals.
 - Other resources may grow versioned content-types over time as integration partners require shape-stability.
@@ -461,33 +437,31 @@ Canonical representation: **JSON** for all REST endpoints. Specific resource sch
 
 ### API Documentation
 
-- **OpenAPI 3.x specifications** generated from each service's code (Spring Boot has first-class OpenAPI tooling).
+- **OpenAPI 3.x specifications** generated from each service's code (Spring Boot has standard OpenAPI tooling).
 - **Lifecycle metadata** is conveyed via the OpenAPI spec (`info.version`, `paths.{path}.{method}.deprecated`) plus per-response `Deprecation` ([RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745)) and `Sunset` ([RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)) headers.
 - **Documentation hosting:** Swagger UI per service for developer onboarding, plus a published consolidated API catalog (architecture-phase decision on hosting / branding).
 - **Postman collections** per phase serve double duty as test artefacts and as practical, executable API documentation for stakeholders ahead of UI demos.
 
 ### Implementation Considerations
 
-- **Stack alignment** (per Step 5 Technology Stack): Java 25 + Spring Boot 4 + Kubernetes on Azure provides first-class support for every requirement above — Spring Web for REST endpoints, Spring Security for AuthZ integration, Spring Actuator for build/version metadata + Kubernetes liveness/readiness probes (`/actuator/info`, `/actuator/health`, `/actuator/readiness`; ops-restricted at the APIM layer), springdoc-openapi for OpenAPI generation, Azure API Management for cross-cutting concerns (rate limits, header injection, deprecation/`Sunset` header policy) if needed.
-- **Per-service deployment unit.** Each of the 11 services is a containerised Spring Boot app on Kubernetes; per-region rollout (D8) is enabled by region-scoped namespaces / clusters or by service-instance-level region targeting (architecture-phase choice).
-- **Phase 0 platform smoke-test** (per the executive summary) — Reference Data exercises every API-as-Product standard (versioning, content-type negotiation, OpenAPI spec, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details errors, deprecation signalling) before any domain service is built. Phase 0 is not just foundations; it's the standards-validation phase.
+- **Stack:** Java 25 + Spring Boot 4 + Kubernetes on Azure. Spring Web for REST endpoints, Spring Security for AuthZ, Spring Actuator for build/version metadata and liveness/readiness probes (`/actuator/info`, `/actuator/health`, `/actuator/readiness`; ops-restricted at APIM), springdoc-openapi for OpenAPI generation, Azure API Management for rate limits, header injection, and deprecation/`Sunset` policies.
+- **Per-service deployment unit:** each of the 11 services is a containerised Spring Boot app on Kubernetes. Per-region rollout (D8) uses region-scoped namespaces or service-instance-level region targeting (architecture-phase choice).
+- **Phase 0 as standards validation:** Reference Data exercises every API-as-Product standard (versioning, content-type negotiation, OpenAPI spec, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) errors, deprecation signalling) before any domain service is built.
 
 ## Project Scoping & Phased Development
 
-This section extends the **Product Scope** section above (MVP / Growth / Vision split) with strategic context: MVP philosophy, phase-by-phase journey mapping, and risk-based scoping. The scope split itself is unchanged.
+Extends Product Scope with MVP philosophy, phase-by-phase journey mapping, and risk-based scoping.
 
-### MVP Strategy & Philosophy
+### MVP Strategy
 
-**MVP approach: NJI (New JI MVP).** The MVP is "complete enough that an entire region — every applicable role, every operational workflow — can move off APEX and stay off it."
+The MVP is "enough for one region — every applicable role, every operational workflow — to move off APEX and stay off it." For a brownfield rebuild of an unsupported system, the MVP cannot be smaller; less than this means no region can migrate (D2 + D8).
 
-This is constrained by the project's nature, not chosen from a menu of MVP archetypes. For a brownfield rebuild replacing an existing operational system with a fixed end-of-life, the MVP cannot be smaller than "fully functional for one region's worth of users" — anything less means that region cannot migrate, which means APEX cannot retire, which means the programme has not begun delivering its primary value (D2 + D8).
+**Resource requirements:** TBD (programme-management territory). Two viable structures:
 
-**Resource requirements:** TBD. Programme-management territory; not specified in this PRD. The two viable structures from the brainstorming session are:
+- **Variant α** (single squad, sequential): Phase 0 → Judge → Absence → Vacancy → Booking → Sitting → Payment → Itinerary → MI Feed → wave 1. Lower coordination overhead; longer calendar.
+- **Variant β** (multi-squad, Sitting parallel from Phase 2): same dependency order; Sitting is co-developed with Booking. Shorter calendar; needs 2+ squads.
 
-- **Variant α** (single squad, sequential build): Phase 0 → Judge → Absence → Vacancy → Booking → Sitting → Payment → Itinerary → MI Feed → wave 1 rollout, in strict sequence. Lower coordination overhead; longer calendar.
-- **Variant β** (multi-squad, Sitting parallel from Phase 2): same dependency order, but Sitting is co-developed with Booking. Compresses calendar; requires 2+ squads.
-
-The default is α with β as a capacity-conditional upgrade once staffing is known.
+Default is α; β is a capacity-conditional upgrade.
 
 ### Phase-by-Phase Journey Mapping
 
@@ -501,31 +475,31 @@ Mapping the **5 user journeys** (Step 4) to the **build phases** (from the brain
 | Journey 4 — DA&I MI Feed API consumer | Phase 8 (MI Feed) | MI Feed federates over all domain services including Payment |
 | Journey 5 — Cross-region edge case during partial rollout | Phase 9+ (rollout window only) | Only relevant once at least one region has migrated; resolves once last region migrates |
 
-**Implication for stakeholder communication:** the canonical operational demo (Journey 1) is not available until Phase 6. Phases 1–5 produce per-module demos against partial chains (e.g. Phase 1 demos Judge management with working-pattern-generated sittings; Phase 4 demos vacancy → booking but cannot yet demo confirmation → payment). This is a programme-management consideration, not a scope decision.
+**Stakeholder communication:** the canonical operational demo (Journey 1) is available at Phase 6. Phases 1–5 produce per-module demos against partial chains (e.g. Phase 1 demos Judge management; Phase 4 demos vacancy → booking but not confirmation → payment).
 
 ### Risk-Based Scoping
 
-The 1600 brainstorming session's risk register applies in full; these are the scoping-level risks specifically.
+The 1600 brainstorming risk register applies. Scoping-level risks:
 
-**Technical risks (and mitigation via scope):**
+**Technical:**
 
-- **Strategy A read-model federation may miss the ≤ 30 s Forward Look NFR** (Risk #9). Mitigation already in scope: Strategy C cache fallback is a *designed* fallback; switched on if Phase 7 measurement shows the risk materialising. No scope change required up-front.
-- **Reference Data + Users/Roles migration correctness** (Risk #13). Mitigation in scope: Phase 0 includes named-owner sign-off as a deliverable, not an afterthought.
-- **APEX ⇄ IdP identity mapping** (Risk #14). Mitigation in scope: Phase 0 reconciliation report with explicit handling rules for unmatched records.
+- Strategy A read-model federation may miss ≤ 30 s Forward Look NFR (Risk #9). Strategy C cache fallback is designed and switched on if Phase 7 measurement shows the breach.
+- Reference Data + Users/Roles migration correctness (Risk #13). Phase 0 includes named-owner sign-off as a deliverable.
+- APEX ⇄ IdP identity mapping (Risk #14). Phase 0 produces a reconciliation report with explicit handling rules for unmatched records.
 
-**Programme / market risks (and mitigation via scope):**
+**Programme:**
 
-- **Strategic-platform vision** (one external HMCTS programme integrating via API by post-MVP) is *aspirational at MVP*. The MVP itself ships without external API consumers actually integrated; the API surface is in place, but consumer onboarding is post-MVP. This is consistent with Step 3 Growth Features.
-- **Cross-region workflow during partial rollout** (Risk #1). Mitigation in scope (and out of application scope): per-wave manual coordination is a programme-management deliverable, not an application feature. Application stays simple; coordination is paid for in operations during the time-bounded rollout window.
+- The strategic-platform vision (external HMCTS programme integrating via API by post-MVP) is aspirational. MVP ships with the API surface in place; external consumer onboarding is post-MVP.
+- Cross-region workflow during partial rollout (Risk #1). Manual coordination per wave is a programme-management deliverable, not an application feature. Application stays simple.
 
-**Resource risks (and mitigation via scope):**
+**Resource:**
 
-- **Variant β is a capacity-conditional upgrade, not a default.** The plan does not assume multi-squad capacity; if capacity is constrained, the default α plan still delivers the same MVP content on a longer calendar.
-- **HMCTS IdP integration timing** (Risk #6). Mitigation in scope: mock-IdP fallback for internal demo during Phase 0, contingency to wire to a different HMCTS-approved IdP if needed.
+- Variant β is capacity-conditional. If capacity is constrained, α delivers the same MVP content on a longer calendar.
+- HMCTS IdP integration timing (Risk #6). Mock-IdP for internal demos during Phase 0; contingency to wire to a different HMCTS-approved IdP if needed.
 
 ### Scope Confirmation
 
-No requirement from the brainstorming session, the as-is docs, or the user's locked decisions (D1–D9) has been silently de-scoped or moved to a later phase by this PRD. The MVP / Growth / Vision split is exactly as established in Step 3 Product Scope, and the build / rollout sequence is exactly as established in the brainstorming migration table. This step adds strategic framing (MVP philosophy, journey mapping, risk-based scoping) without altering scope.
+No requirement from the brainstorming session, the as-is docs, or D1–D9 has been de-scoped here. The MVP / Growth / Vision split is unchanged from Step 3. This step adds framing only.
 
 ## Functional Requirements
 

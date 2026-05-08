@@ -1,14 +1,14 @@
 ---
 title: NJI Architecture Summary
-description: Target-state architectural reference for NJI (New Judicial Itineraries) — the *what*, not the *why* or the *how-we-got-here*.
-last_updated: 2026-05-07
+description: Target-state reference for NJI (New Judicial Itineraries). What is built and how it runs.
+last_updated: 2026-05-08
 ---
 
 # NJI Architecture Summary
 
-A concise, target-state architectural overview of **NJI (New Judicial Itineraries)** — HMCTS's API-driven greenfield rebuild of the Oracle APEX (OPT) Judicial Itineraries platform.
+NJI (New Judicial Itineraries) — HMCTS's API-driven greenfield rebuild of the Oracle APEX Judicial Itineraries platform.
 
-This file describes **what is built and how it runs**. For decision rationale, alternatives considered, retracted approaches, gap and assumption registers, full data-table inventory, conventions, repo structure, changelog, and step-by-step build sequence, see [`./architecture.md`](./architecture.md) and the sibling files under [`./architecture/`](./architecture/).
+This file describes what is built and how it runs. For rationale, alternatives, gap and assumption registers, data-table inventory, conventions, repo structure, changelog, and build sequence, see [`./architecture.md`](./architecture.md) and the siblings under [`./architecture/`](./architecture/).
 
 ## System context
 
@@ -74,44 +74,46 @@ This file describes **what is built and how it runs**. For decision rationale, a
 
 ## Data tier
 
-- **One global PostgreSQL Flexible Server instance** in UK South; **single shared schema**; **zone-redundant HA** (primary + standby in different UK South AZs; synchronous replication; automatic <60 s failover).
-- **37 tables**: 34 service-owned production + 1 shared infrastructure (`configuration_values`) + 2 dev-only (mock-auth).
-- **Per-service DB roles** (`nji_judge`, `nji_booking`, `nji_payment`, …) with explicit grants. A service has `ALL` privileges on its own tables and only the specific grants it requires on others' tables.
-- **Cross-service reads** — direct SQL JOIN against the shared schema using SELECT grants. No caching at MVP.
-- **Cross-service simple writes** — direct UPDATE on UPDATE-granted columns within the writing service's transaction (e.g. Booking writes `vacancies.filled`).
+- One PostgreSQL Flexible Server instance in UK South. One shared schema. Zone-redundant HA (primary + standby in different AZs; synchronous replication; automatic failover <60 s).
+- 37 tables: 34 service-owned production + 1 shared infrastructure (`configuration_values`) + 2 dev-only (mock-auth).
+- Per-service DB roles (`nji_judge`, `nji_booking`, `nji_payment`, …) with explicit grants. A service has `ALL` on its own tables; only the specific grants it needs on others.
+- **Cross-service reads** — direct SQL JOIN using SELECT grants. No caching at MVP.
+- **Cross-service simple writes** — direct UPDATE on UPDATE-granted columns within the writer's transaction (e.g. Booking writes `vacancies.filled`).
 - **Cross-service workflows** — REST API call to the owning service.
-- **Read-model federation** — SQL JOIN over the shared schema, not API fan-out.
+- **Read models** — SQL JOIN over the shared schema. No API fan-out.
 
 Full per-table inventory: [`./architecture/data-tables.md`](./architecture/data-tables.md).
 
 ## Authentication & Authorisation
 
-**MVP assumption (revised v2.6):** *most* runtime requests into NJI services are user-initiated, with one documented exception — the **payment-processing batch** (`nji-payment-batch`), which runs on a schedule and authenticates as a service principal. The auth model is therefore:
+Most runtime requests are user-initiated. The one exception is the payment-processing batch (`nji-payment-batch`), which runs on a schedule and authenticates as a service principal.
 
-1. **User authenticates at HMCTS IdP** (SSO) → IdP issues a JWT.
-2. **User uses the JWT** to call the NJI UI; UI forwards the bearer token through APIM to the target NJI service.
-3. **Each NJI service's `JWTFilter` validates the JWT** against HMCTS IdP's JWKS endpoint before the request reaches a controller, then resolves authz scope via `nji-authorisation`.
-4. **Cross-service calls forward the user's JWT** — the upstream service copies the inbound `Authorization` header to its outbound HTTP client when calling a downstream NJI service. The downstream service's `JWTFilter` validates the same user JWT. No separate service identities are issued.
+The auth flow:
 
-In detail:
+1. User authenticates at HMCTS IdP (SSO). IdP issues a JWT.
+2. User calls `nji-ui` with the JWT; UI forwards the bearer token through APIM to the target service.
+3. The service's `JWTFilter` validates the JWT against HMCTS IdP's JWKS, then calls `nji-authorisation` for authz scope.
+4. Cross-service calls forward the user's JWT — the upstream service copies the inbound `Authorization` header onto outbound calls. The downstream `JWTFilter` validates the same JWT.
 
-- **End-user authentication** — HMCTS IdP via OIDC `authorization_code` flow; single sign-on; JWT issued. Mock auth (`nji-mock-auth`, Spring Authorization Server) is the OIDC issuer in non-production environments; cutover to real HMCTS IdP is a Spring profile change (issuer-url + JWKS URL flip — no code change).
-- **JWT signature validation against HMCTS IdP** — every NJI service's custom `JWTFilter` (per HMCTS Crime template, `io.jsonwebtoken:jjwt` based) validates the JWT signature and issuer by fetching public keys from the IdP's **JWKS endpoint** (`/oauth2/jwks` on mock auth; HMCTS IdP's published JWKS URL in production). Validation happens **before the request reaches the service's controller** — it is the gate that enforces "user has a valid authenticated session" before any NJI API resource is exposed. Public keys are cached per the issuer's cache headers.
-- **End-user authorisation** — after JWT validation, the same `JWTFilter` calls `POST /authz/check` against `nji-authorisation` to resolve role + Region/Area scope + per-region activation flag (FR58). Authorisation context lives in a request-scoped `AuthDetails` bean.
-- **Inter-service authentication for user-initiated calls — JWT propagation** — the per-service Spring Boot `RestClient` interceptor copies the inbound `Authorization: Bearer <user-jwt>` header to outbound calls. Downstream service's `JWTFilter` validates the same user JWT.
-- **Inter-service authentication for batch / scheduled components — OAuth `client_credentials`** — the payment batch (`nji-payment-batch`) authenticates as a service principal against `nji-mock-auth` (non-prod) using OAuth `client_credentials`, then includes the resulting service JWT as `Authorization: Bearer …` on its outbound calls (e.g. to Notification). Production service-auth issuer is a deferred decision (default recommendation: Azure Workload Identity — see `architecture/gaps.md` G7.1).
-- **APEX ⇄ IdP identity reconciliation** — email primary, employee number fallback. Performed by the Phase 0 data-seeding scripts (dev/CI) and the operator-initiated production ETL.
+Details:
 
-**MVP non-user-initiated flow** (the one in scope at MVP):
+- **End-user authentication** — HMCTS IdP, OIDC `authorization_code`. SSO. JWT issued. `nji-mock-auth` (Spring Authorization Server) is the OIDC issuer in non-production. Mock-to-real cutover is a Spring profile change (issuer-url + JWKS URL flip; no code change).
+- **JWT signature validation** — each service's `JWTFilter` (HMCTS Crime template, `io.jsonwebtoken:jjwt`) validates signature and issuer using the IdP's JWKS endpoint (`/oauth2/jwks` on mock; HMCTS IdP's JWKS URL in production). Validation runs before any controller. Public keys cached per the issuer's cache headers.
+- **End-user authorisation** — after JWT validation, `JWTFilter` calls `POST /authz/check` against `nji-authorisation` for role + Region/Area scope + activation flag (FR58). Result stored in a request-scoped `AuthDetails` bean.
+- **JWT propagation (user-initiated cross-service calls)** — the `RestClient` interceptor copies the inbound `Authorization: Bearer <user-jwt>` header onto outbound calls. The downstream `JWTFilter` validates the same JWT.
+- **Service-principal auth (batch)** — the payment batch authenticates against `nji-mock-auth` (non-prod) via OAuth `client_credentials`, then attaches the service JWT to outbound calls (e.g. Notification). Production issuer is deferred (default: Azure Workload Identity — `architecture/gaps.md` G7.1).
+- **APEX ⇄ IdP reconciliation** — email primary, employee number fallback. Performed by Phase 0 dev/CI scripts and the production ETL.
 
-- **Payment-processing batch** (`nji-payment-batch`) — runs on a schedule (cron, e.g. weekly), authenticates as a service principal, picks up confirmed bookings/sittings without payment records, generates the JFEPS Excel, and dispatches via Notification → HMCTS Email → Payment Authoriser. End-to-end sequence diagram: [`./architecture/sequence-diagrams/payment-batch-flow.md`](./architecture/sequence-diagrams/payment-batch-flow.md).
+**MVP non-user-initiated flows:**
 
-**Out of scope at MVP** (post-MVP open items):
+- Payment batch (`nji-payment-batch`) — scheduled (e.g. weekly), authenticates as a service principal, picks up confirmed bookings/sittings without payment records, generates the JFEPS Excel, dispatches via Notification → HMCTS Email → Payment Authoriser. Sequence: [`./architecture/sequence-diagrams/payment-batch-flow.md`](./architecture/sequence-diagrams/payment-batch-flow.md).
 
-- Other non-user-initiated runtime flows (additional scheduled jobs, async messaging, event bus) — would use the same service-principal pattern as the payment batch.
-- DA&I post-MVP MI Feed integration — auth model TBD; see [`./architecture/gaps.md` G7.2](./architecture/gaps.md).
-- Production data migration via the operator-initiated ETL pattern — works for MVP but flagged for post-MVP refinement (better automation, audit trail) — see [`./architecture/gaps.md` G4.7](./architecture/gaps.md).
-- Production service-auth issuer — `nji-mock-auth` covers Phase 0–8; production decision deferred per G7.1 (default recommendation: Azure Workload Identity).
+**Out of scope at MVP:**
+
+- Other non-user-initiated flows (more scheduled jobs, async messaging, event bus) — would use the same service-principal pattern.
+- DA&I post-MVP MI Feed integration — auth model TBD. See [`./architecture/gaps.md` G7.2](./architecture/gaps.md).
+- Production data migration via operator-initiated ETL — works at MVP; flagged for post-MVP refinement. See [`./architecture/gaps.md` G4.7](./architecture/gaps.md).
+- Production service-auth issuer — `nji-mock-auth` covers Phase 0–8; deferred per G7.1.
 
 ## API patterns
 
@@ -165,13 +167,13 @@ In detail:
 
 ## Phase 0 Data Migration ETL
 
-A standalone programme deliverable, **not a runtime service**:
+A programme deliverable, not a runtime service:
 
 - Lives at `nji-architecture/migration/`.
-- Reads APEX SQL dumps; transforms each row into NJI's (independently-designed) shape; loads into NJI via the Reference Data API and the Authorisation API.
-- Migrates **only Reference Data and active user records + role / Region-Area scope mappings**. No transactional data migration.
+- Reads APEX SQL dumps; transforms rows to NJI shape; loads via the Reference Data API and Authorisation API.
+- Migrates Reference Data and active user records + role/Region-Area scope mappings. No transactional data.
 - Re-runs per rollout wave for incremental user activation.
-- APEX schema is the data source; NJI's schema is fixed by NJI design.
+- APEX is the source. NJI's schema is set by NJI design.
 
 ## External integrations
 
@@ -185,19 +187,19 @@ A standalone programme deliverable, **not a runtime service**:
 
 ## Foundational principles
 
-1. **API for workflows; shared database for simple data access.** Multi-step operations involving business rules and state transitions are exposed as APIs by the owning service. Single-field cross-service updates (where DB grants permit) and read-model federation (SQL JOINs over the shared schema) bypass the API. **No shared runtime code library** — each service owns its own implementation of cross-cutting concerns.
-2. **No premature optimization.** Caching, distributed cache, service mesh, read replicas, async messaging are introduced only when measurement post-MVP justifies the complexity. Native platform constructs (PostgreSQL row locking, JPA `@Version`, unique constraints, Spring profiles + Key Vault) are preferred over custom entities for problems already solved by the platform.
+1. **API for workflows; shared database for simple data access.** Multi-step operations with business rules and state transitions are exposed as APIs by the owning service. Single-field cross-service updates (where DB grants permit) and read-model federation (SQL JOINs over the shared schema) bypass the API. No shared runtime library; each service owns its cross-cutting concerns.
+2. **No premature optimisation.** Caching, distributed cache, service mesh, read replicas, async messaging — added only when measurement post-MVP shows the need. Use native platform constructs (PostgreSQL row locking, JPA `@Version`, unique constraints, Spring profiles + Key Vault) before custom entities.
 
 ## Where to find more detail
 
 | Topic | Location |
 |---|---|
-| Architectural rationale, decision history, alternatives, retractions, full validation | [`./architecture.md`](./architecture.md) |
-| Implementation patterns & consistency rules — naming, structure, format, communication, process, enforcement, examples | [`./architecture/conventions.md`](./architecture/conventions.md) |
-| Per-service / UI / `nji-architecture` repo directory trees, file organisation, local dev workflow, deployment-pipeline diagram | [`./architecture/repo-structure.md`](./architecture/repo-structure.md) |
-| Authoritative table ownership mapping — every NJI table grouped by service | [`./architecture/data-tables.md`](./architecture/data-tables.md) |
-| HMCTS Crime SpringBoot starter walkthrough, dependency inventory, NJI conventions overlay | [`./architecture/starter-template.md`](./architecture/starter-template.md) |
-| Documented gaps register (G1–G6 with mitigations and owners) | [`./architecture/gaps.md`](./architecture/gaps.md) |
-| Assumptions register (A1–A34 with type and verification path) | [`./architecture/assumptions.md`](./architecture/assumptions.md) |
-| Version history and pre-v1.8 anchor redirect table | [`./architecture/changelog.md`](./architecture/changelog.md) |
-| PRD (FRs, NFRs, locked decisions D1–D9, glossary) | [`./prd.md`](./prd.md) |
+| Decision history, alternatives, validation | [`./architecture.md`](./architecture.md) |
+| Conventions — naming, structure, format, communication, process, enforcement | [`./architecture/conventions.md`](./architecture/conventions.md) |
+| Repo directory trees, local dev workflow, deployment pipeline | [`./architecture/repo-structure.md`](./architecture/repo-structure.md) |
+| Table ownership mapping | [`./architecture/data-tables.md`](./architecture/data-tables.md) |
+| HMCTS Crime SpringBoot starter, dependencies, NJI overlay | [`./architecture/starter-template.md`](./architecture/starter-template.md) |
+| Gaps (G1–G7) | [`./architecture/gaps.md`](./architecture/gaps.md) |
+| Assumptions (A1–A35) | [`./architecture/assumptions.md`](./architecture/assumptions.md) |
+| Changelog | [`./architecture/changelog.md`](./architecture/changelog.md) |
+| PRD | [`./prd.md`](./prd.md) |
