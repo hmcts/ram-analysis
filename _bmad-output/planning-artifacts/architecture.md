@@ -42,7 +42,7 @@ date: '2026-05-06'
   - [API & Communication Patterns](#api--communication-patterns)
   - [Frontend Architecture](#frontend-architecture)
   - [Infrastructure & Deployment](#infrastructure--deployment)
-  - [Deployment topology — single Azure region, multi-AZ HA, UK West cold-DR](#deployment-topology--single-azure-region-multi-az-ha-uk-west-cold-dr)
+  - [Deployment topology — single Azure region, multi-AZ HA](#deployment-topology--single-azure-region-multi-az-ha)
   - [Decision Impact Analysis](#decision-impact-analysis)
   - [TBDs Resolved by This Step](#tbds-resolved-by-this-step)
 - [Implementation Patterns & Consistency Rules](#implementation-patterns--consistency-rules)
@@ -118,7 +118,7 @@ Architectural implications:
 - **Integration** — OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9), JFEPS/Liberata unchanged, HMCTS email, DA&I MI Feed, no eLinks integration in MVP.
 - **Observability** — log-based MVP only (D7); structured logging + correlation IDs; OpenTelemetry → Application Insights.
 - **Data privacy & sovereignty** — Azure UK regions only; UK GDPR + DPA 2018; no case-level data.
-- **Reliability** — operational availability during HMCTS hours; per-wave rollback; **single Azure region (UK South) with multi-AZ HA**; UK West cold-DR (post-MVP); HMCTS-judicial-region rollout isolation at app tier via FR58 activation flags.
+- **Reliability** — operational availability during HMCTS hours; per-wave rollback; **single Azure region (UK South) with multi-AZ HA**; HMCTS-judicial-region rollout isolation at app tier via FR58 activation flags. Disaster-recovery scope and design are an **open gap** — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 - **Maintainability** — API-as-Product (versioned, OpenAPI, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details); per-service deployment; **manual UAT scripts per domain service** (FR61 / NFR41 revised 2026-05-06); per-phase Postman collections.
 
 **Scale & Complexity:** API backend (11 services) + first-class UI; **high complexity** driven by financial-integration criticality (JFEPS/Liberata), 11 services with cross-cutting authorisation, multi-region phased rollout, judicial regulatory environment, and behavioural-parity demand on a brownfield rebuild.
@@ -131,7 +131,7 @@ Architectural implications:
 - **Coordination:** REST-first synchronous; no event stream, no message bus, no webhook fabric.
 - **Read-model strategy:** SQL JOINs over the shared schema; no API federation, no cache fallback.
 - **Identity:** OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9 cutover); JI owns Authorisation; password/session/account lifecycle external.
-- **Data residency:** Azure UK South / UK West only.
+- **Data residency:** Azure UK regions only (no personal data leaves the UK).
 - **No bank details, no case-level data** anywhere by contract.
 - **No automated eLinks/HR integration** in MVP scope.
 
@@ -241,7 +241,7 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 
 **Critical (block implementation):** Database technology + table-ownership/per-service-role model · Service-to-service authentication mechanism · API versioning · UI framework · API gateway / rate-limiting layer.
 
-**Important (shape architecture):** Migration tooling for schema changes · APEX ⇄ IdP identity-key scheme · Log retention · Historical-data access policy · HA topology (single Azure region multi-AZ in UK South; UK West DR post-MVP; HMCTS-judicial-region rollout isolation at application tier).
+**Important (shape architecture):** Migration tooling for schema changes · APEX ⇄ IdP identity-key scheme · Log retention · Historical-data access policy · HA topology (single Azure region multi-AZ in UK South; HMCTS-judicial-region rollout isolation at application tier). DR scope is an open gap — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 
 **Deferred (post-MVP per Principle 2):** Reference Data caching · Distributed cache (Redis) · Service mesh · Read replicas · APIM advanced features.
 
@@ -420,9 +420,9 @@ Filter caches authorisation decisions for the request lifecycle only.
 
 ### Infrastructure & Deployment
 
-**Hosting: Azure Kubernetes Service (AKS), single cluster in UK South, multi-AZ node pools.** Pod anti-affinity (`topology.kubernetes.io/zone`) keeps each service's replicas distributed across AZs. Min 2 replicas/service; HPA tunes upward. UK West reserved for DR only (post-MVP, G3.6). HMCTS-judicial-region rollout isolation enforced at app tier via FR58 activation flags, not infrastructure.
+**Hosting: Azure Kubernetes Service (AKS), single cluster in UK South, multi-AZ node pools.** Pod anti-affinity (`topology.kubernetes.io/zone`) keeps each service's replicas distributed across AZs. Min 2 replicas/service; HPA tunes upward. HMCTS-judicial-region rollout isolation enforced at app tier via FR58 activation flags, not infrastructure. DR scope and topology are an open gap — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 
-**Database hosting: Azure Database for PostgreSQL Flexible Server**, **one global instance, zone-redundant HA in UK South.** Primary in one AZ, standby in another, synchronous replication, automatic failover (<60 s typical). Microsoft-managed continuous backup; PITR; encryption-at-rest by default. Geo-redundant backup with UK West restore target if DR is in scope (G3.6).
+**Database hosting: Azure Database for PostgreSQL Flexible Server**, **one global instance, zone-redundant HA in UK South.** Primary in one AZ, standby in another, synchronous replication, automatic failover (<60 s typical). Microsoft-managed continuous backup; PITR; encryption-at-rest by default. Geo-redundant backup configuration is part of the DR decision — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 
 **UI hosting:** Azure Static Web Apps (or Blob Storage + CDN if Static Web Apps is operationally complex for HMCTS).
 
@@ -446,15 +446,15 @@ Filter caches authorisation decisions for the request lifecycle only.
 
 **Scaling:** Kubernetes HPA per service — CPU/memory triggers, min 2 replicas/service for redundancy, max replicas tuned per service after capacity numbers stabilise.
 
-### Deployment topology — single Azure region, multi-AZ HA, UK West cold-DR
+### Deployment topology — single Azure region, multi-AZ HA
 
-NJI follows a **same-Azure-region multi-AZ** HA model — production in **UK South**, services across that region's three availability zones. **UK West is reserved for DR** (cold-standby, manual failover playbook), not active/active.
+NJI follows a **same-Azure-region multi-AZ** HA model — production in **UK South**, services across that region's three availability zones. Disaster-recovery scope and design are an open gap — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 
 Two distinct meanings of "region" run through this architecture and the PRD:
 
 | Concept | What it means | How it's enforced |
 |---|---|---|
-| **Azure region** | Geographic Azure deployment region (UK South, UK West). Each contains multiple **availability zones** (AZs) — physically separate datacentres on independent power/network. | Infrastructure decision: production = UK South; DR = UK West (post-MVP). HA via multi-AZ within UK South. |
+| **Azure region** | Geographic Azure deployment region. Each contains multiple **availability zones** (AZs) — physically separate datacentres on independent power/network. | Infrastructure decision: production = UK South. HA via multi-AZ within UK South. DR target region is held in [`./architecture/gaps.md` G3.6](./architecture/gaps.md). |
 | **HMCTS judicial region** | NJI's per-region phased-rollout boundary — the *business* region used by D8 (e.g. Northern, Western HMCTS jurisdictional regions). | Application-tier concern: per-user activation flag in `auth_user_activation_flags` (FR58). **No infrastructure isolation per HMCTS region.** |
 
 NFR38 ("region-isolated deployments") refers to the **HMCTS judicial region** sense — wave activation in HMCTS Region B does not disrupt Region A's users. Enforced at the application tier, *not* by separate Azure clusters or DNS endpoints.
@@ -464,19 +464,15 @@ NFR38 ("region-isolated deployments") refers to the **HMCTS judicial region** se
 | Component | Multi-AZ posture |
 |---|---|
 | **AKS** | One production cluster, **node pools spanning all three AZs**. Pod anti-affinity (`topology.kubernetes.io/zone`); min 2 replicas/service. AKS control plane Microsoft-managed and zone-redundant. |
-| **PostgreSQL Flexible Server** | **Zone-redundant HA** — primary + standby in different AZs, synchronous replication, automatic failover (<60 s typical). Single global instance is therefore *not* a single-AZ point of failure within UK South. (G6.2 mitigation refined.) |
+| **PostgreSQL Flexible Server** | **Zone-redundant HA** — primary + standby in different AZs, synchronous replication, automatic failover (<60 s typical). Single global instance is therefore *not* a single-AZ point of failure within UK South. (See G6.2 for residual full-region-loss risk and G3.6 for DR.) |
 | **Azure Key Vault** | Microsoft-managed zone-redundancy in UK South (Premium tier; verify Standard). One Key Vault per service (or per service-environment). |
 | **Application Insights / Log Analytics** | Microsoft-managed regional service; Microsoft handles AZ-level redundancy. One workspace shared across NJI services. |
 | **Azure API Management** | **Premium SKU with zone-redundancy enabled.** |
 | **Azure Static Web Apps (UI)** | Microsoft-managed regional service; CDN-fronted globally. |
 | **Azure Container Registry** | Zone-redundant in UK South (Premium SKU). |
-| **Azure Front Door / DNS** | Single global DNS endpoint (e.g. `nji.production.hmcts.gov.uk`) routes to UK South ingress. *Not* per-Azure-region, *not* per-HMCTS-region. |
+| **Azure Front Door / DNS** | Single DNS endpoint (e.g. `nji.production.hmcts.gov.uk`) routes to UK South ingress. *Not* per-HMCTS-region. |
 
-A single-AZ failure within UK South is tolerated transparently — AKS reschedules pods; PostgreSQL fails over to the standby AZ.
-
-#### DR topology — UK West cold-standby (post-MVP scope decision, G3.6)
-
-If approved in scope: PostgreSQL geo-redundant backup with UK West as restore target (RPO ≈ minutes; RTO ≈ hours); AKS cluster definitions held as Helm values for rapid stand-up (`values-dr-uk-west.yaml`); DNS failover playbook. **DR activation is a manual playbook**, not automated active/active. Rationale: bounded user population doesn't warrant cross-region active/active; shared global PostgreSQL is incompatible with active/active without multi-master replication (premature optimisation).
+A single-AZ failure within UK South is tolerated transparently — AKS reschedules pods; PostgreSQL fails over to the standby AZ. **Full-region UK South loss** is the residual risk at MVP — see G6.2 (residual risk acceptance) and G3.6 (DR scope) in [`./architecture/gaps.md`](./architecture/gaps.md).
 
 #### HMCTS-judicial-region rollout isolation — application tier only
 
@@ -486,7 +482,7 @@ If approved in scope: PostgreSQL geo-redundant backup with UK West as restore ta
 | One HMCTS region's wave deployment doesn't disrupt another | Rolling deployments per-service across the cluster; activation flag does the per-region containment |
 | Cross-HMCTS-region workflow during partial rollout | Per-wave decision per Risk #1; some workflows operable mixed-mode, some gated, some manual |
 
-**Consequences:** no per-HMCTS-region AKS clusters, no per-HMCTS-region DNS, no per-HMCTS-region Key Vault. Per-service Helm values files are per-environment (`values-dev.yaml`, `values-staging.yaml`, `values-production.yaml`, optional `values-dr-uk-west.yaml`).
+**Consequences:** no per-HMCTS-region AKS clusters, no per-HMCTS-region DNS, no per-HMCTS-region Key Vault. Per-service Helm values files are per-environment (`values-dev.yaml`, `values-staging.yaml`, `values-production.yaml`).
 
 ### Decision Impact Analysis
 
@@ -508,7 +504,7 @@ If approved in scope: PostgreSQL geo-redundant backup with UK West as restore ta
 - **Reference Data tables** — read directly via SQL JOINs by every service; no caching at MVP. Outage of Reference Data *service* (the API) does not block reads against the tables; only writes blocked. Mitigation: PostgreSQL HA.
 - **HMCTS IdP** — every authentication depends on it. IdP outage is HMCTS-wide.
 - **Azure API Management** — every external client request flows through it. Mitigation: Premium SKU with zone-redundancy.
-- **PostgreSQL (one shared global instance)** — DB outage affects every service simultaneously (G6.2). Mitigation: zone-redundant HA + automatic failover (<60 s typical). Full UK-South-region loss is the residual risk, addressed by DR.
+- **PostgreSQL (one shared global instance)** — DB outage affects every service simultaneously. Single-AZ failure tolerated by zone-redundant HA (see *HA topology* table above). Single-DB blast radius and full-region-loss residual risk are tracked in [`./architecture/gaps.md`](./architecture/gaps.md) — G6.2 (blast radius) and G3.6 (DR).
 
 ### TBDs Resolved by This Step
 
@@ -784,4 +780,4 @@ Every IETF / standards reference cited in this architecture, with a verifiable c
 
 ## Changelog
 
-See [`./architecture/changelog.md`](./architecture/changelog.md). **Latest:** v2.7 — `/capabilities` endpoint convention removed (no IETF/OpenAPI standard backs it); RFC citations updated to current RFCs (RFC 7807 → RFC 9457 problem-details; `Deprecation` header correctly cited to RFC 9745; `Retry-After` to RFC 9110); External References appendix added with verifiable datatracker links. Earlier: v2.6 — payment processing reframed as a scheduled batch; OAuth `client_credentials` restored for the batch service principal only; two new sequence diagrams added; FR41–FR45 reframed; A2/A26/A35 + G1.2/G7.1 reopened.
+See [`./architecture/changelog.md`](./architecture/changelog.md). **Latest:** v2.8 — DR (disaster recovery) consolidated as an open gap. All DR scope, design, region choice, posture (cold-/warm-standby), geo-redundant backup configuration, AKS DR Helm values, DNS failover and RTO/RPO detail moved into [`./architecture/gaps.md` G3.6](./architecture/gaps.md); architecture documents now reference the gap rather than repeating mitigation/scope detail. Earlier: v2.7 — `/capabilities` endpoint convention removed; RFC citations updated to current RFCs.

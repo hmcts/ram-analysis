@@ -151,8 +151,8 @@ In detail:
   - AKS node pools span all three UK South AZs with pod anti-affinity (zone topology spread).
   - PostgreSQL Flexible Server zone-redundant HA (synchronous replication; automatic failover).
   - APIM Premium, Key Vault, Azure Container Registry — all zone-redundant.
-- **DR** — UK West reserved for cold-standby disaster recovery; manual failover playbook.
-- **Per-service unit** — independently-deployable Spring Boot service; per-service Helm chart with per-environment values files (`values-dev.yaml`, `values-staging.yaml`, `values-production.yaml`, optional `values-dr-uk-west.yaml`).
+- **DR** — open gap; scope and design held in [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
+- **Per-service unit** — independently-deployable Spring Boot service; per-service Helm chart with per-environment values files (`values-dev.yaml`, `values-staging.yaml`, `values-production.yaml`).
 - **CI/CD** — per-service pipeline (Azure DevOps Pipelines or GitHub Actions). Build → Docker image → Azure Container Registry → Helm upgrade to AKS.
 - **Logging** — structured JSON logs (Logstash encoder) with correlation IDs; OpenTelemetry export to Application Insights; 30 days hot in App Insights + 90 days cold in Log Analytics archive.
 

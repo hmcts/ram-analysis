@@ -79,7 +79,6 @@ nji-{service}/
 │   ├── values-dev.yaml
 │   ├── values-staging.yaml
 │   ├── values-production.yaml                   (UK South production — multi-AZ node pool selection, zone-spread anti-affinity, min replicas)
-│   ├── values-dr-uk-west.yaml                   (cold-DR; only present if DR is in scope per G3.6)
 │   └── templates/
 │       ├── deployment.yaml                      (incl. topologySpreadConstraints for AZ spread)
 │       ├── service.yaml

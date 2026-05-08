@@ -69,7 +69,7 @@ The 42 Non-Functional Requirements are organised into 8 categories. Each subsect
 ## Data Privacy & Sovereignty (NFR30–NFR33)
 
 - **NFR30 — UK GDPR / Data Protection Act 2018 compliance:** Personal data scope is limited to user/judge identity, contact details, payroll numbers, and operational metadata. No case-level data anywhere in NJI.
-- **NFR31 — Data residency:** All NJI services and data hosted in Azure UK regions only (UK South / UK West). No personal data leaves the UK.
+- **NFR31 — Data residency:** All NJI services and data hosted in Azure UK regions only. No personal data leaves the UK.
 - **NFR32 — Retention:** Data retention per HMCTS retention schedules. Migrated transactional history remains in APEX (D3); NJI retains only data created in NJI from migration onward.
 - **NFR33 — FOI scope:** Aggregate operational data exposable per FOI requests; case-level data is forbidden by contract and therefore outside FOI scope by construction.
 
@@ -83,7 +83,7 @@ The 42 Non-Functional Requirements are organised into 8 categories. Each subsect
 - **NFR37 — Strategy A degraded-mode contract:** If federated read latency breaches NFR8, NJI degrades to Strategy C cached projection rather than failing; cache freshness window is published in the service's OpenAPI spec metadata and surfaced in response headers (e.g. `Cache-Control`, `Age`).
 - **NFR38 — HMCTS-judicial-region rollout isolation:** A wave activation or feature change targeting one HMCTS judicial region does not affect users in other HMCTS regions. *("Region" here means HMCTS judicial region per D8 — not Azure region. Architectural enforcement is at the application tier via per-user `auth_user_activation_flags` (FR58), not at the infrastructure tier.)*
 
-**Architectural support:** Operational hours availability; per-wave rollback via region activation flag (FR58); **single AKS cluster in UK South with multi-AZ node pools** (zone-redundant HA at app tier); **PostgreSQL Flexible Server zone-redundant HA** in UK South; UK West cold-DR (post-MVP scope per G3.6); HMCTS-judicial-region isolation (NFR38) enforced at app tier via FR58 activation flags.
+**Architectural support:** Operational hours availability; per-wave rollback via region activation flag (FR58); **single AKS cluster in UK South with multi-AZ node pools** (zone-redundant HA at app tier); **PostgreSQL Flexible Server zone-redundant HA** in UK South; HMCTS-judicial-region isolation (NFR38) enforced at app tier via FR58 activation flags. Disaster recovery is an open gap — see [`./gaps.md` G3.6](./gaps.md).
 
 ## Maintainability (NFR39–NFR42)
 

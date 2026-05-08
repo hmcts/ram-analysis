@@ -335,7 +335,7 @@ The five journeys reveal these capability areas (mapped to the 11-service decomp
 
 - **API layer:** Java 25 (current LTS) with Spring Boot 4.
 - **Runtime / orchestration:** Kubernetes — containerised deployment for every domain and cross-cutting service.
-- **Cloud platform:** Microsoft Azure — all services deployed on the Azure platform. Region selection (UK South / UK West) and Azure-native service choices (e.g. AKS, Azure Container Registry, Azure Key Vault, Azure Application Insights, Azure database services) are implementation decisions in the architecture phase.
+- **Cloud platform:** Microsoft Azure — all services deployed on the Azure platform. Production runs in Azure UK South; data residency is restricted to Azure UK regions per NFR31. Azure-native service choices (e.g. AKS, Azure Container Registry, Azure Key Vault, Azure Application Insights, Azure database services) are implementation decisions in the architecture phase.
 - **UI stack:** modern UI per D4; specific framework family is an implementation decision in the architecture phase, not locked here.
 - **Implications worth carrying forward:**
   - Spring Boot 4 + Java 25 align well with REST-first synchronous coordination (locked architecture decision); native HTTP client, JSON content-type negotiation, and OpenAPI tooling are first-class.
@@ -673,7 +673,7 @@ Page-level NFRs are carried from the APEX baseline (`functional-modules.md` cros
 ### Data Privacy & Sovereignty
 
 - **NFR30 — UK GDPR / Data Protection Act 2018 compliance:** Personal data scope is limited to user/judge identity, contact details, payroll numbers, and operational metadata. No case-level data anywhere in NJI.
-- **NFR31 — Data residency:** All NJI services and data hosted in Azure UK regions only (UK South / UK West). No personal data leaves the UK.
+- **NFR31 — Data residency:** All NJI services and data hosted in Azure UK regions only. No personal data leaves the UK.
 - **NFR32 — Retention:** Data retention per HMCTS retention schedules. Migrated transactional history remains in APEX (D3); NJI retains only data created in NJI from migration onward.
 - **NFR33 — FOI scope:** Aggregate operational data exposable per FOI requests; case-level data is forbidden by contract (REP-BR-NFR-03) and therefore outside FOI scope by construction.
 
@@ -683,7 +683,7 @@ Page-level NFRs are carried from the APEX baseline (`functional-modules.md` cros
 - **NFR35 — Payment-cycle continuity:** Zero failed JFEPS payment cycles attributable to NJI deployment, rollout, or runtime issues. Payment generation can fall back to manual handling within a payment cycle if NJI is unavailable, but this is an operational contingency, not a normal-mode expectation.
 - **NFR36 — Per-wave rollback:** Each rollout wave (Phase 9, 10, …) has a documented rollback path returning the affected region to APEX within one operational cycle if the wave's gate is breached post-cutover.
 - **NFR37 — Strategy A degraded-mode contract:** If federated read latency breaches NFR8, NJI degrades to Strategy C cached projection rather than failing; cache freshness window is published in the service's OpenAPI spec metadata and surfaced in response headers (e.g. `Cache-Control`, `Age`).
-- **NFR38 — HMCTS-judicial-region rollout isolation:** A wave activation or feature change targeting one HMCTS judicial region (e.g. Northern, Western) does not affect users in other HMCTS regions. *("Region" here means HMCTS judicial region per D8 — not Azure region. Architectural enforcement is at the application tier via per-user `auth_user_activation_flags` (FR58), not at the infrastructure tier. Production runs in a single Azure region — UK South — with multi-AZ HA; UK West is cold-DR per the architecture's deployment topology. Wording clarified 2026-05-06 — earlier "Region-isolated deployments" framing was ambiguous between the two senses of "region" and is now disambiguated.)*
+- **NFR38 — HMCTS-judicial-region rollout isolation:** A wave activation or feature change targeting one HMCTS judicial region (e.g. Northern, Western) does not affect users in other HMCTS regions. *("Region" here means HMCTS judicial region per D8 — not Azure region. Architectural enforcement is at the application tier via per-user `auth_user_activation_flags` (FR58), not at the infrastructure tier. Production runs in a single Azure region — UK South — with multi-AZ HA. Disaster-recovery scope and design are an open gap — see `architecture/gaps.md` G3.6. Wording clarified 2026-05-06 — earlier "Region-isolated deployments" framing was ambiguous between the two senses of "region" and is now disambiguated.)*
 
 ### Maintainability
 

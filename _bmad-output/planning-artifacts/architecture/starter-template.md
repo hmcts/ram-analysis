@@ -117,7 +117,7 @@ The scaffolding script applies NJI-specific defaults on top of the HMCTS starter
 
 - Group ID: `uk.gov.hmcts.nji`.
 - Naming: artefact `nji-{service-name}`, package `uk.gov.hmcts.nji.{service-name}`.
-- Default Azure UK region: UK South (UK West for DR if needed — programme decision).
+- Default Azure UK region: UK South. (DR scope and target region are an open gap — see [`./gaps.md` G3.6](./gaps.md).)
 - Default Application Insights workspace: NJI shared workspace (HMCTS-provided).
 - Default Reference Data and Authorisation service URL placeholders.
 - Boilerplate `@ControllerAdvice` for [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details error envelopes (formerly RFC 7807; obsoleted July 2023 — content type and field shape unchanged).
