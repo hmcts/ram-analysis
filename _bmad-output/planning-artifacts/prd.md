@@ -2,13 +2,24 @@
 stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-02b-vision', 'step-02c-executive-summary', 'step-03-success', 'step-04-journeys', 'step-05-domain', 'step-06-innovation-skipped', 'step-07-project-type', 'step-08-scoping', 'step-09-functional', 'step-10-nonfunctional', 'step-11-polish', 'step-12-complete']
 workflowCompleted: true
 completedAt: '2026-05-05'
+lastEdited: '2026-06-10'
+editHistory:
+  - date: '2026-05-15'
+    workflow: 'bmad-correct-course'
+    changes: 'D10 (Admin UI deferred post-MVP); no gh CLI constraint; FR4/FR6/FR56/FR58 scoped per D10; Phase 0 epic stories restructured 18 → 11.'
+  - date: '2026-06-10'
+    workflow: 'bmad-correct-course'
+    changes: 'D11 (SSCS-first pilot wave) + D12 (RAM scope = availability/scheduling, not case/hearing management). D3 superseded (no migration; JOH eLinks + MRD facade). D5 reframed (jurisdiction-incumbent UAT). D8 reframed (jurisdiction-first, then per-region; jurisdiction as hierarchical first-class attribute). D9 restructured (two distinct user populations: JOH via jo_people + admin staff via RAM-internal table). D10 SQL-ETL sub-clause superseded. FR57 (Phase 0 ETL) retracted; FR58–FR61 renumbered FR57–FR60. New FRs amended: FR1, FR2, FR4, FR6, FR7, FR10–FR18, FR23, FR27, FR29, FR32, FR33, FR34, FR35, FR36, FR39, FR57, FR60. NFR24 flipped (eLinks in MVP). Executive Summary rewritten. Glossary additions: GAPS, JOH, Jurisdiction, MRD, RTJ, SSCS, Tribunal Member, Tribunal Panel. Authentication Model reframed. User Journeys: SSCS Journey 1 added; existing journeys renumbered 1→2 … 5→6. Phase-by-Phase Journey Mapping table + Integration Requirements table updated. See sprint-change-proposal-2026-06-10.md.'
+  - date: '2026-06-10'
+    workflow: 'bmad-validate-prd + bmad-edit-prd'
+    changes: 'Validation revealed Success Criteria + Product Scope + NFR cohort sections were not threaded into the 21-edit SSCS-pivot cascade. Edit pass applied 10 edit proposals covering: User Success / Business Success / Technical Success / Measurable Outcomes table rewrites for D11 alignment (Section A); MVP / Explicit Exclusions / Growth Features / Vision rewrites for D11 alignment (Section B); NFR section intro + NFR13 + NFR21 + NFR32 + NFR36 + NFR38 + NFR41 cohort sweep (Section C). PRD now internally consistent with D1–D12. Validation rating expected to lift from 4/5 to 5/5.'
 productCodename: 'RAM Pathfinder'
 releaseMode: 'phased'
 inputDocuments:
   - '_bmad-output/brainstorming/brainstorming-session-2026-05-05-1600.md'
-  - 'docs/architecture/asis/functional-modules.md'
-  - 'docs/architecture/asis/data-dependencies.md'
-  - 'docs/architecture/asis/integration-dependencies.md'
+  - 'resources/architecture/asis/functional-modules.md'
+  - 'resources/architecture/asis/data-dependencies.md'
+  - 'resources/architecture/asis/integration-dependencies.md'
 workflowType: 'prd'
 documentCounts:
   briefs: 0
@@ -48,48 +59,68 @@ RAM Pathfinder is a greenfield rebuild of HMCTS's Judicial Itineraries system. 1
 | Domain-Specific Requirements | UK govtech compliance, technical, integration constraints |
 | API Backend Specific Requirements | The 11-service API surface |
 | Project Scoping & Phased Development | MVP scope, build phases, rollout waves |
-| Functional Requirements (FR1–FR61) | Capability contract |
+| Functional Requirements (FR1–FR60) | Capability contract |
 | Non-Functional Requirements (NFR1–NFR42) | Quality-attribute contract |
-| Decisions Log (D1–D10) | Programme-level decisions |
+| Decisions Log (D1–D12) | Programme-level decisions |
 | Glossary, References | Acronyms and source documents |
 
 ## Executive Summary
 
-JI (Judicial Itineraries) is HMCTS's system for planning, allocating, confirming, and paying judicial sittings across Civil, Family, and Crown Courts. It runs on an unsupported Oracle APEX (OPT) platform and is Board-endorsed for full replacement.
+**RAM Pathfinder** is HMCTS's API-driven greenfield platform for judicial scheduling — the planning, allocation, confirmation and payment of sittings and hearings for Judicial Office Holders (JOHs). It will be rolled out **jurisdiction by jurisdiction** (per D8 + D11), starting with the **SSCS Tribunals jurisdiction** in wave 1 and continuing with the **Courts jurisdiction** (Civil, Family, Crown) across the HMCTS judicial regions in waves 2+.
 
-This PRD describes the greenfield rebuild — **RAM Pathfinder** — as an API-driven application. RAM Pathfinder replicates APEX's functional surface across 11 services (Domain / Cross-cutting / Read-model), with a modern UI replacing APEX's. RAM Pathfinder exposes APIs that HMCTS programmes (DA&I, finance, Tribunals, Actuals, Scheduling & Listing) consume directly, replacing today's export-file-by-email integration.
+Two legacy systems are replaced:
 
-**Target users (~11 roles, scoped by Region and Area):**
+- **GAPS** — SSCS's incumbent judicial scheduling system, expected to be decommissioned. Replaced in **wave 1** (Phase 9).
+- **JI / Oracle APEX (OPT)** — HMCTS's Courts judicial scheduling system. Unsupported with a fixed end-of-life. Replaced in **waves 2+** (Phase 10+), one HMCTS judicial region per wave.
+
+The same 11-service architecture serves both jurisdictions (Domain / Cross-cutting / Read-model). A modern UI replaces each legacy UI as the jurisdiction migrates. RAM Pathfinder exposes versioned APIs that HMCTS programmes (DA&I, finance, Actuals, Scheduling & Listing) consume directly, replacing today's export-file-by-email integration.
+
+**Terminology note:** existing JI / RAM Pathfinder documents use "judge" as the dominant term for the people whose schedules are managed. To accommodate the SSCS jurisdiction — where panels include Medical Members, Disability-Qualified Members and Disability (Other) Members who are not judges in the Courts sense — the project adopts **Judicial Office Holder (JOH)** as the umbrella term going forward. "Judge" remains valid where the meaning is specifically a judge (Circuit Judge, District Judge, salaried Tribunal Judge, fee-paid Recorder, etc.); JOH is used wherever the meaning includes non-judge panel members. A sweep across PRD, FRs, architecture documents and service naming (`ram-judge` → likely `ram-joh`) is a follow-up workstream tracked under D11.
+
+**Target users:**
+
+*SSCS Tribunals jurisdiction (wave 1) — applicable roles will be enumerated against the GAPS as-is analysis pack (parallel to the JI pack under `resources/architecture/asis/`). Working set:*
+
+- Regional Tribunal Judges (RTJ) — JOHs
+- Tribunal Judges, salaried and fee-paid — JOHs
+- Tribunal Members — Medical, Disability-Qualified, Disability (Other) — JOHs
+- Tribunal Caseworkers / scheduling admin
+- Finance / Payment Authoriser (shared with Courts jurisdiction — JFEPS path preserved per D11)
+- MI / Reporting User (shared with Courts jurisdiction)
+
+*Courts jurisdiction (waves 2+) — ~11 roles, scoped by HMCTS judicial Region and Area:*
 
 - RSU / Judicial Team (Admin, Full Access, Verifier / Read-only)
 - Court users (Full Access, Enhanced CJ, Limited / Read-only)
-- Judges, Judges' Clerks, Presiding Judges / Clerks
+- Judges, Judges' Clerks, Presiding Judges / Clerks — JOHs and their support staff
 - Finance / Payment Authoriser
 - MI / Reporting User
 
-*Operational platform support (OPT Support in the legacy system) is handled by external HMCTS roles and is not a JI user role.*
+*Operational platform support (OPT Support in the legacy JI system; equivalent in GAPS) is handled by external HMCTS roles and is not a RAM Pathfinder user role.*
 
 **Problems being solved:**
 
-1. OPT / APEX is unsupported with a fixed end-of-life.
-2. The export-only integration model (Excel, PDF, email) does not scale to upcoming HMCTS programmes (Tribunals coverage, Actuals, Scheduling & Listing reforms).
-3. APEX's UI is dated. RAM Pathfinder provides a modern, accessible, performant UI.
+1. **Both legacy systems have replacement drivers.** APEX is unsupported with a fixed end-of-life. GAPS is a legacy system expected to be decommissioned.
+2. **The export-only integration model** (Excel, PDF, email) does not scale to upcoming HMCTS programmes (Actuals, Scheduling & Listing reforms, DA&I MI consumption).
+3. **Both legacy UIs are dated.** RAM Pathfinder provides a modern, accessible, performant UI replicating each jurisdiction's legacy functional surface (per D4).
 
-**Success:** every region migrated to RAM Pathfinder; APEX retired; downstream consumers integrating via API; future HMCTS programmes building on JI's APIs.
+**Success:** SSCS jurisdiction migrated to RAM Pathfinder in wave 1 with GAPS decommissioned for SSCS scheduling; every HMCTS Courts judicial region migrated in waves 2+ with APEX/JI retired; downstream consumers integrating via API; future HMCTS programmes building on RAM Pathfinder's APIs.
 
 ### Key characteristics
 
-1. **Greenfield, not strangler.** APEX does not support strangler decomposition. RAM Pathfinder is built end-to-end before any user moves; APEX runs unchanged for non-migrated regions during phased rollout. No dual-write, no event bus, no synchronisation layer.
+1. **Greenfield, not strangler.** Neither GAPS nor APEX supports strangler decomposition. RAM Pathfinder is built end-to-end before any user moves; the legacy system in each jurisdiction runs unchanged for non-migrated users during phased rollout. No dual-write, no event bus, no synchronisation layer.
 
 2. **Simplification.** REST-first synchronous coordination; Strategy A federated read models (Itinerary, MI Feed); no event stream; no webhook surface; log-based audit and observability for MVP (D7) with structured user-action audit on the post-MVP roadmap.
 
-3. **APEX as the behavioural reference, verified by manual UAT (D5, revised 2026-05-06).** UAT is performed by users with hands-on APEX experience — RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI. They compare RAM Pathfinder behaviour against APEX side-by-side. No automated APEX-comparison harness; APEX is not co-managed (D6).
+3. **The jurisdiction's incumbent system is the behavioural reference, verified by manual UAT (D5, revised 2026-05-06; reframed 2026-06-10 per D11).** UAT is performed by users with hands-on experience of *that jurisdiction's* incumbent system — GAPS-experienced users (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced users (RSU, Court, Judge, Judges' Clerks, Finance, MI) for waves 2+. They compare RAM Pathfinder behaviour against the incumbent side-by-side. No automated comparison harness; legacy systems are not co-managed (D6).
 
-4. **Phase 0 as platform smoke-test.** Reference Data and Users + Roles migrate from APEX into RAM Pathfinder tables in Phase 0 (D3 + D9 + D10), via a dedicated ETL that reads APEX dumps, transforms rows, and **loads via direct SQL INSERT** statements (per D10, revised from "via the Reference Data and Authorisation APIs"). API-as-Product standards (versioning, OpenAPI, deprecation via [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)) are exercised on **Reference Data read endpoints** and Authorisation lookups before any domain service is built. Admin-write API endpoints (and the admin UI that would consume them) are deferred post-MVP per D10.
+4. **Phase 0 as platform smoke-test.** Reference Data is sourced from JOH eLinks API + MRD per D11 / the revised D3 (no ETL, no legacy migration); user identity is split between JOH records (via `jo_people`) and a RAM-internal admin-staff table per the restructured D9. API-as-Product standards (versioning, OpenAPI, deprecation via [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)) are exercised on **Reference Data read endpoints** and Authorisation lookups before any domain service is built. Admin-write API endpoints (and the admin UI that would consume them) are deferred post-MVP per D10.
 
-5. **Per-region phased cutover (D8).** Each wave moves one region with all applicable user roles together. Migrated users do not use APEX; non-migrated users do not use RAM Pathfinder. No contention or synchronisation.
+5. **Per-jurisdiction, per-region phased cutover (D8, reframed by D11).** Wave 1 is the SSCS Tribunals jurisdiction. Waves 2+ are Courts regions, one HMCTS judicial region per wave, with all applicable in-region roles together. Migrated users do not use the legacy system; non-migrated users do not use RAM Pathfinder. No contention or synchronisation.
 
-**Why now:** OPT is unsupported. HMCTS programmes need integration patterns the export-only legacy cannot deliver. Each month on APEX delays API integration for the wider ecosystem.
+6. **SSCS impact on existing work (per D11).** The 11 services are preserved at the decomposition level, but the SSCS jurisdiction drives concrete changes to existing artefacts: (a) "judge" terminology generalises to JOH where panels include non-judge members; (b) `ram-judge` is renamed to `ram-joh` (or equivalent) at architecture-phase confirmation; (c) `ram-booking` and `ram-sitting` accommodate tribunal-member sub-types (Medical, Disability-Qualified, Disability (Other)) as additional JOH types — panel composition for specific cases and hearing-type tracking live in **external case-management systems** per D12, not in RAM; (d) FR wording across the JOH, Booking and Sitting groups is reworded; (e) a new SSCS as-is analysis pack is required. These changes are tracked as a workstream under D11 and are *not* a service decomposition change.
+
+**Why now:** GAPS has a confirmed decommission trajectory; SSCS is the chosen wave-1 jurisdiction per D11. APEX is unsupported with its own end-of-life and is replaced in waves 2+. HMCTS programmes need integration patterns the export-only legacy cannot deliver. Each month on the legacy systems delays API integration for the wider ecosystem.
 
 ## Project Classification
 
@@ -107,29 +138,40 @@ This PRD describes the greenfield rebuild — **RAM Pathfinder** — as an API-d
 
 ### User Success
 
-Each role can complete its legacy workflow on RAM Pathfinder without re-training, and faster or no slower than APEX:
+Each role can complete its legacy workflow on RAM Pathfinder without re-training, and faster or no slower than the **cohort's incumbent system** (GAPS for the SSCS jurisdiction in wave 1; APEX for Courts jurisdictions in waves 2+):
 
-- **RSU / Judicial Team**: maintain judges, working patterns, tickets, absences, vacancies. Vacancy auto-creation from approved absences works end-to-end (R4).
+**SSCS jurisdiction (wave 1):**
+
+- **Regional Tribunal Judges (RTJ) / Tribunal Caseworkers**: manage tribunal-member availability, working patterns, tickets, absences, vacancies. Vacancy auto-creation from approved absences works end-to-end (R4).
+- **Tribunal Judges (salaried and fee-paid)**: itinerary and forward look filtered to authorised JOHs only (R2). No case-level data exposure.
+- **Tribunal Members (Medical, Disability-Qualified, Disability (Other))**: itinerary scoped to authorised JOHs only; Specialisations and tickets visible from JOH eLinks + MRD per FR15.
+
+**Courts jurisdictions (waves 2+):**
+
+- **RSU / Judicial Team**: maintain JOHs, working patterns, tickets, absences, vacancies. Vacancy auto-creation from approved absences works end-to-end (R4).
 - **Court users**: confirm sittings and bookings with comparable or fewer clicks than APEX. AM/PM split, work-type editing, and verifier sign-off (County Courts) preserved.
-- **Judges and Judges' Clerks**: itinerary and forward look filtered to authorised judges only (R2). No case-level data exposure.
-- **Finance / Payment Authoriser**: JFEPS-compatible Excel via the same email mechanism as APEX. JFEPS schedule shape unchanged.
-- **MI / Reporting**: standard reports with the same parameter filters as APEX. Excel and PDF export preserved. Aggregate-only.
-- **All roles**: WCAG-compliant UI; performance baseline meets APEX page-level NFRs (≤ 5 s dashboard refresh, ≤ 10 s list/filter, ≤ 15 s batch/annual, ≤ 30 s reports/Forward Look).
+- **Judges and Judges' Clerks**: itinerary and forward look filtered to authorised JOHs only (R2). No case-level data exposure.
+
+**Shared across all jurisdictions:**
+
+- **Finance / Payment Authoriser**: JFEPS-compatible Excel via the same email mechanism (preserved for SSCS wave 1 per D11; unchanged for Courts waves 2+).
+- **MI / Reporting**: standard reports with the same parameter filters as the incumbent. Excel and PDF export preserved. Aggregate-only.
+- **All roles**: WCAG 2.2 AA UI; performance baseline meets the cohort's incumbent page-level NFRs (per the Courts/APEX baseline per NFR1–NFR5; SSCS wave 1 verified against GAPS-equivalent operations per the readiness assessment).
 
 ### Business Success
 
-- **APEX retirement** — every region migrated; Oracle APEX (OPT) decommissioned.
-- **Strategic integration platform** — at least one HMCTS programme (Tribunals coverage, Actuals, Scheduling & Listing) integrating via API by `TBD post-MVP date`, replacing the export workflow.
-- **Continuity** — zero unpaid judges due to migration. Payment exports to JFEPS/Liberata continue uninterrupted across every rollout wave.
-- **Delivery** — phase-by-phase cadence (Phase 0 → 8 build, then per-region rollout). Specific dates are programme-management territory.
+- **Legacy retirement** — GAPS decommissioned for SSCS in wave 1; Oracle APEX (OPT) decommissioned as every Courts judicial region migrates in waves 2+.
+- **Strategic integration platform** — Tribunals (SSCS) is wave 1 itself per D11; the post-MVP commitment is at least one further HMCTS programme (Actuals, Scheduling & Listing) integrating via API by `TBD post-MVP date`, replacing the export workflow.
+- **Continuity** — zero unpaid JOHs due to cutover. Payment exports to JFEPS/Liberata continue uninterrupted across every rollout wave (SSCS wave 1 and Courts waves 2+).
+- **Delivery** — phase-by-phase cadence (Phase 0 → 8 build, then per-jurisdiction-then-per-region rollout per D8 reframed). Specific dates are programme-management territory.
 
 ### Technical Success
 
-- **All 11 services live** — Reference Data, Authorisation, Notification, Judge, Absence, Vacancy, Booking, Sitting, Payment, Itinerary, MI Feed (Phases 0 → 8). Per-service config: Spring profiles + Key Vault. Cross-service policy values: shared `configuration_values` table.
-- **Phase 0 migration correctness** — 100% of in-scope Reference Data lists ETL'd into RAM Pathfinder and signed off by RSU/judicial-team owners (D3, Risk #13). 100% of active APEX users loaded into Authorisation and mapped to IdP principals (D9, Risk #14); unmatched records have an explicit decision (drop/hold/manual map). Zero ambiguous migrations.
-- **Behavioural parity** (D5) — manual UAT script per domain service, walked by APEX-experienced users (RSU, Court, Judge, Judges' Clerks, Finance, MI). Sign-off is the wave gate.
+- **All 11 services live** — Reference Data, Authorisation, Notification, **JOH** (`ram-joh` per D11 — was `ram-judge`), Absence, Vacancy, Booking, Sitting, Payment, Itinerary, MI Feed (Phases 0 → 8). Per-service config: Spring profiles + Key Vault. Cross-service policy values: shared `configuration_values` table.
+- **Phase 0 ingestion correctness** (per D11 / revised D3) — JOH eLinks API integration live and serving the 15 `jo_*` entities; MRD weekly Excel feed ingested and exposed via `ram-reference-data`'s read API; `ram-authorisation` resolves IdP email → personal_number (JOH) or staff identifier (admin) per the restructured D9. *(The previous "100% of Reference Data lists ETL'd + 100% of active APEX users loaded" criterion is retracted along with the Phase 0 Data Migration ETL.)*
+- **Behavioural parity** (D5 reframed) — manual UAT script per domain service, walked by **jurisdiction-incumbent-experienced users**: GAPS-experienced users (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced users (RSU, Court, Judge, Judges' Clerks, Finance, MI) for waves 2+. Sign-off is the wave gate.
 - **API-as-Product** from Phase 0 — versioned contract, OpenAPI spec, deprecation policy ([RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset`) per service.
-- **Performance NFRs** met or exceeded (≤ 5 s dashboard refresh; ≤ 10 s list/filter; ≤ 15 s batch/annual; ≤ 30 s reports/Forward Look).
+- **Performance NFRs** met or exceeded (≤ 5 s dashboard refresh; ≤ 10 s list/filter; ≤ 15 s batch/annual; ≤ 30 s reports/Forward Look). Page-level NFRs are derived from the APEX baseline; SSCS wave-1 cutover verifies these against GAPS-equivalent operations as part of the SSCS-cohort readiness assessment.
 - **Strategy A federated read models** (Itinerary, MI Feed) meet their NFRs at MVP, or Strategy C cache fallback is in place by the wave that needs it (Risk #9).
 - **Log-based observability** (D7) from Phase 1 — structured logs, correlation IDs, error categorisation, retention sufficient for pilot incident triage.
 
@@ -137,27 +179,27 @@ Each role can complete its legacy workflow on RAM Pathfinder without re-training
 
 | Outcome | Target | Source |
 |---|---|---|
-| Reference Data migration accuracy | 100% of in-scope lists, signed off by named owners | D3 + Risk #13 |
-| User-record migration accuracy | 100% of active APEX users mapped to IdP principal; zero ambiguous records | D9 + Risk #14 |
-| Payment export continuity at cutover | Zero failed JFEPS payment cycles attributable to migration | Business success criterion above |
-| Behavioural parity per domain service | 100% of manual UAT scripts (run by APEX-experienced users comparing RAM Pathfinder vs APEX) signed off before that wave's cutover | D5 (revised) |
-| Per-wave feature parity | 100% of in-region role workflows demoed and signed off before wave cutover | D8 + Risk #3 |
-| Page-level performance | All page-level NFRs from `functional-modules.md` met or exceeded | functional-modules.md cross-cutting NFRs |
+| Reference Data ingestion correctness | JOH eLinks API live with all 15 `jo_*` entities served via `ram-reference-data` read API; MRD Excel feed ingested on the weekly cadence; consumer queries return jurisdiction-filtered results | D11 + revised D3 |
+| User onboarding correctness | All in-wave users can sign in via HMCTS IdP SSO and resolve to a canonical identifier (personal_number for JOHs via `jo_people`; staff identifier for admin staff via the RAM-internal staff identity table); zero ambiguous lookups | Restructured D9 |
+| Payment export continuity at cutover | Zero failed JFEPS payment cycles attributable to cutover (SSCS wave 1 or any Courts wave 2+) | Business success criterion above |
+| Behavioural parity per domain service | 100% of manual UAT scripts (run by jurisdiction-incumbent-experienced users — GAPS-experienced for wave 1, APEX-experienced for waves 2+ — comparing RAM Pathfinder vs the incumbent) signed off before that wave's cutover | D5 reframed + FR60 |
+| Per-wave feature parity | 100% of in-jurisdiction (wave 1) or in-region in-jurisdiction (waves 2+) role workflows demoed and signed off before wave cutover | D8 reframed + Risk #3 |
+| Page-level performance | All page-level NFRs from `functional-modules.md` met or exceeded; SSCS wave-1 cutover verifies against GAPS-equivalent operations | functional-modules.md cross-cutting NFRs |
 | Forward Look (federated read) | ≤ 30 s for a Region under Strategy A; Strategy C cache fallback designed | JFL-NFR-01, Risk #9 |
-| API consumer onboarding (post-MVP) | At least one external HMCTS programme integrating via API by `TBD` | Vision: strategic integration platform |
+| API consumer onboarding (post-MVP) | At least one external HMCTS programme (Actuals, Scheduling & Listing) integrating via API by `TBD` | Vision: strategic integration platform |
 | MVP user-action audit | Not in MVP; on roadmap (D7) | D7 |
 
 ## Product Scope
 
 ### MVP — Minimum Viable Product
 
-The MVP is the smallest deliverable that supports phased per-region rollout (D8). It comprises:
+The MVP is the smallest deliverable that supports phased per-jurisdiction-then-per-region rollout (D8 reframed). It comprises:
 
-- **Phase 0 Foundations** (D1, D7, D9): Reference Data + Users/Roles migrated from APEX; Authorisation with SSO; Notification; API contracts (versioned + paper contracts for Itinerary / MI Feed); deployment platform (CI/CD); structured logging conventions (D7); stub Home / navigation shell. *(Per-service configuration via Spring profiles + Key Vault; shared `configuration_values` infrastructure table managed by `ram-architecture` Flyway baseline.)*
-- **All 11 services built** (Phases 0–8): Reference Data, Authorisation, Notification (Phase 0); Judge, Absence, Vacancy, Booking, Sitting, Payment (incl. Reconciliation) (Phases 1–6); Itinerary, MI Feed (Phases 7–8). *(Per-service config is Spring profiles + Key Vault; cross-service policy values use the shared `configuration_values` infrastructure table — no separate configuration service per arch v2.2.)*
-- **Modern business-user UI** for all 11 judicial / operational roles replicating APEX layouts (D4) — every domain phase delivers its corresponding APEX module(s) end-to-end through `ram-ui`. **Admin UI (`ram-admin-ui`) is NOT in MVP** per D10 (2026-05-15 scope decision); admin tasks in MVP — reference-data maintenance, user/role/scope updates, activation toggles, migration-report review — happen via direct SQL by DBAs / platform engineers per operational runbooks.
-- **Phase 9 — Pilot rollout (wave 1)**: one region migrates, all applicable roles, with feature-parity gating per Risk #3.
-- **Behavioural parity with APEX** verified through **manual UAT performed by APEX-experienced users** (D5 revised) for every domain service. There is no automated APEX-comparison test harness in the MVP.
+- **Phase 0 Foundations** (D1, D7, D9 restructured, D11): Reference Data sourced from JOH eLinks API + MRD per the revised D3 (no ETL, no legacy migration); Authorisation with SSO and the two-population identity model per restructured D9; Notification; API contracts (versioned + paper contracts for Itinerary / MI Feed); deployment platform (CI/CD); structured logging conventions (D7); stub Home / navigation shell. *(Per-service configuration via Spring profiles + Key Vault; shared `configuration_values` infrastructure table managed by `ram-architecture` Flyway baseline.)*
+- **All 11 services built** (Phases 0–8): Reference Data, Authorisation, Notification (Phase 0); **JOH (`ram-joh`)**, Absence, Vacancy, Booking, Sitting, Payment (incl. Reconciliation) (Phases 1–6); Itinerary, MI Feed (Phases 7–8). *(Per-service config is Spring profiles + Key Vault; cross-service policy values use the shared `configuration_values` infrastructure table — no separate configuration service per arch v2.2.)*
+- **Modern business-user UI** for all in-jurisdiction roles replicating the cohort's incumbent UI layouts per D4 — every domain phase delivers its corresponding domain module end-to-end through `ram-ui`. **Admin UI (`ram-admin-ui`) is NOT in MVP** per D10 (2026-05-15 scope decision); admin tasks in MVP — user/role/jurisdiction/Region-scope updates, activation toggles — happen via direct SQL by DBAs / platform engineers per operational runbooks. *(Reference Data is sourced upstream from JOH eLinks + MRD per D11 — corrections happen at source, not in RAM. Migration-report review is obsolete under D11.)*
+- **Phase 9 — Pilot rollout (wave 1)**: the **SSCS jurisdiction** migrates per D11, with all applicable in-jurisdiction roles, with feature-parity gating per Risk #3.
+- **Behavioural parity with the jurisdiction's incumbent** verified through **manual UAT performed by jurisdiction-incumbent-experienced users** (D5 reframed; FR60) — GAPS-experienced users for wave 1, APEX-experienced users for waves 2+. There is no automated incumbent-comparison test harness in the MVP.
 - **Log-based audit and observability** (D7) — application logs only; no metrics platform, no traces, no structured user-action audit.
 
 **Explicit exclusions from MVP** (post-MVP roadmap):
@@ -165,44 +207,62 @@ The MVP is the smallest deliverable that supports phased per-region rollout (D8)
 - Structured user-action audit (D7 roadmap)
 - Metrics + traces + dashboards observability (D7 — log-based MVP only)
 - Domain event stream / webhooks (architecturally rejected for MVP — REST-first)
-- Active matching / allocation service (architecturally deferred)
+- Active matching / allocation service (architecturally deferred per D12 — RAM exposes availability/traits; allocation is an external-system concern)
 - Bi-temporal history
-- Tribunals coverage
-- Historical-data access for migrated users (D3 + Risk #2 — separate decision)
+- Historical-data access at cutover (D3 superseded by D11 — no migration; historical data stays in the cohort's incumbent system: GAPS for SSCS, APEX for Courts; access policy per Risk #2 is a separate decision)
 - **Admin UI (`ram-admin-ui`) — entire admin-facing surface deferred post-MVP per D10 (2026-05-15)**, including:
-  - Reference Data maintenance UI (FR6's UI surface — read API + SQL-loaded data remain in MVP)
-  - Users / Roles / Scope admin UI (FR4's UI surface — auth tables populated by SQL ETL in MVP; DBAs maintain via direct SQL)
-  - Migration Reports review UI (sign-off in MVP via versioned git commits to `signoffs/` directory)
-  - Activation Flag toggle UI (FR58 cutover in MVP via direct SQL by DBA per the rollout runbook)
+  - Reference Data maintenance UI — *retracted in its previously-defined form per D11* (`ram-reference-data` is a facade over JOH eLinks + MRD; corrections happen at source, not in RAM). A future decision will determine whether RSU users get a write surface that proxies upstream APIs, or whether maintenance stays entirely upstream.
+  - Users / Roles / Scope admin UI (FR4's UI surface — auth tables populated by mechanisms outside the PRD scope per the restructured D9; DBAs maintain via direct SQL in MVP)
+  - Activation Flag toggle UI (FR57 cutover in MVP via direct SQL by DBA per the rollout runbook)
   - Admin "Send Test Email" + Delivery-Log viewer (Notification integration testing in MVP via Postman against Mailpit)
-- **Admin-write API endpoints** on `ram-reference-data` and `ram-authorisation` — read-only surfaces only in MVP; write endpoints ship with the admin UI post-MVP
+- **Admin-write API endpoints** on `ram-authorisation` — read-only surfaces only in MVP; write endpoints ship with the admin UI post-MVP. *(Admin-write endpoints on `ram-reference-data` are retracted under D11 since the data is upstream-sourced.)*
 
 ### Growth Features (Post-MVP)
 
-- **Admin UI (`ram-admin-ui`) — full repo + auth wrapper + admin theme + four MVP-deferred modules** (per D10):
-  - Reference Data maintenance with named-owner sign-off workflow (UI surface of FR6)
-  - Users & Roles admin: search, role edits, Region/Area scope edits, activation toggle (UI surface of FR4 + FR58)
-  - Migration Reports module: view reconciliation reports, apply decisions to unmatched records, sign off via UI (alternative to the git-based sign-off used in MVP)
+- **Admin UI (`ram-admin-ui`) — full repo + auth wrapper + admin theme + MVP-deferred modules** (per D10):
+  - Reference Data maintenance — *scope dependent on D11 follow-up decision* (whether RSU users get a write surface that proxies upstream APIs to JOH eLinks / MRD, or whether maintenance stays entirely upstream). RAM-owned reference-data tables (FR6 tier (b)) get a maintenance surface either way.
+  - Users & Roles admin: search, role edits, jurisdiction + Region/Area scope edits, activation toggle (UI surface of FR4 + FR57)
   - Notification utilities: "Send Test Email" + delivery-log viewer
-- **Admin-write API endpoints** ship alongside the admin UI: `POST/PUT/PATCH/DELETE` on Reference Data; `PUT /v1/admin/users/{id}/{roles|region-scopes|activation}` on Authorisation.
-- **Wave-by-wave rollout**: Phase 10..N — additional regions migrate, wave by wave, until all regions are on RAM Pathfinder and APEX is retired.
+- **Admin-write API endpoints** ship alongside the admin UI: on `ram-authorisation` — `PUT /v1/admin/users/{id}/{roles|jurisdictions|region-scopes|activation}`. *(`ram-reference-data` admin-write endpoints retracted under D11 — the upstream-sourced tier is read-only; the RAM-owned tier (b) may get write endpoints depending on the D11 follow-up decision.)*
+- **Wave-by-wave rollout — Courts cohort**: Phase 10..N — Courts jurisdictions (Civil, Crime, Family, Crown) migrate per-region, wave by wave, until all Courts judicial regions are on RAM Pathfinder and APEX is retired.
 - **Structured user-action auditing** (D7 roadmap commitment) — who did what, when, with before/after values for write operations.
 - **Full observability** — metrics + traces + dashboards beyond the log-based MVP minimum.
-- **External API consumer onboarding** — DA&I migrates from export-based MI to API-based MI Feed; future programmes (Tribunals, Actuals, Scheduling & Listing) onboard onto JI's APIs.
-- **Historical-data access** policy for migrated users — read-only APEX bridge, or one-shot export, or policy-of-no-access (Risk #2).
-- **Cross-region workflow handling** matures from per-wave manual coordination (Risk #1) to system-supported flows.
+- **External API consumer onboarding** — DA&I migrates from export-based MI to API-based MI Feed; future programmes (Actuals, Scheduling & Listing) onboard onto RAM Pathfinder's APIs. *(Tribunals is wave 1 itself per D11, not a future programme to onboard.)*
+- **Historical-data access policy** at cutover — read-only incumbent-system bridge (GAPS for SSCS / APEX for Courts), or one-shot export, or policy-of-no-access (Risk #2).
+- **Cross-region workflow handling** matures from per-wave manual coordination (Risk #1) to system-supported flows (Courts cohort waves 2+).
 
 ### Vision (Future)
 
-- **Strategic integration platform** for HMCTS judicial scheduling — Tribunals, Magistrates, Civil, Family, Crown all served by a single API-driven foundation.
-- **Real-time data flow** to downstream systems (DA&I, finance, performance teams) — potentially via event streams or webhooks if integration patterns demand it (architecturally deferred today, revisitable when justified).
-- **Active matching / allocation** service for fee-paid judges to vacancies, beyond today's filter-as-hint approach.
-- **Automated reconciliation feed** from JFEPS to JI, replacing today's manual flag-as-reconciled step.
+- **Strategic integration platform** for HMCTS judicial scheduling — all current judicial jurisdictions on a single API-driven foundation (Tribunals/SSCS served in wave 1 per D11; Courts/Civil, Courts/Crime, Courts/Family, Courts/Crown in waves 2+). Future jurisdictions (other Tribunals types, Magistrates) extend the same model when the programme expands.
+- **Real-time data flow** to downstream systems (DA&I, finance, performance teams) — potentially via event streams or webhooks if integration patterns demand it (architecturally deferred today per D12; revisitable when justified).
+- **Active matching / allocation** capability beyond today's filter-as-hint approach — *external to RAM per D12* (RAM exposes JOH availability/traits; case-management or listing systems perform the matching).
+- **Automated reconciliation feed** from JFEPS to RAM Pathfinder, replacing today's manual flag-as-reconciled step.
 - **Bi-temporal / audit-grade compliance trail** if regulatory scope demands it (today out of scope; revisitable).
 
 ## User Journeys
 
-### Journey 1 — RSU Admin: cover-creation through payment (canonical operational cycle)
+### Journey 1 — Tribunal Caseworker: managing JOH availability for SSCS panel coverage (wave 1 — SSCS jurisdiction)
+
+**Persona:** Asha, Tribunal Caseworker in an SSCS regional centre. Asha records absences and ensures Medical Members, Disability-Qualified Members, and Tribunal Judges are scheduled to cover SSCS sittings. (RAM tells her who is available; the external case-management system tells her how many panels are needed — RAM does not manage hearings per D12.)
+
+**Trigger:** Dr. M, an SSCS Medical Member, files an absence for the week of date X. The external case-management system has flagged scheduled SSCS hearings that need a Medical Member that week.
+
+**Steps:**
+
+1. The absence appears on Asha's "Outstanding Actions" tile on the Home dashboard.
+2. Asha opens the absence. RAM displays Dr. M's profile (sourced from `jo_people` per FR11), Medical-Member appointment type (sourced from `jo_appointments`), Specialisations (sourced from MRD), tickets/authorisations (tier-(a) `jo_tickets` + RAM-overlay per FR15), and the dates of absence.
+3. Asha approves the absence. RAM auto-creates a vacancy (FR23) pre-populated with JOH type (Medical Member), jurisdiction (SSCS), date range.
+4. Asha advertises the vacancy out-of-system (the standard SSCS process — phones available Medical Members; RAM's availability view per FR18 + FR27 helps her shortlist).
+5. Dr. P, another Medical Member with the right Specialisations, confirms availability.
+6. Asha creates a booking in RAM (FR29) — JOH = Dr. P, jurisdiction = SSCS, tribunal venue, date range, session type. The vacancy is marked filled (FR30).
+7. RAM emails Dr. P a booking acknowledgement (FR32).
+8. After the hearings happen (managed externally per D12), Asha confirms the sitting (FR37) in RAM, recording whether Dr. P actually sat.
+9. The payment batch generates a JFEPS schedule (FR42) for the confirmed sitting.
+10. The external case-management system reads the booking via RAM's API and updates its own case-to-JOH allocation records.
+
+**Outcome:** Asha completes the cover cycle in fewer clicks than GAPS. JOH availability and bookings are recorded in RAM; the case-management system stays informed via APIs; JFEPS payment is unchanged from APEX.
+
+### Journey 2 — RSU Admin: cover-creation through payment (wave 2+ — Courts canonical operational cycle)
 
 **Persona:** Sam, RSU Admin in a regional office. Sam handles absences, vacancies, fee-paid allocations, booking confirmation, and reconciliation. (Payment-schedule generation is a scheduled batch — Sam confirms bookings/sittings, then reconciles after Liberata has paid; the batch generates and dispatches the JFEPS Excel in between.)
 
@@ -219,7 +279,7 @@ The MVP is the smallest deliverable that supports phased per-region rollout (D8)
 
 **Outcome:** Sam completes the cycle in fewer clicks than APEX. JFEPS output lands at the same finance team.
 
-### Journey 2 — Court user: daily sitting confirmation
+### Journey 3 — Court user: daily sitting confirmation (wave 2+ — Courts)
 
 **Persona:** Priya, Court user (Full Access) in a Crown Court office. Priya confirms yesterday's sittings — verifying they took place, recording actual work type, adjusting session duration. Confirmed sittings drive payment and MI.
 
@@ -234,7 +294,7 @@ The MVP is the smallest deliverable that supports phased per-region rollout (D8)
 
 **Outcome:** Yesterday's data is locked in for payment and MI before Priya's first coffee.
 
-### Journey 3 — Judge: view itinerary and request absence
+### Journey 4 — Judge: view itinerary and request absence (wave 2+ — Courts)
 
 **Persona:** Justice Hawthorne, salaried Circuit Judge. Uses JI to see planned sittings and request absences (training, leave).
 
@@ -249,7 +309,7 @@ The MVP is the smallest deliverable that supports phased per-region rollout (D8)
 
 **Outcome:** Request lands with RSU; the judge moves on to the next hearing.
 
-### Journey 4 — DA&I analyst: consume MI Feed API instead of Excel exports
+### Journey 5 — DA&I analyst: consume MI Feed API instead of Excel exports (cohort-neutral; post-MVP)
 
 **Persona:** Riya, DA&I analyst building monthly utilisation dashboards. Today she runs APEX reports, copy-pastes to Excel, transforms, then feeds her dashboard.
 
@@ -264,7 +324,7 @@ The MVP is the smallest deliverable that supports phased per-region rollout (D8)
 
 **Outcome:** The export-and-transform manual chain is gone. Future programmes (Tribunals, Actuals) onboard onto the same APIs.
 
-### Journey 5 — Edge case: cross-region fee-paid booking during partial rollout (Risk #1)
+### Journey 6 — Edge case: cross-region fee-paid booking during partial rollout, Courts cohort (Risk #1)
 
 **Persona:** Sam (from Journey 1) needs to book an off-circuit fee-paid judge. Judge's home region (B) is on RAM Pathfinder; Sam's region (A) is still on APEX. Only applies during the rollout window.
 
@@ -303,7 +363,7 @@ The five journeys reveal these capability areas (mapped to the 11-service decomp
 
 - **Accessibility — WCAG 2.2 Level AA**, required by the Public Sector Bodies (Websites and Mobile Applications) Accessibility Regulations 2018. Every domain phase delivers UI per D4; each phase's UI must be tested for WCAG 2.2 AA before cutover. APEX-era baseline is preserved at minimum; modern UI on new technology (per the user-experience uplift in the vision) targets a measurable improvement.
 - **GDS Service Standard alignment** — HMCTS internal systems reference the GDS Service Standard as the bar for digital service quality. Full GDS service assessments are not always required for internal-only systems, but the principles (user research, accessibility, performance, security, simple-as-possible) apply.
-- **UK GDPR and Data Protection Act 2018** — personal data scope is limited to user/judge identity, contact details, payroll numbers, and operational metadata. **JI does not hold case-level data** (REP-BR-NFR-03 from `functional-modules.md`); this remains a binding constraint.
+- **UK GDPR and Data Protection Act 2018** — personal data scope is limited to user/judge identity, contact details, payroll numbers, and operational metadata. **RAM Pathfinder does not hold case-level data** (REP-BR-NFR-03 from `functional-modules.md`); this remains a binding constraint.
 - **HMCTS / MoJ Government Functional Standard 7 — Security** — protective marking, access control, secure development practices. Implementation aligns with HMCTS-approved technology stack and security frameworks.
 - **MoJ authentication policy** — under SSO (per locked Authorisation decision), authentication policy is owned by the HMCTS IdP, not JI. JI's Admin module's password-change capability disappears (D9 + the noted absorption of the Admin module under SSO).
 - **Freedom of Information Act 2000** — JI's aggregate sitting / utilisation data is FOI-exposable; the MI Feed API is aggregate-only by contract (REP-BR-NFR-03). Case-level data is forbidden by contract; this protects against FOI scope creep into individual hearings.
@@ -338,11 +398,13 @@ The five journeys reveal these capability areas (mapped to the 11-service decomp
 | Integration | Direction | Phase | Mechanism | Notes |
 |---|---|---|---|---|
 | **HMCTS IdP (SSO)** | Inbound (AuthN) | Phase 0 | OIDC / SAML (per HMCTS standard) | Hard dependency; must be live in Phase 0 for any user-facing demo. Risk #6 in 1600 brainstorming. |
-| **JFEPS / Liberata** | Outbound (payment) | Phase 6 | JFEPS-compatible Excel via HMCTS email, forwarded by Payment Authoriser | **Unchanged from APEX** — same format, same mechanism, same human-in-the-loop. |
+| **JOH eLinks API** *(MVP scope per D11)* | Inbound (reference data) | Phase 0 | REST API (sync mechanism TBD architecture) | Canonical source for judicial-holder data — 15 `jo_*` entities listed in the revised D3. NFR24 reframed for MVP inclusion. |
+| **MRD (Master Reference Data)** *(MVP scope per D11)* | Inbound (reference data) | Phase 0 | Weekly Excel feed (transitional, until MRD APIs ship) | Supplementary attributes not in JOH eLinks — notably JOH Specialisations. See revised D3. |
+| **JFEPS / Liberata** | Outbound (payment) | Phase 6 | JFEPS-compatible Excel via HMCTS email, forwarded by Payment Authoriser | **Unchanged from APEX** — same format, same mechanism, same human-in-the-loop. **Preserved for SSCS wave 1 per D11.** |
 | **HMCTS Email infrastructure** | Outbound (notifications) | Phase 0 / used Phase 1+ | SMTP via HMCTS email | Booking ack, absence ack, payment schedule. Required dependency. |
 | **DA&I (MI Feed)** | Outbound (data) | Phase 8 | MI Feed REST API (Strategy A pull-based federation) | Replaces export-by-email; aggregate-only contract per REP-BR-NFR-03. |
-| **eLinks / HR systems** | Inbound (judge data) | — (out of scope for MVP) | Manual entry (carried from APEX) | Aspirational eLinks integration (NFR-3 in source docs) is **not** in MVP scope; manual data entry continues. |
-| **Future programmes** (Tribunals, Actuals, Scheduling & Listing) | Outbound (APIs) | Post-MVP | REST APIs from JI | Vision-level; specific contract design happens when programme demand crystallises. |
+| **External case-management systems** (SSCS case management; Courts Listing systems) *(per D12)* | Outbound (APIs) | From Phase 9 (wave 1 onward) | REST APIs from RAM | RAM exposes JOH availability + booking data for external case-management consumption. No reverse-write into RAM (RAM is the system of record for JOH scheduling). |
+| **Future programmes** (Actuals, Scheduling & Listing reforms) | Outbound (APIs) | Post-MVP | REST APIs from RAM | Vision-level; specific contract design happens when programme demand crystallises. (Tribunals removed from "future programmes" — SSCS is wave 1 per D11.) |
 
 ### Risk Mitigations (domain-specific)
 
@@ -405,9 +467,9 @@ Endpoint shape is illustrative — definitive contracts are produced as Phase 0 
 
 ### Authentication Model
 
-- **End-user authentication: HMCTS IdP via SSO** (OIDC or SAML — exact mechanism is HMCTS-IdP-side; JI integrates with whichever the IdP exposes).
-- **End-user authorisation: JI's Authorisation service.** Migrated APEX users (per D9) are keyed to the IdP principal. Every domain call resolves the principal's roles + Region/Area scope via Authorisation before authorising the action.
-- **HMCTS IdP password / session / account lifecycle policies are wholly external to JI** (per Step 5 Technical Constraints) — JI inherits whatever the IdP enforces.
+- **End-user authentication: HMCTS IdP via SSO** (OIDC or SAML — exact mechanism is HMCTS-IdP-side; RAM Pathfinder integrates with whichever the IdP exposes).
+- **End-user authorisation: RAM Pathfinder's Authorisation service.** Per the restructured D9, RAM Pathfinder serves two distinct user populations identified through different lookup paths: (a) **JOH users** — IdP email looked up against `jo_people` to resolve the personal number (the canonical RAM identifier for JOHs); (b) **HMCTS admin staff** — a RAM-internal staff identity table (not present in JOH eLinks data). Both populations share the same authorisation model. Every domain call resolves the principal's roles + **jurisdiction** + Region/Area scope via Authorisation before authorising the action.
+- **HMCTS IdP password / session / account lifecycle policies are wholly external to RAM Pathfinder** (per Step 5 Technical Constraints) — RAM Pathfinder inherits whatever the IdP enforces.
 - **Service-to-service authentication:** TBD in architecture phase; mTLS or service-token is the typical fit for the chosen Java/Spring/Kubernetes stack.
 - **External consumer authentication** (DA&I MI Feed, future programmes): same IdP principal model where possible; service principals or API keys are an architecture-phase fallback if the IdP doesn't issue principals for non-human consumers.
 
@@ -478,17 +540,18 @@ Default is α; β is a capacity-conditional upgrade.
 
 ### Phase-by-Phase Journey Mapping
 
-Mapping the **5 user journeys** (Step 4) to the **build phases** (from the brainstorming session migration table). A journey becomes *demoable* at the end of the phase that completes its last dependency.
+Mapping the **6 user journeys** (Step 4) to the **build phases** (from the brainstorming session migration table). A journey becomes *demoable* at the end of the phase that completes its last dependency. The wave-1 SSCS journey (Journey 1) and the wave-2+ Courts canonical journey (Journey 2) both demo at Phase 6 — they cover the same operational chain in different jurisdictions.
 
 | Journey | Demoable at end of | Dependency |
 |---|---|---|
-| Journey 3 — Judge views itinerary | Phase 7 (Itinerary) | Federates over Judge + Absence + Vacancy + Booking + Sitting |
-| Journey 2 — Court daily sitting confirmation | Phase 5 (Sitting) | Sitting + Authorisation; Phase 5 ends with confirmation flow live |
-| Journey 1 — RSU cover-creation through payment (canonical operational cycle) | Phase 6 (Payment) | Full operational chain Judge → Absence → Vacancy → Booking → Sitting → Payment must be live |
-| Journey 4 — DA&I MI Feed API consumer | Phase 8 (MI Feed) | MI Feed federates over all domain services including Payment |
-| Journey 5 — Cross-region edge case during partial rollout | Phase 9+ (rollout window only) | Only relevant once at least one region has migrated; resolves once last region migrates |
+| Journey 1 — Tribunal Caseworker SSCS panel coverage (wave 1) | Phase 6 (Payment) | Full operational chain JOH → Absence → Vacancy → Booking → Sitting → Payment must be live |
+| Journey 2 — RSU cover-creation through payment, Courts canonical cycle (wave 2+) | Phase 6 (Payment) | Full operational chain JOH → Absence → Vacancy → Booking → Sitting → Payment must be live |
+| Journey 3 — Court daily sitting confirmation (wave 2+) | Phase 5 (Sitting) | Sitting + Authorisation; Phase 5 ends with confirmation flow live |
+| Journey 4 — Judge views itinerary (wave 2+) | Phase 7 (Itinerary) | Federates over JOH + Absence + Vacancy + Booking + Sitting |
+| Journey 5 — DA&I MI Feed API consumer (cohort-neutral; post-MVP) | Phase 8 (MI Feed) | MI Feed federates over all domain services including Payment |
+| Journey 6 — Cross-region edge case during partial rollout, Courts (Risk #1) | Phase 9+ (rollout window only) | Only relevant once at least one Courts region has migrated; resolves once last Courts region migrates |
 
-**Stakeholder communication:** the canonical operational demo (Journey 1) is available at Phase 6. Phases 1–5 produce per-module demos against partial chains (e.g. Phase 1 demos Judge management; Phase 4 demos vacancy → booking but not confirmation → payment).
+**Stakeholder communication:** the canonical operational demos (Journey 1 SSCS / Journey 2 Courts) are available at Phase 6. Phases 1–5 produce per-module demos against partial chains (e.g. Phase 1 demos JOH management; Phase 4 demos vacancy → booking but not confirmation → payment).
 
 ### Risk-Based Scoping
 
@@ -520,30 +583,30 @@ This section is the binding capability contract for RAM Pathfinder. UX, architec
 
 ### Identity & Authorisation
 
-- **FR1**: Authenticated users access RAM Pathfinder via HMCTS IdP single sign-on; password, session, and account lifecycle are owned by the IdP and not duplicated in RAM Pathfinder.
-- **FR2**: RAM Pathfinder's Authorisation service maps each authenticated principal to one or more roles and a Region/Area scope, and authorises every system call against that mapping.
+- **FR1** *(amended 2026-06-10 per D11 + the restructured D9)*: Authenticated users access RAM Pathfinder via HMCTS IdP single sign-on; password, session, and account lifecycle are owned by the IdP and not duplicated in RAM Pathfinder. At authentication time, the IdP email is resolved to RAM Pathfinder's canonical identifier — the **personal number** (for JOH users, looked up against `jo_people`) or a RAM-internal staff identifier (for admin-staff users) — per the restructured D9.
+- **FR2** *(amended 2026-06-10 per D8/D11)*: RAM Pathfinder's Authorisation service maps each authenticated principal to one or more roles, a **jurisdiction**, and a Region/Area scope, and authorises every system call against that mapping.
 - **FR3**: Authorised users can retrieve their effective permissions for their authenticated session.
-- **FR4** *(scoped 2026-05-15 per D10)*: System administrators can update role and Region/Area assignments for migrated and new users. **In MVP, the data layer is editable by DBAs via direct SQL on the auth tables** (data populated by Phase 0 Users/Roles ETL); **the admin UI surface is post-MVP** (`ram-admin-ui` Users & Roles module — see Growth Features). FR4's MVP success criterion is "an authorised DBA can update role/scope per the operational runbook"; the system-administrator role-with-UI surface ships post-MVP.
+- **FR4** *(scoped 2026-05-15 per D10; reframed 2026-06-10 per D11)*: System administrators can update role, jurisdiction, and Region/Area assignments for any user. **In MVP, the data layer is editable by DBAs via direct SQL on the auth tables** (populated by mechanisms outside the PRD's scope per the superseded D9); **the admin UI surface is post-MVP** (`ram-admin-ui` Users & Roles module — see Growth Features). FR4's MVP success criterion is "an authorised DBA can update role / jurisdiction / scope per the operational runbook"; the system-administrator role-with-UI surface ships post-MVP.
 - **FR5** *(reframed v2.5, 2026-05-07 as post-MVP)*: External machine-to-machine consumers (e.g. DA&I post-MVP MI Feed) require an authentication mechanism. **At MVP, no machine-to-machine consumers are in scope** — every RAM Pathfinder runtime request is user-initiated, including planned DA&I integration (DA&I would authenticate as a human-equivalent identity at HMCTS IdP if onboarded post-MVP). The mechanism for genuine service-principal authentication (for non-user-initiated flows) is **a post-MVP open question** — see architecture changelog v2.5 and `architecture/gaps.md` G7. Options to be evaluated when the requirement arrives include an RAM Pathfinder-internal service-auth issuer, Azure Workload Identity, mTLS, and (if HMCTS IdP supports it) `client_credentials` against HMCTS IdP.
 
 ### Foundational Data Management
 
-- **FR6** *(scoped 2026-05-15 per D10)*: RSU users can view and maintain Reference Data lists — Regions, Offices, judicial vocabularies, calendar / financial-year boundaries — with named-owner sign-off on changes. **In MVP**: the read API surface is delivered (`GET /v1/reference-data/...`), data is initially loaded by the Phase 0 Reference Data ETL via direct SQL, and named-owner sign-off happens via versioned git commits on the reconciliation reports; ongoing data corrections in MVP are made by DBAs via direct SQL per the operational runbook. **Post-MVP**: RSU-facing maintenance UI in `ram-admin-ui` with admin-gated write endpoints on `ram-reference-data` and an in-UI sign-off workflow (see Growth Features).
-- **FR7** *(revised 2026-05-11)*: Every RAM Pathfinder service reads Reference Data via **direct SQL** on the shared schema's Reference Data tables (15 tables, SELECT-granted to each service's DB role) — no client class, no API fan-out, no cache (per architecture Principle 2). Reference Data is the **single writer** — all writes (Phase 0 ETL load + ongoing RSU maintenance per FR6) go through the versioned Reference Data API. No service holds duplicate or cached copies of Reference Data in its own tables.
+- **FR6** *(scoped 2026-05-15 per D10; reframed 2026-06-10 per D11)*: RSU users can **view** Reference Data lists through `ram-reference-data`'s versioned read API. Reference Data in RAM Pathfinder has two ownership tiers, held in **separate tables** to preserve data lineage:<p/>**(a) Upstream-sourced (read-only in RAM)** — JOH eLinks API entities and MRD entities (per the revised D3). Refreshed regularly from source; never hand-edited within RAM. Corrections happen at source (Judicial Office for JOH-related entities; the MRD team for MRD entities). **No data flows upstream from RAM to JOH or MRD.** RAM Pathfinder does not provide a write surface for this tier.<p/>**(b) RAM-owned** — data that RAM Pathfinder needs that does not exist upstream, plus operational state that RAM Pathfinder maintains over upstream entities (e.g. JOH location changes are not captured by JOH eLinks; RAM records them as RAM-owned operational state). Manually managed by admin staff; never overwritten by upstream sync. **In MVP**: RAM-owned reference data is editable by DBAs via direct SQL per operational runbooks (admin UI deferred per D10). **Post-MVP**: RSU-facing maintenance UI in `ram-admin-ui` for this tier (see Growth Features) — the previous "write endpoints on `ram-reference-data` + in-UI sign-off workflow" plan applies to RAM-owned data only.<p/>The application decides which tier to consult per use case; `ram-reference-data`'s API exposes both as appropriate but does not blend their lineage.
+- **FR7** *(revised 2026-05-11; reframed 2026-06-10 per D11)*: Every RAM Pathfinder service reads Reference Data via **direct SQL** on the shared schema's Reference Data tables — SELECT-granted to each service's DB role per architecture Principle 2 (no client class, no API fan-out, no cache). Reference Data spans both ownership tiers (per FR6) in **separate tables**: upstream-sourced tables (~15 JOH-eLinks entities + MRD entities) and RAM-owned tables. **Writes follow the tier**: upstream-sourced tables are written exclusively by the upstream-ingestion mechanism (JOH eLinks sync + MRD weekly Excel feed per the revised D3); RAM-owned tables are written by DBAs via direct SQL in MVP (admin UI deferred per D10) and by the admin UI post-MVP. `ram-reference-data` is the **single owner** of all reference-data tables in the shared schema; no domain service holds duplicate or cached copies in its own tables.
 - **FR8** *(revised v2.2, 2026-05-07)*: Cross-service runtime policy values (e.g. session timeout warnings, batch schedules, feature flags) are stored in a shared `configuration_values` infrastructure table, schema-managed by `ram-architecture`'s Flyway baseline migration and SELECT-granted to every RAM Pathfinder service DB role. Updates are made via Flyway migrations or direct admin SQL — no API service. Per-service configuration scoped to a single service uses Spring profiles + `application.yml` + Azure Key Vault.
 - **FR9**: RAM Pathfinder dispatches transactional emails (booking acknowledgements, absence acknowledgements, payment schedules) via HMCTS email infrastructure, with a delivery log retained.
 
-### Judge Records & Working Patterns
+### JOH Records & Working Patterns
 
-- **FR10**: RSU users can search and filter judges by name, base location, location type, and judge type.
-- **FR11**: RSU users can maintain judge profiles, including personal details, judge type, base office, active/inactive status, and role-specific data (payroll number, retirement date, fee entitlement, London weighting, name-for-itinerary, heading).
-- **FR12**: Authorised users can define and update Working Patterns (None / Daily / Weekly) with target sit %, jurisdictional split, and per-day work-type pattern.
-- **FR13**: RAM Pathfinder auto-populates judge itineraries up to the next 31st March from the working pattern, preserving any prior absences.
-- **FR14**: RSU users can convert salaried judges between full-time and part-time, adjusting mandatory sitting days.
-- **FR15**: RSU users can maintain ticket information per judge role, requiring start date and ticket type.
+- **FR10** *(reworded 2026-06-10 per D11)*: RSU users can search and filter **JOHs** by name, base location, location type, and JOH type.
+- **FR11** *(reworded 2026-06-10 per D11)*: RSU users can **view** JOH profiles through `ram-reference-data`'s read API — personal details, JOH type, base office, active/inactive status, payroll number, retirement date, fee entitlement, London weighting, name-for-itinerary, heading, tickets, and tribunal-member Specialisations. Upstream-sourced fields (`jo_people`, `jo_appointments`, etc., plus MRD-sourced Specialisations) are tier (a) per FR6: read-only in RAM, with corrections at source. RAM-owned operational state and overlays (location per FR17, working patterns per FR12, tickets/authorisations overlay per FR15) are tier (b) per FR6: **held in separate tables keyed by personnel_number**, maintained within RAM by DBAs via SQL in MVP, by admin UI post-MVP per D10.
+- **FR12** *(reworded 2026-06-10 per D11)*: Authorised users can define and update Working Patterns (None / Daily / Weekly) for JOHs, with target sit %, jurisdictional split, and per-day work-type pattern. Working patterns are RAM-owned operational state per FR6 tier (b).
+- **FR13** *(reworded 2026-06-10 per D11)*: RAM Pathfinder auto-populates JOH itineraries up to the next 31st March from the working pattern, preserving any prior absences.
+- **FR14** *(reframed 2026-06-10 per D11)*: A JOH's salaried full-time / part-time status is sourced from JOH eLinks (`jo_contract_types`) per the revised D3 — RAM Pathfinder displays the current status; conversions happen upstream and are reflected in RAM at the next sync. The previous capability "RSU users can convert salaried judges between full-time and part-time in RAM" is retracted; mandatory-sitting-days adjustments follow the upstream change automatically.
+- **FR15** *(reworded 2026-06-10 per D11)*: RAM Pathfinder exposes ticket information per JOH role through `ram-reference-data`'s read API, combining two data layers:<p/>(a) **Upstream-sourced tickets** from JOH eLinks `jo_tickets` (tier (a) per FR6 — read-only in RAM; corrections happen at source).<p/>(b) **RAM-overlay tickets and other authorisations** layered on top of the upstream set, held in RAM-owned tables keyed by personnel_number (tier (b) per FR6). Admin staff can add/edit/remove overlay rows — DBAs via SQL in MVP; admin UI post-MVP per D10.<p/>The application combines (a) and (b) per use case.
 - **FR16**: RAM Pathfinder validates that jurisdictional split percentages total 100% before saving.
-- **FR17**: RSU users can switch a judge's base location to another office within the same Region; cross-Region changes require OPT Advice Point and are out-of-system.
-- **FR18**: Authorised users can link to judges managed by other offices (off-circuit / cross-Region) for booking purposes.
+- **FR17** *(reworded 2026-06-10 per D11)*: RSU users can switch a JOH's base location to another office within the same Region; cross-Region changes require OPT Advice Point and are out-of-system. Location changes are RAM-owned operational state per FR6 tier (b); they are not propagated back to JOH eLinks.
+- **FR18** *(reworded 2026-06-10 per D11)*: Authorised users can link to JOHs managed by other offices (off-circuit / cross-Region) for booking purposes (e.g. composing tribunal panels with members from other regions).
 
 ### Absence Workflow
 
@@ -554,29 +617,29 @@ This section is the binding capability contract for RAM Pathfinder. UX, architec
 
 ### Vacancy & Cover
 
-- **FR23**: RAM Pathfinder auto-creates a vacancy when an approved absence requires fee-paid cover, pre-populated with judge type, work type, ticket, and dates.
+- **FR23** *(reworded 2026-06-10 per D11)*: RAM Pathfinder auto-creates a vacancy when an approved absence requires fee-paid cover, pre-populated with JOH type, work type, ticket, and dates.
 - **FR24**: Authorised users can create standalone vacancies independent of any absence.
 - **FR25**: Authorised users can edit a vacancy's daily breakdown — cancel individual days with a captured reason; extend or shorten the period.
 - **FR26**: RAM Pathfinder marks a vacancy as filled when a booking is created against it; vacancy days cannot be cancelled once a booking is recorded.
-- **FR27**: RAM Pathfinder surfaces fee-paid judges matching a vacancy's filter as a hint for advertising; advertising itself is performed out-of-system by judicial teams.
+- **FR27** *(reworded 2026-06-10 per D11)*: RAM Pathfinder surfaces fee-paid JOHs matching a vacancy's filter as a hint for advertising; advertising itself is performed out-of-system by judicial teams.
 - **FR28**: Authorised users can cancel or close vacancies (e.g. when a parent absence becomes NTBF).
 
 ### Booking Management
 
-- **FR29**: Authorised users can create fee-paid bookings (linked to a vacancy or standalone), capturing judge, court, date, session type (full / AM / PM / evening / reserved-matter), booking type, and work type.
+- **FR29** *(reworded 2026-06-10 per D11)*: Authorised users can create fee-paid bookings (linked to a vacancy or standalone), capturing **JOH**, **court / tribunal**, date, session type (full / AM / PM / evening / reserved-matter), booking type, and work type.
 - **FR30**: Booking creation marks the linked vacancy as filled within the same transaction when a `vacancyId` is supplied. *(Implementation per architecture: in-process direct DB update on the `vacancies` row using a per-service DB role grant; see architecture Principle 1 for the rationale and the cross-service-write rules.)*
 - **FR31**: RAM Pathfinder tracks booking status (planned, provisional, confirmed, cancelled, rejected) with reason capture for cancellation.
-- **FR32**: RAM Pathfinder sends booking acknowledgement emails to fee-paid judges, batched overnight or sent immediately via *Create and Email Now*.
-- **FR33**: RAM Pathfinder requires a Y/N answer at booking time when a judge's fee entitlement is *Ask when booking*.
-- **FR34**: RAM Pathfinder prevents double-booking of fee-paid judges for overlapping sessions.
+- **FR32** *(reworded 2026-06-10 per D11)*: RAM Pathfinder sends booking acknowledgement emails to fee-paid **JOHs**, batched overnight or sent immediately via *Create and Email Now*.
+- **FR33** *(reworded 2026-06-10 per D11)*: RAM Pathfinder requires a Y/N answer at booking time when a **JOH's** fee entitlement is *Ask when booking*.
+- **FR34** *(reworded 2026-06-10 per D11)*: RAM Pathfinder prevents double-booking of fee-paid **JOHs** for overlapping sessions.
 
 ### Sitting Management
 
-- **FR35**: RAM Pathfinder generates planned sittings for salaried judges from their working patterns, court, date, and work type.
-- **FR36**: Authorised users can filter sitting records by Region/Office, judge type, judge, and date range.
+- **FR35** *(reworded 2026-06-10 per D11)*: RAM Pathfinder generates planned sittings for **salaried JOHs** from their working patterns, **court / tribunal**, date, and work type.
+- **FR36** *(reworded 2026-06-10 per D11)*: Authorised users can filter sitting records by Region/Office, **JOH type**, **JOH**, and date range.
 - **FR37**: Authorised users can confirm that a sitting actually took place, updating outcome (confirmed, cancelled, rejected) and actual work type.
 - **FR38**: Authorised users can split a sitting into AM/PM with different work types within a single day.
-- **FR39**: Authorised users can create ad-hoc sittings for salaried judges, including DJ(MC)s and Legal Advisers in County Courts.
+- **FR39** *(reworded 2026-06-10 per D11)*: Authorised users can create ad-hoc sittings for **salaried JOHs**, including DJ(MC)s and Legal Advisers in County Courts (Courts-cohort-specific examples).
 - **FR40** *(revised 2026-05-11)*: Verifiers can verify confirmed sittings; once verified, the data is read-only. Amendments after verification require **re-opening** the sitting via a UI re-open action gated by a distinct authorised role — the re-opener must be different from the original confirmer (SIT-NFR-02) and from a standard Verifier (at MVP, the permission is granted to RSU Admin only). The action captures a mandatory justification field and is fully audited (who, when, why, which sittings). No external Request-for-Change ticketing process — re-open is a first-class UI action with RBAC controls.
 
 ### Payment & Reconciliation
@@ -603,17 +666,16 @@ This section is the binding capability contract for RAM Pathfinder. UX, architec
 
 - **FR55**: Authenticated users land on a Home page showing role-scoped navigation, Region/Area selector, summary tiles for the selected scope (judges, absences, vacancies, pending payments, payments made, unreconciled), and contextual help.
 - **FR56** *(scoped 2026-05-15 per D10)*: RAM Pathfinder's **business-user UI** (`ram-ui`) replicates the functional surface of the as-is APEX UI on a modern UI stack and meets WCAG 2.2 Level AA accessibility standards. **In MVP**: `ram-ui` only — the business-user-facing SPA used by RSU, Court, Judges, Judges' Clerks, Finance/Payment Authoriser, MI/Reporting roles. **Post-MVP**: `ram-admin-ui`, the admin-facing SPA carrying Reference Data maintenance, User/Role/Scope admin, Migration Reports, and Activation Flag toggle modules (see Growth Features).
-- **FR57**: A Phase 0 Data Migration ETL takes Reference Data and active user records (with role and Region/Area mappings) from **APEX** (which has its own legacy schema), transforms them into **RAM Pathfinder's own (independently-designed) shape**, and **loads them via the RAM Pathfinder Reference Data API and Authorisation API**. Migrated user records are keyed to HMCTS IdP principals (email primary, employee number fallback). Phase 0 deliverable with named-owner sign-off; unmatched user records are flagged for explicit handling (drop / hold / manual map). The ETL is *not* a Flyway database-seeding migration — Flyway in RAM Pathfinder manages RAM Pathfinder's own DDL only; the APEX-to-RAM Pathfinder data transform is a separate programme-level activity that lives in `ram-architecture/migration/` and runs against running RAM Pathfinder services. *(Framing clarified 2026-05-06; see architecture changelog v1.9.)*
-- **FR58** *(scoped 2026-05-15 per D10)*: RAM Pathfinder supports per-region phased activation — a region's user accounts can be activated for RAM Pathfinder use only when that region's feature-parity gate is passed; activation is a flag flip on `auth_user_activation_flags`, not a data migration. **In MVP**: initial flag state is set by the Phase 0 Users/Roles ETL (all FALSE); cutover flips happen per region by a DBA running `UPDATE auth_user_activation_flags SET activated = TRUE WHERE region = ...` per the Phase 9+ rollout runbook (no UI). **Post-MVP**: activation toggle UI in `ram-admin-ui` for system administrators (see Growth Features).
-- **FR59**: Every RAM Pathfinder service exposes a versioned API contract, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details for errors, and a published OpenAPI specification. Deprecation signalling uses the `Deprecation` header per [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) and the `Sunset` header per [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594).
-- **FR60**: Every RAM Pathfinder service emits structured logs with correlation IDs and consistent error categorisation, retained for pilot incident triage.
-- **FR61**: Every RAM Pathfinder domain service has a **manual user acceptance test (UAT) script** that captures the workflows and edge cases an APEX-experienced user is expected to verify against the existing APEX application before that service's region rollout. The UAT is performed by users from the in-region applicable roles (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) and recorded with explicit per-role sign-off. There is no automated APEX-comparison test harness; APEX-comparison parity is a manual UAT activity, not a CI gate. *Revised 2026-05-06; supersedes earlier wording about real APEX running as an automated comparison reference.*
+- **FR57** *(scoped 2026-05-15 per D10; reframed 2026-06-10 per D11)*: RAM Pathfinder supports **per-jurisdiction, per-region phased activation** — a user's account is activated for RAM Pathfinder use only when their (jurisdiction, region) tuple's feature-parity gate is passed; activation is a flag flip on `auth_user_activation_flags`, not a data migration. **In MVP**: initial flag state is FALSE for every user record at the point of bootstrap (mechanism outside PRD per the restructured D9); cutover flips happen per wave by a DBA running `UPDATE auth_user_activation_flags SET activated = TRUE WHERE jurisdiction = '...' AND region = '...'` per the Phase 9+ rollout runbook (no UI). **Post-MVP**: activation toggle UI in `ram-admin-ui` for system administrators (see Growth Features).
+- **FR58**: Every RAM Pathfinder service exposes a versioned API contract, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details for errors, and a published OpenAPI specification. Deprecation signalling uses the `Deprecation` header per [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) and the `Sunset` header per [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594).
+- **FR59**: Every RAM Pathfinder service emits structured logs with correlation IDs and consistent error categorisation, retained for pilot incident triage.
+- **FR60** *(revised 2026-05-06; reframed 2026-06-10 per D11/D5)*: Every RAM Pathfinder domain service has a **manual user acceptance test (UAT) script** that captures the workflows and edge cases a **jurisdiction-incumbent-experienced user** is expected to verify against that incumbent system before that wave's rollout. For wave 1 (SSCS): GAPS-experienced users — RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI. For waves 2+ (Courts): APEX-experienced users — RSU, Court, Judge, Judges' Clerks, Finance, MI. The UAT is performed by in-wave applicable users and recorded with explicit per-role sign-off. There is no automated incumbent-comparison test harness; incumbent-comparison parity is a manual UAT activity, not a CI gate.
 
 ## Non-Functional Requirements
 
 ### Performance
 
-Page-level NFRs are carried from the APEX baseline (`functional-modules.md` cross-cutting NFRs); RAM Pathfinder must match or exceed each.
+Page-level NFRs are carried from the APEX baseline (`functional-modules.md` cross-cutting NFRs); RAM Pathfinder must match or exceed each. SSCS wave-1 cutover verifies these thresholds against GAPS-equivalent operations as part of the SSCS-cohort readiness assessment per D11.
 
 - **NFR1 — Static page load:** ≤ 3 s for static UI loads (e.g. Home initial render).
 - **NFR2 — Dashboard refresh:** ≤ 5 s when Region/Area selection changes.
@@ -630,7 +692,7 @@ Page-level NFRs are carried from the APEX baseline (`functional-modules.md` cros
 - **NFR10 — Transport encryption:** Latest TLS only on every endpoint; HTTP-only endpoints rejected.
 - **NFR11 — Data-at-rest encryption:** All personal data (judge records, user/role records, working patterns, payroll numbers, payment metadata) encrypted at rest.
 - **NFR12 — Authentication** *(revised v2.6, 2026-05-07)*: All human users authenticated via HMCTS IdP SSO (per FR1). **Inter-service authentication for user-initiated calls is via JWT propagation** — the user's JWT (issued by HMCTS IdP) is forwarded by the upstream service's outbound HTTP client and validated by the downstream service's `JWTFilter` against the IdP's JWKS endpoint. **Inter-service authentication for batch / scheduled components** (initially: the payment batch `ram-payment-batch`) is via OAuth 2.0 `client_credentials` against `ram-mock-auth` in non-prod; production issuer is a deferred decision per architecture `gaps.md` G7.1 (default recommendation: Azure Workload Identity, given the AKS deployment).
-- **NFR13 — Authorisation enforcement:** Every API call resolves the principal's roles + Region/Area scope through the Authorisation service; no operation bypasses this check.
+- **NFR13 — Authorisation enforcement** *(amended 2026-06-10 per D8/FR2)*: Every API call resolves the principal's roles + jurisdiction + Region/Area scope through the Authorisation service; no operation bypasses this check.
 - **NFR14 — Forbidden data scope:** No bank details stored or exposed by any service (PAY-NFR-05). No case-level data in any read model or report (REP-BR-NFR-03).
 - **NFR15 — Government Functional Standard 7 alignment:** RAM Pathfinder aligns with HMCTS / MoJ Government Functional Standard 7 — Security, including protective marking, access control, and secure development practices.
 - **NFR16 — Secret management:** Service credentials, signing keys, and integration secrets stored in a managed secret store (Azure Key Vault or equivalent); never in source control or environment-baked images.
@@ -644,10 +706,10 @@ Page-level NFRs are carried from the APEX baseline (`functional-modules.md` cros
 ### Integration
 
 - **NFR20 — HMCTS IdP integration:** Hard Phase 0 dependency. RAM Pathfinder integrates with whichever AuthN protocol the HMCTS IdP exposes (OIDC or SAML).
-- **NFR21 — JFEPS / Liberata integration unchanged:** Payment schedule format (JFEPS-compatible Excel), email-to-Authoriser delivery, and authoriser-forwards-to-Liberata workflow are preserved exactly as in APEX. No format change for finance.
+- **NFR21 — JFEPS / Liberata integration unchanged** *(amended 2026-06-10 per D11)*: Payment schedule format (JFEPS-compatible Excel), email-to-Authoriser delivery, and authoriser-forwards-to-Liberata workflow are preserved exactly as in APEX, and preserved for SSCS in wave 1. No format change for finance across either cohort.
 - **NFR22 — HMCTS email infrastructure:** Outbound transactional emails (booking ack, absence ack, payment schedules) dispatch via HMCTS email; delivery is reliable but not low-latency-critical (overnight batch acceptable for booking acknowledgements).
 - **NFR23 — DA&I MI Feed:** Aggregate-only REST API contract; no case-level data exposed under any consumer authorisation.
-- **NFR24 — eLinks / HR systems:** No automated integration in MVP scope; manual data entry by RSU continues, matching the APEX-era pattern.
+- **NFR24 — JOH eLinks API + MRD integration (MVP scope)** *(reframed 2026-06-10 per D11)*: JOH eLinks API is an MVP integration — the canonical source for judicial-holder reference data per the revised D3. MRD data is ingested via a weekly Excel feed pending availability of MRD's public APIs. Manual data entry by RSU is no longer the operating model for these sources; corrections happen at source (Judicial Office, MRD team) and are picked up by the next sync. **Other HR systems** beyond JOH eLinks / MRD remain out of MVP scope; if such integrations arise in waves 2+, they are scoped at that time.
 
 ### Observability (MVP minimum per D7)
 
@@ -661,25 +723,25 @@ Page-level NFRs are carried from the APEX baseline (`functional-modules.md` cros
 
 - **NFR30 — UK GDPR / Data Protection Act 2018 compliance:** Personal data scope is limited to user/judge identity, contact details, payroll numbers, and operational metadata. No case-level data anywhere in RAM Pathfinder.
 - **NFR31 — Data residency:** All RAM Pathfinder services and data hosted in Azure UK regions only. No personal data leaves the UK.
-- **NFR32 — Retention:** Data retention per HMCTS retention schedules. Migrated transactional history remains in APEX (D3); RAM Pathfinder retains only data created in RAM Pathfinder from migration onward.
+- **NFR32 — Retention** *(reframed 2026-06-10 per D11 + revised D3)*: Data retention per HMCTS retention schedules. **No data is migrated** — historical transactional data remains in the cohort's incumbent system (GAPS for SSCS, APEX for Courts); RAM Pathfinder retains only data created in RAM Pathfinder from cutover onward.
 - **NFR33 — FOI scope:** Aggregate operational data exposable per FOI requests; case-level data is forbidden by contract (REP-BR-NFR-03) and therefore outside FOI scope by construction.
 
 ### Reliability & Availability
 
 - **NFR34 — Operational availability:** RAM Pathfinder is available during HMCTS operational hours (typically 07:00–19:00 UK weekdays). Out-of-hours availability is best-effort, not contracted.
 - **NFR35 — Payment-cycle continuity:** Zero failed JFEPS payment cycles attributable to RAM Pathfinder deployment, rollout, or runtime issues. Payment generation can fall back to manual handling within a payment cycle if RAM Pathfinder is unavailable, but this is an operational contingency, not a normal-mode expectation.
-- **NFR36 — Per-wave rollback:** Each rollout wave (Phase 9, 10, …) has a documented rollback path returning the affected region to APEX within one operational cycle if the wave's gate is breached post-cutover.
+- **NFR36 — Per-wave rollback** *(reframed 2026-06-10 per D11)*: Each rollout wave (Phase 9, 10, …) has a documented rollback path returning the affected wave's users to the jurisdiction's incumbent system within one operational cycle if the wave's gate is breached post-cutover — to **GAPS** for wave 1 (SSCS), to **APEX** for waves 2+ (Courts regions).
 - **NFR37 — Strategy A degraded-mode contract:** If federated read latency breaches NFR8, RAM Pathfinder degrades to Strategy C cached projection rather than failing; cache freshness window is published in the service's OpenAPI spec metadata and surfaced in response headers (e.g. `Cache-Control`, `Age`).
-- **NFR38 — HMCTS-judicial-region rollout isolation:** A wave activation or feature change targeting one HMCTS judicial region (e.g. Northern, Western) does not affect users in other HMCTS regions. *("Region" here means HMCTS judicial region per D8 — not Azure region. Architectural enforcement is at the application tier via per-user `auth_user_activation_flags` (FR58), not at the infrastructure tier. Production runs in a single Azure region — UK South — with multi-AZ HA. Disaster-recovery scope and design are an open gap — see `architecture/gaps.md` G3.6. Wording clarified 2026-05-06 — earlier "Region-isolated deployments" framing was ambiguous between the two senses of "region" and is now disambiguated.)*
+- **NFR38 — HMCTS-judicial-region rollout isolation:** A wave activation or feature change targeting one wave-scope unit (the SSCS jurisdiction for wave 1; an HMCTS Courts judicial region — e.g. Northern, Western — for waves 2+) does not affect users in other wave-scope units. *("Region" here means HMCTS judicial region per D8 — not Azure region. Architectural enforcement is at the application tier via per-user `auth_user_activation_flags` (FR57), not at the infrastructure tier. Production runs in a single Azure region — UK South — with multi-AZ HA. Disaster-recovery scope and design are an open gap — see `architecture/gaps.md` G3.6. Wording clarified 2026-05-06 — earlier "Region-isolated deployments" framing was ambiguous between the two senses of "region" and is now disambiguated.)*
 
 ### Maintainability
 
-- **NFR39 — API-as-Product standards:** Every service exposes versioned contracts, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details error envelopes, and a published OpenAPI specification (per FR59). Versioning and deprecation policy is a Phase 0 deliverable; deprecation signalling uses [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset` headers.
+- **NFR39 — API-as-Product standards:** Every service exposes versioned contracts, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details error envelopes, and a published OpenAPI specification (per FR58). Versioning and deprecation policy is a Phase 0 deliverable; deprecation signalling uses [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset` headers.
 - **NFR40 — Per-service deployment unit:** Each of the 11 services is independently deployable on Kubernetes; rolling updates per service per region without coupling.
-- **NFR41 — Behavioural-parity UAT suite:** Every domain service has a **manual UAT script** (per FR61) maintained alongside the service. APEX-experienced users walk through the script comparing RAM Pathfinder vs APEX before each rollout wave's cutover; sign-off (per role per region) is the wave gate. There is no automated parity test suite — automated CI tests are unit, integration (Testcontainers), and contract tests only.
+- **NFR41 — Behavioural-parity UAT suite** *(reframed 2026-06-10 per D11/D5)*: Every domain service has a **manual UAT script** (per FR60) maintained alongside the service. **Jurisdiction-incumbent-experienced users** walk through the script comparing RAM Pathfinder vs the cohort's incumbent — GAPS-experienced users for wave 1; APEX-experienced users for waves 2+ — before each rollout wave's cutover; sign-off (per role per wave) is the wave gate. There is no automated parity test suite — automated CI tests are unit, integration (Testcontainers), and contract tests only.
 - **NFR42 — Postman collections:** Each phase produces a Postman collection that exercises the phase's endpoints; collections are versioned alongside the services.
 
-## Decisions Log (D1–D9)
+## Decisions Log (D1–D12)
 
 These are the 9 locked decisions taken during the 2026-05-05 brainstorming follow-up. Each is referenced inline throughout the PRD; the consolidated list is here for navigability.
 
@@ -687,14 +749,16 @@ These are the 9 locked decisions taken during the 2026-05-05 brainstorming follo
 |---|---|---|
 | **D1** | Phase 0 Foundations scope locked: Reference Data, Authorisation (with SSO), Notification, API contracts, deployment platform, structured logging conventions, shared `configuration_values` infrastructure table (no dedicated configuration service per v2.2). Audit & metrics/trace observability post-MVP. | Sets what must be in place before any domain service is built. |
 | **D2** | Cutover strategy: phased rollout. Migrated users do not use APEX; non-migrated users do not use RAM Pathfinder. | No dual-write coexistence; risk amortised across waves. |
-| **D3** | Data migration: **Reference Data only (extended by D9)**. No transactional data migration. The migration is a Phase 0 ETL — read APEX dumps → transform to RAM Pathfinder shape → load via RAM Pathfinder Reference Data API. RAM Pathfinder tables are RAM Pathfinder's own design; APEX's schema is the data source, not the target shape. | Each region migrates onto a clean transactional state; historical data stays in APEX. The ETL lives at `ram-architecture/migration/` and is separate from Flyway DDL. |
+| **D3** *(superseded 2026-06-10 — see D11 clarification)* | **No data migration of any kind from any legacy system to RAM Pathfinder.** RAM Pathfinder starts with no transactional, reference or user data carried from GAPS or APEX/JI. Historical data stays in the jurisdiction's incumbent system (GAPS for SSCS, APEX for Courts) and is accessed there as needed.<p/>**Judicial-holder reference data is sourced from upstream sources of truth and persisted in RAM Pathfinder's own tables.** The named sources are: (a) **JOH eLinks API** (Judicial Office's HR system) — the canonical source for `jo_people`, `jo_appointments`, `jo_judiciary_role_assignments`, `jo_authorisations_with_dates`, `jo_appointment_titles`, `jo_base_locations`, `jo_contract_types`, `jo_genders`, `jo_judiciary_roles`, `jo_jurisdictions`, `jo_locations`, `jo_location_types`, `jo_tickets`, `jo_ticket_categories`, and `jo_ticket_category_types`; (b) **MRD (Master Reference Data)** — supplementary attributes not in JOH eLinks, notably JOH Specialisations. MRD's public APIs are not yet available; for MVP, MRD data is ingested into RAM Pathfinder tables from an **Excel feed supplied by the MRD team on a weekly cadence**. Both ingestion paths are **source-of-truth integration, not legacy-system migration** — the upstream data is current and authoritative; only the ingestion mechanism differs.<p/>**`ram-reference-data` is a facade over the RAM-owned datastore** populated by these ingestion paths. Consumers access reference data exclusively through `ram-reference-data`'s versioned REST API; they do not need to know which upstream source each entry originates from. `jo_sync_status` is a RAM-internal tracking entity with no upstream source.<p/>**User authorisation data (roles, Region/Area scope, activation flags) is strictly RAM-internal** — owned by `ram-authorisation`, populated by programme-management / operational mechanisms outside the scope of this PRD. There is no external authority providing this data. | **Eliminates the Phase 0 Data Migration ETL** that was a programme-level deliverable. Cascade-impacts D9, D10, FR6, FR7, FR57 (the renumbered activation-flags FR), and the Phase 0 epics 0.2 and 0.3 — each requires amendment. **`ram-reference-data` is reshaped from a self-curated reference-data store into a facade over a datastore populated by upstream source-of-truth ingestion** per D11. **New MVP integrations**: JOH eLinks API (live API integration) and MRD Excel feed (weekly cadence, transitional until MRD APIs are available). NFR24 (currently "eLinks out of scope for MVP") is reframed accordingly in a follow-up edit. The `ram-architecture/migration/` reference is removed; that directory is no longer a deliverable. The JOH eLinks sync mechanism (pull frequency, change-detection, conflict-resolution) and the MRD ingestion mechanism (manual upload, scheduled job) are architecture-phase decisions and are not specified in this PRD. |
 | **D4** | Feature-parity gate is functional + UI-replicates-APEX (modern UI stack, no redesign). | UX/visual_design/user_journeys are in scope (override on `api_backend` classification). |
-| **D5** | APEX is the behavioural reference, verified by **manual UAT performed by APEX-experienced users**, not a migration host. *(Revised 2026-05-06 — earlier framing of real APEX as an automated comparison reference retracted.)* | Per-service manual UAT scripts are walked through by users (RSU, Court, Judge, Clerks, Finance, MI) comparing RAM Pathfinder vs APEX; sign-off per role per region is the wave gate. No automated APEX-comparison harness. |
+| **D5** *(revised 2026-05-06; reframed 2026-06-10 per D11)* | **The jurisdiction's incumbent system is the behavioural reference, verified by manual UAT performed by users experienced in that incumbent system.** Neither incumbent (GAPS, APEX) is a migration host. For wave 1 (SSCS): GAPS-experienced users — RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI. For waves 2+ (Courts): APEX-experienced users — RSU, Court, Judge, Clerks, Finance, MI. | Per-service manual UAT scripts are walked through by the in-jurisdiction, in-wave applicable users comparing RAM Pathfinder vs the jurisdiction's incumbent side-by-side; sign-off per role per wave is the wave gate. No automated incumbent-comparison harness; no co-management of either incumbent (D6). |
 | **D6** | APEX maintenance is out of project scope. | APEX is a stable external system in the project plan; not co-managed. |
 | **D7** | Audit / Observability MVP minimum: log-based (request, error). User-action audit on the post-MVP roadmap. | Structured logging is a Phase 0 deliverable; metrics/traces deferred. |
-| **D8** | Rollout boundary: by region, all applicable user roles. | A region migrates only when every in-region role's functionality is complete. |
-| **D9** *(amended by D10, 2026-05-15)* | Active users + role/scope mappings are extracted from APEX, transformed, and loaded into the RAM Pathfinder Authorisation tables (`auth_users`, `auth_roles`, `auth_user_roles`, `auth_user_region_scopes`, `auth_user_activation_flags`) **via direct SQL INSERT (per D10, revised from "via the RAM Pathfinder Authorisation API")** in Phase 0. Each RAM Pathfinder user record is keyed to an HMCTS IdP principal (email primary; employee number fallback). | Authorisation is testable end-to-end with realistic data from day 1; per-wave activation is a flag flip on `auth_user_activation_flags`. The migration is the Phase 0 ETL described in D3 + the architecture document. |
-| **D10** *(new 2026-05-15)* | **Admin UI is removed from MVP scope and pushed to post-MVP.** The `ram-admin-ui` repo, Reference Data admin module, Users/Roles admin module, Migration Reports module, Activation Toggle, and Admin Send-Test-Email all become post-MVP roadmap items. Admin-write API endpoints on `ram-reference-data` and `ram-authorisation` are likewise post-MVP — both APIs ship read-only in MVP. Reference Data and Users/Roles are loaded via **direct SQL ETLs**; ongoing maintenance in MVP is by DBAs via direct SQL per operational runbooks; named-owner sign-off happens via **versioned git commits** to `migration/reports/{stream}/signoffs/`. The `gh` CLI is **not** available in the engineering environment — all GitHub repo creation, branch-protection setup, CODEOWNERS configuration, and PR workflow happen via the GitHub web UI manually. | Reduces MVP scope and timeline; pushes ~6 stories' worth of admin-UI work post-MVP. Adjusts FR4, FR6, FR56, FR58 wording to reflect data-layer-in-MVP vs UI-surface-post-MVP. Affects the Phase 0 epic plan: stories drop from 18 → 11 (admin UI stories removed; OAuth `client_credentials` flow moved to Phase 6 with `ram-payment-batch`). All Phase 0+ stories with GitHub-repo-creation ACs are reworded to require manual web-UI steps. See `epics/phase-0/validation-report-2026-05-15.md` for the revised validation. |
+| **D8** *(reframed 2026-06-10 per D11)* | **Rollout boundary: jurisdiction first, then per-region within jurisdiction.** Wave 1 = the **SSCS** jurisdiction (within the Tribunals jurisdiction; single wave covering all in-jurisdiction applicable roles). Waves 2+ = jurisdictions within the Courts jurisdiction — Civil, Crime, Family, Crown — with wave granularity, ordering and per-jurisdiction region structure determined by programme management. The jurisdiction taxonomy is **open-ended**: future jurisdictions (other tribunal types, future Courts jurisdictions) extend the same model. | Wave 1 migrates only when every SSCS role's functionality is complete and signed-off; each subsequent wave migrates only when every in-jurisdiction in-region role's functionality is complete and signed-off.<p/>**Jurisdiction is a first-class attribute** in the data model, structured as a **hierarchy** (e.g. Tribunals / SSCS, Courts / Civil, Courts / Crime). `ram-authorisation` carries the user's jurisdiction alongside the user's roles, Region/Area scope, and activation flag; `ram-reference-data` filters API responses by the requester's jurisdiction so internal RAM Pathfinder consumers only see data relevant to their jurisdiction. The per-user `auth_user_activation_flags` mechanism (FR57) carries the jurisdiction dimension via the user's authorisation scope.<p/>**The Jurisdiction hierarchy is sourced directly from the upstream data**, not invented or tagged by RAM Pathfinder. JOH eLinks supplies jurisdiction natively (e.g. `jo_jurisdictions`); MRD's reference data is similarly jurisdiction-aware at source. No separate tagging or mapping step is performed by RAM Pathfinder on ingest.<p/>This cascades into: FR2 (Authorisation maps principal to jurisdiction + roles + Region/Area scope), FR4 / FR57 (admin operations are jurisdiction-aware), FR6 / FR7 (reference data API responses are jurisdiction-filtered). |
+| **D9** *(amended by D10 2026-05-15; superseded + restructured 2026-06-10 — see D11 + revised D3)* | **No migration of users from APEX (or any other legacy system).** RAM Pathfinder Authorisation tables (`auth_users`, `auth_roles`, `auth_user_roles`, `auth_user_region_scopes`, `auth_user_activation_flags`, plus the jurisdiction dimension introduced by D8) are populated by programme-management / operational mechanisms outside the scope of this PRD.<p/>**RAM Pathfinder serves two distinct user populations**, both authenticating via the HMCTS IdP tenant but identified through different lookup paths:<p/>**(a) Judicial Office Holders (JOHs)** — at authentication time the IdP email is looked up against `jo_people` (JOH eLinks data ingested into RAM) to resolve the **personal number**, the canonical, stable, internal identifier for the JOH. Email is the lookup key but is not the canonical identifier (emails may change; personal number is stable).<p/>**(b) HMCTS administrative staff** — RSU, Court users, Tribunal Caseworkers, Finance / Payment Authoriser, MI / Reporting users and equivalents are **not present in JOH eLinks data**. RAM Pathfinder maintains a **separate RAM-internal staff identity table** for these users, populated by programme-management / operational mechanisms outside the scope of this PRD. The canonical identifier for admin-staff users is a RAM-assigned or HMCTS-assigned staff identifier (architecture-phase decision).<p/>Both populations are subject to the same `ram-authorisation` model (roles, jurisdiction, Region/Area scope, activation flag) — the populations differ only in their identity sources, not in their authorisation semantics. The PRD does not specify the bootstrap mechanism for either identity store or for the authorisation tables themselves. | Authorisation remains testable end-to-end against a representative dataset; per-wave activation is a flag flip on `auth_user_activation_flags`, scoped to the wave's (jurisdiction, region) tuple per D8. The Phase 0 ETL reference is removed; the directory `ram-architecture/migration/` is no longer a deliverable.<p/>**`ram-authorisation` carries two identity sources**: (a) JOH identity via runtime lookup against `jo_people` (introducing a runtime dependency on the ingested JOH eLinks data — integration point TBD architecture-phase); (b) admin-staff identity via a RAM-internal staff identity table (schema and bootstrap TBD architecture-phase). The two populations share a single authorisation model and the same `auth_*` schema. |
+| **D10** *(new 2026-05-15; sub-clause about SQL ETLs superseded 2026-06-10 by D11)* | **Admin UI is removed from MVP scope and pushed to post-MVP.** The `ram-admin-ui` repo, Reference Data admin module, Users/Roles admin module, Migration Reports module, Activation Toggle, and Admin Send-Test-Email all become post-MVP roadmap items. Admin-write API endpoints on `ram-reference-data` and `ram-authorisation` are likewise post-MVP — both APIs ship read-only in MVP. Reference Data and Users/Roles are loaded via **direct SQL ETLs**; ongoing maintenance in MVP is by DBAs via direct SQL per operational runbooks; named-owner sign-off happens via **versioned git commits** to `migration/reports/{stream}/signoffs/`. The `gh` CLI is **not** available in the engineering environment — all GitHub repo creation, branch-protection setup, CODEOWNERS configuration, and PR workflow happen via the GitHub web UI manually.<p/>***NOTE (2026-06-10):*** *The 2026-05-15 sub-clause above stating "Reference Data and Users/Roles are loaded via direct SQL ETLs … named-owner sign-off happens via versioned git commits" is **superseded by D11**. Reference Data is now sourced from JOH eLinks + MRD per the revised D3 (no SQL ETL); Users/Roles are populated by mechanisms outside this PRD's scope per the superseded D9 (no SQL ETL); the git-based sign-off mechanism is obviated. The admin-UI-removed-from-MVP and no-`gh`-CLI thrusts of D10 are unchanged.* | Reduces MVP scope and timeline; pushes ~6 stories' worth of admin-UI work post-MVP. Adjusts FR4, FR6, FR56, FR57 wording to reflect data-layer-in-MVP vs UI-surface-post-MVP. Affects the Phase 0 epic plan: stories drop from 18 → 11 (admin UI stories removed; OAuth `client_credentials` flow moved to Phase 6 with `ram-payment-batch`). All Phase 0+ stories with GitHub-repo-creation ACs are reworded to require manual web-UI steps. See `epics/phase-0/validation-report-2026-05-15.md` for the revised validation.<p/>***2026-06-10 amendment per D11:*** *the SQL-ETL bootstrap mechanism is retracted (cascade-impact of the eliminated Phase 0 Data Migration ETL); the git-based named-owner sign-off is obviated. Phase 0 epics 0.2 and 0.3 require further restructuring (per-story impact tracked in those epic files).* |
+| **D11** *(new 2026-06-10)* | **SSCS-first pilot wave.** RAM Pathfinder's MVP pilot rollout (Phase 9, wave 1) targets the **SSCS Tribunals jurisdiction**, not a single HMCTS Courts judicial region. RAM Pathfinder replaces **GAPS** (SSCS's incumbent judicial scheduling system) for the SSCS jurisdiction in wave 1; APEX/JI continues to serve Courts users in waves 2+. The 11-service architecture and Phase 0–8 build sequence are unchanged. | **Reframes D3, D5, D8, D9 as jurisdiction-aware**: incumbent system, parity reference, rollout boundary, and user/reference-data source all depend on the wave. **Phase 0 Reference Data ingestion** is from JOH eLinks API + MRD per the revised D3 (no ETL, no legacy migration); the SSCS jurisdiction provides the wave-1 cutover scope; Courts jurisdictions follow in waves 2+. **Manual UAT (D5, FR60)** is walked by users experienced in the jurisdiction's incumbent system — GAPS-experienced users for wave 1; APEX-experienced users for wave 2+. **JFEPS payment integration is preserved for wave 1** (SSCS tribunal-member payments use the same JFEPS Excel + Liberata path). **Domain-model and terminology extensions** required within the 11 services for SSCS-specific concepts (**tribunal-member sub-types** — Medical, Disability-Qualified, Disability (Other)). **Panel composition and hearing types are out of RAM scope per D12** — case management and panel allocation live in external systems consuming RAM's APIs. The umbrella term **JOH (Judicial Office Holder)** replaces "judge" across PRD, FRs, architecture, glossary and service naming (`ram-judge` → `ram-joh` or architecture-phase equivalent) — "judge" remains valid where the meaning is specifically a judge; JOH is used wherever the meaning includes non-judge panel members. A new **SSCS as-is analysis pack** is required (parallel to the existing JI/APEX pack under `resources/architecture/asis/`). Prior **Implementation Readiness Reports** (2026-05-05 / -06 / -15 / -15-rev2) assessed the Courts jurisdiction only; a parallel SSCS-jurisdiction readiness assessment is required before Phase 9. |
+| **D12** *(new 2026-06-10)* | **RAM Pathfinder's scope is JOH availability and scheduling — not case or hearing management.** RAM is the **system of record** for JOH details, traits, working patterns, absences, vacancies, bookings and sittings. Allocation decisions (which JOH covers which vacancy) are made by admin staff via the off-system advertising/matching process (FR27) and **recorded in RAM via the UI by those admin staff** — they are not pushed in from external systems. Case management, panel composition for specific cases, and hearing types live in **external systems** that **consume RAM's APIs** for reporting and operational use; no external system writes into RAM. | **Bounds the 11-service decomposition**: services record JOH commitments and traits, not cases or hearings. **No FRs added** for panel composition or hearing type — those are external-system concerns. **Amends D11 implication** to drop "tribunal panels / multi-member hearings, hearing types — oral / paper / CMA" from the SSCS extension list. **Amends Executive Summary char #6** correspondingly. |
 
 ## Glossary
 
@@ -706,16 +770,20 @@ These are the 9 locked decisions taken during the 2026-05-05 brainstorming follo
 | **DJ(MC)** | District Judge (Magistrates' Courts) |
 | **FOI** | Freedom of Information Act 2000 |
 | **FPB** | Fee-paid and other Bookings (APEX module name) |
+| **GAPS** | The legacy judicial scheduling system serving the **SSCS Tribunals** jurisdiction today. A legacy system expected to be decommissioned; replaced by RAM Pathfinder in wave 1 per D11. |
 | **GDS** | Government Digital Service (UK Cabinet Office) |
 | **HMCTS** | His Majesty's Courts and Tribunals Service |
 | **IdP** | Identity Provider (HMCTS's SSO / authentication system) |
 | **JFEPS** | Judicial Fee Payment System (HMCTS finance system) |
 | **JFL** | Judges Forward Look (sub-module of Judge Itinerary) |
-| **JI** | Judicial Itineraries (the existing APEX system) |
+| **JI** | Judicial Itineraries — the legacy Oracle APEX system serving the **Courts** jurisdiction. Replaced by RAM Pathfinder in waves 2+ per D11. |
+| **JOH** | Judicial Office Holder — umbrella term covering salaried and fee-paid judges and tribunal members (Medical, Disability-Qualified, Disability (Other)). Adopted per D11 (2026-06-10) as the project-wide term replacing "judge" where the meaning includes non-judge panel members. |
+| **Jurisdiction** | RAM Pathfinder's primary classification dimension for users, JOHs, and reference data. Modelled as a **hierarchy** where parent jurisdictions (Tribunals, Courts) contain child jurisdictions (e.g. SSCS within Tribunals; Civil, Crime, Family, Crown within Courts). Sourced from JOH eLinks (`jo_jurisdictions`); the hierarchical parent-child shape is preserved natively if present upstream, or established on ingest. Used to scope authorisation, filter reference-data API responses, and define rollout waves per D8 + D11. |
 | **Liberata** | HMCTS's payment processing partner |
 | **MI** | Management Information |
 | **MoJ** | Ministry of Justice |
-| **RAM Pathfinder** | RAM Pathfinder — the API-driven rebuild this PRD describes |
+| **MRD** | Master Reference Data — an external HMCTS system holding supplementary judicial reference data not present in JOH eLinks (notably JOH Specialisations). Public APIs are not yet available; RAM Pathfinder ingests MRD data via a weekly Excel feed for MVP, transitioning to API-based integration when MRD APIs ship. |
+| **RAM Pathfinder** | The API-driven greenfield platform for HMCTS judicial scheduling this PRD describes. Replaces GAPS for SSCS in wave 1 and JI/APEX for Courts in waves 2+. |
 | **NTBF** | Not To Be Filled (an absence flag — cover not required) |
 | **OIDC** | OpenID Connect (an authentication protocol) |
 | **OPT** | One Performance Truth; the broader Oracle/APEX platform JI sits on |
@@ -723,10 +791,14 @@ These are the 9 locked decisions taken during the 2026-05-05 brainstorming follo
 | **[RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745)** | IETF specification for the HTTP `Deprecation` response header (March 2025) |
 | **[RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)** | IETF specification for the HTTP `Sunset` response header |
 | **RSU** | Regional Support Unit (HMCTS regional admin teams) |
+| **RTJ** | Regional Tribunal Judge — salaried JOH leading a tribunal region (SSCS context). |
 | **S&L** | Scheduling & Listing reforms (HMCTS programme) |
 | **SAML** | Security Assertion Markup Language (an authentication protocol) |
+| **SSCS** | Social Security and Child Support — the HMCTS Tribunals jurisdiction handling appeals on PIP, ESA, Universal Credit, DLA and related benefits decisions. The wave-1 jurisdiction for RAM Pathfinder per D11. |
 | **SSO** | Single Sign-On |
 | **TBD** | To Be Determined (programme-management or architecture-phase decision) |
+| **Tribunal Member** | A non-judge JOH who sits as part of a tribunal panel — typically Medical (medically qualified), Disability-Qualified, or Disability (Other). SSCS-jurisdiction concept. |
+| **Tribunal Panel** | A composed group of JOHs sitting together for a single tribunal hearing — typically one Tribunal Judge plus one or more Tribunal Members. SSCS panel composition is hearing-type-dependent (e.g. PIP appeals typically require Judge + Medical + Disability-Qualified). |
 | **UK GDPR** | UK General Data Protection Regulation (post-Brexit equivalent of EU GDPR) |
 | **WCAG** | Web Content Accessibility Guidelines |
 
