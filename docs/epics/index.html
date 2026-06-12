@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ji-analysis (RAM Pathfinder) — Epic Breakdown — RAM Pathfinder Documentation</title>
+<title>ram-analysis (RAM Pathfinder) — Epic Breakdown — RAM Pathfinder Documentation</title>
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:16px}
@@ -51,6 +51,10 @@ main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;d
 main a{color:#0969da;text-decoration:none}
 main a:hover{text-decoration:underline}
 main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
 main li{margin:2px 0}
 main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
 main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
@@ -91,6 +95,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <summary>Product</summary>
 <ul>
 <li><a href="../prd.html">PRD (RAM Pathfinder)</a></li>
+<li><a href="../prd-validation-report-2026-06-10.html">PRD validation report — 2026-06-10</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="as-is-ji-architecture-views">
@@ -98,6 +103,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ul>
 <li><a href="../asis/system-context.html">System Context (as-is)</a></li>
 <li><a href="../asis/components.html">Components (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-analysis-pack">
+<summary>As-is — JI Analysis Pack</summary>
+<ul>
+<li><a href="../architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
+<li><a href="../architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
+<li><a href="../architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="as-is-ji-database-schema">
@@ -114,55 +127,56 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="../asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-architecture">
+<details class="nav-group" data-group="to-be-ram-pathfinder-architecture">
 <summary>To-be — RAM Pathfinder Architecture</summary>
 <ul>
 <li><a href="../architecture.html">Architecture (index)</a></li>
 <li><a href="../architecture-summary.html">Architecture summary</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-reference">
+<details class="nav-group" data-group="to-be-ram-pathfinder-reference">
 <summary>To-be — RAM Pathfinder Reference</summary>
 <ul>
-<li><a href="../architecture/user-types.html">User types</a></li>
-<li><a href="../architecture/data-tables.html">Authoritative table ownership</a></li>
-<li><a href="../architecture/conventions.html">Conventions</a></li>
-<li><a href="../architecture/repository-strategy.html">Repository strategy</a></li>
-<li><a href="../architecture/repo-structure.html">Repository structure</a></li>
-<li><a href="../architecture/starter-template.html">Starter template</a></li>
-<li><a href="../architecture/functional-requirements-coverage.html">Functional requirements coverage</a></li>
-<li><a href="../architecture/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
+<li><a href="../architecture/tobe/user-types.html">User types</a></li>
+<li><a href="../architecture/tobe/data-tables.html">Authoritative table ownership</a></li>
+<li><a href="../architecture/tobe/conventions.html">Conventions</a></li>
+<li><a href="../architecture/tobe/repository-strategy.html">Repository strategy</a></li>
+<li><a href="../architecture/tobe/repo-structure.html">Repository structure</a></li>
+<li><a href="../architecture/tobe/starter-template.html">Starter template</a></li>
+<li><a href="../architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
+<li><a href="../architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-sequence-diagrams">
+<details class="nav-group" data-group="to-be-ram-pathfinder-sequence-diagrams">
 <summary>To-be — RAM Pathfinder Sequence Diagrams</summary>
 <ul>
-<li><a href="../architecture/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
-<li><a href="../architecture/sequence-diagrams/judge-onboarding-and-sitting-generation.html">Judge onboarding & sitting gen.</a></li>
-<li><a href="../architecture/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
-<li><a href="../architecture/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
-<li><a href="../architecture/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
-<li><a href="../architecture/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
-<li><a href="../architecture/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
-<li><a href="../architecture/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-open-items">
+<details class="nav-group" data-group="to-be-ram-pathfinder-open-items">
 <summary>To-be — RAM Pathfinder Open Items</summary>
 <ul>
-<li><a href="../architecture/gaps.html">Gaps</a></li>
-<li><a href="../architecture/assumptions.html">Assumptions</a></li>
-<li><a href="../architecture/changelog.html">Changelog</a></li>
+<li><a href="../architecture/tobe/gaps.html">Gaps</a></li>
+<li><a href="../architecture/tobe/assumptions.html">Assumptions</a></li>
+<li><a href="../architecture/tobe/changelog.html">Changelog</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="implementation-readiness">
-<summary>Implementation Readiness</summary>
+<details class="nav-group" data-group="change-control-readiness">
+<summary>Change Control & Readiness</summary>
 <ul>
-<li><a href="../implementation-readiness-report-2026-05-15-rev2.html">Report — 2026-05-15 rev2 (current, post-D10)</a></li>
+<li><a href="../sprint-change-proposal-2026-06-10.html">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
 <li><a href="../sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
-<li><a href="../implementation-readiness-report-2026-05-15.html">Report — 2026-05-15 rev1 (superseded by rev2)</a></li>
-<li><a href="../implementation-readiness-report-2026-05-06.html">Report — 2026-05-06 (historical)</a></li>
-<li><a href="../implementation-readiness-report-2026-05-05.html">Report — 2026-05-05 (historical)</a></li>
+<li><a href="../implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
+<li><a href="../implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
+<li><a href="../implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
+<li><a href="../implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="implementation-epics-foundations" data-current="true" open>
@@ -174,23 +188,23 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="../epics/fr-coverage-map.html">FR coverage map</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="implementation-phase-0">
-<summary>Implementation — Phase 0 ✓</summary>
+<details class="nav-group" data-group="implementation-phase-0-restructured-2026-06-11">
+<summary>Implementation — Phase 0 (restructured 2026-06-11)</summary>
 <ul>
 <li><a href="../epics/phase-0/index.html">Phase 0 overview</a></li>
-<li><a href="../epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates (5 stories)</a></li>
-<li><a href="../epics/phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2 — Ref Data SQL-loaded (3 stories)</a></li>
-<li><a href="../epics/phase-0/epic-0.3-admin-manages-users-roles.html">Epic 0.3 — Users/Roles SQL-loaded (1 story)</a></li>
+<li><a href="../epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)</a></li>
+<li><a href="../epics/phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2 — Reference data read-only (2 stories)</a></li>
+<li><a href="../epics/phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3 — User populations bootstrapped (1 story)</a></li>
 <li><a href="../epics/phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4 — Notification scaffolded (2 stories)</a></li>
-<li><a href="../epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15)</a></li>
+<li><a href="../epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15 — superseded)</a></li>
 </ul>
 </details></aside>
 <main class="content">
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
-<h1 id="ji-analysis-ram--epic-breakdown">ji-analysis (RAM Pathfinder) — Epic Breakdown</h1>
+<h1 id="ram-analysis-ram-pathfinder--epic-breakdown">ram-analysis (RAM Pathfinder) — Epic Breakdown</h1>
 <p>This is the <strong>sharded entry point</strong> for the RAM Pathfinder epic and story breakdown. Each section below lives in its own file for maintainability — the prior single-file <code>epics.md</code> reached ~1,500 lines covering Phase 0 alone, and Phases 1–9+ would push it past 4,000 lines.</p>
 <details class="section" id="overview"><summary><span class="section-title">Overview</span></summary><div class="section-body">
-<p>RAM Pathfinder is the greenfield rebuild of HMCTS's Judicial Itineraries system. This document decomposes the requirements from the PRD (61 FRs, 42 NFRs, D1–D9) and the Architecture (HMCTS Crime SpringBoot starter, polyrepo, shared-DB + per-service DB roles, Kubernetes on Azure AKS) into implementable stories.</p>
+<p>RAM Pathfinder is HMCTS's greenfield JOH availability-and-scheduling platform — replacing the combined ListAssist/GAPS usage in the SSCS Tribunals jurisdiction in wave 1 and the as-is JI application (Oracle APEX) in the Courts jurisdictions in waves 2+<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Scope boundary<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: availability/scheduling only; case and hearing management live in external systems that consume RAM's APIs. This document decomposes the requirements from the PRD as amended 2026-06-10 (60 FRs, 42 NFRs, D1–D12 — SSCS-first wave 1<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>) and the Architecture v3.0 (HMCTS Crime SpringBoot starter, polyrepo, shared-DB + per-service DB roles, two-tier reference data ingested from JOH eLinks + MRD, two-population identity, Kubernetes on Azure AKS) into implementable stories.</p>
 <p>UX Design document is not present; downstream epics inherit UI requirements directly from PRD FRs (FR55, FR56) and architecture conventions (GOV.UK Design System base, WCAG 2.2 AA per NFR17). This gap is documented in the 2026-05-06 readiness report.</p>
 </div></details><details class="section" id="document-map"><summary><span class="section-title">Document Map</span></summary><div class="section-body">
 <h3 id="foundations-project-wide-context">Foundations (project-wide context)</h3>
@@ -204,7 +218,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tbody>
 <tr>
 <td><a href="requirements-inventory.html">requirements-inventory.md</a></td>
-<td>All FRs (FR1–FR61), NFRs (NFR1–NFR42), Architecture-derived ARs (AR1–AR50), and UX Design Requirements (none — accepted gap)</td>
+<td>All FRs (FR1–FR60, renumbered 2026-06-10), NFRs (NFR1–NFR42), Architecture-derived ARs (AR1–AR52), and UX Design Requirements (none — accepted gap)</td>
 </tr>
 <tr>
 <td><a href="framework.html">framework.md</a></td>
@@ -229,10 +243,10 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><strong>0</strong> — Foundations</td>
 <td><a href="phase-0/index.html">phase-0/</a></td>
-<td>🟢 Epics + stories + validation complete (2026-05-15)</td>
+<td>🟡 Epics + stories complete (12 stories) — pending SSCS-cohort revalidation</td>
 </tr>
 <tr>
-<td><strong>1</strong> — Judge</td>
+<td><strong>1</strong> — JOH</td>
 <td><em>to be storied</em></td>
 <td>⚪ Framework only</td>
 </tr>
@@ -272,7 +286,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>⚪ Framework only</td>
 </tr>
 <tr>
-<td><strong>9+</strong> — Pilot Rollout</td>
+<td><strong>9+</strong> — Wave Rollout (jurisdiction-first)</td>
 <td><em>to be storied</em></td>
 <td>⚪ Framework only</td>
 </tr>
@@ -290,12 +304,20 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </div></details><details class="section" id="how-to-find-your-way"><summary><span class="section-title">How to find your way</span></summary><div class="section-body">
 <ul>
 <li><strong>Looking for what to build next?</strong> Start at the phase index (e.g. <a href="phase-0/index.html">phase-0/index.md</a>) and pick an epic.</li>
-<li><strong>Looking for a specific story?</strong> Stories are named <code>Story {phase}.{epic}.{n}</code> (e.g. Story 0.1.5). They live under <code>phase-{n}/epic-{n}.{m}-{slug}.md</code>.</li>
+<li><strong>Looking for a specific story?</strong> Stories are named <code>Story {phase}.{epic}.{n}</code> (e.g. Story 0.1.5). They live under <code>phase-{n}/epic-{n}.{m}-{slug}.md</code>. They live under <code>phase-{n}/epic-{n}.{m}-{slug}.md</code>.</li>
 <li><strong>Looking for an FR?</strong> Use <a href="fr-coverage-map.html">fr-coverage-map.md</a>.</li>
 <li><strong>Looking for an architecture rule?</strong> Use <a href="requirements-inventory.html">requirements-inventory.md</a> — ARs are in the Additional Requirements section.</li>
 <li><strong>Verifying readiness?</strong> Run <code>bmad-check-implementation-readiness</code> from the repo root; it understands this sharded shape.</li>
 </ul>
-</div></details>
+</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/index.md</code></p>
 </main>
 <aside class="toc"><h4>On this page</h4><ul><li><a href="#overview">Overview</a></li><li><a href="#document-map">Document Map</a></li><li class="h3"><a href="#foundations-project-wide-context">Foundations (project-wide context)</a></li><li class="h3"><a href="#phase-level-breakdowns-one-folder-per-phase">Phase-level breakdowns (one folder per phase)</a></li><li><a href="#how-this-document-is-produced">How this document is produced</a></li><li><a href="#how-to-find-your-way">How to find your way</a></li></ul></aside>

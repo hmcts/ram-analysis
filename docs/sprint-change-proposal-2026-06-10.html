@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprint Change Proposal — 2026-06-10 — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav"><h2 class="site-title"><a href="./index.html">RAM Pathfinder Documentation</a></h2>
+<div class="nav-controls"><button data-nav-action="expand" title="Expand all groups">Expand all</button> <button data-nav-action="collapse" title="Collapse all groups">Collapse all</button></div>
+<details class="nav-group" data-group="overview">
+<summary>Overview</summary>
+<ul>
+<li><a href="./index.html">Index</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="product">
+<summary>Product</summary>
+<ul>
+<li><a href="./prd.html">PRD (RAM Pathfinder)</a></li>
+<li><a href="./prd-validation-report-2026-06-10.html">PRD validation report — 2026-06-10</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-architecture-views">
+<summary>As-is — JI Architecture Views</summary>
+<ul>
+<li><a href="./asis/system-context.html">System Context (as-is)</a></li>
+<li><a href="./asis/components.html">Components (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-analysis-pack">
+<summary>As-is — JI Analysis Pack</summary>
+<ul>
+<li><a href="./architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
+<li><a href="./architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
+<li><a href="./architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-database-schema">
+<summary>As-is — JI Database Schema</summary>
+<ul>
+<li><a href="./asis/database/index.html">Database index</a></li>
+<li><a href="./asis/database/ji_schema_overview.html">Schema overview</a></li>
+<li><a href="./asis/database/ji_schema_judges-profile.html">Judges Profile & Reference</a></li>
+<li><a href="./asis/database/ji_schema_judges-patterns.html">Working Patterns, Tickets & Stats</a></li>
+<li><a href="./asis/database/ji_schema_absence-cover.html">Absence & Cover Workflow</a></li>
+<li><a href="./asis/database/ji_schema_bookings-sittings.html">Bookings & Sittings</a></li>
+<li><a href="./asis/database/ji_schema_reference-work.html">Reference Data</a></li>
+<li><a href="./asis/database/ji_schema_audit-cross-cutting.html">Audit & Cross-cutting</a></li>
+<li><a href="./asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-architecture">
+<summary>To-be — RAM Pathfinder Architecture</summary>
+<ul>
+<li><a href="./architecture.html">Architecture (index)</a></li>
+<li><a href="./architecture-summary.html">Architecture summary</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-reference">
+<summary>To-be — RAM Pathfinder Reference</summary>
+<ul>
+<li><a href="./architecture/tobe/user-types.html">User types</a></li>
+<li><a href="./architecture/tobe/data-tables.html">Authoritative table ownership</a></li>
+<li><a href="./architecture/tobe/conventions.html">Conventions</a></li>
+<li><a href="./architecture/tobe/repository-strategy.html">Repository strategy</a></li>
+<li><a href="./architecture/tobe/repo-structure.html">Repository structure</a></li>
+<li><a href="./architecture/tobe/starter-template.html">Starter template</a></li>
+<li><a href="./architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
+<li><a href="./architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-sequence-diagrams">
+<summary>To-be — RAM Pathfinder Sequence Diagrams</summary>
+<ul>
+<li><a href="./architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-open-items">
+<summary>To-be — RAM Pathfinder Open Items</summary>
+<ul>
+<li><a href="./architecture/tobe/gaps.html">Gaps</a></li>
+<li><a href="./architecture/tobe/assumptions.html">Assumptions</a></li>
+<li><a href="./architecture/tobe/changelog.html">Changelog</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="change-control-readiness" data-current="true" open>
+<summary>Change Control & Readiness</summary>
+<ul>
+<li><a href="./sprint-change-proposal-2026-06-10.html" class="current">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
+<li><a href="./sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
+<li><a href="./implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="implementation-epics-foundations">
+<summary>Implementation — Epics (Foundations)</summary>
+<ul>
+<li><a href="./epics/index.html">Epics index</a></li>
+<li><a href="./epics/requirements-inventory.html">Requirements inventory</a></li>
+<li><a href="./epics/framework.html">Phase × Area framework</a></li>
+<li><a href="./epics/fr-coverage-map.html">FR coverage map</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="implementation-phase-0-restructured-2026-06-11">
+<summary>Implementation — Phase 0 (restructured 2026-06-11)</summary>
+<ul>
+<li><a href="./epics/phase-0/index.html">Phase 0 overview</a></li>
+<li><a href="./epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)</a></li>
+<li><a href="./epics/phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2 — Reference data read-only (2 stories)</a></li>
+<li><a href="./epics/phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3 — User populations bootstrapped (1 story)</a></li>
+<li><a href="./epics/phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4 — Notification scaffolded (2 stories)</a></li>
+<li><a href="./epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15 — superseded)</a></li>
+</ul>
+</details></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="sprint-change-proposal--2026-06-10">Sprint Change Proposal — 2026-06-10</h1>
+<details class="section" id="1-issue-summary"><summary><span class="section-title">1. Issue Summary</span></summary><div class="section-body">
+<p>Six product-direction decisions, communicated by the Product Manager during the <strong>Correct Course</strong> workflow run on <strong>2026-06-10</strong>, require structural amendments to the PRD and cascade into multiple downstream artefacts:</p>
+<h3 id="trigger-a--sscs-first-pilot-wave">Trigger A — SSCS-first pilot wave</h3>
+<p>RAM Pathfinder's MVP pilot rollout (Phase 9, wave 1) targets the <strong>SSCS</strong> jurisdiction within the Tribunals jurisdiction, not a single HMCTS Courts judicial region as previously documented. RAM Pathfinder replaces <strong>GAPS</strong> (SSCS's incumbent scheduling system, expected to be decommissioned) for the SSCS cohort in wave 1; APEX/JI continues to serve Courts users in waves 2+. The 11-service architecture and Phase 0–8 build sequence are unchanged.</p>
+<p><strong>Evidence:</strong> direct stakeholder statement, 2026-06-10.</p>
+<h3 id="trigger-b--no-legacy-data-migration">Trigger B — No legacy data migration</h3>
+<p>RAM Pathfinder does <strong>not</strong> migrate data from any legacy system (APEX, GAPS). Judicial-holder reference data is sourced from upstream APIs — <strong>JOH eLinks API</strong> (canonical source for the 15 <code>jo_*</code> entities listed in the revised D3) and <strong>MRD (Master Reference Data)</strong> via a weekly Excel feed pending availability of MRD's public APIs. Historical data stays in the cohort's incumbent system and is accessed there as needed. The Phase 0 Data Migration ETL is retracted; the directory <code>ram-architecture/migration/</code> is no longer a deliverable.</p>
+<p><strong>Evidence:</strong> direct stakeholder statement, 2026-06-10.</p>
+<h3 id="trigger-c--two-distinct-user-populations">Trigger C — Two distinct user populations</h3>
+<p>RAM Pathfinder serves two distinct user populations, both authenticating via the HMCTS IdP tenant but identified through different lookup paths: (a) <strong>Judicial Office Holders (JOHs)</strong> — IdP email looked up against <code>jo_people</code> to resolve the personal number (canonical RAM identifier); (b) <strong>HMCTS administrative staff</strong> — RSU, Court users, Tribunal Caseworkers, Finance/Payment Authoriser, MI/Reporting users — <em>not present</em> in JOH eLinks data; RAM maintains a separate RAM-internal staff identity table. Both populations share the same authorisation model.</p>
+<p><strong>Evidence:</strong> direct stakeholder statement, 2026-06-10.</p>
+<h3 id="trigger-d--jurisdiction-as-first-class-hierarchical-data-dimension">Trigger D — Jurisdiction as first-class hierarchical data dimension</h3>
+<p>Jurisdiction (e.g. Tribunals/SSCS, Courts/Civil, Courts/Crime) is a first-class attribute in <code>ram-authorisation</code> (user scope) and <code>ram-reference-data</code> (API filtering). Modelled as a <strong>hierarchy</strong> where parent jurisdictions (Tribunals, Courts) contain child jurisdictions (SSCS, Civil, Crime, etc.). Sourced from JOH eLinks (<code>jo_jurisdictions</code>); the parent-child shape is preserved natively if upstream provides it, or established on ingest. No separate tagging step.</p>
+<p><strong>Evidence:</strong> direct stakeholder statement, 2026-06-10.</p>
+<h3 id="trigger-e--joh-terminology-replaces-judge">Trigger E — JOH terminology replaces "judge"</h3>
+<p>Project-wide adoption of <strong>JOH (Judicial Office Holder)</strong> as the umbrella term where the meaning includes non-judge panel members (Medical Members, Disability-Qualified Members, Disability (Other) Members). "Judge" remains valid where the meaning is specifically a judge (Circuit Judge, Recorder, salaried Tribunal Judge, etc.). Service naming <code>ram-judge</code> → <code>ram-joh</code> (or architecture-phase equivalent) flagged as a follow-up.</p>
+<p><strong>Evidence:</strong> direct stakeholder statement, 2026-06-10.</p>
+<h3 id="trigger-f--ram-scope-boundary-clarification">Trigger F — RAM scope boundary clarification</h3>
+<p>RAM Pathfinder is the <strong>system of record</strong> for JOH availability and scheduling — <strong>not</strong> for case management or hearing management. Allocation decisions are made by admin staff via the off-system advertising/matching process (FR27) and recorded in RAM via the UI by those admin staff. Case management, panel composition for specific cases, and hearing types live in external systems (SSCS case management; Courts Listing systems) that <strong>consume</strong> RAM's APIs; no external system writes into RAM.</p>
+<p><strong>Evidence:</strong> direct stakeholder statement, 2026-06-10.</p>
+</div></details><details class="section" id="2-impact-analysis"><summary><span class="section-title">2. Impact Analysis</span></summary><div class="section-body">
+<h3 id="decisions-log-impact">Decisions Log impact</h3>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>D3</strong></td>
+<td>Superseded by D11 — no data migration of any kind; reference data sourced from JOH eLinks + MRD. Multi-paragraph rewrite.</td>
+</tr>
+<tr>
+<td><strong>D5</strong></td>
+<td>Reframed per D11 — the cohort's incumbent system is the parity reference (GAPS for wave 1; APEX for waves 2+).</td>
+</tr>
+<tr>
+<td><strong>D8</strong></td>
+<td>Reframed per D11 — rollout boundary is jurisdiction first, then per-region within jurisdiction. Jurisdiction is a first-class hierarchical attribute.</td>
+</tr>
+<tr>
+<td><strong>D9</strong></td>
+<td>Superseded + restructured 2026-06-10 — no user migration; two distinct user populations (JOH + admin staff) with different identity-lookup paths.</td>
+</tr>
+<tr>
+<td><strong>D10</strong></td>
+<td>Amended — SQL-ETL bootstrap sub-clause superseded by D11. Admin-UI-removed-from-MVP part unchanged.</td>
+</tr>
+<tr>
+<td><strong>D11</strong> <em>(new)</em></td>
+<td>SSCS-first pilot wave. Cascades through D3, D5, D8, D9 (reframed as jurisdiction-aware); JOH terminology; SSCS-cohort readiness assessment required before Phase 9.</td>
+</tr>
+<tr>
+<td><strong>D12</strong> <em>(new)</em></td>
+<td>RAM scope boundary — availability/scheduling, not case/hearing management. Bounds the 11-service decomposition.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="functional-requirements-impact">Functional Requirements impact</h3>
+<table>
+<thead>
+<tr>
+<th>FR</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FR1</strong></td>
+<td>Amended — adds email→personal-number / staff-identifier resolution at authentication time.</td>
+</tr>
+<tr>
+<td><strong>FR2</strong></td>
+<td>Amended — adds jurisdiction to authorisation scope.</td>
+</tr>
+<tr>
+<td><strong>FR4</strong></td>
+<td>Reframed — role, jurisdiction, Region/Area scope updates for any user; ETL reference removed.</td>
+</tr>
+<tr>
+<td><strong>FR6</strong></td>
+<td>Substantially reshaped — RSU can <strong>view</strong> reference data; two ownership tiers (upstream-sourced read-only + RAM-owned) held in separate tables; corrections at source for tier (a).</td>
+</tr>
+<tr>
+<td><strong>FR7</strong></td>
+<td>Reshaped — cross-service direct-SQL reads unchanged; writes follow the tier; <code>ram-reference-data</code> is the single owner of all reference-data tables.</td>
+</tr>
+<tr>
+<td><strong>FR10–FR18</strong></td>
+<td>JOH terminology sweep across the JOH Records &amp; Working Patterns section. Section heading renamed (Judge → JOH). FR14 reframed (contract-type is upstream-only). FR15 reshaped (tickets are upstream-sourced + RAM-overlay layered on top, keyed by personnel_number). FR17 marks location changes as RAM-owned operational state.</td>
+</tr>
+<tr>
+<td><strong>FR23, FR27</strong></td>
+<td>JOH terminology fixes in the Vacancy &amp; Cover section.</td>
+</tr>
+<tr>
+<td><strong>FR29, FR32, FR33, FR34</strong></td>
+<td>JOH terminology fixes in the Booking Management section. "court / tribunal" used where venue/jurisdiction-specific.</td>
+</tr>
+<tr>
+<td><strong>FR35, FR36, FR39</strong></td>
+<td>JOH terminology fixes in the Sitting Management section. DJ(MC) / Legal Advisers / County Courts kept as Courts-cohort-specific examples.</td>
+</tr>
+<tr>
+<td><strong>FR57</strong> <em>(activation flags — was FR58)</em></td>
+<td>Reframed — per-jurisdiction, per-region phased activation. Cutover flips include both jurisdiction and region in the SQL <code>WHERE</code> clause.</td>
+</tr>
+<tr>
+<td><strong>FR60</strong> <em>(UAT — was FR61)</em></td>
+<td>Reframed — jurisdiction-incumbent-experienced users perform UAT (GAPS for wave 1; APEX for waves 2+).</td>
+</tr>
+<tr>
+<td><strong>FR57 (Phase 0 Data Migration ETL)</strong></td>
+<td><strong>Retracted entirely</strong>. FR slot removed; FR58–FR61 renumbered to FR57–FR60.</td>
+</tr>
+<tr>
+<td><strong>NFR24</strong></td>
+<td>Flipped — JOH eLinks API + MRD are MVP integrations (was "out of MVP").</td>
+</tr>
+</tbody>
+</table>
+<h3 id="user-journeys-impact">User Journeys impact</h3>
+<p>The User Journeys section restructured to add a wave-1 SSCS journey and re-label existing journeys for waves 2+:</p>
+<table>
+<thead>
+<tr>
+<th>Old</th>
+<th>New</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>(none)</em></td>
+<td>Journey 1 — Tribunal Caseworker SSCS panel coverage (wave 1)</td>
+</tr>
+<tr>
+<td>Journey 1 — RSU cover-creation through payment</td>
+<td>Journey 2 — RSU cover-creation through payment, Courts canonical cycle (wave 2+)</td>
+</tr>
+<tr>
+<td>Journey 2 — Court daily sitting confirmation</td>
+<td>Journey 3 — Court daily sitting confirmation (wave 2+)</td>
+</tr>
+<tr>
+<td>Journey 3 — Judge views itinerary</td>
+<td>Journey 4 — Judge views itinerary (wave 2+)</td>
+</tr>
+<tr>
+<td>Journey 4 — DA&amp;I MI Feed</td>
+<td>Journey 5 — DA&amp;I MI Feed (cohort-neutral; post-MVP)</td>
+</tr>
+<tr>
+<td>Journey 5 — Cross-region edge case</td>
+<td>Journey 6 — Cross-region edge case, Courts (Risk #1)</td>
+</tr>
+</tbody>
+</table>
+<p>Phase-by-Phase Journey Mapping table updated accordingly (now 6 rows).</p>
+<h3 id="glossary-impact">Glossary impact</h3>
+<p>New entries: <strong>GAPS</strong>, <strong>JOH</strong>, <strong>Jurisdiction</strong>, <strong>MRD</strong>, <strong>RTJ</strong>, <strong>SSCS</strong>, <strong>Tribunal Member</strong>, <strong>Tribunal Panel</strong>.</p>
+<p>Amended entries: <strong>JI</strong> (now defined as the Courts cohort's legacy system specifically), <strong>RAM Pathfinder</strong> (replaces GAPS for SSCS wave 1 and JI/APEX for Courts waves 2+).</p>
+<h3 id="cascade-into-separate-artefacts-not-modified-in-this-run">Cascade into separate artefacts (NOT modified in this run)</h3>
+<table>
+<thead>
+<tr>
+<th>Artefact</th>
+<th>Required follow-up</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>epics/index.md</code></td>
+<td>Phase 0 + Phase 1–8 framework references retracted ETL; Phase 0 epics 0.2 and 0.3 obsolete in their current form</td>
+</tr>
+<tr>
+<td><code>epics/requirements-inventory.md</code></td>
+<td>Renumber FR58–FR61 → FR57–FR60; carry across the JOH terminology + tier-(a)/tier-(b) reshape</td>
+</tr>
+<tr>
+<td><code>epics/fr-coverage-map.md</code></td>
+<td>Renumber + reshape per FR amendments</td>
+</tr>
+<tr>
+<td><code>epics/phase-0/*.md</code></td>
+<td>Stories 0.2.x and 0.3.x assume the ETL exists; fundamentally restructure or remove</td>
+</tr>
+<tr>
+<td><code>architecture.md</code> + <code>architecture-summary.md</code></td>
+<td>Two-tier reference-data ownership; JOH eLinks + MRD facade architecture; D12 scope boundary; <code>ram-judge</code> → <code>ram-joh</code> rename; personnel_number-keyed RAM-overlay tables</td>
+</tr>
+<tr>
+<td><code>architecture/data-tables.md</code></td>
+<td>Table inventory needs the two-tier model + overlay-table pattern</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>Programme summary needs SSCS-first reflection; replace Courts-centric framing</td>
+</tr>
+<tr>
+<td><code>docs/architecture/asis/</code></td>
+<td><strong>New SSCS as-is analysis pack required</strong> parallel to the existing JI/APEX pack — JOH eLinks data shape, MRD entities, SSCS operational processes, GAPS as-is capture</td>
+</tr>
+</tbody>
+</table>
+<h3 id="implementation-readiness-impact">Implementation Readiness impact</h3>
+<p>Prior readiness reports (2026-05-05, -06, -15, -15-rev2) assessed the <strong>Courts cohort + ETL bootstrap</strong>. A new <strong>SSCS-cohort readiness assessment</strong> is required before Phase 9, covering:</p>
+<ul>
+<li>JOH eLinks API integration readiness</li>
+<li>MRD Excel feed ingestion readiness</li>
+<li>Two-population identity model implementation</li>
+<li>Jurisdiction-aware authorisation</li>
+<li>SSCS-experienced UAT panel coverage (GAPS users)</li>
+</ul>
+</div></details><details class="section" id="3-recommended-approach"><summary><span class="section-title">3. Recommended Approach</span></summary><div class="section-body">
+<p><strong>Hybrid: Direct Adjustment as the primary path, with the cohort retarget being the MVP scope change.</strong></p>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li><strong>Option 1 — Direct Adjustment</strong> is viable and the bulk of the work. The 11-service architecture and Phase 0–8 build sequence are preserved per the user's chosen scope. PRD wording, Decisions Log entries, FR text, journeys, and integration requirements can be updated in place.</li>
+<li><strong>Option 2 — Rollback</strong> is not viable. Per the chosen scope ("11 services preserved, build sequence preserved"), nothing structural needs rolling back. Rolling back would discard the validated PRD and architecture work.</li>
+<li><strong>Option 3 — MVP Review</strong> is partially in play — the MVP target jurisdiction shifts from a Courts judicial region (wave 1) to the SSCS jurisdiction. This is a <em>retarget</em>, not a reduction. Captured as part of the Direct Adjustment.</li>
+</ul>
+<p><strong>Effort estimate:</strong> High — extensive PRD amendments (executed inside this run); cascading follow-up workstreams (epics, architecture, README, SSCS as-is pack) are Medium-High each.</p>
+<p><strong>Risk level:</strong> Medium — the 11-service architecture genuinely fits SSCS workflows per the user's confirmation. The main risks are: (a) the SSCS as-is pack may surface additional concepts not captured here; (b) JOH eLinks API contract details may shift the data-tier design; (c) Phase 0 epics 0.2 and 0.3 need complete restructuring before implementation can resume.</p>
+<p><strong>Timeline impact:</strong> Programme-management territory. The PRD changes themselves do not change Phase 0–8 sequencing; the wave-1 cutover target shifts from a Courts region to SSCS.</p>
+</div></details><details class="section" id="4-detailed-change-proposals"><summary><span class="section-title">4. Detailed Change Proposals</span></summary><div class="section-body">
+<p>All PRD amendments listed in Section 2 (Impact Analysis) were <strong>executed in this workflow run</strong> via 21 numbered edit proposals, each presented to and approved by the Product Manager incrementally. The detailed diffs are in the PRD itself; the high-level summary is captured in <code>artefactsModified</code> (frontmatter) and Section 2 (this proposal).</p>
+<p>Edit proposals applied (in order):</p>
+<ol type="1">
+<li>Add D11 to Decisions Log + update Document Map (D1–D11)</li>
+<li>Executive Summary rewrite + D11 implication amendment (JOH terminology shift)</li>
+<li>Glossary additions (GAPS, JOH, RTJ, SSCS, Tribunal Member, Tribunal Panel) + JI / RAM Pathfinder amendments</li>
+<li>Supersede D3 (no data migration; JOH eLinks API + MRD facade) + add MRD glossary entry</li>
+<li>Reframe D5 (jurisdiction-incumbent UAT)</li>
+<li>Reframe D8 (jurisdiction-first rollout; jurisdiction as hierarchical first-class attribute)</li>
+<li>Restructure D9 (two distinct user populations; email→personal-number lookup at sign-in)</li>
+<li>D10 supersession note + D9 restructure for two-population identity</li>
+<li>Retract FR57 (Phase 0 ETL) + renumber FR58–FR61 → FR57–FR60 + cross-reference updates</li>
+<li>Amend FR4 (jurisdiction-aware admin operations)</li>
+<li>Terminology sweep: "cohort" → "jurisdiction" globally + add Jurisdiction glossary entry</li>
+<li>Amend FR6 (two-tier ownership model: upstream-sourced + RAM-owned, separate tables)</li>
+<li>Amend FR7 (cross-service reads unchanged; writes follow the tier)</li>
+<li>FR1 + FR2 + FR57 + NFR24 + FR60 cascade amendments</li>
+<li>JOH Records &amp; Working Patterns section (FR10–FR18) — JOH terminology + tier-(b) overlay patterns</li>
+<li>FR23 + FR27 (Vacancy &amp; Cover) JOH terminology</li>
+<li>Booking + Sitting (FR29, FR32, FR33, FR34, FR35, FR36, FR39) JOH terminology + add D12 (RAM scope boundary) + Exec Summary char #6 + D11 implication amendments</li>
+<li>Authentication Model subsection — JI → RAM Pathfinder, two-population model, jurisdiction added</li>
+<li>New Journey 1 (SSCS Tribunal Caseworker) + renumber existing journeys 1–5 → 2–6</li>
+<li>Phase-by-Phase Journey Mapping table update (6 rows)</li>
+<li>Integration Requirements table restructure (JOH eLinks + MRD + external case-management systems + JFEPS preservation note)</li>
+</ol>
+</div></details><details class="section" id="5-implementation-handoff"><summary><span class="section-title">5. Implementation Handoff</span></summary><div class="section-body">
+<h3 id="scope-classification-major">Scope classification: <strong>Major</strong></h3>
+<ul>
+<li>Touches PRD core scope (D11 + D12), multiple decisions (D3, D5, D8, D9, D10 cascade), terminology layer, data ownership model, and downstream user journeys.</li>
+<li>Requires follow-up workstreams in architecture, epics, and supporting artefacts.</li>
+</ul>
+<h3 id="recipients-and-responsibilities">Recipients and responsibilities</h3>
+<table>
+<thead>
+<tr>
+<th>Recipient</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Product Manager</strong> (Ramnish)</td>
+<td>Already executed the PRD-level decisions during this Correct Course run. Owns the directional clarity needed for the cascade workstreams.</td>
+</tr>
+<tr>
+<td><strong>Solution Architect (Winston, <code>bmad-agent-architect</code>)</strong></td>
+<td>Lead architecture document amendments: two-tier reference-data ownership; JOH eLinks API + MRD facade; D12 scope boundary; personnel_number-keyed overlay tables; <code>ram-judge</code> → <code>ram-joh</code> rename evaluation.</td>
+</tr>
+<tr>
+<td><strong>Product Owner / Developer agents (<code>bmad-create-epics-and-stories</code>)</strong></td>
+<td>Restructure Phase 0 epics 0.2 and 0.3 (ETL stories obsolete). Renumber FR references across <code>epics/fr-coverage-map.md</code> and <code>epics/requirements-inventory.md</code>.</td>
+</tr>
+<tr>
+<td><strong>Tech Writer (Paige, <code>bmad-agent-tech-writer</code>)</strong></td>
+<td>Update <code>README.md</code> programme summary (SSCS-first framing) and <code>architecture-summary.md</code>.</td>
+</tr>
+<tr>
+<td><strong>Business Analyst (Mary, <code>bmad-agent-analyst</code>)</strong></td>
+<td>Produce the new SSCS as-is analysis pack under <code>docs/architecture/asis/</code> (parallel to the JI/APEX pack). Document JOH eLinks data shape, MRD entities, SSCS operational processes, and GAPS as-is.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="success-criteria">Success criteria</h3>
+<ul>
+<li>PRD internally consistent (verified at the close of this workflow run).</li>
+<li>Architecture documents and epics aligned with PRD before any Phase 0 implementation work resumes.</li>
+<li>SSCS as-is pack complete before Phase 9 wave-1 cutover plan is finalised.</li>
+<li>New SSCS-cohort readiness assessment signed off before Phase 9 wave-1 cutover.</li>
+</ul>
+<h3 id="sequencing-recommendation">Sequencing recommendation</h3>
+<ol type="1">
+<li><strong>Immediately:</strong> review this Sprint Change Proposal; confirm scope and recipients.</li>
+<li><strong>Next:</strong> architecture document updates (highest impact on Phase 0 epic restructuring) — <code>architecture.md</code>, <code>architecture-summary.md</code>, <code>architecture/data-tables.md</code>.</li>
+<li><strong>Then in parallel:</strong>
+<ul>
+<li>Phase 0 epic restructuring (0.2 + 0.3 — ETL stories obsolete);</li>
+<li>FR-coverage-map and requirements-inventory cleanup;</li>
+<li>SSCS as-is analysis pack production.</li>
+</ul></li>
+<li><strong>Finally:</strong> SSCS-cohort readiness assessment; <code>README.md</code> programme-summary update for external visibility.</li>
+</ol>
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-10.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#1-issue-summary">1. Issue Summary</a></li><li class="h3"><a href="#trigger-a--sscs-first-pilot-wave">Trigger A — SSCS-first pilot wave</a></li><li class="h3"><a href="#trigger-b--no-legacy-data-migration">Trigger B — No legacy data migration</a></li><li class="h3"><a href="#trigger-c--two-distinct-user-populations">Trigger C — Two distinct user populations</a></li><li class="h3"><a href="#trigger-d--jurisdiction-as-first-class-hierarchical-data-dimension">Trigger D — Jurisdiction as first-class hierarchical data dimension</a></li><li class="h3"><a href="#trigger-e--joh-terminology-replaces-judge">Trigger E — JOH terminology replaces "judge"</a></li><li class="h3"><a href="#trigger-f--ram-scope-boundary-clarification">Trigger F — RAM scope boundary clarification</a></li><li><a href="#2-impact-analysis">2. Impact Analysis</a></li><li class="h3"><a href="#decisions-log-impact">Decisions Log impact</a></li><li class="h3"><a href="#functional-requirements-impact">Functional Requirements impact</a></li><li class="h3"><a href="#user-journeys-impact">User Journeys impact</a></li><li class="h3"><a href="#glossary-impact">Glossary impact</a></li><li class="h3"><a href="#cascade-into-separate-artefacts-not-modified-in-this-run">Cascade into separate artefacts (NOT modified in this run)</a></li><li class="h3"><a href="#implementation-readiness-impact">Implementation Readiness impact</a></li><li><a href="#3-recommended-approach">3. Recommended Approach</a></li><li><a href="#4-detailed-change-proposals">4. Detailed Change Proposals</a></li><li><a href="#5-implementation-handoff">5. Implementation Handoff</a></li><li class="h3"><a href="#scope-classification-major">Scope classification: Major</a></li><li class="h3"><a href="#recipients-and-responsibilities">Recipients and responsibilities</a></li><li class="h3"><a href="#success-criteria">Success criteria</a></li><li class="h3"><a href="#sequencing-recommendation">Sequencing recommendation</a></li></ul></aside>
+<script>
+(function(){
+  // 1. Sidebar accordion: persist user's group open/close preference per group.
+  //    The current page's group is always open on load (regardless of stored state).
+  document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){
+    var key = 'nav-group-' + d.dataset.group;
+    if (d.dataset.current !== 'true') {
+      var stored = localStorage.getItem(key);
+      if (stored === 'open') d.open = true;
+      else if (stored === 'closed') d.open = false;
+    }
+    d.addEventListener('toggle', function(){
+      localStorage.setItem(key, d.open ? 'open' : 'closed');
+    });
+  });
+
+  // 2. Expand all / Collapse all (sidebar)
+  document.querySelectorAll('button[data-nav-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.navAction === 'expand';
+      document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){ d.open = open; });
+    });
+  });
+
+  // 3. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 4. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

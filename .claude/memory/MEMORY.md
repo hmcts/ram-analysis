@@ -1,0 +1,8 @@
+- [Git default branch should be main](feedback_git_default_branch.md) — use `main` (not `master`) when initializing new git repos
+- [No GitHub operations from Claude sessions](feedback_no_github_ops.md) — never commit/push/PR; user handles git externally via VSCode after review
+- [Skills go in project scope, not user scope](feedback_skills_project_scope.md) — default to `<repo>/.claude/skills/` over `~/.claude/skills/`
+- [Outputs go alongside input data](feedback_outputs_alongside_input.md) — per-run artefacts under `<input-folder>/output/`, never in the running project (supersedes the old "docs/ holds outputs only" rule)
+- [Use natively-supported constructs over custom entities](feedback_use_native_constructs.md) — DB row locking / `@Version` / unique constraints over custom dedup tables; OAuth libs over custom tokens; framework retry over hand-rolled — avoid over-engineering
+- [Ramnish's writing style](user_writing_style.md) — apply to all written output (technical docs, articles, educational content): direct, opinionated, practitioner voice; problem→solution→implementation; fact-based; no decorative or provocative framing; technical docs lean further toward declarative/list form
+- [RAM Pathfinder BMAD state](project_bmad_ram_pathfinder_state.md) — architecture v3.0 + epics restructured for SCP 2026-06-10; next: readiness check → sprint planning
+- [Diagram tooling: D2 + ELK](feedback_diagram_tooling_d2.md) — new boxes-and-lines diagrams in D2 (`.d2` source + PNG via render_diagram.sh); Graphviz only for record/table renders; Mermaid for sequence diagrams

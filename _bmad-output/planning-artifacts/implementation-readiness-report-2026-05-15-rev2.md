@@ -37,7 +37,7 @@ priorReports:
 # Implementation Readiness Assessment Report — 2026-05-15 (revision 2, post-D10)
 
 **Date:** 2026-05-15
-**Project:** ji-analysis (RAM Pathfinder rebuild)
+**Project:** ram-analysis (RAM Pathfinder rebuild)
 **Trigger for this re-run:** Formal PRD update via `bmad-correct-course` added D10 (admin UI removed from MVP; `gh` CLI not available) and added AR51 (manual GitHub setup). All four Phase 0 epics + the PRD + the requirements inventory were modified earlier today. This report validates that the changes are internally consistent across PRD, architecture-derived requirements, and Phase 0 stories.
 
 ## 1. Document Inventory

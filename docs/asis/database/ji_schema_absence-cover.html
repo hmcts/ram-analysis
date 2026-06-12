@@ -51,6 +51,10 @@ main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;d
 main a{color:#0969da;text-decoration:none}
 main a:hover{text-decoration:underline}
 main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
 main li{margin:2px 0}
 main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
 main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
@@ -91,6 +95,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <summary>Product</summary>
 <ul>
 <li><a href="../../prd.html">PRD (RAM Pathfinder)</a></li>
+<li><a href="../../prd-validation-report-2026-06-10.html">PRD validation report — 2026-06-10</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="as-is-ji-architecture-views">
@@ -98,6 +103,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ul>
 <li><a href="../../asis/system-context.html">System Context (as-is)</a></li>
 <li><a href="../../asis/components.html">Components (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-analysis-pack">
+<summary>As-is — JI Analysis Pack</summary>
+<ul>
+<li><a href="../../architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
+<li><a href="../../architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
+<li><a href="../../architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="as-is-ji-database-schema" data-current="true" open>
@@ -114,55 +127,56 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="../../asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-architecture">
+<details class="nav-group" data-group="to-be-ram-pathfinder-architecture">
 <summary>To-be — RAM Pathfinder Architecture</summary>
 <ul>
 <li><a href="../../architecture.html">Architecture (index)</a></li>
 <li><a href="../../architecture-summary.html">Architecture summary</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-reference">
+<details class="nav-group" data-group="to-be-ram-pathfinder-reference">
 <summary>To-be — RAM Pathfinder Reference</summary>
 <ul>
-<li><a href="../../architecture/user-types.html">User types</a></li>
-<li><a href="../../architecture/data-tables.html">Authoritative table ownership</a></li>
-<li><a href="../../architecture/conventions.html">Conventions</a></li>
-<li><a href="../../architecture/repository-strategy.html">Repository strategy</a></li>
-<li><a href="../../architecture/repo-structure.html">Repository structure</a></li>
-<li><a href="../../architecture/starter-template.html">Starter template</a></li>
-<li><a href="../../architecture/functional-requirements-coverage.html">Functional requirements coverage</a></li>
-<li><a href="../../architecture/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
+<li><a href="../../architecture/tobe/user-types.html">User types</a></li>
+<li><a href="../../architecture/tobe/data-tables.html">Authoritative table ownership</a></li>
+<li><a href="../../architecture/tobe/conventions.html">Conventions</a></li>
+<li><a href="../../architecture/tobe/repository-strategy.html">Repository strategy</a></li>
+<li><a href="../../architecture/tobe/repo-structure.html">Repository structure</a></li>
+<li><a href="../../architecture/tobe/starter-template.html">Starter template</a></li>
+<li><a href="../../architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
+<li><a href="../../architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-sequence-diagrams">
+<details class="nav-group" data-group="to-be-ram-pathfinder-sequence-diagrams">
 <summary>To-be — RAM Pathfinder Sequence Diagrams</summary>
 <ul>
-<li><a href="../../architecture/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
-<li><a href="../../architecture/sequence-diagrams/judge-onboarding-and-sitting-generation.html">Judge onboarding & sitting gen.</a></li>
-<li><a href="../../architecture/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
-<li><a href="../../architecture/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
-<li><a href="../../architecture/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
-<li><a href="../../architecture/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
-<li><a href="../../architecture/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
-<li><a href="../../architecture/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-open-items">
+<details class="nav-group" data-group="to-be-ram-pathfinder-open-items">
 <summary>To-be — RAM Pathfinder Open Items</summary>
 <ul>
-<li><a href="../../architecture/gaps.html">Gaps</a></li>
-<li><a href="../../architecture/assumptions.html">Assumptions</a></li>
-<li><a href="../../architecture/changelog.html">Changelog</a></li>
+<li><a href="../../architecture/tobe/gaps.html">Gaps</a></li>
+<li><a href="../../architecture/tobe/assumptions.html">Assumptions</a></li>
+<li><a href="../../architecture/tobe/changelog.html">Changelog</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="implementation-readiness">
-<summary>Implementation Readiness</summary>
+<details class="nav-group" data-group="change-control-readiness">
+<summary>Change Control & Readiness</summary>
 <ul>
-<li><a href="../../implementation-readiness-report-2026-05-15-rev2.html">Report — 2026-05-15 rev2 (current, post-D10)</a></li>
+<li><a href="../../sprint-change-proposal-2026-06-10.html">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
 <li><a href="../../sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
-<li><a href="../../implementation-readiness-report-2026-05-15.html">Report — 2026-05-15 rev1 (superseded by rev2)</a></li>
-<li><a href="../../implementation-readiness-report-2026-05-06.html">Report — 2026-05-06 (historical)</a></li>
-<li><a href="../../implementation-readiness-report-2026-05-05.html">Report — 2026-05-05 (historical)</a></li>
+<li><a href="../../implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
+<li><a href="../../implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
+<li><a href="../../implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
+<li><a href="../../implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="implementation-epics-foundations">
@@ -174,15 +188,15 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="../../epics/fr-coverage-map.html">FR coverage map</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="implementation-phase-0">
-<summary>Implementation — Phase 0 ✓</summary>
+<details class="nav-group" data-group="implementation-phase-0-restructured-2026-06-11">
+<summary>Implementation — Phase 0 (restructured 2026-06-11)</summary>
 <ul>
 <li><a href="../../epics/phase-0/index.html">Phase 0 overview</a></li>
-<li><a href="../../epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates (5 stories)</a></li>
-<li><a href="../../epics/phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2 — Ref Data SQL-loaded (3 stories)</a></li>
-<li><a href="../../epics/phase-0/epic-0.3-admin-manages-users-roles.html">Epic 0.3 — Users/Roles SQL-loaded (1 story)</a></li>
+<li><a href="../../epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)</a></li>
+<li><a href="../../epics/phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2 — Reference data read-only (2 stories)</a></li>
+<li><a href="../../epics/phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3 — User populations bootstrapped (1 story)</a></li>
 <li><a href="../../epics/phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4 — Notification scaffolded (2 stories)</a></li>
-<li><a href="../../epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15)</a></li>
+<li><a href="../../epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15 — superseded)</a></li>
 </ul>
 </details></aside>
 <main class="content">

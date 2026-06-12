@@ -5,10 +5,14 @@ date: '2026-05-15'
 revisedAt: '2026-05-15'
 revisionNote: 'Revised after the 2026-05-15 admin-UI-removed scope decision. Story count reduces from 18 → 11. FR4/FR6 UI surfaces deferred post-MVP.'
 scope: 'Phase 0 (Epics 0.1–0.4, 11 stories total — revised from 18)'
-verdict: 'VALIDATED - READY FOR IMPLEMENTATION'
+verdict: 'VALIDATED - READY FOR IMPLEMENTATION (SUPERSEDED 2026-06-11)'
+supersededAt: '2026-06-11'
+supersededBy: 'SCP 2026-06-10 cascade — this report validated the Courts-cohort + ETL-bootstrap plan (old Stories 0.2.3 / 0.3.1, since retracted). Phase 0 was restructured to 12 stories on 2026-06-11; revalidation happens via the SSCS-cohort implementation-readiness assessment (bmad-check-implementation-readiness).'
 ---
 
 # Phase 0 Step 4 — Final Validation Report (2026-05-15, revised)
+
+> **⚠️ SUPERSEDED 2026-06-11.** This report validated the Courts-cohort + ETL-bootstrap plan. The Sprint Change Proposal 2026-06-10 retracted the Phase 0 Data Migration ETL (revised D3) and restructured Phase 0 to **12 stories** (upstream ingestion in Epic 0.1; two-population identity bootstrap in Epic 0.3). Kept verbatim below as audit trail. Revalidation: run `bmad-check-implementation-readiness` (SSCS-cohort assessment per D11).
 
 **Date:** 2026-05-15
 **Scope:** Phase 0 (Epics 0.1–0.4, 11 stories — revised down from 18 after the 2026-05-15 admin-UI-removed scope decision)

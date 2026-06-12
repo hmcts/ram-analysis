@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Authoritative Table Ownership Mapping — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav"><h2 class="site-title"><a href="../../index.html">RAM Pathfinder Documentation</a></h2>
+<div class="nav-controls"><button data-nav-action="expand" title="Expand all groups">Expand all</button> <button data-nav-action="collapse" title="Collapse all groups">Collapse all</button></div>
+<details class="nav-group" data-group="overview">
+<summary>Overview</summary>
+<ul>
+<li><a href="../../index.html">Index</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="product">
+<summary>Product</summary>
+<ul>
+<li><a href="../../prd.html">PRD (RAM Pathfinder)</a></li>
+<li><a href="../../prd-validation-report-2026-06-10.html">PRD validation report — 2026-06-10</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-architecture-views">
+<summary>As-is — JI Architecture Views</summary>
+<ul>
+<li><a href="../../asis/system-context.html">System Context (as-is)</a></li>
+<li><a href="../../asis/components.html">Components (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-analysis-pack">
+<summary>As-is — JI Analysis Pack</summary>
+<ul>
+<li><a href="../../architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
+<li><a href="../../architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
+<li><a href="../../architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-database-schema">
+<summary>As-is — JI Database Schema</summary>
+<ul>
+<li><a href="../../asis/database/index.html">Database index</a></li>
+<li><a href="../../asis/database/ji_schema_overview.html">Schema overview</a></li>
+<li><a href="../../asis/database/ji_schema_judges-profile.html">Judges Profile & Reference</a></li>
+<li><a href="../../asis/database/ji_schema_judges-patterns.html">Working Patterns, Tickets & Stats</a></li>
+<li><a href="../../asis/database/ji_schema_absence-cover.html">Absence & Cover Workflow</a></li>
+<li><a href="../../asis/database/ji_schema_bookings-sittings.html">Bookings & Sittings</a></li>
+<li><a href="../../asis/database/ji_schema_reference-work.html">Reference Data</a></li>
+<li><a href="../../asis/database/ji_schema_audit-cross-cutting.html">Audit & Cross-cutting</a></li>
+<li><a href="../../asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-architecture">
+<summary>To-be — RAM Pathfinder Architecture</summary>
+<ul>
+<li><a href="../../architecture.html">Architecture (index)</a></li>
+<li><a href="../../architecture-summary.html">Architecture summary</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-reference" data-current="true" open>
+<summary>To-be — RAM Pathfinder Reference</summary>
+<ul>
+<li><a href="../../architecture/tobe/user-types.html">User types</a></li>
+<li><a href="../../architecture/tobe/data-tables.html" class="current">Authoritative table ownership</a></li>
+<li><a href="../../architecture/tobe/conventions.html">Conventions</a></li>
+<li><a href="../../architecture/tobe/repository-strategy.html">Repository strategy</a></li>
+<li><a href="../../architecture/tobe/repo-structure.html">Repository structure</a></li>
+<li><a href="../../architecture/tobe/starter-template.html">Starter template</a></li>
+<li><a href="../../architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
+<li><a href="../../architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-sequence-diagrams">
+<summary>To-be — RAM Pathfinder Sequence Diagrams</summary>
+<ul>
+<li><a href="../../architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
+<li><a href="../../architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-open-items">
+<summary>To-be — RAM Pathfinder Open Items</summary>
+<ul>
+<li><a href="../../architecture/tobe/gaps.html">Gaps</a></li>
+<li><a href="../../architecture/tobe/assumptions.html">Assumptions</a></li>
+<li><a href="../../architecture/tobe/changelog.html">Changelog</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="change-control-readiness">
+<summary>Change Control & Readiness</summary>
+<ul>
+<li><a href="../../sprint-change-proposal-2026-06-10.html">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
+<li><a href="../../sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
+<li><a href="../../implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
+<li><a href="../../implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
+<li><a href="../../implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
+<li><a href="../../implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="implementation-epics-foundations">
+<summary>Implementation — Epics (Foundations)</summary>
+<ul>
+<li><a href="../../epics/index.html">Epics index</a></li>
+<li><a href="../../epics/requirements-inventory.html">Requirements inventory</a></li>
+<li><a href="../../epics/framework.html">Phase × Area framework</a></li>
+<li><a href="../../epics/fr-coverage-map.html">FR coverage map</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="implementation-phase-0-restructured-2026-06-11">
+<summary>Implementation — Phase 0 (restructured 2026-06-11)</summary>
+<ul>
+<li><a href="../../epics/phase-0/index.html">Phase 0 overview</a></li>
+<li><a href="../../epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)</a></li>
+<li><a href="../../epics/phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2 — Reference data read-only (2 stories)</a></li>
+<li><a href="../../epics/phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3 — User populations bootstrapped (1 story)</a></li>
+<li><a href="../../epics/phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4 — Notification scaffolded (2 stories)</a></li>
+<li><a href="../../epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15 — superseded)</a></li>
+</ul>
+</details></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="authoritative-table-ownership-mapping">Authoritative Table Ownership Mapping</h1>
+<blockquote>
+<p>Sibling of <a href="../../architecture.html"><code>../architecture.md</code></a>. The parent's <em>Data Architecture</em> section holds the strategy (shared schema, per-service DB roles, table-name convention, Flyway, the two-tier reference-data ownership model, upstream ingestion). This file holds the per-table inventory.</p>
+</blockquote>
+<details class="section" id="ram-pathfinder-tables-not-legacy-tables"><summary><span class="section-title">RAM Pathfinder tables, not legacy tables</span></summary><div class="section-body">
+<p>This is the inventory of RAM Pathfinder database tables, grouped by owning service. The table list, column shapes, FK relationships, and ownership boundaries are RAM Pathfinder's design.</p>
+<p>GAPS and APEX have their own (different) schemas; neither is in this inventory and neither is owned by any RAM Pathfinder service. <strong>No legacy data is migrated from either system</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from the upstream sources of truth:</p>
+<ul>
+<li><strong>JOH eLinks API</strong> → the 15 <code>jo_*</code> tables (nightly in-process scheduled sync inside <code>ram-reference-data</code>).</li>
+<li><strong>MRD (Master Reference Data)</strong> → the <code>mrd_*</code> tables (weekly Excel feed via blob drop + scheduled pick-up, until MRD's public APIs ship).</li>
+</ul>
+<p>Both paths are <strong>source-of-truth integration, not legacy-system migration</strong>: the upstream data is current and authoritative; only the ingestion mechanism differs.</p>
+<p>For naming convention rules (<strong><code>ram_</code> prefix on every RAM-owned table</strong>; <code>jo_</code>/<code>mrd_</code> source-system prefixes on upstream-sourced tier-(a) tables; <code>mock_</code> on dev-only mock-auth tables), see <a href="conventions.html"><code>./conventions.md</code> → "Naming Patterns"</a>.</p>
+</div></details><details class="section" id="the-two-ownership-tiers-fr6fr7"><summary><span class="section-title">The two ownership tiers (FR6/FR7)</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Written by</th>
+<th>Hand-editable in RAM?</th>
+<th>Corrections</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>(a) Upstream-sourced</strong> (<code>jo_*</code>, <code>mrd_*</code>)</td>
+<td>The ingestion mechanisms only (<code>ram_reference_data</code> role)</td>
+<td><strong>Never</strong></td>
+<td>At source — Judicial Office for <code>jo_*</code>; the MRD team for <code>mrd_*</code>. Picked up by the next sync. No data flows upstream from RAM.</td>
+</tr>
+<tr>
+<td><strong>(b) RAM-owned</strong> (everything else)</td>
+<td>The owning service; DBAs via SQL per runbook in MVP<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></td>
+<td>Yes (per tier-(b) rules)</td>
+<td>Within RAM</td>
+</tr>
+</tbody>
+</table>
+<p>Separate tables preserve lineage; <code>ram-reference-data</code>'s API exposes both tiers as appropriate but does not blend them.</p>
+</div></details><details class="section" id="reference-data-service-ram-reference-data--32-tables"><summary><span class="section-title">Reference Data service (<code>ram-reference-data</code>) — 32 tables</span></summary><div class="section-body">
+<p>Single owner of every reference-data table in the shared schema (FR7). Reads by other services go directly via SQL JOIN with per-service SELECT grants. Writes follow the tier.</p>
+<h3 id="tier-a--joh-elinks-upstream-sourced--15-tables">Tier (a) — JOH eLinks upstream-sourced — 15 tables</h3>
+<p>The 15 <code>jo_*</code> entities named in the revised D3, refreshed nightly by the in-process scheduled sync. Upserts key on the upstream natural key; rows absent upstream are <strong>marked inactive, never hard-deleted</strong> (protects FKs from domain tables).</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Purpose</th>
+<th>Key consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jo_people</code></td>
+<td>JOH person records; <strong><code>personnel_number</code> is the canonical JOH identifier</strong> referenced by every domain table and resolved at sign-in from the IdP email<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></td>
+<td>Authorisation (identity lookup), JOH, Booking, Sitting, Itinerary, MI Feed</td>
+</tr>
+<tr>
+<td><code>jo_appointments</code></td>
+<td>JOH appointments</td>
+<td>JOH profile views (FR11)</td>
+</tr>
+<tr>
+<td><code>jo_judiciary_role_assignments</code></td>
+<td>JOH judiciary-role assignments</td>
+<td>JOH profile views</td>
+</tr>
+<tr>
+<td><code>jo_authorisations_with_dates</code></td>
+<td>JOH authorisations with effective dates</td>
+<td>JOH profile views, Vacancy matching</td>
+</tr>
+<tr>
+<td><code>jo_appointment_titles</code></td>
+<td>Appointment-title vocabulary (CJ, DJ, Recorder, Tribunal Judge, …)</td>
+<td>JOH search/filter (FR10)</td>
+</tr>
+<tr>
+<td><code>jo_base_locations</code></td>
+<td>JOH base locations</td>
+<td>JOH (FR17 overlay base), Itinerary</td>
+</tr>
+<tr>
+<td><code>jo_contract_types</code></td>
+<td>Contract types — salaried full-time / part-time status lives here (FR14: conversions happen upstream, reflected at next sync)</td>
+<td>JOH, Sitting generation</td>
+</tr>
+<tr>
+<td><code>jo_genders</code></td>
+<td>Gender vocabulary</td>
+<td>JOH profile views</td>
+</tr>
+<tr>
+<td><code>jo_judiciary_roles</code></td>
+<td>Judiciary-role vocabulary</td>
+<td>JOH, Authorisation</td>
+</tr>
+<tr>
+<td><code>jo_jurisdictions</code></td>
+<td><strong>Jurisdiction hierarchy</strong> (Tribunals/SSCS, Courts/Civil, …) — the first-class rollout/authorisation/filtering dimension<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Parent-child shape preserved natively if upstream provides it, or established on ingest.</td>
+<td>Authorisation (user jurisdiction scope), Reference Data API filtering, activation flags (FR57)</td>
+</tr>
+<tr>
+<td><code>jo_locations</code></td>
+<td>Location records</td>
+<td>JOH, Booking, Itinerary</td>
+</tr>
+<tr>
+<td><code>jo_location_types</code></td>
+<td>Location-type vocabulary</td>
+<td>Office/location views</td>
+</tr>
+<tr>
+<td><code>jo_tickets</code></td>
+<td>Upstream ticket assignments per JOH (FR15 layer (a))</td>
+<td>JOH ticket views, Vacancy matching</td>
+</tr>
+<tr>
+<td><code>jo_ticket_categories</code></td>
+<td>Ticket categories</td>
+<td>JOH, Vacancy</td>
+</tr>
+<tr>
+<td><code>jo_ticket_category_types</code></td>
+<td>Ticket category types</td>
+<td>JOH, Vacancy</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tier-a--mrd-upstream-sourced--1-table">Tier (a) — MRD upstream-sourced — 1 table</h3>
+<p>Weekly Excel feed via blob drop until MRD's public APIs ship; the reader swaps for an API client then, the table stays.</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Purpose</th>
+<th>Key consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mrd_specialisms</code></td>
+<td>JOH Specialisations — supplementary attributes not present in JOH eLinks<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Further <code>mrd_*</code> tables are added as MRD entities enter scope.</td>
+<td>JOH profile views (FR11), Vacancy matching</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ram-internal-sync-tracking--1-table">RAM-internal sync tracking — 1 table</h3>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_sync_status</code></td>
+<td>Ingestion run log — per-run source, started/finished, outcome, row counts, error detail. RAM-internal tracking entity with no upstream source<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Feeds the wave-gate "reference data current" check and ops triage.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tier-b--ram-owned--15-tables">Tier (b) — RAM-owned — 15 tables</h3>
+<p>Maintained in RAM (DBAs via SQL per runbook in MVP<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>; admin UI post-MVP). Never overwritten by upstream sync.</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+<th>Key consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_regions</code></td>
+<td>Domain</td>
+<td>HMCTS judicial regions (Region/Area scoping; rollout waves within a jurisdiction)</td>
+<td>All services (scoping), Authorisation</td>
+</tr>
+<tr>
+<td><code>ram_offices</code></td>
+<td>Domain</td>
+<td>Offices within regions</td>
+<td>JOH, Booking, Sitting, Itinerary</td>
+</tr>
+<tr>
+<td><code>ram_calendar_periods</code></td>
+<td>Domain</td>
+<td>Financial-year boundaries; term dates</td>
+<td>JOH (working-pattern horizon to 31st March), Reports</td>
+</tr>
+<tr>
+<td><code>ram_joh_types</code></td>
+<td>Vocabulary</td>
+<td>JOH-type controlled list. <strong>Upstream-overlap candidate</strong> — may be retired in favour of <code>jo_appointment_titles</code> / <code>jo_judiciary_roles</code> once the eLinks contract is confirmed (G8.2).</td>
+<td>JOH, Vacancy, Booking</td>
+</tr>
+<tr>
+<td><code>ram_work_types</code></td>
+<td>Vocabulary</td>
+<td>Work-type controlled list (Crime, Civil, Family, …)</td>
+<td>Sitting, Booking, Vacancy, Itinerary</td>
+</tr>
+<tr>
+<td><code>ram_court_types</code></td>
+<td>Vocabulary</td>
+<td>Court / location-type controlled list. <strong>Upstream-overlap candidate</strong> vs <code>jo_location_types</code> (G8.2).</td>
+<td>Office records, Itinerary</td>
+</tr>
+<tr>
+<td><code>ram_ticket_types</code></td>
+<td>Vocabulary</td>
+<td>Ticket-type controlled list. <strong>Upstream-overlap candidate</strong> vs <code>jo_tickets</code> / <code>jo_ticket_categories</code> (G8.2).</td>
+<td>JOH tickets, Vacancy matching</td>
+</tr>
+<tr>
+<td><code>ram_session_types</code></td>
+<td>Vocabulary</td>
+<td>Session-type controlled list (full / AM / PM / evening / reserved-matter)</td>
+<td>Booking, Sitting</td>
+</tr>
+<tr>
+<td><code>ram_absence_types</code></td>
+<td>Vocabulary</td>
+<td>Absence-type controlled list (leave, sickness, training, …)</td>
+<td>Absence (FR19)</td>
+</tr>
+<tr>
+<td><code>ram_working_pattern_types</code></td>
+<td>Vocabulary</td>
+<td>Working-pattern-type list (None / Daily / Weekly)</td>
+<td>JOH (FR12)</td>
+</tr>
+<tr>
+<td><code>ram_booking_statuses</code></td>
+<td>Vocabulary</td>
+<td>Booking status list (planned / provisional / confirmed / cancelled / rejected)</td>
+<td>Booking (FR31)</td>
+</tr>
+<tr>
+<td><code>ram_sitting_outcomes</code></td>
+<td>Vocabulary</td>
+<td>Sitting outcome list (confirmed / cancelled / rejected)</td>
+<td>Sitting (FR37)</td>
+</tr>
+<tr>
+<td><code>ram_joh_fee_entitlements</code></td>
+<td>Vocabulary</td>
+<td>Per-JOH fee-entitlement list (yes / no / ask-when-booking). Set on the JOH profile (FR11); consumed at booking time (FR33).</td>
+<td>JOH (FR11), Booking (FR33)</td>
+</tr>
+<tr>
+<td><code>ram_payment_lifecycle_statuses</code></td>
+<td>Vocabulary</td>
+<td>Payment-record lifecycle (pending / requested / paid / reconciled / queried).</td>
+<td>Payment (FR41, FR46), Booking (<code>payment_lifecycle_status_id</code> column UPDATE-granted to <code>ram_payment</code>)</td>
+</tr>
+<tr>
+<td><code>ram_reconciliation_statuses</code></td>
+<td>Vocabulary</td>
+<td>Reconciliation status list (matched / queried / unreconciled)</td>
+<td>Payment (FR46)</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="authorisation-service-ram-authorisation--6-tables"><summary><span class="section-title">Authorisation service (<code>ram-authorisation</code>) — 6 tables</span></summary><div class="section-body">
+<p>Strictly RAM-internal<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> — populated by programme-management / operational mechanisms outside the PRD's scope; <strong>no external authority provides this data and no legacy system seeds it</strong>. Service prefix used because "users" / "roles" are domain-overloaded terms.</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_auth_users</code></td>
+<td>Domain</td>
+<td>RAM Pathfinder principal records spanning <strong>both user populations</strong><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>: JOH users link to <code>jo_people</code> via <code>personnel_number</code>; admin-staff users link to <code>ram_auth_staff_identities</code>; <code>principal_kind</code> distinguishes them (and service principals). Carries the user's jurisdiction (FK → <code>jo_jurisdictions</code>).</td>
+</tr>
+<tr>
+<td><code>ram_auth_staff_identities</code></td>
+<td>Domain</td>
+<td><strong>RAM-internal staff identity table</strong> for HMCTS administrative staff (RSU, Court users, Tribunal Caseworkers, Finance/Payment Authoriser, MI/Reporting) — not present in JOH eLinks data. Canonical identifier: <strong>RAM-assigned UUID</strong> (architecture decision, 2026-06-11); IdP email is the lookup key, mirroring the JOH email → personnel-number pattern.</td>
+</tr>
+<tr>
+<td><code>ram_auth_roles</code></td>
+<td>Domain</td>
+<td>RAM Pathfinder authorisation roles (shared by both populations — the populations differ in identity source, not authorisation semantics)</td>
+</tr>
+<tr>
+<td><code>ram_auth_user_roles</code></td>
+<td>Domain</td>
+<td>User-role junction (many-to-many)</td>
+</tr>
+<tr>
+<td><code>ram_auth_user_region_scopes</code></td>
+<td>Domain</td>
+<td>Per-user Region/Area scope assignments</td>
+</tr>
+<tr>
+<td><code>ram_auth_user_activation_flags</code></td>
+<td>Domain</td>
+<td>Per-user "active in RAM Pathfinder" flag carrying the <strong>(jurisdiction, region) tuple</strong> (FR57 — jurisdiction-first phased activation). Wave cutover: <code>UPDATE … SET activated = TRUE WHERE jurisdiction = '…' AND region = '…'</code> per the rollout runbook.</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="shared-infrastructure-tables-no-owning-service--1-table"><summary><span class="section-title">Shared infrastructure tables (no owning service) — 1 table</span></summary><div class="section-body">
+<p>Schema-managed by <code>ram-architecture</code>'s Flyway baseline migration; SELECT-granted to every RAM Pathfinder service DB role; writes are admin / Flyway-only (no API). <em>(Introduced in v2.2, 2026-05-07 — replaces the dedicated <code>ram-configuration</code> service.)</em></p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_configuration_values</code></td>
+<td>Shared infra</td>
+<td>Typed cross-service policy values (D1 — runtime policy keys that need to be visible to multiple services). Per-service configuration that is scoped to a single service uses Spring profiles + <code>application.yml</code> + Azure Key Vault, <strong>not</strong> this table.</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="notification-service-ram-notification--1-table"><summary><span class="section-title">Notification service (<code>ram-notification</code>) — 1 table</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_notification_dispatches</code></td>
+<td>Domain</td>
+<td>Outbound email dispatch log (recipient, content type, dispatched-at, status, retry count, FR9)</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="joh-service-ram-joh--5-tables"><summary><span class="section-title">JOH service (<code>ram-joh</code>) — 5 tables</span></summary><div class="section-body">
+<p>The canonical JOH person record is <strong><code>jo_people</code></strong> (tier (a), owned by <code>ram-reference-data</code>) — there is no separate <code>johs</code> profile table. <code>ram-joh</code> owns the <strong>RAM-owned operational state and overlays</strong> layered over the upstream entities (FR6 tier (b)), all <strong>keyed by <code>personnel_number</code></strong>. Profile <em>views</em> (FR11, FR15) compose tier-(a) data with these overlays via <code>ram-reference-data</code>'s read API; the overlay tables are SELECT-granted to <code>ram_reference_data</code> for that composition (Principle 1 cross-service read).</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_working_patterns</code></td>
+<td>Domain</td>
+<td>Per-JOH working-pattern definition (target sit %, active period, FR12) — RAM-owned operational state</td>
+</tr>
+<tr>
+<td><code>ram_working_pattern_days</code></td>
+<td>Domain</td>
+<td>Per-day breakdown within a working pattern (per-day work-type, FR12)</td>
+</tr>
+<tr>
+<td><code>ram_joh_ticket</code></td>
+<td>Domain</td>
+<td>RAM-overlay tickets and other authorisations layered on top of the upstream <code>jo_tickets</code> set (FR15 layer (b)); add/edit/remove by admin staff — DBAs via SQL in MVP</td>
+</tr>
+<tr>
+<td><code>ram_joh_location</code></td>
+<td>Domain</td>
+<td>JOH base-location changes recorded in RAM (FR17) — not captured by JOH eLinks and <strong>not propagated back</strong>; RAM-owned operational state over the upstream <code>jo_base_locations</code> baseline</td>
+</tr>
+<tr>
+<td><code>ram_jurisdictional_splits</code></td>
+<td>Domain</td>
+<td>Per-JOH jurisdictional split percentages (must total 100%, FR16)</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="absence-service-ram-absence--1-table"><summary><span class="section-title">Absence service (<code>ram-absence</code>) — 1 table</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_absences</code></td>
+<td>Domain</td>
+<td>Absence records (start/end, type, NTBF flag, status, FR19–FR22); references the JOH by <code>personnel_number</code></td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="vacancy-service-ram-vacancy--2-tables"><summary><span class="section-title">Vacancy service (<code>ram-vacancy</code>) — 2 tables</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_vacancies</code></td>
+<td>Domain</td>
+<td>Cover-requirement records (FR23, FR24); <code>filled</code> and <code>filled_at</code> columns are UPDATE-granted to <code>ram_booking</code> per Principle 1</td>
+</tr>
+<tr>
+<td><code>ram_vacancy_days</code></td>
+<td>Domain</td>
+<td>Per-day breakdown for vacancies (FR25 — cancel individual days with reason)</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="booking-service-ram-booking--1-table"><summary><span class="section-title">Booking service (<code>ram-booking</code>) — 1 table</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_bookings</code></td>
+<td>Domain</td>
+<td>Fee-paid booking records (FR29, FR31); references the JOH by <code>personnel_number</code> → <code>jo_people</code>; <code>payment_lifecycle_status_id</code> column is UPDATE-granted to <code>ram_payment</code> per Principle 1. Has <code>version integer NOT NULL DEFAULT 0</code> (<code>@Version</code> for optimistic locking) and a <code>uq_ram_bookings_vacancy_joh_session_date_type</code> unique constraint enforcing natural-key dedup on retries.</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="sitting-service-ram-sitting--1-table"><summary><span class="section-title">Sitting service (<code>ram-sitting</code>) — 1 table</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_sittings</code></td>
+<td>Domain</td>
+<td>Salaried-JOH sitting records (FR35, FR37, FR38, FR39, FR40 — including verification state); references the JOH by <code>personnel_number</code></td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="payment-service-ram-payment--3-tables"><summary><span class="section-title">Payment service (<code>ram-payment</code>) — 3 tables</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_payments</code></td>
+<td>Domain</td>
+<td>Payment request records (FR41, FR42). Has <code>version</code> (<code>@Version</code>) and a <code>uq_ram_payments_cycle_run_date</code> unique constraint enforcing natural-key dedup on retries (FR45 — no double payment submission).</td>
+</tr>
+<tr>
+<td><code>ram_payment_schedules</code></td>
+<td>Domain</td>
+<td>JFEPS-shaped schedule snapshots (FR43, FR44). JFEPS format preserved for SSCS wave 1<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>.</td>
+</tr>
+<tr>
+<td><code>ram_payment_reconciliations</code></td>
+<td>Domain</td>
+<td>Reconciliation records (FR46).</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="itinerary-service-ram-itinerary--0-tables"><summary><span class="section-title">Itinerary service (<code>ram-itinerary</code>) — 0 tables</span></summary><div class="section-body">
+<p>Read-model service. No persistent state at MVP per Principle 2 — every read is a SQL JOIN over the shared schema across <code>jo_people</code> (+ <code>ram-joh</code> overlays), <code>ram_absences</code>, <code>ram_vacancies</code>, <code>ram_bookings</code>, <code>ram_sittings</code>. Strategy C cache is post-MVP if measurement justifies.</p>
+</div></details><details class="section" id="mi-feed-service-ram-mi-feed--0-tables"><summary><span class="section-title">MI Feed service (<code>ram-mi-feed</code>) — 0 tables</span></summary><div class="section-body">
+<p>Read-model service. Same pattern as Itinerary; SQL JOIN over the shared schema for aggregate reporting. Aggregate-only by contract — no case-level data (D12: case/hearing data has no tables anywhere in RAM).</p>
+</div></details><details class="section" id="mock-authentication-service-ram-mock-auth--2-tables-devintegration-only"><summary><span class="section-title">Mock authentication service (<code>ram-mock-auth</code>) — 2 tables (dev/integration only)</span></summary><div class="section-body">
+<p>Per <code>ram_mock_auth</code> DB role. <strong>Never deployed to production</strong>; production deployments reject mock-auth issuer URLs (per G5.3 in <a href="gaps.html"><code>./gaps.md</code></a>).</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mock_oauth_clients</code></td>
+<td>Dev-only</td>
+<td>OAuth client registrations (Spring Authorization Server backend). Holds <strong>(a)</strong> the SPA client for human <code>authorization_code</code> flow, and <strong>(b)</strong> service-principal client registrations for <strong>batch / scheduled components</strong> that need a service identity (initially: <code>ram-payment-batch</code>). User-initiated runtime calls between services use <strong>JWT propagation</strong> (no service principal needed); batch / scheduled components — which have no upstream user context — use OAuth <code>client_credentials</code> against this mock issuer. <em>(v2.5 narrowing reverted in v2.6 to support the payment batch. The eLinks sync and MRD pick-up need no service identity — they run in-process inside <code>ram-reference-data</code> writing its own tables.)</em></td>
+</tr>
+<tr>
+<td><code>mock_user_roster</code></td>
+<td>Dev-only</td>
+<td>Test user roster mirroring a representative subset of <code>ram_auth_users</code> <strong>across both identity populations</strong> (JOH + admin staff) for realistic Authorisation testing (G5.2)</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="inventory-totals"><summary><span class="section-title">Inventory totals</span></summary><div class="section-body">
+<ul>
+<li><strong>Reference Data:</strong> 32 tables (15 <code>jo_*</code> + 1 <code>mrd_*</code> + 1 sync tracking + 15 RAM-owned)</li>
+<li><strong>Authorisation:</strong> 6 tables</li>
+<li><strong>Notification:</strong> 1 table</li>
+<li><strong>JOH:</strong> 5 tables</li>
+<li><strong>Absence:</strong> 1 table</li>
+<li><strong>Vacancy:</strong> 2 tables</li>
+<li><strong>Booking:</strong> 1 table</li>
+<li><strong>Sitting:</strong> 1 table</li>
+<li><strong>Payment:</strong> 3 tables</li>
+<li><strong>Itinerary, MI Feed:</strong> 0 tables (read models)</li>
+<li><strong>Shared infrastructure:</strong> 1 table (<code>ram_configuration_values</code>; no owning service)</li>
+<li><strong>Mock auth:</strong> 2 tables (dev/integration only)</li>
+</ul>
+<p><strong>Total: 55 tables</strong> across the shared schema (52 service-owned production + 1 shared infrastructure + 2 dev-only).</p>
+<p><strong>Retry safety convention:</strong> every RAM Pathfinder domain table that supports create has a <code>uq_{table}_{columns}</code> unique constraint on its natural key, and every entity that supports update has a <code>version</code> column for JPA <code>@Version</code> optimistic locking. There are <em>no</em> per-service <code>*_idempotency_keys</code> tables — those were dropped in v2.1 in favour of these PostgreSQL-native primitives. Tier-(a) tables are exempt (single writer: the ingestion mechanism; upserts key on the upstream natural key). See <a href="conventions.html"><code>./conventions.md</code> → "Retry safety and concurrency control"</a> for the pattern.</p>
+<p><strong>On upstream contract validation:</strong> when the JOH eLinks API contract and the first MRD workbook land in Phase 0 (G8.1 in <a href="gaps.html"><code>./gaps.md</code></a>), the validation focus is the <strong>ingestion mapping</strong> — does each <code>jo_*</code>/<code>mrd_*</code> table have a slot for every upstream field RAM needs, and does the upstream natural-key scheme hold? The tier-(b) and domain-table design is fixed by RAM Pathfinder. Upstream-overlap candidates (<code>ram_joh_types</code>, <code>ram_court_types</code>, <code>ram_ticket_types</code> — G8.2) are resolved at that point: retire the RAM-owned vocabulary where the upstream entity covers it. If a fundamental mismatch surfaces, it lands via PR against the architecture document set, exactly as any other architectural change would.</p>
+<p><strong>Fitness function</strong> (Step 4 <em>ArchUnit-style fitness functions</em> in <a href="../../architecture.html"><code>../architecture.md</code></a>) operates against this inventory: every table created by Flyway DDL must appear here with the matching owning service (or under "Shared infrastructure"); DB role grants must align — including the tier-(a) rule that only <code>ram_reference_data</code> holds INSERT/UPDATE on <code>jo_*</code>/<code>mrd_*</code> tables.</p>
+</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture/data-tables.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#ram-pathfinder-tables-not-legacy-tables">RAM Pathfinder tables, not legacy tables</a></li><li><a href="#the-two-ownership-tiers-fr6fr7">The two ownership tiers (FR6/FR7)</a></li><li><a href="#reference-data-service-ram-reference-data--32-tables">Reference Data service (ram-reference-data) — 32 tables</a></li><li class="h3"><a href="#tier-a--joh-elinks-upstream-sourced--15-tables">Tier (a) — JOH eLinks upstream-sourced — 15 tables</a></li><li class="h3"><a href="#tier-a--mrd-upstream-sourced--1-table">Tier (a) — MRD upstream-sourced — 1 table</a></li><li class="h3"><a href="#ram-internal-sync-tracking--1-table">RAM-internal sync tracking — 1 table</a></li><li class="h3"><a href="#tier-b--ram-owned--15-tables">Tier (b) — RAM-owned — 15 tables</a></li><li><a href="#authorisation-service-ram-authorisation--6-tables">Authorisation service (ram-authorisation) — 6 tables</a></li><li><a href="#shared-infrastructure-tables-no-owning-service--1-table">Shared infrastructure tables (no owning service) — 1 table</a></li><li><a href="#notification-service-ram-notification--1-table">Notification service (ram-notification) — 1 table</a></li><li><a href="#joh-service-ram-joh--5-tables">JOH service (ram-joh) — 5 tables</a></li><li><a href="#absence-service-ram-absence--1-table">Absence service (ram-absence) — 1 table</a></li><li><a href="#vacancy-service-ram-vacancy--2-tables">Vacancy service (ram-vacancy) — 2 tables</a></li><li><a href="#booking-service-ram-booking--1-table">Booking service (ram-booking) — 1 table</a></li><li><a href="#sitting-service-ram-sitting--1-table">Sitting service (ram-sitting) — 1 table</a></li><li><a href="#payment-service-ram-payment--3-tables">Payment service (ram-payment) — 3 tables</a></li><li><a href="#itinerary-service-ram-itinerary--0-tables">Itinerary service (ram-itinerary) — 0 tables</a></li><li><a href="#mi-feed-service-ram-mi-feed--0-tables">MI Feed service (ram-mi-feed) — 0 tables</a></li><li><a href="#mock-authentication-service-ram-mock-auth--2-tables-devintegration-only">Mock authentication service (ram-mock-auth) — 2 tables (dev/integration only)</a></li><li><a href="#inventory-totals">Inventory totals</a></li></ul></aside>
+<script>
+(function(){
+  // 1. Sidebar accordion: persist user's group open/close preference per group.
+  //    The current page's group is always open on load (regardless of stored state).
+  document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){
+    var key = 'nav-group-' + d.dataset.group;
+    if (d.dataset.current !== 'true') {
+      var stored = localStorage.getItem(key);
+      if (stored === 'open') d.open = true;
+      else if (stored === 'closed') d.open = false;
+    }
+    d.addEventListener('toggle', function(){
+      localStorage.setItem(key, d.open ? 'open' : 'closed');
+    });
+  });
+
+  // 2. Expand all / Collapse all (sidebar)
+  document.querySelectorAll('button[data-nav-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.navAction === 'expand';
+      document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){ d.open = open; });
+    });
+  });
+
+  // 3. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 4. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

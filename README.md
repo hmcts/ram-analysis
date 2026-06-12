@@ -1,4 +1,4 @@
-# ji-analysis
+# ram-analysis
 
 Programme analysis and target-state planning workspace for **RAM Pathfinder** — HMCTS's greenfield rebuild of the Judicial Itineraries (JI) system.
 
@@ -54,7 +54,7 @@ The PRD and the architecture summary are the authoritative documents. The HTML r
 ## Repository layout
 
 ```
-ji-analysis/
+ram-analysis/
 ├── _bmad-output/
 │   ├── planning-artifacts/     # PRD, architecture, epics, sprint change proposals, readiness reports
 │   └── brainstorming/          # Early discovery sessions (Apr–May 2026)

@@ -4,8 +4,9 @@ epic: 0.4
 title: 'Notification service is scaffolded and contractually ready'
 storyCount: 2
 status: 'validated'
-revisedAt: '2026-05-15'
+revisedAt: '2026-06-11'
 revisionNote: 'Admin Send-Test-Email UI removed (was Story 0.4.4); OAuth client_credentials flow deferred to Phase 6 when ram-payment-batch needs it (was Story 0.4.3). Phase 0 delivers the backend contract; Phase 2+ exercises it via user-JWT-propagated calls.'
+amendment2026_06_11: 'FR renumber only (FR59/FR60 → FR58/FR59 per SCP 2026-06-10); story content unchanged.'
 ---
 
 # Epic 0.4: Notification service is scaffolded and contractually ready
@@ -28,8 +29,8 @@ revisionNote: 'Admin Send-Test-Email UI removed (was Story 0.4.4); OAuth client_
 **Key NFRs:** NFR12 (JWT propagation for user-initiated), NFR15 (delivery log = audit), NFR22 (HMCTS email infrastructure), NFR25–NFR28 (observability), NFR39 (API-as-Product), NFR42 (Postman)
 
 **Out of scope for Phase 0 (deferred to other phases):**
-- OAuth `client_credentials` flow for batch / scheduled callers — **deferred to Phase 6** (the flow is established alongside `ram-payment-batch`, the first non-user-initiated consumer; was Story 0.4.3 in the prior plan, now moved out of Phase 0)
-- Admin "Send Test Email" UI utility — **deferred post-MVP** (no admin UI in MVP per the 2026-05-15 scope decision; was Story 0.4.4 in the prior plan, removed)
+- OAuth `client_credentials` flow for batch / scheduled callers — **deferred to Phase 6** (the flow is established alongside `ram-payment-batch`, the first non-user-initiated consumer)
+- Admin "Send Test Email" UI utility — **deferred post-MVP** (no admin UI in MVP[^d10])
 - Delivery-log viewer UI — **deferred post-MVP** (Postman queries cover the gap during integration testing in MVP)
 
 ---
@@ -66,7 +67,7 @@ So that **downstream phases** (Phase 2 absence ack, Phase 4 booking ack, Phase 6
 **Then** the response is `200 OK` with SMTP health-check status,
 **And** the response includes a degraded status if SMTP is unreachable.
 
-**References:** FR9, FR8 (consumes `configuration_values` for rate-limit policy), FR59, FR60; NFR16, NFR22, NFR25–NFR28, NFR40; AR2–AR22.
+**References:** FR9, FR8 (consumes `ram_configuration_values` for rate-limit policy), FR58, FR59; NFR16, NFR22, NFR25–NFR28, NFR40; AR2–AR22.
 
 ---
 
@@ -124,9 +125,11 @@ So that **transactional email dispatch is a single, observable, retry-safe contr
 **Then** it covers happy path + 400 + 401 + 403 (admin-only) + 403 (service-principal rejected pre-Phase-6) + retry behaviour (via a fault-injection test endpoint, removable post-Phase-0),
 **And** Phase 0 manual integration test consists of: open Postman → authenticate as test user → POST send → poll delivery-log until `sent` → open Mailpit → verify rendered email. (No admin UI for this flow in MVP per the 2026-05-15 scope decision.)
 
-**References:** FR9, FR59, FR60; NFR12, NFR13, NFR15, NFR22, NFR25, NFR28, NFR39, NFR42; AR17, AR21, AR34, AR37, AR38, AR41.
+**References:** FR9, FR58, FR59; NFR12, NFR13, NFR15, NFR22, NFR25, NFR28, NFR39, NFR42; AR17, AR21, AR34, AR37, AR38, AR41.
 
 **Explicitly NOT in scope (deferred to other phases):**
-- OAuth `client_credentials` flow for batch / scheduled callers — **moved to Phase 6** alongside `ram-payment-batch` (was Story 0.4.3 in the prior plan)
-- Admin "Send Test Email" UI — **deferred post-MVP** (was Story 0.4.4)
+- OAuth `client_credentials` flow for batch / scheduled callers — **Phase 6**, alongside `ram-payment-batch`
+- Admin "Send Test Email" UI — **deferred post-MVP**[^d10]
 - Delivery-log viewer UI — **deferred post-MVP** (Postman covers the gap)
+
+[^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.

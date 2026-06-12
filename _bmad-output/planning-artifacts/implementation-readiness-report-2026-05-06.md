@@ -1,6 +1,6 @@
 ---
 stepsCompleted: ['step-01-document-discovery', 'step-02-prd-analysis', 'step-03-epic-coverage-validation', 'step-04-ux-alignment', 'step-05-epic-quality-review', 'step-06-final-assessment']
-projectName: 'ji-analysis'
+projectName: 'ram-analysis'
 productCodename: 'RAM Pathfinder'
 inputDocuments:
   - '_bmad-output/planning-artifacts/prd.md'
@@ -16,7 +16,7 @@ supersedes: 'implementation-readiness-report-2026-05-05.md'
 # Implementation Readiness Assessment Report (Re-run)
 
 **Date:** 2026-05-06
-**Project:** ji-analysis (RAM Pathfinder — RAM Pathfinder)
+**Project:** ram-analysis (RAM Pathfinder — RAM Pathfinder)
 **Supersedes:** the 2026-05-05 readiness report
 
 ## What changed since the previous run

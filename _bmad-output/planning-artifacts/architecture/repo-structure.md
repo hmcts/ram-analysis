@@ -73,6 +73,10 @@ ram-{service}/
 │   ├── service/
 │   ├── repository/                              (integration tests, Testcontainers)
 │   └── client/
+├── terraform/                                   (this repo's Azure resources, per-env stacks dev/staging/production — AR53 colocated first-consumer rule; ram-authorisation additionally carries the shared estate: AKS, PostgreSQL, ACR, APIM, App Insights)
+│   ├── dev/
+│   ├── staging/
+│   └── production/
 ├── helm/
 │   ├── Chart.yaml
 │   ├── values.yaml                              (defaults)
@@ -96,7 +100,7 @@ ram-{service}/
 │   │   └── ADR-001-database-schema.md
 │   ├── runbook.md                               (incident response per service)
 │   ├── api/                                     (extended API docs beyond OpenAPI)
-│   └── uat/                                     (manual UAT scripts: APEX-vs-RAM Pathfinder behavioural-parity walkthroughs per FR61 / NFR41 revised; domain services only)
+│   └── uat/                                     (manual UAT scripts: incumbent-vs-RAM Pathfinder behavioural-parity walkthroughs per FR60 / NFR41 revised; domain services only)
 ├── .gitignore
 └── .editorconfig
 ```
@@ -247,7 +251,7 @@ ram-admin-ui/
 
 **Future admin surfaces reserved** (not built at MVP — placeholders only):
 
-- `modules/activation/` — per-region activation flag dashboard (FR58 admin side)
+- `modules/activation/` — per-(jurisdiction, region) activation flag dashboard (FR57 admin side)
 - `modules/migration-reports/` — Phase 0 reconciliation report viewer (FR57)
 - `modules/audit/` — post-MVP user-action audit viewer (D7 roadmap)
 
@@ -283,7 +287,7 @@ ram-architecture/
 │   ├── ram-scaffold.sh                          (creates new service from HMCTS starter)
 │   ├── templates/                               (service-specific overlays applied by the script)
 │   └── conventions/
-├── migration/                                   (Phase 0 Data Migration ETL — APEX → RAM Pathfinder APIs)
+├── (migration/ — does not exist: no legacy data migration per the revised D3; reference data arrives via ram-reference-data's upstream ingestion)
 │   ├── README.md                                (mapping notes, run procedure, sign-off checklist)
 │   ├── reference-data/                          (extract + transform + POST to ram-reference-data)
 │   │   ├── extract-apex.sql                     (selects against APEX schema; produces CSV/JSON)
@@ -321,7 +325,7 @@ ram-architecture/
 - Unit tests: `src/test/java/.../{layer}/...` mirroring main package layout.
 - Integration tests: same location, `*IT.java` suffix, Testcontainers PostgreSQL.
 - Contract tests (Pact or equivalent): `src/test/java/.../contract/`.
-- Manual UAT scripts (FR61 / NFR41 revised 2026-05-06): `docs/uat/` per domain service — markdown walkthroughs for APEX-experienced users to follow side-by-side against APEX. Not part of automated CI.
+- Manual UAT scripts (FR60 / NFR41 revised): `docs/uat/` per domain service — markdown walkthroughs for jurisdiction-incumbent-experienced users to follow side-by-side against the incumbent (GAPS wave 1; APEX waves 2+). Not part of automated CI.
 - E2E tests: separate `tests/e2e/` directory in `ram-ui` repo, Playwright per phase.
 
 **Asset organisation (UI):**
@@ -400,7 +404,8 @@ Manual approval (per region/wave)
        │
        ▼
 [Deploy to production-uk-south] (or per-region)
-   └─ Manual UAT sign-off by APEX-experienced users runs as gate (FR61 / NFR41 revised)
+   └─ Manual UAT sign-off by jurisdiction-incumbent-experienced users runs as gate (FR60 / NFR41 revised)
 ```
 
 > The architectural rules for the per-region production gate (manual UAT, automated tests, migration sign-off, programme sign-off) and the rollback path live in [`../architecture.md`](../architecture.md) under *Region rollout flow (Phase 9+)*.
+

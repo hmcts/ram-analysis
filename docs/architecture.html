@@ -51,6 +51,10 @@ main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;d
 main a{color:#0969da;text-decoration:none}
 main a:hover{text-decoration:underline}
 main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
 main li{margin:2px 0}
 main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
 main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
@@ -91,6 +95,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <summary>Product</summary>
 <ul>
 <li><a href="./prd.html">PRD (RAM Pathfinder)</a></li>
+<li><a href="./prd-validation-report-2026-06-10.html">PRD validation report — 2026-06-10</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="as-is-ji-architecture-views">
@@ -98,6 +103,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ul>
 <li><a href="./asis/system-context.html">System Context (as-is)</a></li>
 <li><a href="./asis/components.html">Components (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-analysis-pack">
+<summary>As-is — JI Analysis Pack</summary>
+<ul>
+<li><a href="./architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
+<li><a href="./architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
+<li><a href="./architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="as-is-ji-database-schema">
@@ -114,55 +127,56 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="./asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-architecture" data-current="true" open>
+<details class="nav-group" data-group="to-be-ram-pathfinder-architecture" data-current="true" open>
 <summary>To-be — RAM Pathfinder Architecture</summary>
 <ul>
 <li><a href="./architecture.html" class="current">Architecture (index)</a></li>
 <li><a href="./architecture-summary.html">Architecture summary</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-reference">
+<details class="nav-group" data-group="to-be-ram-pathfinder-reference">
 <summary>To-be — RAM Pathfinder Reference</summary>
 <ul>
-<li><a href="./architecture/user-types.html">User types</a></li>
-<li><a href="./architecture/data-tables.html">Authoritative table ownership</a></li>
-<li><a href="./architecture/conventions.html">Conventions</a></li>
-<li><a href="./architecture/repository-strategy.html">Repository strategy</a></li>
-<li><a href="./architecture/repo-structure.html">Repository structure</a></li>
-<li><a href="./architecture/starter-template.html">Starter template</a></li>
-<li><a href="./architecture/functional-requirements-coverage.html">Functional requirements coverage</a></li>
-<li><a href="./architecture/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
+<li><a href="./architecture/tobe/user-types.html">User types</a></li>
+<li><a href="./architecture/tobe/data-tables.html">Authoritative table ownership</a></li>
+<li><a href="./architecture/tobe/conventions.html">Conventions</a></li>
+<li><a href="./architecture/tobe/repository-strategy.html">Repository strategy</a></li>
+<li><a href="./architecture/tobe/repo-structure.html">Repository structure</a></li>
+<li><a href="./architecture/tobe/starter-template.html">Starter template</a></li>
+<li><a href="./architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
+<li><a href="./architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-sequence-diagrams">
+<details class="nav-group" data-group="to-be-ram-pathfinder-sequence-diagrams">
 <summary>To-be — RAM Pathfinder Sequence Diagrams</summary>
 <ul>
-<li><a href="./architecture/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
-<li><a href="./architecture/sequence-diagrams/judge-onboarding-and-sitting-generation.html">Judge onboarding & sitting gen.</a></li>
-<li><a href="./architecture/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
-<li><a href="./architecture/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
-<li><a href="./architecture/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
-<li><a href="./architecture/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
-<li><a href="./architecture/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
-<li><a href="./architecture/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-open-items">
+<details class="nav-group" data-group="to-be-ram-pathfinder-open-items">
 <summary>To-be — RAM Pathfinder Open Items</summary>
 <ul>
-<li><a href="./architecture/gaps.html">Gaps</a></li>
-<li><a href="./architecture/assumptions.html">Assumptions</a></li>
-<li><a href="./architecture/changelog.html">Changelog</a></li>
+<li><a href="./architecture/tobe/gaps.html">Gaps</a></li>
+<li><a href="./architecture/tobe/assumptions.html">Assumptions</a></li>
+<li><a href="./architecture/tobe/changelog.html">Changelog</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="implementation-readiness">
-<summary>Implementation Readiness</summary>
+<details class="nav-group" data-group="change-control-readiness">
+<summary>Change Control & Readiness</summary>
 <ul>
-<li><a href="./implementation-readiness-report-2026-05-15-rev2.html">Report — 2026-05-15 rev2 (current, post-D10)</a></li>
+<li><a href="./sprint-change-proposal-2026-06-10.html">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
 <li><a href="./sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
-<li><a href="./implementation-readiness-report-2026-05-15.html">Report — 2026-05-15 rev1 (superseded by rev2)</a></li>
-<li><a href="./implementation-readiness-report-2026-05-06.html">Report — 2026-05-06 (historical)</a></li>
-<li><a href="./implementation-readiness-report-2026-05-05.html">Report — 2026-05-05 (historical)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="implementation-epics-foundations">
@@ -174,21 +188,21 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="./epics/fr-coverage-map.html">FR coverage map</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="implementation-phase-0">
-<summary>Implementation — Phase 0 ✓</summary>
+<details class="nav-group" data-group="implementation-phase-0-restructured-2026-06-11">
+<summary>Implementation — Phase 0 (restructured 2026-06-11)</summary>
 <ul>
 <li><a href="./epics/phase-0/index.html">Phase 0 overview</a></li>
-<li><a href="./epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates (5 stories)</a></li>
-<li><a href="./epics/phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2 — Ref Data SQL-loaded (3 stories)</a></li>
-<li><a href="./epics/phase-0/epic-0.3-admin-manages-users-roles.html">Epic 0.3 — Users/Roles SQL-loaded (1 story)</a></li>
+<li><a href="./epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)</a></li>
+<li><a href="./epics/phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2 — Reference data read-only (2 stories)</a></li>
+<li><a href="./epics/phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3 — User populations bootstrapped (1 story)</a></li>
 <li><a href="./epics/phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4 — Notification scaffolded (2 stories)</a></li>
-<li><a href="./epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15)</a></li>
+<li><a href="./epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15 — superseded)</a></li>
 </ul>
 </details></aside>
 <main class="content">
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="architecture-decision-document">Architecture Decision Document</h1>
-<p><code>architecture.md</code> is the <strong>architectural index</strong>. Implementation-detail content (code-tree inventories, gap and assumption registers, the per-service convention catalogue, per-table inventory, sequence diagrams, changelog history) lives in sibling files under <a href="./architecture/"><code>./architecture/</code></a> and is referenced from this file in place. Read this file for the <em>what and why</em>; follow links into the siblings for the <em>how</em>.</p>
+<p><code>architecture.md</code> is the <strong>architectural index</strong>. Implementation-detail content (code-tree inventories, gap and assumption registers, the per-service convention catalogue, per-table inventory, sequence diagrams, changelog history) lives in sibling files under <a href="architecture"><code>./architecture/</code></a> and is referenced from this file in place. Read this file for the <em>what and why</em>; follow links into the siblings for the <em>how</em>.</p>
 <details class="section" id="contents"><summary><span class="section-title">Contents</span></summary><div class="section-body">
 <ol type="1">
 <li><a href="#system-context--at-a-glance">System context — at a glance</a></li>
@@ -230,15 +244,15 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="#cross-cutting-concerns-to-file-locations">Cross-Cutting Concerns to File Locations</a></li>
 <li><a href="#integration-points--internal-communication">Integration Points — Internal</a></li>
 <li><a href="#integration-points--external">Integration Points — External</a></li>
-<li><a href="#data-flow--canonical-operational-cycle-journey-1-from-prd">Data Flow — Canonical Operational Cycle</a></li>
+<li><a href="#data-flow--canonical-operational-cycle-journey-2-from-prd--courts-wave-2">Data Flow — Canonical Operational Cycle</a></li>
 <li><a href="#file-organisation-development-workflow-deployment-pipeline">File Organisation, Development Workflow, Deployment Pipeline</a></li>
-<li><a href="#region-rollout-flow-phase-9">Region rollout flow (Phase 9+)</a></li>
+<li><a href="#wave-rollout-flow-phase-9-jurisdiction-first">Wave rollout flow (Phase 9+)</a></li>
 </ol></li>
 <li><a href="#architecture-validation-results">Architecture Validation Results</a>
 <ol type="1">
-<li><a href="#coherence-validation-">Coherence Validation</a></li>
-<li><a href="#requirements-coverage-validation-">Requirements Coverage Validation</a></li>
-<li><a href="#implementation-readiness-validation-">Implementation Readiness Validation</a></li>
+<li><a href="#coherence-validation-white_check_mark">Coherence Validation</a></li>
+<li><a href="#requirements-coverage-validation-white_check_mark">Requirements Coverage Validation</a></li>
+<li><a href="#implementation-readiness-validation-white_check_mark">Implementation Readiness Validation</a></li>
 <li><a href="#documented-gaps">Documented Gaps</a></li>
 <li><a href="#assumptions">Assumptions</a></li>
 <li><a href="#architecture-readiness-assessment">Architecture Readiness Assessment</a></li>
@@ -248,7 +262,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="#changelog">Changelog</a></li>
 </ol>
 </div></details><details class="section" id="system-context--at-a-glance"><summary><span class="section-title">System context — at a glance</span></summary><div class="section-body">
-<p><img src="./architecture/diagrams/system-context.png" alt="RAM Pathfinder System Context — high-level service map and key interactions" /></p>
+<p><img src="architecture/tobe/diagrams/system-context.png" alt="RAM Pathfinder System Context — high-level service map and key interactions" /></p>
 <p><em>High-level service map. For detail, see the relevant section in this document or its siblings.</em></p>
 </div></details><details class="section" id="how-this-document-is-structured"><summary><span class="section-title">How this document is structured</span></summary><div class="section-body">
 <table>
@@ -260,47 +274,47 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </thead>
 <tbody>
 <tr>
-<td><a href="./architecture/starter-template.html"><code>./architecture/starter-template.md</code></a></td>
+<td><a href="architecture/tobe/starter-template.html"><code>./architecture/starter-template.md</code></a></td>
 <td>HMCTS Crime SpringBoot starter — initialisation flow, Gradle build tool rationale, dependency inventory, per-service RAM Pathfinder conventions overlaid by the scaffolding script</td>
 </tr>
 <tr>
-<td><a href="./architecture/data-tables.html"><code>./architecture/data-tables.md</code></a></td>
-<td>Authoritative Table Ownership Mapping — 39 RAM Pathfinder tables grouped by owning service</td>
+<td><a href="architecture/tobe/data-tables.html"><code>./architecture/data-tables.md</code></a></td>
+<td>Authoritative Table Ownership Mapping — RAM Pathfinder tables grouped by owning service, including the two-tier reference-data ownership model (upstream-sourced <code>jo_*</code> / <code>mrd_*</code> tables + RAM-owned tables)</td>
 </tr>
 <tr>
-<td><a href="./architecture/conventions.html"><code>./architecture/conventions.md</code></a></td>
+<td><a href="architecture/tobe/conventions.html"><code>./architecture/conventions.md</code></a></td>
 <td>Implementation Patterns &amp; Consistency Rules — naming, structure, format, communication, process, enforcement</td>
 </tr>
 <tr>
-<td><a href="./architecture/repo-structure.html"><code>./architecture/repo-structure.md</code></a></td>
+<td><a href="architecture/tobe/repo-structure.html"><code>./architecture/repo-structure.md</code></a></td>
 <td>Per-service / UI / <code>ram-architecture</code> directory structures, file organisation, deployment pipeline</td>
 </tr>
 <tr>
-<td><a href="./architecture/repository-strategy.html"><code>./architecture/repository-strategy.md</code></a></td>
+<td><a href="architecture/tobe/repository-strategy.html"><code>./architecture/repository-strategy.md</code></a></td>
 <td>Polyrepo strategy + the 15-repo list (per-service purpose and key functions)</td>
 </tr>
 <tr>
-<td><a href="./architecture/functional-requirements-coverage.html"><code>./architecture/functional-requirements-coverage.md</code></a></td>
-<td>All 61 FRs listed by capability area, with architectural support per group</td>
+<td><a href="architecture/tobe/functional-requirements-coverage.html"><code>./architecture/functional-requirements-coverage.md</code></a></td>
+<td>All 60 FRs listed by capability area, with architectural support per group</td>
 </tr>
 <tr>
-<td><a href="./architecture/non-functional-requirements-coverage.html"><code>./architecture/non-functional-requirements-coverage.md</code></a></td>
+<td><a href="architecture/tobe/non-functional-requirements-coverage.html"><code>./architecture/non-functional-requirements-coverage.md</code></a></td>
 <td>All 42 NFRs listed by category, with architectural support per group</td>
 </tr>
 <tr>
-<td><a href="./architecture/sequence-diagrams/"><code>./architecture/sequence-diagrams/</code></a></td>
+<td><a href="architecture/tobe/sequence-diagrams"><code>./architecture/sequence-diagrams/</code></a></td>
 <td>Mermaid sequence diagrams: user-initiated absence-to-reconciliation flow; scheduled payment-batch flow</td>
 </tr>
 <tr>
-<td><a href="./architecture/gaps.html"><code>./architecture/gaps.md</code></a></td>
-<td>Documented Gaps register — G1–G7 series with mitigations and owners</td>
+<td><a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code></a></td>
+<td>Documented Gaps register — G1–G9 series with mitigations and owners</td>
 </tr>
 <tr>
-<td><a href="./architecture/assumptions.html"><code>./architecture/assumptions.md</code></a></td>
-<td>Assumptions register — A1–A35 with type and verification path</td>
+<td><a href="architecture/tobe/assumptions.html"><code>./architecture/assumptions.md</code></a></td>
+<td>Assumptions register — A1–A37 with type and verification path</td>
 </tr>
 <tr>
-<td><a href="./architecture/changelog.html"><code>./architecture/changelog.md</code></a></td>
+<td><a href="architecture/tobe/changelog.html"><code>./architecture/changelog.md</code></a></td>
 <td>Version history v1.0 → v2.6 with pre-v1.8 anchor → current location redirect table</td>
 </tr>
 </tbody>
@@ -308,62 +322,67 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p>Refactor history: the single-file <code>architecture.md</code> was split into the index + sibling structure above in v1.8 (Strategy B).</p>
 </div></details><details class="section" id="project-context-analysis"><summary><span class="section-title">Project Context Analysis</span></summary><div class="section-body">
 <h3 id="requirements-overview">Requirements Overview</h3>
-<p><strong>Functional Requirements (61, in 9 capability areas).</strong> RAM Pathfinder is 11 services (revised v2.2 — <code>ram-configuration</code> dropped; per-service config in Spring profiles + Key Vault; a shared <code>configuration_values</code> table holds cross-service policy values), in three clusters:</p>
+<p><strong>Functional Requirements (60, in 9 capability areas — renumbered 2026-06-10: the Phase 0 ETL FR was retracted and FR58–FR61 became FR57–FR60).</strong> RAM Pathfinder is 11 services (revised v2.2 — <code>ram-configuration</code> dropped; per-service config in Spring profiles + Key Vault; a shared <code>ram_configuration_values</code> table holds cross-service policy values), in three clusters:</p>
 <ul>
-<li><strong>Domain services</strong> — Judge, Absence, Vacancy, Booking, Sitting, Payment. Operational chain: Manage Judges → Absence → Vacancy → Booking → Sitting → Payment → Reconciliation.</li>
-<li><strong>Cross-cutting services</strong> — Reference Data (single writer), Authorisation (gates every call), Notification (transactional email).</li>
+<li><strong>Domain services</strong> — JOH, Absence, Vacancy, Booking, Sitting, Payment. Operational chain: Manage JOHs → Absence → Vacancy → Booking → Sitting → Payment → Reconciliation. (<em>JOH — Judicial Office Holder — is the umbrella term<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>; the service is <code>ram-joh</code>.</em>)</li>
+<li><strong>Cross-cutting services</strong> — Reference Data (facade over a two-tier datastore: upstream-sourced JOH eLinks + MRD tables, read-only in RAM, plus RAM-owned tables — revised D3/FR6), Authorisation (gates every call; carries roles + jurisdiction + Region/Area scope<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>/FR2), Notification (transactional email).</li>
 <li><strong>Read-model services</strong> — Itinerary, MI Feed. Both use SQL JOINs over the shared database.</li>
 </ul>
 <p>Architectural implications:</p>
 <ul>
 <li><strong>One synchronous cross-service write</strong>: <code>POST /bookings</code> marks the linked vacancy as filled in the same transaction (FR30, R5) per Principle 1. Retry safety uses native DB primitives — see <em>Data Architecture</em>.</li>
 <li><strong>Read-model federation</strong>: SQL JOINs over the shared schema. Indexed joins meet the Forward Look NFR (≤ 30 s p95, NFR8).</li>
-<li><strong>Working-pattern sitting generation</strong> (FR13, FR35): owned by Judge; produces records that Sitting manages from Phase 5 onwards.</li>
-<li><strong>Versioned content-type for Payment</strong> (FR44 — <code>application/vnd.hmcts.jfeps+json</code> vs <code>+xlsx</code>). JFEPS shape is externally owned.</li>
-<li><strong>Per-service authorisation</strong> (FR2, NFR13): every API call resolves principal → role + Region/Area scope through Authorisation. Implemented as middleware.</li>
+<li><strong>Working-pattern sitting generation</strong> (FR13, FR35): owned by JOH; produces records that Sitting manages from Phase 5 onwards.</li>
+<li><strong>Versioned content-type for Payment</strong> (FR44 — <code>application/vnd.hmcts.jfeps+json</code> vs <code>+xlsx</code>). JFEPS shape is externally owned; preserved for SSCS wave 1<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</li>
+<li><strong>Per-service authorisation</strong> (FR2, NFR13): every API call resolves principal → roles + <strong>jurisdiction</strong> + Region/Area scope through Authorisation. Implemented as middleware.</li>
+<li><strong>Upstream reference-data ingestion</strong> (revised D3, NFR24): <code>ram-reference-data</code> ingests the 15 <code>jo_*</code> entities from the JOH eLinks API (in-process scheduled sync) and MRD supplementary data from a weekly Excel feed (blob drop + scheduled pick-up). Tier-(a) tables are never hand-edited in RAM; corrections happen at source.</li>
 </ul>
 <p><strong>Non-Functional Requirements (42, in 8 categories):</strong></p>
 <ul>
 <li><strong>Performance</strong> — page-level: ≤ 5 s dashboard, ≤ 30 s reports/Forward Look (APEX baseline). API: ≤ 500 ms p95 read, ≤ 1 s p95 write. Capacity ~50–100/region; ~200–500 national.</li>
 <li><strong>Security</strong> — TLS only; encryption at rest; AuthN via HMCTS IdP SSO; AuthZ owned by RAM Pathfinder; no bank details, no case-level data; aligned with GFS-7.</li>
 <li><strong>Accessibility</strong> — WCAG 2.2 AA; tested per UI page per phase.</li>
-<li><strong>Integration</strong> — OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9); JFEPS/Liberata unchanged; HMCTS email; DA&amp;I MI Feed; no eLinks integration in MVP.</li>
-<li><strong>Observability</strong> — log-based MVP only (D7); structured logs + correlation IDs; OpenTelemetry → Application Insights.</li>
+<li><strong>Integration</strong> — OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9); JFEPS/Liberata unchanged (preserved for SSCS wave 1); HMCTS email; DA&amp;I MI Feed; <strong>JOH eLinks API + MRD weekly Excel feed are MVP integrations</strong> (NFR24 reframed 2026-06-10<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> — was "no eLinks integration in MVP").</li>
+<li><strong>Observability</strong> — log-based MVP only<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>; structured logs + correlation IDs; OpenTelemetry → Application Insights.</li>
 <li><strong>Data privacy &amp; sovereignty</strong> — Azure UK regions only; UK GDPR + DPA 2018; no case-level data.</li>
-<li><strong>Reliability</strong> — available during HMCTS hours; per-wave rollback; single Azure region (UK South) with multi-AZ HA; HMCTS-judicial-region rollout isolation at the app tier via FR58 flags. DR is an <strong>open gap</strong> — see <a href="./architecture/gaps.html"><code>./architecture/gaps.md</code> G3.6</a>.</li>
-<li><strong>Maintainability</strong> — API-as-Product (versioned, OpenAPI, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details); per-service deployment; manual UAT scripts per domain service (FR61 / NFR41); Postman collections per phase.</li>
+<li><strong>Reliability</strong> — available during HMCTS hours; per-wave rollback; single Azure region (UK South) with multi-AZ HA; rollout isolation at the app tier via per-(jurisdiction, region) activation flags (FR57). DR is an <strong>open gap</strong> — see <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code> G3.6</a>.</li>
+<li><strong>Maintainability</strong> — API-as-Product (versioned, OpenAPI, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details); per-service deployment; manual UAT scripts per domain service (FR60 / NFR41); Postman collections per phase.</li>
 </ul>
-<p><strong>Scale &amp; complexity:</strong> 11-service API backend + UI. Complexity drivers: JFEPS/Liberata payment integration, cross-cutting authorisation, multi-region phased rollout, judicial regulatory environment, manual UAT against APEX.</p>
+<p><strong>Scale &amp; complexity:</strong> 11-service API backend + UI. Complexity drivers: JFEPS/Liberata payment integration, JOH eLinks + MRD upstream ingestion, cross-cutting jurisdiction-aware authorisation, jurisdiction-first phased rollout, judicial regulatory environment, manual UAT against the jurisdiction's incumbent system (GAPS for SSCS wave 1; APEX for Courts waves 2+).</p>
 <h3 id="technical-constraints--dependencies">Technical Constraints &amp; Dependencies</h3>
 <p><strong>Locked from PRD:</strong></p>
 <ul>
 <li><strong>Stack:</strong> Java 25 (LTS) + Spring Boot 4 + Kubernetes + Microsoft Azure (UK regions only).</li>
 <li><strong>Coordination:</strong> REST-first synchronous; no event stream, no message bus, no webhook fabric.</li>
 <li><strong>Read-model strategy:</strong> SQL JOINs over the shared schema; no API federation, no cache fallback.</li>
-<li><strong>Identity:</strong> OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9 cutover); JI owns Authorisation; password/session/account lifecycle external.</li>
+<li><strong>Identity:</strong> OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9 cutover); RAM Pathfinder owns Authorisation; password/session/account lifecycle external. Two distinct user populations<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>: JOHs (IdP email → <code>jo_people</code> → personnel number) and HMCTS admin staff (RAM-internal staff identity table).</li>
 <li><strong>Data residency:</strong> Azure UK regions only (no personal data leaves the UK).</li>
 <li><strong>No bank details, no case-level data</strong> anywhere by contract.</li>
-<li><strong>No automated eLinks/HR integration</strong> in MVP scope.</li>
+<li><strong>JOH eLinks API + MRD are MVP integrations</strong> (NFR24 reframed<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>); other HR systems remain out of MVP scope.</li>
+<li><strong>RAM scope boundary<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>:</strong> system of record for JOH availability and scheduling only — case management, panel composition, and hearing types live in external systems that consume RAM's APIs; no external system writes into RAM.</li>
 </ul>
 <p><strong>External systems (not controlled by RAM Pathfinder):</strong></p>
 <ul>
 <li><strong>HMCTS IdP</strong> — pre-Phase-9 hard dependency; mock auth covers Phase 0–8.</li>
-<li><strong>JFEPS-compatible Excel format</strong> for Payment — externally owned; treated as a versioned content-type.</li>
+<li><strong>JOH eLinks API</strong> — canonical upstream source for the 15 <code>jo_*</code> judicial-holder entities<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. Pulled by <code>ram-reference-data</code>'s scheduled sync; read-only in RAM; corrections at source (Judicial Office). No data flows upstream from RAM.</li>
+<li><strong>MRD (Master Reference Data)</strong> — supplementary judicial reference data (notably JOH Specialisations). Weekly Excel feed for MVP (public MRD APIs not yet available); transitions to API integration when MRD APIs ship.</li>
+<li><strong>JFEPS-compatible Excel format</strong> for Payment — externally owned; treated as a versioned content-type. Preserved for SSCS wave 1<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>.</li>
 <li><strong>HMCTS email infrastructure</strong> for transactional notifications.</li>
 <li><strong>DA&amp;I MI Feed consumers</strong> (post-MVP) — they call RAM Pathfinder APIs.</li>
-<li><strong>APEX</strong> — used by UAT users to compare behaviour. No programmatic linkage to RAM Pathfinder's CI or runtime.</li>
+<li><strong>External case-management systems</strong> (SSCS case management; Courts Listing systems) — consume RAM's APIs from Phase 9 onward<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>; never write into RAM.</li>
+<li><strong>GAPS / APEX (incumbents)</strong> — used by UAT users to compare behaviour per wave (GAPS for SSCS wave 1; APEX for Courts waves 2+). No programmatic linkage to RAM Pathfinder's CI or runtime.</li>
 </ul>
-<p><strong>Migration (Phase 0 only):</strong> Reference Data + Users/Roles from APEX (D3 + D9). No transactional data. APEX ⇄ IdP reconciliation: every active APEX user reconciles to an IdP principal; unmatched records get explicit handling (drop / hold / manual map).</p>
+<p><strong>Data bootstrap (no legacy migration — revised D3 + D9):</strong> RAM Pathfinder migrates nothing from GAPS or APEX. Judicial-holder reference data is ingested from JOH eLinks + MRD (source-of-truth integration, not migration); historical data stays in the cohort's incumbent system. User and authorisation records (<code>auth_*</code> tables) are bootstrapped by programme-management / operational mechanisms outside the PRD's scope; every bootstrapped user must resolve to an IdP principal before that user's wave cutover. The Phase 0 Data Migration ETL is <strong>retracted</strong>; <code>ram-architecture/migration/</code> is no longer a deliverable.</p>
 <h3 id="cross-cutting-concerns-identified">Cross-Cutting Concerns Identified</h3>
 <p>Concerns that recur across most services and are addressed at the platform layer:</p>
 <ul>
-<li><strong>Authorisation enforcement</strong> — every API call resolves principal → roles + Region/Area scope through Authorisation (FR2, FR3). Implemented as middleware.</li>
-<li><strong>Reference Data is single-writer</strong> — sole source of truth for Regions, Offices, vocabularies, calendar (FR6, FR7). Reads: direct SQL on the 15 Reference Data tables (no caching per Principle 2). Writes: via the Reference Data API.</li>
-<li><strong>Per-region scoping</strong> — domain operations default-scope by Region/Area from the Authorisation context (FR49). Cross-region operations are explicit.</li>
-<li><strong>Per-region phased activation</strong> — per D8, RAM Pathfinder access is gated by <code>auth_user_activation_flags</code> (FR58). Authorisation distinguishes "active in RAM Pathfinder" from "exists in RAM Pathfinder".</li>
-<li><strong>Retry safety via native DB primitives</strong> — natural-key uniqueness, optimistic locking, pessimistic row locking. No custom idempotency-key tables. Detail in <em>Data Architecture</em> and <a href="./architecture/data-tables.html"><code>./architecture/data-tables.md</code></a>.</li>
-<li><strong>API-as-Product compliance</strong> — versioned contract, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details, OpenAPI per service (FR59).</li>
-<li><strong>Manual UAT</strong> (FR61 / NFR41) — APEX-experienced users compare RAM Pathfinder vs APEX per service per region; sign-off is the wave-cutover gate. No automated APEX-comparison in CI.</li>
+<li><strong>Authorisation enforcement</strong> — every API call resolves principal → roles + jurisdiction + Region/Area scope through Authorisation (FR2, FR3). Implemented as middleware. Jurisdiction is a first-class hierarchical attribute<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a> sourced from <code>jo_jurisdictions</code>.</li>
+<li><strong>Reference Data is single-owner, two-tier</strong> — <code>ram-reference-data</code> owns every reference-data table in the shared schema (FR7). <strong>Tier (a) upstream-sourced</strong> (<code>jo_*</code> from JOH eLinks; <code>mrd_*</code> from MRD): read-only in RAM, refreshed by the ingestion mechanisms, corrections at source. <strong>Tier (b) RAM-owned</strong> (regions, offices, calendar, operational vocabularies): maintained in RAM — DBAs via SQL in MVP<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>, admin UI post-MVP. Separate tables preserve lineage (FR6). Reads: direct SQL on the reference-data tables (no caching per Principle 2). Reference-data API responses are jurisdiction-filtered<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>.</li>
+<li><strong>Per-jurisdiction + Region/Area scoping</strong> — domain operations default-scope by jurisdiction and Region/Area from the Authorisation context (FR2, FR49). Cross-region operations are explicit.</li>
+<li><strong>Per-(jurisdiction, region) phased activation</strong><a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a><a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> — RAM Pathfinder access is gated by <code>ram_auth_user_activation_flags</code> (FR57); the flag rows carry the (jurisdiction, region) tuple so cutover flips include both in the <code>WHERE</code> clause. Authorisation distinguishes "active in RAM Pathfinder" from "exists in RAM Pathfinder".</li>
+<li><strong>Retry safety via native DB primitives</strong> — natural-key uniqueness, optimistic locking, pessimistic row locking. No custom idempotency-key tables. Detail in <em>Data Architecture</em> and <a href="architecture/tobe/data-tables.html"><code>./architecture/data-tables.md</code></a>.</li>
+<li><strong>API-as-Product compliance</strong> — versioned contract, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details, OpenAPI per service (FR58).</li>
+<li><strong>Manual UAT</strong> (FR60 / NFR41) — jurisdiction-incumbent-experienced users compare RAM Pathfinder vs the incumbent per service per wave (GAPS-experienced users for SSCS wave 1; APEX-experienced users for Courts waves 2+); sign-off is the wave-cutover gate. No automated incumbent-comparison in CI.</li>
 <li><strong>Forbidden data</strong> — no bank details (FR47); no case-level data (FR54). Enforced at the schema and API boundary.</li>
 </ul>
 <h3 id="architecture-phase-decisions-still-open">Architecture-phase decisions still open</h3>
@@ -409,8 +428,40 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td>7</td>
-<td>APEX ⇄ IdP identity-key scheme</td>
+<td>APEX ⇄ IdP identity-key scheme <em>(reframed 2026-06-11 — identity resolution at sign-in<a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a>)</em></td>
 <td>Step 4 (Authentication &amp; Security)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Architecture-phase decisions deferred to architecture by the PRD (SCP 2026-06-10), now resolved:</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Decision deferred to architecture by the PRD</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td><code>ram-judge</code> → <code>ram-joh</code> rename<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a></td>
+<td><strong>Full rename</strong> — service, repo, DB role (<code>ram_joh</code>), and table names. Nothing is built yet, so the rename costs nothing now versus a guaranteed costlier rename after Phase 1.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>JOH eLinks sync mechanism<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a></td>
+<td><strong>In-process scheduled sync</strong> — a <code>@Scheduled</code> task inside <code>ram-reference-data</code> pulls the JOH eLinks API nightly and full-refresh-upserts the <code>jo_*</code> tables. No new service principal, no new deployable. Detail in <em>Data Architecture</em>.</td>
+</tr>
+<tr>
+<td>10</td>
+<td>MRD Excel ingestion mechanism<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a></td>
+<td><strong>Blob drop + scheduled pick-up</strong> — the weekly Excel lands in an Azure Blob container; a <code>@Scheduled</code> task in <code>ram-reference-data</code> polls, validates, and upserts the <code>mrd_*</code> tables. Detail in <em>Data Architecture</em>.</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Admin-staff canonical identifier<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a></td>
+<td><strong>RAM-assigned UUID</strong> on <code>ram_auth_staff_identities</code>, with IdP email as the lookup key — mirroring the JOH email → personnel-number pattern. Detail in <em>Authentication &amp; Security</em>.</td>
 </tr>
 </tbody>
 </table>
@@ -423,9 +474,9 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong>Single-field cross-service updates can be direct DB writes</strong> — e.g. Booking marks its linked vacancy as filled; Payment updates the booking's payment lifecycle status. Each owning service grants which tables/columns other services may write via explicit DB role grants (see <em>Data Architecture</em>).</li>
 <li><strong>Cross-service reads are direct SQL JOINs</strong> — Itinerary, MI Feed, and Reference Data reads query the shared schema directly. No API fan-out, no cache.</li>
 </ul>
-<p>The database is <strong>one global PostgreSQL instance with a single shared schema</strong>. Cross-service access is gated by <strong>per-service DB roles with explicit grants</strong>. Table ownership is encoded in the table name (entity-plural for primary tables; service-prefix for service-internal) and enforced by ArchUnit fitness functions in CI.</p>
+<p>The database is <strong>one global PostgreSQL instance with a single shared schema</strong>. Cross-service access is gated by <strong>per-service DB roles with explicit grants</strong>. Table ownership is encoded in the table name — <strong>every RAM-owned table carries the <code>ram_</code> prefix</strong>; upstream-sourced tier-(a) tables carry their source-system prefix (<code>jo_</code>, <code>mrd_</code>) — and enforced by ArchUnit fitness functions in CI.</p>
 <p><strong>Why one schema, not schema-per-service:</strong> 11 services, one team, one domain. Schema-per-service costs 11 schemas + grants + cross-schema FK overhead + per-PR coordination, with no concrete benefit at MVP. One schema supports the same DB-level access control via per-service roles.</p>
-<p><strong>Why per-service DB roles, not one shared role:</strong> per-service roles are the seam for any future schema-per-service or service extraction. ~10 minutes/role on Day 1; expensive to retrofit. They also give defense-in-depth (a Sitting repo can't write to Payment tables — DB rejects), DB-layer signal for the post-MVP user-action audit (D7), and a reversible decision (start broad, tighten as patterns become visible).</p>
+<p><strong>Why per-service DB roles, not one shared role:</strong> per-service roles are the seam for any future schema-per-service or service extraction. ~10 minutes/role on Day 1; expensive to retrofit. They also give defense-in-depth (a Sitting repo can't write to Payment tables — DB rejects), DB-layer signal for the post-MVP user-action audit<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a>, and a reversible decision (start broad, tighten as patterns become visible).</p>
 <p><strong>No shared runtime code library.</strong> Each service owns its own cross-cutting concerns, even at the cost of boilerplate. <strong>Changing a cross-cutting concern in one service never forces redeployment of any other</strong> (NFR40).</p>
 <p>What is shared:</p>
 <ul>
@@ -440,7 +491,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <h4 id="principle-2-no-premature-optimisation">Principle 2: No Premature Optimisation</h4>
 <p><strong>Performance optimisations are added when measurement justifies them.</strong> At MVP:</p>
 <ul>
-<li>No Reference Data cache — direct SELECT from the 15 Reference Data tables.</li>
+<li>No Reference Data cache — direct SELECT from the Reference Data tables (both tiers).</li>
 <li>No distributed cache (Redis).</li>
 <li>No service mesh (Istio/Linkerd) — Spring Security + AKS DNS + JWTFilter are sufficient.</li>
 <li>No read replicas — one PostgreSQL instance is adequate at this scale.</li>
@@ -482,11 +533,11 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </table>
 <p><strong>Why the HMCTS starter:</strong> scaffold-time inheritance, not runtime dependency. Each service is forked at scaffold time and owns its own copy from then on. Consistent with the foundational principles.</p>
 <h3 id="initialisation-flow-build-tool-dependency-inventory-per-service-conventions">Initialisation Flow, Build Tool, Dependency Inventory, Per-service Conventions</h3>
-<p>See <a href="./architecture/starter-template.html"><code>./architecture/starter-template.md</code></a>.</p>
+<p>See <a href="architecture/tobe/starter-template.html"><code>./architecture/starter-template.md</code></a>.</p>
 </div></details><details class="section" id="core-architectural-decisions"><summary><span class="section-title">Core Architectural Decisions</span></summary><div class="section-body">
 <h3 id="decision-priority-analysis">Decision Priority Analysis</h3>
 <p><strong>Critical (block implementation):</strong> Database technology + table-ownership/per-service-role model · Service-to-service authentication mechanism · API versioning · UI framework · API gateway / rate-limiting layer.</p>
-<p><strong>Important (shape architecture):</strong> Migration tooling for schema changes · APEX ⇄ IdP identity-key scheme · Log retention · Historical-data access policy · HA topology (single Azure region multi-AZ in UK South; HMCTS-judicial-region rollout isolation at application tier). DR scope is an open gap — see <a href="./architecture/gaps.html"><code>./architecture/gaps.md</code> G3.6</a>.</p>
+<p><strong>Important (shape architecture):</strong> Migration tooling for schema changes · APEX ⇄ IdP identity-key scheme · Log retention · Historical-data access policy · HA topology (single Azure region multi-AZ in UK South; HMCTS-judicial-region rollout isolation at application tier). DR scope is an open gap — see <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code> G3.6</a>.</p>
 <p><strong>Deferred (post-MVP per Principle 2):</strong> Reference Data caching · Distributed cache (Redis) · Service mesh · Read replicas · APIM advanced features.</p>
 <h3 id="data-architecture">Data Architecture</h3>
 <p><strong>Database:</strong> PostgreSQL on Azure Database for PostgreSQL Flexible Server, UK regions only. Version 17 (16 acceptable if HMCTS prefers). Reasons: relational domain; mature; lower-cost than Azure SQL; HMCTS open-source preference.</p>
@@ -496,11 +547,13 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong>One logical database</strong>, one shared schema (e.g. <code>ram</code>).</li>
 <li><strong>Table ownership</strong> encoded by table name (below) + per-service DB roles with explicit grants (below).</li>
 </ul>
-<p><strong>Table naming and ownership:</strong></p>
+<p><strong>Table naming and ownership (revised 2026-06-11 — ownership is in the prefix):</strong></p>
 <ul>
-<li><strong>Primary domain tables</strong> — entity-plural, no prefix: <code>judges</code>, <code>absences</code>, <code>vacancies</code>, <code>bookings</code>, <code>sittings</code>, <code>payments</code>, <code>payment_schedules</code>, <code>regions</code>, <code>offices</code>, <code>calendar_periods</code>, plus the 12 vocabulary tables.</li>
-<li><strong>Service-internal or ambiguous tables</strong> — service-prefixed: <code>payment_reconciliations</code>, <code>notification_dispatches</code>, <code>auth_user_roles</code>.</li>
-<li><strong>Ownership table</strong> in <a href="./architecture/data-tables.html"><code>./architecture/data-tables.md</code></a>.</li>
+<li><strong>RAM-owned tables</strong> — <code>ram_</code> prefix, entity-plural: <code>ram_absences</code>, <code>ram_vacancies</code>, <code>ram_bookings</code>, <code>ram_sittings</code>, <code>ram_payments</code>, <code>ram_payment_schedules</code>, <code>ram_regions</code>, <code>ram_offices</code>, <code>ram_calendar_periods</code>, plus the RAM-owned vocabulary tables. The prefix makes RAM ownership visible at a glance against the upstream-sourced tables. No <code>_overlays</code> suffix pattern — JOH operational state over upstream entities is named directly (<code>ram_joh_ticket</code>, <code>ram_joh_location</code>).</li>
+<li><strong>Upstream-sourced tables</strong> — source-system-prefixed: <code>jo_*</code> (15 JOH eLinks entities, e.g. <code>jo_people</code>, <code>jo_jurisdictions</code>, <code>jo_tickets</code>) and <code>mrd_*</code> (MRD entities). The prefix marks tier-(a) lineage: read-only in RAM, written exclusively by the ingestion mechanisms (FR6/FR7).</li>
+<li><strong>Service-internal or ambiguous tables</strong> — service-prefixed: <code>ram_payment_reconciliations</code>, <code>ram_notification_dispatches</code>, <code>ram_auth_user_roles</code>.</li>
+<li><strong>JOH operational-state tables</strong> — owned by <code>ram-joh</code>, keyed by <code>personnel_number</code> (the canonical JOH identifier from <code>jo_people</code>): <code>ram_working_patterns</code>, <code>ram_joh_ticket</code>, <code>ram_joh_location</code>, <code>ram_jurisdictional_splits</code>.</li>
+<li><strong>Ownership table</strong> in <a href="architecture/tobe/data-tables.html"><code>./architecture/data-tables.md</code></a>.</li>
 <li><strong>The team that writes the Flyway migration creating the table owns it.</strong> The <code>V*__*.sql</code> lives in the owning service's repo.</li>
 </ul>
 <p><strong>ArchUnit fitness functions in CI:</strong></p>
@@ -551,23 +604,46 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 </tbody>
 </table>
-<p><strong>Foreign keys within the shared schema</strong> are allowed and encouraged (e.g. <code>bookings.judge_id REFERENCES judges(id)</code>).</p>
-<p><strong>Per-service DB roles with explicit grants</strong> — <code>ram_judge</code>, <code>ram_booking</code>, etc. (one per service; <code>ram_mock_auth</code> for dev/integration). <code>ALL</code> privileges on owned tables. Cross-table access granted explicitly: <code>GRANT SELECT ON vacancies TO ram_booking; GRANT UPDATE (filled, filled_at) ON vacancies TO ram_booking;</code>. Grants live in Flyway migrations owned by the table-owning service. <strong>Day 1: grants start broad, tighten as patterns become visible.</strong></p>
+<p><strong>Foreign keys within the shared schema</strong> are allowed and encouraged (e.g. <code>bookings.personnel_number REFERENCES jo_people(personnel_number)</code>). Domain tables reference JOHs by <code>personnel_number</code> — the canonical JOH identifier<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a>. The eLinks sync <strong>never hard-deletes</strong> <code>jo_people</code> rows (departures are marked inactive), so FK targets are stable.</p>
+<p><strong>Per-service DB roles with explicit grants</strong> — <code>ram_joh</code>, <code>ram_booking</code>, etc. (one per service; <code>ram_mock_auth</code> for dev/integration). <code>ALL</code> privileges on owned tables. Cross-table access granted explicitly: <code>GRANT SELECT ON ram_vacancies TO ram_booking; GRANT UPDATE (filled, filled_at) ON ram_vacancies TO ram_booking;</code>. Grants live in Flyway migrations owned by the table-owning service. <strong>Day 1: grants start broad, tighten as patterns become visible.</strong> Tier-(a) tables (<code>jo_*</code>, <code>mrd_*</code>) are INSERT/UPDATE-able by <code>ram_reference_data</code> only (the ingestion writer); every other role gets at most SELECT — the DB enforces "read-only in RAM".</p>
 <p><strong>Forward compatibility:</strong> per-service DB roles are the seam for future schema-per-service or service-extraction without connection-layer code changes.</p>
 <p><strong>Data modelling:</strong> Spring Data JPA + Hibernate. Per-service entities, repositories, and queries. No shared entity classes. Another service's whitelisted tables are <code>@Immutable</code> JPA entities in the consuming service.</p>
-<p><strong>Schema evolution: Flyway</strong> (<code>spring-boot-starter-flyway</code>, <code>flyway-core</code>, <code>flyway-database-postgresql</code>). Per-service <code>src/main/resources/db/migration/V*__*.sql</code>. Migrations run on application startup. <strong>Flyway is for RAM Pathfinder's DDL only — not for loading APEX data into RAM Pathfinder</strong> (see Phase 0 ETL below).</p>
-<p><strong>Phase 0 Data Migration from APEX (separate from Flyway):</strong></p>
+<p><strong>Schema evolution: Flyway</strong> (<code>spring-boot-starter-flyway</code>, <code>flyway-core</code>, <code>flyway-database-postgresql</code>). Per-service <code>src/main/resources/db/migration/V*__*.sql</code>. Migrations run on application startup. <strong>Flyway is for RAM Pathfinder's DDL only — not for loading upstream data</strong> (see <em>Upstream reference-data ingestion</em> below).</p>
+<p><strong>Two-tier reference-data ownership (revised D3 + FR6/FR7, 2026-06-10):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Tables</th>
+<th>Written by</th>
+<th>Corrections</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>(a) Upstream-sourced</strong></td>
+<td><code>jo_*</code> (15 JOH eLinks entities) + <code>mrd_*</code> (MRD entities)</td>
+<td>The ingestion mechanisms only (<code>ram_reference_data</code> role) — never hand-edited in RAM</td>
+<td>At source: Judicial Office for <code>jo_*</code>; the MRD team for <code>mrd_*</code>. Picked up by the next sync. <strong>No data flows upstream from RAM.</strong></td>
+</tr>
+<tr>
+<td><strong>(b) RAM-owned</strong></td>
+<td><code>ram_regions</code>, <code>ram_offices</code>, <code>ram_calendar_periods</code>, operational vocabularies, plus JOH operational-state overlays owned by <code>ram-joh</code></td>
+<td>DBAs via direct SQL per operational runbooks in MVP<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a>; admin UI post-MVP. Never overwritten by upstream sync.</td>
+<td>Within RAM</td>
+</tr>
+</tbody>
+</table>
+<p><code>ram-reference-data</code> is a <strong>facade over the RAM-owned datastore</strong> populated by these ingestion paths: consumers use its versioned read API (or direct SQL per Principle 1) without needing to know which upstream source an entry originates from. Separate tables preserve lineage; the API exposes both tiers as appropriate but does not blend them.</p>
+<p><strong>Upstream reference-data ingestion (replaces the retracted Phase 0 ETL):</strong></p>
 <ul>
-<li><strong>Source:</strong> APEX SQL dumps for Reference Data and APEX user records + role/scope assignments. RAM Pathfinder does not own or constrain APEX's schema.</li>
-<li><strong>Target:</strong> RAM Pathfinder tables — <code>regions</code>, <code>offices</code>, <code>calendar_periods</code>, the 12 vocabulary tables, <code>auth_users</code>, <code>auth_roles</code>, <code>auth_user_roles</code>, <code>auth_user_region_scopes</code>, <code>auth_user_activation_flags</code>.</li>
-<li><strong>Mechanism:</strong> the migration tool reads APEX dumps, transforms each row to RAM Pathfinder shape, and loads via RAM Pathfinder APIs (<code>POST /v1/regions</code>, <code>POST /authz/users</code>, etc.). The API is the seeding mechanism; the migration tool is the bulk caller.</li>
-<li><strong>Not Flyway data-seeding.</strong> APEX shape ≠ RAM Pathfinder shape; the transform is in code. Writes go via the API so validation, idempotency, and audit-logging hooks fire.</li>
-<li><strong>Location:</strong> <code>ram-architecture/migration/</code> (CLI/script). Phase 0 deliverable; re-runnable per rollout wave.</li>
-<li><strong>Scope:</strong> Reference Data (D3) + active APEX users with role/Region-Area scope (D9). No transactional data.</li>
-<li><strong>Reconciliation:</strong> Reference Data lists signed off by RSU/judicial-team owners (Risk #13); every migrated user reconciled against an IdP principal; unmatched records get drop/hold/manual map handling (Risk #14).</li>
-<li><strong>APEX revalidation:</strong> when the APEX SQL dump lands, validate the tool's APEX-side input mapping. Confirms the tool covers every APEX field RAM Pathfinder needs; does not reshape RAM Pathfinder's tables. New APEX vocabulary values are inserted via the Reference Data API. Tracked as G4.6 / A33.</li>
+<li><strong>JOH eLinks sync</strong> — an in-process <code>@Scheduled</code> task inside <code>ram-reference-data</code> pulls the JOH eLinks API <strong>nightly</strong> and full-refresh-upserts the 15 <code>jo_*</code> tables. Upserts key on the upstream natural key (<code>personnel_number</code> for <code>jo_people</code>); rows absent upstream are <strong>marked inactive, never hard-deleted</strong> (protects FKs from domain tables). Sync runs, outcomes, and row counts are recorded in <code>ram_sync_status</code> (RAM-internal tracking entity<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a>). No new service principal and no new deployable: the task writes the service's own tables in-process, sidestepping the G7 service-auth question entirely; the only credential is the outbound JOH eLinks API credential, held in Key Vault.</li>
+<li><strong>MRD ingestion</strong> — the MRD team's <strong>weekly Excel feed</strong> lands in a dedicated Azure Blob container; a <code>@Scheduled</code> task in <code>ram-reference-data</code> polls the container, validates the workbook (shape, vocabulary, referential checks), upserts the <code>mrd_*</code> tables, and archives the file (retained for lineage/audit). Idempotent per file. The blob-drop seam swaps cleanly for direct MRD API integration when MRD's public APIs ship — only the reader changes, not the tables.</li>
+<li><strong>Failure handling</strong> — a failed sync leaves the previous good state in place (each ingestion is transactional per entity set); failures surface via structured logs + <code>ram_sync_status</code> for ops triage. Reference data is at most one cycle stale, never partially written.</li>
+<li><strong>Jurisdiction hierarchy</strong> — sourced directly from <code>jo_jurisdictions</code><a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a>. The parent-child shape is preserved natively if upstream provides it, or established on ingest. No separate tagging step.</li>
+<li><strong>User/authorisation data is not ingested</strong> — <code>auth_*</code> tables are strictly RAM-internal<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a>, populated by programme-management / operational mechanisms outside the PRD's scope. Dev/CI environments are seeded by one-off scripts as before.</li>
 </ul>
-<p><strong>Read models:</strong> SQL JOINs across the shared schema. Itinerary and MI Feed run joins across <code>judges</code>, <code>absences</code>, <code>vacancies</code>, <code>bookings</code>, <code>sittings</code>, <code>payments</code> (read-only via SELECT grants). Indexed joins meet the ≤ 30 s Forward Look NFR (NFR8).</p>
+<p><strong>Read models:</strong> SQL JOINs across the shared schema. Itinerary and MI Feed run joins across <code>jo_people</code> (+ <code>ram-joh</code> overlay tables), <code>ram_absences</code>, <code>ram_vacancies</code>, <code>ram_bookings</code>, <code>ram_sittings</code>, <code>ram_payments</code> (read-only via SELECT grants). Indexed joins meet the ≤ 30 s Forward Look NFR (NFR8).</p>
 <p><strong>Caching:</strong> none at MVP (per Principle 2). Added per-service post-MVP if measurement shows the need.</p>
 <p><strong>Validation:</strong> JSR-380 (Bean Validation 3.0) on request DTOs and entity fields, enforced by Spring Web's <code>@Valid</code>.</p>
 <p><strong>Retry safety and concurrency control.</strong> Native PostgreSQL + JPA constructs. No custom <code>*_idempotency_keys</code> tables. Three native mechanisms cover the three problems:</p>
@@ -604,9 +680,9 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li>For workflows that update a related row, the repository method uses <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code>.</li>
 </ul>
 <p><strong><code>Idempotency-Key</code> HTTP header:</strong> not implemented at MVP. Reserved as an escape hatch where the operation has no natural unique key and no related row to lock. Introduced per-endpoint if such a case arises post-MVP.</p>
-<p><strong>Audit trail (separate concern):</strong> the historical "who changed what when" record is the user-action audit on the D7 post-MVP roadmap. Audit answers forensic questions; the three mechanisms above prevent operational duplication. Independent.</p>
+<p><strong>Audit trail (separate concern):</strong> the historical "who changed what when" record is the user-action audit on the D7 post-MVP roadmap. Audit answers after-the-fact questions; the three mechanisms above prevent operational duplication. Independent.</p>
 <h3 id="authoritative-table-ownership-mapping">Authoritative Table Ownership Mapping</h3>
-<p>See <a href="./architecture/data-tables.html"><code>./architecture/data-tables.md</code></a>. The fitness function checks that every Flyway-created table appears there with the correct owning service.</p>
+<p>See <a href="architecture/tobe/data-tables.html"><code>./architecture/data-tables.md</code></a>. The fitness function checks that every Flyway-created table appears there with the correct owning service.</p>
 <h3 id="authentication--security">Authentication &amp; Security</h3>
 <h4 id="phasing-of-authentication-mock-first-real-idp-later">Phasing of Authentication: Mock-First, Real IdP Later</h4>
 <p>Phases 0–8 use <code>ram-mock-auth</code>. Real HMCTS IdP integration is a pre-Phase-9 deliverable — a configuration cutover.</p>
@@ -614,7 +690,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ul>
 <li>OIDC <code>authorization_code</code> flow for human users (<code>/oauth2/authorize</code>, <code>/oauth2/token</code>, <code>/oauth2/jwks</code>, <code>/oauth2/userinfo</code>).</li>
 <li>OAuth <code>client_credentials</code> grant for batch service principals (initially <code>ram-payment-batch</code>).</li>
-<li>JWTs for a fixed roster of test users covering all 11 user roles × representative Region/Area combinations.</li>
+<li>JWTs for a fixed roster of test users covering all user roles × representative jurisdiction + Region/Area combinations, spanning <strong>both identity populations</strong> (JOH users resolvable against seeded <code>jo_people</code> rows; admin-staff users resolvable against seeded <code>ram_auth_staff_identities</code> rows).</li>
 <li>User roster mirrors what the Phase 0 dev/CI scripts seed into RAM Pathfinder Authorisation.</li>
 <li>Spring Authorization Server. Deployed to AKS dev/integration alongside other Phase 0 services.</li>
 <li><strong>Production safeguard:</strong> refuses to start with the <code>production</code> Spring profile. CI lint blocks production manifests that reference the mock-auth issuer URL.</li>
@@ -623,10 +699,10 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p><strong>Why mock-first:</strong> decouples RAM Pathfinder build from the HMCTS IdP team's roadmap; lets developers work without IdP credentials. Reduces Risk #6 (IdP integration timing) from a Phase 0 blocker to a pre-Phase-9 prerequisite.</p>
 <p><strong>Real HMCTS IdP cutover (pre-Phase-9):</strong></p>
 <ul>
-<li><strong>Triggers:</strong> G1.1 (HMCTS IdP supports OIDC for human authN), G1.2 (HMCTS IdP supports <code>client_credentials</code> for batch — or an alternative per G7.1), G1.3 (principal export/query API for migration reconciliation).</li>
+<li><strong>Triggers:</strong> G1.1 (HMCTS IdP supports OIDC for human authN), G1.2 (HMCTS IdP supports <code>client_credentials</code> for batch — or an alternative per G7.1), G1.3 (principal export/query API for bootstrap verification).</li>
 <li><strong>Mechanism:</strong> Spring profile flip. Every service's OIDC <code>issuer-url</code> switches from mock auth to HMCTS IdP. No code change.</li>
-<li><strong>Migration:</strong> Phase 0 ETL keys user records by email + employee number, which are issuer-agnostic.</li>
-<li><strong>Reconciliation:</strong> before staging cutover, a verification job confirms every migrated user maps to a real IdP principal.</li>
+<li><strong>Identity portability:</strong> identity resolution keys on the IdP <strong>email</strong> claim (looked up against <code>jo_people</code> for JOHs, <code>ram_auth_staff_identities</code> for admin staff), which is issuer-agnostic — the mock-to-real cutover does not invalidate any identity mapping.</li>
+<li><strong>Verification:</strong> before staging cutover, a verification job confirms every bootstrapped user (both populations) maps to a real IdP principal.</li>
 <li><strong>Test suite:</strong> every automated suite (unit, Testcontainers integration, contract) and per-service manual UAT must pass against real IdP in staging before Phase 9 pilot.</li>
 </ul>
 <h4 id="end-user-authentication">End-user Authentication</h4>
@@ -634,8 +710,8 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p>Each service runs a custom <code>JWTFilter</code> (HMCTS Crime template pattern, <code>io.jsonwebtoken:jjwt</code>):</p>
 <ol type="1">
 <li>Validate JWT signature and issuer against the issuer's JWKS (mock auth in Phase 0–8; HMCTS IdP from pre-Phase-9). Public keys cached per the issuer's cache headers.</li>
-<li>Extract principal identity (sub, email, employee number) from JWT claims.</li>
-<li>Call <code>POST /authz/check</code> against RAM Pathfinder Authorisation for roles + Region/Area scope + activation flag (FR58). RAM Pathfinder's authz state lives in Authorisation, not the IdP — this differs from the template's claims-only approach.</li>
+<li>Extract principal identity (sub, email) from JWT claims.</li>
+<li>Call <code>POST /authz/check</code> against RAM Pathfinder Authorisation. Authorisation resolves the IdP email to the <strong>canonical RAM identifier</strong><a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a> — <strong>personnel number</strong> via <code>jo_people</code> lookup for JOH users, or the <strong>RAM-assigned staff UUID</strong> via <code>ram_auth_staff_identities</code> for HMCTS admin staff — then returns roles + <strong>jurisdiction</strong> + Region/Area scope + activation flag (FR57). Both populations share the same authorisation model; only the identity-lookup path differs. RAM Pathfinder's authz state lives in Authorisation, not the IdP — this differs from the template's claims-only approach.</li>
 <li>Store the result in a request-scoped <code>AuthDetails</code> bean.</li>
 </ol>
 <p>The filter caches authorisation decisions for the request lifecycle only.</p>
@@ -644,19 +720,25 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p><strong>Pattern 1 — JWT propagation</strong> (user-initiated cross-service calls):</p>
 <ul>
 <li>The upstream service's outbound HTTP client copies the inbound <code>Authorization: Bearer &lt;user-jwt&gt;</code> header onto the outbound call. The downstream service's <code>JWTFilter</code> validates the same JWT against the IdP's JWKS and resolves authz via <code>POST /authz/check</code>.</li>
-<li>Implementation: per-service Spring Boot 4 <code>RestClient</code> interceptor (~10 lines). See <a href="./architecture/conventions.html"><code>./architecture/conventions.md</code></a> → "JWT propagation".</li>
+<li>Implementation: per-service Spring Boot 4 <code>RestClient</code> interceptor (~10 lines). See <a href="architecture/tobe/conventions.html"><code>./architecture/conventions.md</code></a> → "JWT propagation".</li>
 </ul>
 <p><strong>Pattern 2 — Service-principal authentication</strong> (batch / scheduled components without an upstream user):</p>
 <ul>
 <li>The case at MVP is <code>ram-payment-batch</code> — runs on a schedule, picks up bookings ready for payment, generates the JFEPS Excel, dispatches via Notification.</li>
-<li>Authenticates via OAuth 2.0 <code>client_credentials</code> against the OIDC issuer. <code>ram-mock-auth</code> in Phase 0–8; production issuer per <a href="./architecture/gaps.html"><code>./architecture/gaps.md</code> G7.1</a> (default recommendation: Azure Workload Identity).</li>
+<li>Authenticates via OAuth 2.0 <code>client_credentials</code> against the OIDC issuer. <code>ram-mock-auth</code> in Phase 0–8; production issuer per <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code> G7.1</a> (default recommendation: Azure Workload Identity).</li>
 <li>Service token attached as <code>Authorization: Bearer &lt;service-token&gt;</code> on outbound calls. The receiving service's <code>JWTFilter</code> validates via the same JWKS path as human JWTs.</li>
-<li>Service-principal records live in <code>auth_users</code> (with a <code>principal_kind</code> flag); <code>ram-authorisation</code> resolves their permissions the same way. Registrations live in <code>mock_oauth_clients</code> at MVP.</li>
+<li>Service-principal records live in <code>ram_auth_users</code> (with a <code>principal_kind</code> flag); <code>ram-authorisation</code> resolves their permissions the same way. Registrations live in <code>mock_oauth_clients</code> at MVP.</li>
 </ul>
-<p><strong>Other non-runtime auth:</strong> Phase 0 dev/CI seeding via one-off scripts (no runtime API call); Phase 0 production data migration via operator-initiated ETL with the operator's user JWT (G4.7 — flagged for post-MVP refinement).</p>
+<p><strong>Other non-runtime auth:</strong> Phase 0 dev/CI seeding via one-off scripts (no runtime API call). <em>(The operator-initiated production ETL and its G4.7 refinement flag are retired with the ETL itself — revised D3, 2026-06-10.)</em></p>
 <p><strong>Resolves PRD TBD #3:</strong> JWT propagation for user-initiated calls; service principals (mock-auth in non-prod) for the payment batch; production issuer per G7.1.</p>
-<h4 id="identity-key-scheme">Identity-key Scheme</h4>
-<p><strong>APEX ⇄ IdP: email primary, employee number fallback.</strong> (Resolves PRD TBD #7.) During the Phase 0 ETL: match by email; fall back to employee number; flag unmatched for manual review. The reconciliation report is a Phase 0 deliverable (Risk #14 mitigation).</p>
+<h4 id="identity-resolution-two-populations">Identity Resolution (two populations)</h4>
+<p><strong>(Reframes the original TBD #7 resolution — the APEX ⇄ IdP ETL matching scheme is retired with the ETL.)</strong> Identity resolution now happens <strong>at sign-in</strong>,<a href="#fn29" class="footnote-ref" id="fnref29" role="doc-noteref"><sup>29</sup></a>:</p>
+<ul>
+<li><strong>JOH users</strong> — the IdP email claim is looked up against <code>jo_people</code> (JOH eLinks data ingested into RAM) to resolve the <strong>personnel number</strong>, the canonical, stable RAM identifier for JOHs. Email is the lookup key, not the identifier — emails may change; personnel number is stable across syncs.</li>
+<li><strong>HMCTS admin staff</strong> (RSU, Court users, Tribunal Caseworkers, Finance/Payment Authoriser, MI/Reporting) — not present in JOH eLinks data. The IdP email is looked up against <strong><code>ram_auth_staff_identities</code></strong>, a RAM-internal staff identity table owned by <code>ram-authorisation</code>. Canonical identifier: a <strong>RAM-assigned UUID</strong> — consistent with the pack's UUID-PK convention and independent of upstream identifier schemes RAM can't validate at MVP. Populated by programme-management / operational mechanisms outside the PRD's scope.</li>
+<li><strong>Unresolvable principals</strong> (valid IdP JWT, no match in either lookup) are rejected at the <code>JWTFilter</code> boundary with an <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> authorisation problem — same handling as a non-activated user.</li>
+<li>The lookup result is part of the <code>POST /authz/check</code> response and cached for the request lifetime only, like every other authz decision.</li>
+</ul>
 <h4 id="api-security-strategy">API Security Strategy</h4>
 <ul>
 <li>TLS-only on every endpoint; HTTP rejected at the ingress layer.</li>
@@ -666,17 +748,17 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p><strong>Encryption:</strong> TLS 1.3 minimum (TLS 1.2 fallback acceptable); Azure-managed encryption keys for PostgreSQL by default; CMK only if HMCTS security policy requires.</p>
 <h3 id="api--communication-patterns">API &amp; Communication Patterns</h3>
 <p><strong>API style: REST-first synchronous.</strong> No event bus, no message queue, no webhook fabric.</p>
-<p><strong>API versioning: URI prefix major versioning. (Resolves PRD TBD #5.)</strong> <code>/v1/judges</code>, <code>/v2/judges</code>. Backwards-compatible additions stay within the major version. Deprecation signalling: <code>Deprecation</code> header per <a href="https://datatracker.ietf.org/doc/html/rfc9745">RFC 9745</a> (date-stamp value, e.g. <code>Deprecation: @1735689600</code>) + <code>Sunset</code> header per <a href="https://datatracker.ietf.org/doc/html/rfc8594">RFC 8594</a> (RFC-date value); minimum 6-month internal / 12-month external window before removal.</p>
+<p><strong>API versioning: URI prefix major versioning. (Resolves PRD TBD #5.)</strong> <code>/v1/johs</code>, <code>/v2/johs</code>. Backwards-compatible additions stay within the major version. Deprecation signalling: <code>Deprecation</code> header per <a href="https://datatracker.ietf.org/doc/html/rfc9745">RFC 9745</a> (date-stamp value, e.g. <code>Deprecation: @1735689600</code>) + <code>Sunset</code> header per <a href="https://datatracker.ietf.org/doc/html/rfc8594">RFC 8594</a> (RFC-date value); minimum 6-month internal / 12-month external window before removal.</p>
 <p><strong>Build / version metadata</strong> is served by Spring Boot Actuator's <code>/actuator/info</code> (populated by <code>gradle-git-properties</code>), ops-restricted at the APIM layer. The OpenAPI spec is the consumer-facing contract.</p>
 <p><strong>Rate limiting: Azure API Management at ingress. (Resolves PRD TBD #1.)</strong> 100 req/sec/principal default; 10 req/sec/principal for MI Feed; 200 req/sec burst (sliding 1-second window). The <code>429 Too Many Requests</code> status code is per <a href="https://datatracker.ietf.org/doc/html/rfc6585">RFC 6585</a>; the <code>Retry-After</code> response header is per <a href="https://datatracker.ietf.org/doc/html/rfc9110#section-10.2.3">RFC 9110 §10.2.3</a>.</p>
 <p><strong>Error handling:</strong> <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details (<code>application/problem+json</code>). Per-service <code>@ControllerAdvice</code> converts domain exceptions. Standard <code>type</code> URIs: <code>/errors/validation</code>, <code>/errors/authorisation</code>, <code>/errors/business-rule</code>, <code>/errors/dependency</code>, <code>/errors/conflict</code>. Correlation ID echoed in the response.</p>
 <p><strong>API documentation:</strong> Swagger Core. Each service's OpenAPI 3.x spec is published as a Maven artefact (<code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>); consumers pull it at compile time. Postman collections per phase derived from the spec (FR42 / NFR42). The artefact is contract, not runtime code.</p>
-<p><strong>Service-to-service communication:</strong> REST over HTTPS. Service discovery via Kubernetes DNS (<code>http://ram-judge.{namespace}.svc.cluster.local:8080</code>). No service mesh. Synchronous workflows only. Retry safety via native DB primitives — see <em>Data Architecture</em>.</p>
+<p><strong>Service-to-service communication:</strong> REST over HTTPS. Service discovery via Kubernetes DNS (<code>http://ram-joh.{namespace}.svc.cluster.local:8080</code>). No service mesh. Synchronous workflows only. Retry safety via native DB primitives — see <em>Data Architecture</em>.</p>
 <h3 id="frontend-architecture">Frontend Architecture</h3>
-<p><strong>Two UI repos with the same stack and conventions, separated by audience</strong> (v2.10):</p>
+<p><strong>Two UI repos with the same stack and conventions, separated by audience</strong> (v2.10); <strong>only <code>ram-ui</code> is in MVP scope</strong><a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>:</p>
 <ul>
-<li><strong><code>ram-ui</code></strong> — business-user-facing SPA. Per-domain operational modules (Judge, Absence, Vacancy, Booking, Sitting, Payment, Itinerary, Reports). Audience: RSU operational users, Court users, Judges, Judges' Clerks, Finance/Payment Authoriser, MI consumers.</li>
-<li><strong><code>ram-admin-ui</code></strong> — admin-facing SPA. Reference Data maintenance (FR6) and User &amp; Role admin (FR4). Audience: system administrators. Future admin surfaces reserved for per-region activation, migration reconciliation, audit log viewer.</li>
+<li><strong><code>ram-ui</code></strong> — business-user-facing SPA, <strong>MVP</strong>. Per-domain operational modules (JOH, Absence, Vacancy, Booking, Sitting, Payment, Itinerary, Reports). Audience: RSU operational users, Court users, Tribunal Caseworkers, JOHs, Judges' Clerks, Finance/Payment Authoriser, MI consumers — both cohorts' role sets per wave.</li>
+<li><strong><code>ram-admin-ui</code></strong> — admin-facing SPA, <strong>post-MVP</strong><a href="#fn31" class="footnote-ref" id="fnref31" role="doc-noteref"><sup>31</sup></a>. Tier-(b) RAM-owned Reference Data maintenance (FR6) and User &amp; Role admin (FR4); future surfaces reserved for per-(jurisdiction, region) activation toggle and audit log viewer. In MVP these operations are performed by DBAs via direct SQL per operational runbooks; admin-write API endpoints on <code>ram-reference-data</code> and <code>ram-authorisation</code> are likewise post-MVP — both APIs ship read-only in MVP. <em>(Tier-(a) upstream-sourced reference data never gets a RAM write surface in any phase — corrections happen at source per FR6.)</em></li>
 </ul>
 <p>The split prevents admin workflows from leaking into business users' nav, gives each repo its own CI/CD and CODEOWNERS, and matches the backend's per-service polyrepo discipline (minimise shared code, accept duplication, gain independence). Both repos use the same SSO + Authorisation pattern; admin gating happens at the <code>ram-authorisation</code> layer via role assignment.</p>
 <p><strong>Framework (both):</strong> React 18.x + TypeScript 5.x. (Resolves PRD TBD #2.) Common in HMCTS applications; aligns with <code>govuk-react</code>.</p>
@@ -686,29 +768,30 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p><strong>API client (both):</strong> generated per backend service from the OpenAPI spec (<code>openapi-typescript-codegen</code> or <code>orval</code>). Generated clients live in each UI repo and are regenerated in its own CI. No shared client library across services or between the two UI repos.</p>
 <p><strong>Build tool (both):</strong> Vite 5.x.</p>
 <p><strong>Styling (both):</strong> GOV.UK Design System CSS (Sass-compiled). Per-component CSS modules for extensions. No Tailwind.</p>
-<p><strong>Testing (both):</strong> Vitest (unit) + React Testing Library (components) + Playwright (E2E) + axe-core (accessibility). <code>ram-ui</code> has one Playwright suite per backend phase; <code>ram-admin-ui</code> has one suite per admin module (Reference Data, User &amp; Role).</p>
+<p><strong>Testing (both):</strong> Vitest (unit) + React Testing Library (components) + Playwright (E2E) + axe-core (accessibility). <code>ram-ui</code> has one Playwright suite per backend phase; <code>ram-admin-ui</code> (post-MVP) gets one suite per admin module (Reference Data, User &amp; Role).</p>
 <p><strong>Performance (both):</strong> route-based code splitting via <code>React.lazy</code> + Suspense. Vite tree-shaking and minification. No PWA at MVP.</p>
 <p><strong>Deployment:</strong> each UI repo is independently deployed to Azure Static Web Apps (or Blob Storage + CDN) on its own hostname. Independent rollout — admin surface can deploy without touching business surface, and vice versa.</p>
 <h3 id="infrastructure--deployment">Infrastructure &amp; Deployment</h3>
-<p><strong>Hosting:</strong> Azure Kubernetes Service (AKS), single cluster in UK South, multi-AZ node pools. Pod anti-affinity (<code>topology.kubernetes.io/zone</code>) distributes replicas across AZs. Min 2 replicas/service; HPA tunes upward. HMCTS-judicial-region rollout isolation is enforced at the app tier via FR58 flags, not infrastructure. DR is an open gap — see <a href="./architecture/gaps.html"><code>./architecture/gaps.md</code> G3.6</a>.</p>
+<p><strong>Infrastructure provisioning: Terraform</strong> (HMCTS standard; decision 2026-06-11 — no Bicep, no portal click-ops). <strong>Terraform code is colocated with the application: it lives in the first repo that needs the resource</strong> — infra does not live separate from the application that needs it. Under this rule: the shared estate (AKS, PostgreSQL Flexible Server, ACR, APIM instance + base policies, Application Insights / Log Analytics) lives in <code>ram-authorisation</code>'s <code>terraform/</code> (the first scaffolded service); each service repo carries Terraform for its own Key Vault namespace and service-specific resources (e.g. the MRD blob storage in <code>ram-reference-data</code>; the Static Web App in <code>ram-ui</code>). Per-environment stacks (<code>dev</code> / <code>staging</code> / <code>production</code>); <code>ram-scaffold.sh</code> adds the <code>terraform/</code> skeleton per repo. Division of labour: <strong>Terraform provisions the estate; Helm deploys workloads onto it; Flyway owns DB schema</strong> — no overlap. State backend + plan/apply pipeline arrangement: <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code> G9</a>.</p>
+<p><strong>Hosting:</strong> Azure Kubernetes Service (AKS), single cluster in UK South, multi-AZ node pools. Pod anti-affinity (<code>topology.kubernetes.io/zone</code>) distributes replicas across AZs. Min 2 replicas/service; HPA tunes upward. Rollout isolation (jurisdiction-first, then per-region) is enforced at the app tier via per-(jurisdiction, region) activation flags (FR57), not infrastructure. DR is an open gap — see <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code> G3.6</a>.</p>
 <p><strong>Database hosting:</strong> Azure Database for PostgreSQL Flexible Server. One global instance, zone-redundant HA in UK South — primary in one AZ, standby in another, synchronous replication, automatic failover (&lt;60 s). Microsoft-managed continuous backup; PITR; encryption at rest. Geo-redundant backup is part of the DR decision (G3.6).</p>
 <p><strong>UI hosting:</strong> Azure Static Web Apps (or Blob Storage + CDN if Static Web Apps is operationally complex for HMCTS).</p>
 <p><strong>Secret management:</strong> Azure Key Vault, one namespace per service. Secrets mounted at startup via Spring Cloud Azure Key Vault.</p>
 <p><strong>CI/CD:</strong> per-service Azure DevOps Pipelines or GitHub Actions (HMCTS standard). Each service has its own pipeline. Pipelines push Docker images to ACR, then deploy via Helm to AKS.</p>
 <p><strong>Environment configuration:</strong> Spring profiles (<code>dev</code>, <code>staging</code>, <code>production</code>); secrets in Key Vault. App Configuration only if runtime tuning without redeployment becomes a need.</p>
-<p><strong>Observability</strong> (log-based MVP per D7, HMCTS Crime template):</p>
+<p><strong>Observability</strong> (log-based MVP<a href="#fn32" class="footnote-ref" id="fnref32" role="doc-noteref"><sup>32</sup></a>, HMCTS Crime template):</p>
 <ul>
 <li>Logback with Logstash JSON encoder; async appender.</li>
 <li>OpenTelemetry exports to Application Insights via OTel Collector.</li>
 <li>Log fields: <code>timestamp</code>, <code>level</code>, <code>service</code>, <code>correlation-id</code>, <code>principal-id</code>, <code>event-type</code>, <code>message</code>, <code>error-category</code>, <code>error-code</code>.</li>
-<li>Spring Boot Actuator: <code>/actuator/health</code>, <code>/actuator/info</code> (from <code>gradle-git-properties</code>), <code>/actuator/readiness</code>. The <code>/actuator/*</code> namespace is ops-restricted at the APIM layer. <code>/actuator/metrics</code> and Prometheus endpoint are not exposed at MVP (D7).</li>
+<li>Spring Boot Actuator: <code>/actuator/health</code>, <code>/actuator/info</code> (from <code>gradle-git-properties</code>), <code>/actuator/readiness</code>. The <code>/actuator/*</code> namespace is ops-restricted at the APIM layer. <code>/actuator/metrics</code> and Prometheus endpoint are not exposed at MVP<a href="#fn33" class="footnote-ref" id="fnref33" role="doc-noteref"><sup>33</sup></a>.</li>
 <li>OTel trace sampling: 100% in dev/staging; tunable in production.</li>
 </ul>
 <p><strong>Log retention:</strong> 30 days hot in App Insights; 90 days cold in Log Analytics archive. (Resolves PRD TBD #4.) Pre-GA review against HMCTS retention policy may extend it.</p>
-<p><strong>Historical-data access:</strong> read-only APEX bridge for 12 months after region cutover. (Resolves PRD TBD #6, partial.) After 12 months, HMCTS produces a one-shot extract; APEX read-only for that region is decommissioned. APEX retires fully when every region has passed its 12-month window. The 12-month length is pending programme confirmation.</p>
+<p><strong>Historical-data access:</strong> historical data stays in the cohort's incumbent system and is accessed there as needed (revised D3 — no migration of any kind). For Courts waves (2+): read-only APEX bridge for 12 months after each region's cutover, then a one-shot extract; APEX retires fully when every region has passed its window (resolves PRD TBD #6, partial; the 12-month length is pending programme confirmation). For SSCS wave 1: GAPS is expected to be decommissioned — the historical-access window and decommission timing for GAPS are programme-managed and should be settled as part of the SSCS-cohort readiness assessment required before Phase 9<a href="#fn34" class="footnote-ref" id="fnref34" role="doc-noteref"><sup>34</sup></a>.</p>
 <p><strong>Scaling:</strong> Kubernetes HPA per service. CPU/memory triggers; min 2 replicas; max replicas tuned per service after capacity stabilises.</p>
 <h3 id="deployment-topology--single-azure-region-multi-az-ha">Deployment topology — single Azure region, multi-AZ HA</h3>
-<p>Production runs in UK South across three availability zones. DR is an open gap — see <a href="./architecture/gaps.html"><code>./architecture/gaps.md</code> G3.6</a>.</p>
+<p>Production runs in UK South across three availability zones. DR is an open gap — see <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code> G3.6</a>.</p>
 <p>"Region" has two meanings in this document and the PRD:</p>
 <table>
 <thead>
@@ -726,18 +809,18 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td><strong>HMCTS judicial region</strong></td>
-<td>RAM Pathfinder's per-region phased-rollout boundary — the business region used by D8 (Northern, Western, etc.).</td>
-<td>Application tier: per-user activation flag in <code>auth_user_activation_flags</code> (FR58). No infrastructure isolation per HMCTS region.</td>
+<td>The per-region boundary <em>within</em> a jurisdiction. Per D8 (reframed 2026-06-10), the rollout boundary is <strong>jurisdiction first, then per-region within jurisdiction</strong> — wave 1 is the whole SSCS jurisdiction; waves 2+ are Courts jurisdictions with per-region granularity (Northern, Western, etc.).</td>
+<td>Application tier: per-user activation flag in <code>ram_auth_user_activation_flags</code> carrying the (jurisdiction, region) tuple (FR57). No infrastructure isolation per jurisdiction or HMCTS region.</td>
 </tr>
 </tbody>
 </table>
-<p>NFR38 ("region-isolated deployments") means the HMCTS judicial region sense — a wave in HMCTS Region B does not disrupt Region A's users. Enforced at the application tier, not by separate clusters or DNS endpoints.</p>
+<p>NFR38 ("region-isolated deployments") means the rollout-boundary sense — a wave in one (jurisdiction, region) does not disrupt another's users. Enforced at the application tier, not by separate clusters or DNS endpoints.</p>
 <h4 id="ha-topology--multi-az-within-uk-south">HA topology — multi-AZ within UK South</h4>
 <table>
 <thead>
 <tr>
 <th>Component</th>
-<th>Multi-AZ posture</th>
+<th>Multi-AZ setup</th>
 </tr>
 </thead>
 <tbody>
@@ -776,7 +859,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tbody>
 </table>
 <p>Single-AZ failure within UK South is tolerated transparently: AKS reschedules pods; PostgreSQL fails over to the standby AZ. Full UK South region loss is the residual risk at MVP — see G6.2 and G3.6.</p>
-<h4 id="hmcts-judicial-region-rollout-isolation--application-tier-only">HMCTS-judicial-region rollout isolation — application tier only</h4>
+<h4 id="jurisdictionregion-rollout-isolation--application-tier-only">Jurisdiction/region rollout isolation — application tier only</h4>
 <table>
 <thead>
 <tr>
@@ -786,11 +869,11 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </thead>
 <tbody>
 <tr>
-<td>Migrated Region B users authenticate; non-migrated Region A users do not</td>
-<td><code>auth_user_activation_flags</code> (FR58); <code>JWTFilter</code> rejects non-activated users</td>
+<td>Migrated-wave users authenticate; non-migrated users do not</td>
+<td><code>ram_auth_user_activation_flags</code> keyed by (jurisdiction, region) (FR57); <code>JWTFilter</code> rejects non-activated users. Cutover flip: <code>UPDATE ram_auth_user_activation_flags SET activated = TRUE WHERE jurisdiction = '…' AND region = '…'</code> per the rollout runbook.</td>
 </tr>
 <tr>
-<td>One region's wave deployment doesn't disrupt another</td>
+<td>One wave's deployment doesn't disrupt another</td>
 <td>Rolling deployments per-service across the cluster; the activation flag contains the change</td>
 </tr>
 <tr>
@@ -803,23 +886,24 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <h3 id="decision-impact-analysis">Decision Impact Analysis</h3>
 <p><strong>Implementation Sequence:</strong></p>
 <ol type="1">
-<li><strong>Phase 0 prerequisites</strong> — Azure subscription + UK regions; shared global PostgreSQL Flexible Server (single shared schema, per-service DB roles); HMCTS Crime SpringBoot template forked into RAM Pathfinder scaffolding script. <em>(HMCTS IdP feature confirmation deferred to pre-Phase-9; see point 8.)</em></li>
+<li><strong>Phase 0 prerequisites</strong> — Azure subscription + UK regions; the shared Azure estate <strong>Terraform-provisioned from <code>ram-authorisation</code>'s <code>terraform/</code></strong> (AKS, shared global PostgreSQL Flexible Server with single shared schema + per-service DB roles, ACR, APIM, App Insights — per the colocated first-consumer rule above); HMCTS Crime SpringBoot template forked into RAM Pathfinder scaffolding script (incl. per-repo <code>terraform/</code> skeleton). <em>(HMCTS IdP feature confirmation deferred to pre-Phase-9; see point 8.)</em></li>
 <li><strong>Phase 0 mock authentication</strong> — <code>ram-mock-auth</code> deployed as Spring Authorization Server-based service. Issues OIDC tokens for human user roster; <strong>issues service tokens via <code>client_credentials</code> for <code>ram-payment-batch</code></strong>.</li>
-<li><strong>Phase 0 services</strong> — Reference Data, Authorisation, Notification — built per HMCTS starter pattern, each with own DB role + table set, OpenAPI spec, Postman collection, Helm chart. <em>(A shared <code>configuration_values</code> table is created by <code>ram-architecture</code> Flyway baseline; SELECT-granted to every RAM Pathfinder service role.)</em></li>
-<li><strong>Dev/CI environments seeded by one-off scripts</strong> — Reference Data + a representative user roster. <em>(For pilot-region production seeding, the <strong>Phase 0 Data Migration ETL</strong> at <code>ram-architecture/migration/</code> runs operator-initiated; flagged for post-MVP refinement at G4.7.)</em></li>
+<li><strong>Phase 0 services</strong> — Reference Data, Authorisation, Notification — built per HMCTS starter pattern, each with own DB role + table set, OpenAPI spec, Postman collection, Helm chart. <strong><code>ram-reference-data</code> ships with its two ingestion mechanisms</strong>: the in-process scheduled JOH eLinks sync (nightly, <code>jo_*</code> tables + <code>ram_sync_status</code>) and the MRD blob-drop pick-up (weekly, <code>mrd_*</code> tables). <em>(A shared <code>ram_configuration_values</code> table is created by <code>ram-architecture</code> Flyway baseline; SELECT-granted to every RAM Pathfinder service role.)</em></li>
+<li><strong>Dev/CI environments seeded by one-off scripts</strong> — representative <code>jo_*</code>/<code>mrd_*</code> fixtures + tier-(b) reference data + a representative user roster spanning both identity populations. <em>(Production reference data arrives via the ingestion mechanisms; production user/authorisation records are bootstrapped by mechanisms outside the PRD's scope<a href="#fn35" class="footnote-ref" id="fnref35" role="doc-noteref"><sup>35</sup></a> — the Phase 0 Data Migration ETL is retracted.)</em></li>
 <li><strong>Phase 0 API gateway</strong> — Azure API Management with default rate-limit policies (TBD #1 resolution).</li>
-<li><strong>Phase 0 UI shells</strong> — two Vite + React + GOV.UK Design System scaffolds deployed independently to Azure Static Web Apps: <code>ram-ui</code> (business) and <code>ram-admin-ui</code> (admin). <code>ram-admin-ui</code> carries the Reference Data maintenance module (FR6) and User &amp; Role admin module (FR4); <code>ram-ui</code> carries the role-scoped Home shell for business users.</li>
-<li><strong>Phases 1–8</strong> — domain services per the brainstorming sequence (Judge → Absence → Vacancy → Booking → Sitting → Payment → Itinerary → MI Feed); each adds its own tables, OpenAPI spec, Postman collection, and a <code>ram-ui</code> module. <strong>No further APEX-data migration in Phases 1–8</strong> — D3 caps data migration at Reference Data + Users/Roles only. <code>ram-admin-ui</code> evolves only when admin surfaces grow (e.g. activation flag dashboard in Phase 9+).</li>
-<li><strong>Pre-Phase-9 — Real HMCTS IdP integration cutover</strong> — confirm G1.1, G1.2 (client_credentials for batch — re-opened v2.6), G1.3. Switch staging <code>issuer-url</code> from mock auth to HMCTS IdP via Spring profile. Run reconciliation pass. Re-execute full automated test suite + per-service manual UAT scripts before opening pilot region.</li>
-<li><strong>Phase 9+</strong> — per-region rollout waves on production with real HMCTS IdP. App Insights retention and APEX read-only bridge activated per region.</li>
+<li><strong>Phase 0 UI shell</strong> — one Vite + React + GOV.UK Design System scaffold deployed to Azure Static Web Apps: <code>ram-ui</code> (business), carrying the role-scoped Home shell. <em>(<code>ram-admin-ui</code> is post-MVP<a href="#fn36" class="footnote-ref" id="fnref36" role="doc-noteref"><sup>36</sup></a>; MVP admin operations are DBA-via-SQL per runbook.)</em></li>
+<li><strong>Phases 1–8</strong> — domain services per the brainstorming sequence (JOH → Absence → Vacancy → Booking → Sitting → Payment → Itinerary → MI Feed); each adds its own tables, OpenAPI spec, Postman collection, and a <code>ram-ui</code> module. <strong>No legacy-data migration in any phase</strong> — revised D3: reference data is ingested from JOH eLinks + MRD; historical data stays in the incumbents.</li>
+<li><strong>Pre-Phase-9 — Real HMCTS IdP integration cutover</strong> — confirm G1.1, G1.2 (client_credentials for batch — re-opened v2.6), G1.3. Switch staging <code>issuer-url</code> from mock auth to HMCTS IdP via Spring profile. Run the bootstrap-verification pass (every user in both populations maps to a real IdP principal). Re-execute full automated test suite + per-service manual UAT scripts before opening wave 1. <strong>The SSCS-cohort readiness assessment<a href="#fn37" class="footnote-ref" id="fnref37" role="doc-noteref"><sup>37</sup></a> must be signed off before the wave-1 cutover plan is finalised.</strong></li>
+<li><strong>Phase 9+</strong> — jurisdiction-first rollout waves on production with real HMCTS IdP: wave 1 = SSCS (replacing GAPS); waves 2+ = Courts jurisdictions per-region (replacing APEX/JI). App Insights retention and the incumbent historical-access arrangement activated per wave.</li>
 </ol>
 <p><strong>Cross-Component Dependencies:</strong></p>
 <ul>
 <li><strong>Authorisation service</strong> — every <code>JWTFilter</code> calls it. Outage → outage of RAM Pathfinder. Mitigations: min 3 replicas; per-request-lifetime caching; circuit-breaker fail-closed (deny).</li>
-<li><strong>Reference Data tables</strong> — read directly via SQL JOINs by every service; no caching at MVP. The Reference Data <em>service</em> outage (the API) blocks writes only; reads are served from the tables. Mitigation: PostgreSQL HA.</li>
+<li><strong>Reference Data tables</strong> — read directly via SQL JOINs by every service; no caching at MVP. A Reference Data <em>service</em> outage (the API + the ingestion tasks) blocks API reads and pauses upstream sync only; direct-SQL reads are served from the tables, which retain the last good sync state. Mitigation: PostgreSQL HA.</li>
+<li><strong>JOH eLinks API</strong> — upstream dependency for reference-data freshness, not availability: an eLinks outage means data is at most one sync cycle stale; RAM keeps serving from its own tables. The identity lookup (<code>jo_people</code>) reads RAM's tables, not the live API, so sign-in does not depend on eLinks uptime.</li>
 <li><strong>HMCTS IdP</strong> — every authentication depends on it. IdP outage is HMCTS-wide.</li>
 <li><strong>Azure API Management</strong> — all external client requests flow through it. Mitigation: Premium SKU with zone-redundancy.</li>
-<li><strong>PostgreSQL (one shared global instance)</strong> — outage affects every service. Single-AZ failure tolerated by zone-redundant HA. Single-DB blast radius and full-region-loss residual risk: G6.2 and G3.6 in <a href="./architecture/gaps.html"><code>./architecture/gaps.md</code></a>.</li>
+<li><strong>PostgreSQL (one shared global instance)</strong> — outage affects every service. Single-AZ failure tolerated by zone-redundant HA. Single-DB blast radius and full-region-loss residual risk: G6.2 and G3.6 in <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code></a>.</li>
 </ul>
 <h3 id="tbds-resolved-by-this-step">TBDs Resolved by This Step</h3>
 <table>
@@ -859,22 +943,22 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td>6</td>
 <td>Historical-data access</td>
-<td>Read-only APEX bridge for 12 months post-region-cutover; one-shot extract thereafter</td>
+<td>Historical data stays in the incumbent<a href="#fn38" class="footnote-ref" id="fnref38" role="doc-noteref"><sup>38</sup></a>. Courts waves: read-only APEX bridge for 12 months post-region-cutover; one-shot extract thereafter. SSCS wave 1: GAPS historical-access window settled in the SSCS-cohort readiness assessment.</td>
 </tr>
 <tr>
 <td>7</td>
-<td>APEX ⇄ IdP identity-key</td>
-<td>Email primary, employee number fallback, manual review for unmatched</td>
+<td>Identity-key scheme <em>(reframed 2026-06-11)</em></td>
+<td>Runtime identity resolution at sign-in: IdP email → <code>jo_people</code> → personnel number (JOHs); IdP email → <code>ram_auth_staff_identities</code> → RAM-assigned UUID (admin staff). The APEX ⇄ IdP ETL matching scheme is retired with the ETL.</td>
 </tr>
 </tbody>
 </table>
 </div></details><details class="section" id="implementation-patterns--consistency-rules"><summary><span class="section-title">Implementation Patterns &amp; Consistency Rules</span></summary><div class="section-body">
-<p>See <a href="./architecture/conventions.html"><code>./architecture/conventions.md</code></a>. Patterns are enforced by code review, CI lint, contract tests, and ArchUnit fitness functions — not by a shared library.</p>
+<p>See <a href="architecture/tobe/conventions.html"><code>./architecture/conventions.md</code></a>. Patterns are enforced by code review, CI lint, contract tests, and ArchUnit fitness functions — not by a shared library.</p>
 </div></details><details class="section" id="project-structure--boundaries"><summary><span class="section-title">Project Structure &amp; Boundaries</span></summary><div class="section-body">
 <h3 id="repository-strategy--list">Repository Strategy &amp; List</h3>
-<p>See <a href="./architecture/repository-strategy.html"><code>./architecture/repository-strategy.md</code></a>.</p>
+<p>See <a href="architecture/tobe/repository-strategy.html"><code>./architecture/repository-strategy.md</code></a>.</p>
 <h3 id="complete-project-directory-structures-per-service--ui--ram-architecture">Complete Project Directory Structures (per-service / UI / ram-architecture)</h3>
-<p>See <a href="./architecture/repo-structure.html"><code>./architecture/repo-structure.md</code></a>.</p>
+<p>See <a href="architecture/tobe/repo-structure.html"><code>./architecture/repo-structure.md</code></a>.</p>
 <h3 id="architectural-boundaries">Architectural Boundaries</h3>
 <p><strong>API:</strong> every service is exposed at <code>https://api.ram.{environment}.hmcts.gov.uk/{service-name}/v1/...</code> via APIM. Within AKS, services call each other via Kubernetes DNS. External traffic is TLS-only via APIM. No service is reachable directly from outside the cluster.</p>
 <p><strong>Service:</strong> one Spring Boot app per service; one container image; one Helm chart. One shared PostgreSQL Flexible Server with one shared schema. One Azure Key Vault namespace per service. One Application Insights workspace shared by all services (correlation IDs join logs).</p>
@@ -883,13 +967,13 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li>A service owns its tables and is the only writer (except for cross-service single-field updates per Principle 1).</li>
 <li>Cross-service reads: SQL JOINs on whitelisted tables.</li>
 <li>Cross-service writes: direct SQL on whitelisted columns (explicit <code>UPDATE</code> grants).</li>
-<li>FKs within the shared schema are encouraged.</li>
-<li>Reference Data is single-writer; other services read directly via SQL.</li>
-<li>Forbidden data: no bank-detail or case-level columns anywhere.</li>
-<li>Migrated transactional history stays in APEX; RAM Pathfinder tables are empty at region cutover.</li>
+<li>FKs within the shared schema are encouraged. Domain tables reference JOHs by <code>personnel_number</code> → <code>jo_people</code>.</li>
+<li>Reference Data is single-owner, two-tier (FR6/FR7): tier-(a) <code>jo_*</code>/<code>mrd_*</code> tables written only by the ingestion mechanisms; tier-(b) RAM-owned tables maintained in RAM. Other services read both directly via SQL.</li>
+<li>Forbidden data: no bank-detail or case-level columns anywhere. Case management, panel composition, and hearing types are external-system concerns<a href="#fn39" class="footnote-ref" id="fnref39" role="doc-noteref"><sup>39</sup></a> — no tables for them in RAM.</li>
+<li>No legacy transactional history anywhere in RAM<a href="#fn40" class="footnote-ref" id="fnref40" role="doc-noteref"><sup>40</sup></a>; historical data stays in the cohort's incumbent. RAM Pathfinder domain tables are empty at wave cutover.</li>
 </ul>
-<p><strong>UI Boundaries:</strong> <strong>two SPAs</strong> (v2.10) — <code>ram-ui</code> (business) and <code>ram-admin-ui</code> (admin). Each SPA contains multiple modules; each module imports its generated API client; cross-module communication via TanStack Query cache + React Context. No code-sharing between the two SPAs — same stack and conventions, but independent repos, pipelines, and deployments. Admin workflows (Reference Data maintenance per FR6, User &amp; Role admin per FR4) live exclusively in <code>ram-admin-ui</code> and never appear in <code>ram-ui</code>'s nav.</p>
-<p><strong>External Systems:</strong> HMCTS IdP (every authentication); JFEPS/Liberata (outbound only via Notification → email); HMCTS Email (outbound only); APEX during build (manual UAT only); APEX during rollout (read-only for migrated users for 12 months, served separately); DA&amp;I (inbound only, post-MVP).</p>
+<p><strong>UI Boundaries:</strong> <strong>two SPAs</strong> (v2.10) — <code>ram-ui</code> (business, <strong>MVP</strong>) and <code>ram-admin-ui</code> (admin, <strong>post-MVP<a href="#fn41" class="footnote-ref" id="fnref41" role="doc-noteref"><sup>41</sup></a></strong>). Each SPA contains multiple modules; each module imports its generated API client; cross-module communication via TanStack Query cache + React Context. No code-sharing between the two SPAs — same stack and conventions, but independent repos, pipelines, and deployments. Admin workflows (tier-(b) Reference Data maintenance per FR6, User &amp; Role admin per FR4) live exclusively in <code>ram-admin-ui</code> and never appear in <code>ram-ui</code>'s nav; in MVP those operations are DBA-via-SQL per runbook.</p>
+<p><strong>External Systems:</strong> HMCTS IdP (every authentication); JOH eLinks API (inbound reference-data pull, scheduled); MRD (inbound weekly Excel via blob drop); JFEPS/Liberata (outbound only via Notification → email — preserved for SSCS wave 1); HMCTS Email (outbound only); incumbents during build (manual UAT only — GAPS for wave 1, APEX for waves 2+); APEX during Courts rollout (read-only for migrated users for 12 months, served separately); external case-management systems (outbound — they consume RAM's APIs from Phase 9, never write in,<a href="#fn42" class="footnote-ref" id="fnref42" role="doc-noteref"><sup>42</sup></a>); DA&amp;I (inbound only, post-MVP).</p>
 <h3 id="requirements-to-structure-mapping">Requirements to Structure Mapping</h3>
 <table>
 <thead>
@@ -901,15 +985,15 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tbody>
 <tr>
 <td>Identity &amp; Authorisation (FR1–FR5)</td>
-<td><code>ram-authorisation</code> repo + per-service <code>config/JWTFilter.java</code>, <code>config/AuthDetails.java</code>, <code>client/AuthorisationClient.java</code>. <strong>FR4 (User &amp; Role admin)</strong> surface lives in <code>ram-admin-ui</code> — not in <code>ram-ui</code>.</td>
+<td><code>ram-authorisation</code> repo (incl. <code>ram_auth_staff_identities</code> + the <code>jo_people</code> identity lookup) + per-service <code>config/JWTFilter.java</code>, <code>config/AuthDetails.java</code>, <code>client/AuthorisationClient.java</code>. <strong>FR4 (User &amp; Role admin)</strong> surface is post-MVP <code>ram-admin-ui</code><a href="#fn43" class="footnote-ref" id="fnref43" role="doc-noteref"><sup>43</sup></a>; DBA-via-SQL per runbook in MVP.</td>
 </tr>
 <tr>
 <td>Foundational Data Management (FR6–FR9)</td>
-<td><code>ram-reference-data</code>, <code>ram-notification</code> repos + per-service direct JPA reads from the 15 Reference Data tables. <strong>FR6 (Reference Data maintenance)</strong> surface lives in <code>ram-admin-ui</code> — not in <code>ram-ui</code>. <strong>Configuration</strong>: per-service Spring profiles + Key Vault; shared <code>configuration_values</code> table (no API) for cross-service policy values, schema-managed by <code>ram-architecture</code> Flyway baseline.</td>
+<td><code>ram-reference-data</code> (incl. the JOH eLinks sync + MRD ingestion tasks and the two-tier table set), <code>ram-notification</code> repos + per-service direct JPA reads from the Reference Data tables. <strong>FR6 tier-(b) maintenance</strong> surface is post-MVP <code>ram-admin-ui</code><a href="#fn44" class="footnote-ref" id="fnref44" role="doc-noteref"><sup>44</sup></a>; DBA-via-SQL per runbook in MVP. Tier (a) has no RAM write surface in any phase. <strong>Configuration</strong>: per-service Spring profiles + Key Vault; shared <code>ram_configuration_values</code> table (no API) for cross-service policy values, schema-managed by <code>ram-architecture</code> Flyway baseline.</td>
 </tr>
 <tr>
-<td>Judge Records &amp; Working Patterns (FR10–FR18)</td>
-<td><code>ram-judge</code> repo</td>
+<td>JOH Records &amp; Working Patterns (FR10–FR18)</td>
+<td><code>ram-joh</code> repo (JOH operational-state overlays keyed by <code>personnel_number</code>); profile <em>views</em> compose tier-(a) <code>jo_*</code> data with the overlays via <code>ram-reference-data</code>'s read API (FR11, FR15)</td>
 </tr>
 <tr>
 <td>Absence Workflow (FR19–FR22)</td>
@@ -936,7 +1020,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td><code>ram-itinerary</code> and <code>ram-mi-feed</code> repos</td>
 </tr>
 <tr>
-<td>Platform Operations &amp; Migration (FR55–FR61)</td>
+<td>Platform Operations (FR55–FR60)</td>
 <td>Cross-cutting: per-service implementations + <code>ram-architecture</code> scaffolding script</td>
 </tr>
 </tbody>
@@ -963,32 +1047,36 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>JPA repositories pointing at whitelisted Reference Data tables</td>
 </tr>
 <tr>
-<td>Per-region scoping middleware</td>
-<td><code>src/main/java/.../config/RegionScopeFilter.java</code></td>
+<td>Jurisdiction + Region/Area scoping middleware</td>
+<td><code>src/main/java/.../config/RegionScopeFilter.java</code> (scopes by jurisdiction and Region/Area from the authz context)</td>
 </tr>
 <tr>
-<td>Per-region phased activation check (FR58)</td>
+<td>Per-(jurisdiction, region) phased activation check (FR57)</td>
 <td>Resolved in <code>JWTFilter</code> via authz path</td>
 </tr>
 <tr>
 <td>Retry safety (FR45, FR30)</td>
-<td>Native DB primitives — see <em>Data Architecture</em> and <a href="./architecture/data-tables.html"><code>./architecture/data-tables.md</code></a>. No filter, custom table, or client class.</td>
+<td>Native DB primitives — see <em>Data Architecture</em> and <a href="architecture/tobe/data-tables.html"><code>./architecture/data-tables.md</code></a>. No filter, custom table, or client class.</td>
 </tr>
 <tr>
-<td><a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details error handling (FR59)</td>
+<td><a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details error handling (FR58)</td>
 <td><code>src/main/java/.../error/GlobalExceptionHandler.java</code></td>
 </tr>
 <tr>
-<td>OpenAPI 3.x generation (FR59)</td>
+<td>OpenAPI 3.x generation (FR58)</td>
 <td><code>src/main/java/.../config/OpenApiConfig.java</code> (Swagger Core); spec published as Maven artefact (<code>uk.gov.hmcts.ram:api-ram-{service}</code>)</td>
 </tr>
 <tr>
-<td>Structured logging (FR60)</td>
+<td>Structured logging (FR59)</td>
 <td><code>src/main/resources/logback-spring.xml</code> + <code>config/CorrelationIdFilter.java</code></td>
 </tr>
 <tr>
-<td>Manual UAT scripts (FR61 / NFR41 revised)</td>
+<td>Manual UAT scripts (FR60 / NFR41 revised)</td>
 <td><code>docs/uat/</code> per service (domain services only); not in <code>src/test/</code></td>
+</tr>
+<tr>
+<td>Upstream ingestion (FR6/FR7, NFR24 — <code>ram-reference-data</code> only)</td>
+<td><code>src/main/java/.../ingestion/JohElinksSyncTask.java</code> + <code>ingestion/MrdExcelIngestionTask.java</code> (<code>@Scheduled</code>); sync state in <code>ram_sync_status</code></td>
 </tr>
 <tr>
 <td>Forbidden-data invariants (FR47, FR54)</td>
@@ -999,6 +1087,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <h3 id="integration-points--internal-communication">Integration Points — Internal Communication</h3>
 <pre><code>      ┌──────────────────────┐    ┌────────────────────────┐
       │   ram-ui (business)  │    │ ram-admin-ui (admin)   │
+      │        [MVP]         │    │      [post-MVP, D10]   │
       └──────────┬───────────┘    └────────────┬───────────┘
                  │                              │
                  └──────────┬───────────────────┘
@@ -1017,9 +1106,11 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
       │ HTTPS within AKS (Kubernetes DNS, JWT propagation or service-token)
       ▼                  ▼                  ▼
 ┌──────────────────────────────────────────────┐
-│  Authorisation (gates every call)            │
-│  Reference Data (read direct from tables)    │
-│  configuration_values (shared infra table)   │
+│  Authorisation (gates every call; two-       │
+│    population identity lookup)               │
+│  Reference Data (read direct from tables;    │
+│    ingests JOH eLinks + MRD upstream)        │
+│  ram_configuration_values (shared infra table)   │
 │  Notification (write-only, email send)       │
 └──────────────────────────────────────────────┘</code></pre>
 <p><strong>Synchronous call patterns by frequency:</strong></p>
@@ -1054,10 +1145,22 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>OAuth 2.0 <code>client_credentials</code> for <code>ram-payment-batch</code>; <strong>non-prod via <code>ram-mock-auth</code> (mock_oauth_clients)</strong>. (Pattern 2.)</td>
 </tr>
 <tr>
+<td>JOH eLinks API</td>
+<td>inbound (reference data — MVP per NFR24)</td>
+<td>Reference Data (in-process scheduled sync)</td>
+<td>Nightly REST pull; full-refresh upsert into the 15 <code>jo_*</code> tables; soft-deactivation, never hard-delete; sync state in <code>ram_sync_status</code>. Outbound credential in Key Vault. <strong>No data flows upstream from RAM.</strong></td>
+</tr>
+<tr>
+<td>MRD (Master Reference Data)</td>
+<td>inbound (reference data — MVP per NFR24)</td>
+<td>Reference Data (scheduled blob pick-up)</td>
+<td>Weekly Excel feed dropped into a dedicated Azure Blob container; validated, upserted into <code>mrd_*</code> tables, file archived for lineage. Transitional until MRD public APIs ship — then the reader swaps for an API client.</td>
+</tr>
+<tr>
 <td>JFEPS / Liberata</td>
 <td>outbound</td>
 <td>Payment + Notification</td>
-<td>JFEPS-Excel via email to Payment Authoriser; manual upload by authoriser</td>
+<td>JFEPS-Excel via email to Payment Authoriser; manual upload by authoriser. Preserved unchanged for SSCS wave 1<a href="#fn45" class="footnote-ref" id="fnref45" role="doc-noteref"><sup>45</sup></a>.</td>
 </tr>
 <tr>
 <td>HMCTS email</td>
@@ -1078,16 +1181,22 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>Spring Cloud Azure Key Vault at startup</td>
 </tr>
 <tr>
-<td>APEX (manual UAT only)</td>
+<td>Incumbents — GAPS / APEX (manual UAT only)</td>
 <td>n/a</td>
 <td>UAT users from domain services' user roles</td>
-<td>APEX-experienced users compare side-by-side per FR61 / NFR41. No HTTP scraping, DB read, or CI hook.</td>
+<td>Jurisdiction-incumbent-experienced users compare side-by-side per FR60 / NFR41 (GAPS for wave 1; APEX for waves 2+). No HTTP scraping, DB read, or CI hook.</td>
 </tr>
 <tr>
-<td>APEX (during rollout window)</td>
+<td>APEX (during Courts rollout window)</td>
 <td>inbound (read-only for migrated users)</td>
 <td>None — APEX served separately</td>
-<td>Out-of-band; not an RAM Pathfinder integration</td>
+<td>Out-of-band; not a RAM Pathfinder integration</td>
+</tr>
+<tr>
+<td>External case-management systems (SSCS case management; Courts Listing)</td>
+<td>outbound (from Phase 9,<a href="#fn46" class="footnote-ref" id="fnref46" role="doc-noteref"><sup>46</sup></a>)</td>
+<td>Domain services' / read models' public APIs</td>
+<td>They consume RAM's JOH availability + booking APIs; <strong>no external system writes into RAM</strong>. Contract design lands with wave onboarding.</td>
 </tr>
 <tr>
 <td>DA&amp;I</td>
@@ -1097,37 +1206,39 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 </tbody>
 </table>
-<h3 id="data-flow--canonical-operational-cycle-journey-1-from-prd">Data Flow — Canonical Operational Cycle (Journey 1 from PRD)</h3>
+<h3 id="data-flow--canonical-operational-cycle-journey-2-from-prd--courts-wave-2">Data Flow — Canonical Operational Cycle (Journey 2 from PRD — Courts, wave 2+)</h3>
+<p><em>(Journeys were renumbered 2026-06-10: the canonical RSU cycle below is now Journey 2; the new Journey 1 is the SSCS Tribunal Caseworker panel-coverage journey for wave 1, which exercises the same service chain — absence → vacancy → booking → sitting → payment — with SSCS roles and tribunal-member JOHs. The flow below remains the canonical reference.)</em></p>
 <p>All services share one PostgreSQL DB (one schema). Each service writes its own tables; cross-service simple writes use DB role grants (Principle 1). Workflows go via API.</p>
 <p>The cycle has two halves — user-initiated (Court User and RSU) and batch/external (payment batch + Liberata). Each has its own sequence diagram.</p>
-<p><strong>User-initiated half</strong> — see <a href="./architecture/sequence-diagrams/absence-to-reconciliation.html"><code>./architecture/sequence-diagrams/absence-to-reconciliation.md</code></a></p>
+<p><strong>User-initiated half</strong> — see <a href="architecture/tobe/sequence-diagrams/absence-to-reconciliation.html"><code>./architecture/sequence-diagrams/absence-to-reconciliation.md</code></a></p>
 <ol type="1">
-<li><strong>Court User</strong> logs an absence with cover requested — <code>POST /v1/absences</code> (FR19); ack email to the judge.</li>
+<li><strong>Court User</strong> logs an absence with cover requested — <code>POST /v1/absences</code> (FR19); ack email to the JOH.</li>
 <li><strong>RSU</strong> approves the absence — <code>POST /v1/absences/{id}/approve</code> (FR21). Approval triggers vacancy auto-creation per <strong>R4</strong> — <code>POST /v1/vacancies</code> (FR23).</li>
 <li><strong>RSU</strong> records a fee-paid booking against the vacancy — <code>POST /v1/bookings</code> (FR29). The booking creation and the in-transaction mark-as-filled on the linked vacancy are atomic, per <strong>R5</strong> (FR30); ack email (FR32). Persistence detail: see <em>Data Architecture</em>.</li>
 <li><strong>Court User</strong> confirms the sitting after the day — <code>POST /v1/bookings/{id}/confirm</code> (FR31, FR37). Booking is now confirmed and <strong>eligible for payment</strong> (no synchronous payment trigger — the batch picks it up).</li>
 <li><strong>RSU</strong> reconciles after Liberata has paid — <code>POST /v1/payments/{id}/reconcile</code> (FR46); manual at MVP, automated reconciliation feed is post-MVP.</li>
 </ol>
-<p><strong>Batch / external half</strong> — see <a href="./architecture/sequence-diagrams/payment-batch-flow.html"><code>./architecture/sequence-diagrams/payment-batch-flow.md</code></a></p>
+<p><strong>Batch / external half</strong> — see <a href="architecture/tobe/sequence-diagrams/payment-batch-flow.html"><code>./architecture/sequence-diagrams/payment-batch-flow.md</code></a></p>
 <ol type="1">
 <li><strong>Scheduler</strong> (Kubernetes CronJob or Spring <code>@Scheduled</code>) triggers <code>ram-payment-batch</code> on its configured cadence.</li>
-<li>The batch authenticates as a service principal via OAuth <code>client_credentials</code> against <code>ram-mock-auth</code> (non-prod; production issuer per <a href="./architecture/gaps.html"><code>./architecture/gaps.md</code> G7.1</a>).</li>
-<li>The batch SQL-JOINs over confirmed bookings + sittings without an existing payment record, generates the JFEPS Excel, and persists <code>payments</code> + <code>payment_schedules</code> (FR41–FR45). Bookings flagged <code>payment_requested</code>.</li>
+<li>The batch authenticates as a service principal via OAuth <code>client_credentials</code> against <code>ram-mock-auth</code> (non-prod; production issuer per <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code> G7.1</a>).</li>
+<li>The batch SQL-JOINs over confirmed bookings + sittings without an existing payment record, generates the JFEPS Excel, and persists <code>ram_payments</code> + <code>ram_payment_schedules</code> (FR41–FR45). Bookings flagged <code>payment_requested</code>.</li>
 <li>The batch calls Notification (with bearer service token) to dispatch the schedule to the configured Payment Authoriser (FR43).</li>
 <li>The <strong>Payment Authoriser</strong> uploads the schedule to JFEPS / Liberata (out-of-band).</li>
-<li><strong>Liberata</strong> processes the payment and pays the judge.</li>
+<li><strong>Liberata</strong> processes the payment and pays the JOH.</li>
 </ol>
 <h3 id="file-organisation-development-workflow-deployment-pipeline">File Organisation, Development Workflow, Deployment Pipeline</h3>
-<p>See <a href="./architecture/repo-structure.html"><code>./architecture/repo-structure.md</code></a>.</p>
-<h3 id="region-rollout-flow-phase-9">Region rollout flow (Phase 9+)</h3>
-<p>Per-region production deployment is gated on:</p>
+<p>See <a href="architecture/tobe/repo-structure.html"><code>./architecture/repo-structure.md</code></a>.</p>
+<h3 id="wave-rollout-flow-phase-9-jurisdiction-first">Wave rollout flow (Phase 9+, jurisdiction-first)</h3>
+<p>Per-wave production cutover<a href="#fn47" class="footnote-ref" id="fnref47" role="doc-noteref"><sup>47</sup></a><a href="#fn48" class="footnote-ref" id="fnref48" role="doc-noteref"><sup>48</sup></a> — wave 1 = the SSCS jurisdiction; waves 2+ = Courts jurisdictions per-region — is gated on:</p>
 <ol type="1">
 <li>All automated FR/NFR tests (unit, integration, contract, E2E) passing for the in-scope user roles.</li>
-<li><strong>Manual UAT signed off</strong> — APEX-experienced users for every applicable in-region role have walked the per-service UAT scripts (FR61 / NFR41 revised).</li>
-<li>Phase 0 migration verified for the region (Reference Data + Users/Roles).</li>
+<li><strong>Manual UAT signed off</strong> — jurisdiction-incumbent-experienced users for every applicable in-wave role have walked the per-service UAT scripts (FR60 / NFR41 revised): GAPS-experienced users (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced users (RSU, Court, Judge, Clerks, Finance, MI) for waves 2+.</li>
+<li>Data readiness verified for the wave: reference data current per <code>ram_sync_status</code> + MRD feed; user/authorisation records bootstrapped and verified against IdP principals for the wave's (jurisdiction, region) scope.</li>
+<li><strong>For wave 1 only:</strong> the SSCS-cohort readiness assessment<a href="#fn49" class="footnote-ref" id="fnref49" role="doc-noteref"><sup>49</sup></a> signed off.</li>
 <li>Programme sign-off (operational readiness, communication to migrating users).</li>
 </ol>
-<p>Rollback path: revert the region's user activation flag (FR58) → users return to APEX.</p>
+<p>Rollback path: revert the wave's activation flags (FR57, keyed by jurisdiction + region) → users return to the incumbent (GAPS for wave 1; APEX for waves 2+).</p>
 </div></details><details class="section" id="architecture-validation-results"><summary><span class="section-title">Architecture Validation Results</span></summary><div class="section-body">
 <h3 id="coherence-validation-white_check_mark">Coherence Validation ✅</h3>
 <p><strong>Decision compatibility:</strong></p>
@@ -1139,48 +1250,50 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong>GOV.UK Design System + WCAG 2.2 AA + axe-core</strong> — GDS components are built to WCAG 2.2 AA.</li>
 </ul>
 <p><strong>Pattern consistency:</strong> Step 5 patterns match Step 4 decisions — DB naming (<code>snake_case</code>, plural tables, <code>uuid</code> PKs); API naming (<code>camelCase</code> JSON, plural resources, <code>/v1/</code>, RFC 9457 problem-details, ISO 8601); Java package layout (<code>uk.gov.hmcts.ram.{service}.{layer}</code>); communication (typed clients, correlation-ID propagation, native DB retry safety).</p>
-<p><strong>Structure alignment:</strong> per-service repos enable phased rollout and independent deployment; per-environment Helm values + zone-redundant AKS provide HA for NFR34/NFR35/NFR37; NFR38 is satisfied at the app tier via FR58; Postman collections per phase satisfy NFR42; <code>ram-architecture</code> holds ADRs and scaffolding without runtime coupling; <code>ram-mock-auth</code> is isolated so production never references it.</p>
+<p><strong>Structure alignment:</strong> per-service repos enable phased rollout and independent deployment; per-environment Helm values + zone-redundant AKS provide HA for NFR34/NFR35/NFR37; NFR38 is satisfied at the app tier via FR57 activation flags; Postman collections per phase satisfy NFR42; <code>ram-architecture</code> holds ADRs and scaffolding without runtime coupling; <code>ram-mock-auth</code> is isolated so production never references it.</p>
 <p>No contradictions found.</p>
 <h3 id="requirements-coverage-validation-white_check_mark">Requirements Coverage Validation ✅</h3>
 <ul>
-<li><strong>Functional Requirements Coverage (FR1–FR61)</strong> — see <a href="./architecture/functional-requirements-coverage.html"><code>./architecture/functional-requirements-coverage.md</code></a>.</li>
-<li><strong>Non-Functional Requirements Coverage (NFR1–NFR42)</strong> — see <a href="./architecture/non-functional-requirements-coverage.html"><code>./architecture/non-functional-requirements-coverage.md</code></a>.</li>
+<li><strong>Functional Requirements Coverage (FR1–FR60)</strong> — see <a href="architecture/tobe/functional-requirements-coverage.html"><code>./architecture/functional-requirements-coverage.md</code></a>.</li>
+<li><strong>Non-Functional Requirements Coverage (NFR1–NFR42)</strong> — see <a href="architecture/tobe/non-functional-requirements-coverage.html"><code>./architecture/non-functional-requirements-coverage.md</code></a>.</li>
 </ul>
-<p>All 61 FRs and 42 NFRs have explicit architectural support.</p>
+<p>All 60 FRs and 42 NFRs have explicit architectural support.</p>
 <h3 id="implementation-readiness-validation-white_check_mark">Implementation Readiness Validation ✅</h3>
 <p>All 7 architecture-phase TBDs from the PRD are resolved (see <em>TBDs Resolved by This Step</em>).</p>
-<p><strong>Structure:</strong> 15 repos with per-repo trees; per-service standard layout to file level; two UI repos (<code>ram-ui</code> business + <code>ram-admin-ui</code> admin) with per-module structure; architecture repo with ADRs/scaffolding/aggregated specs; isolated mock-auth repo; integration points mapped; requirements-to-structure mapping covers all 9 FR capability areas.</p>
+<p><strong>Structure:</strong> 15 repos with per-repo trees; per-service standard layout to file level; two UI repos (<code>ram-ui</code> business, MVP + <code>ram-admin-ui</code> admin, post-MVP<a href="#fn50" class="footnote-ref" id="fnref50" role="doc-noteref"><sup>50</sup></a>) with per-module structure; architecture repo with ADRs/scaffolding/aggregated specs; isolated mock-auth repo; integration points mapped; requirements-to-structure mapping covers all 9 FR capability areas.</p>
 <p><strong>Patterns:</strong> naming, structure, format, communication, and process conventions defined with examples. Enforcement: CI lint, ArchUnit, Spectral, Pact, code review checklist.</p>
 <h3 id="documented-gaps">Documented Gaps</h3>
-<p>See <a href="./architecture/gaps.html"><code>./architecture/gaps.md</code></a>. Critical gaps: none — no gap blocks implementation.</p>
+<p>See <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code></a>. Critical gaps: none — no gap blocks implementation.</p>
 <h3 id="assumptions">Assumptions</h3>
-<p>See <a href="./architecture/assumptions.html"><code>./architecture/assumptions.md</code></a>.</p>
+<p>See <a href="architecture/tobe/assumptions.html"><code>./architecture/assumptions.md</code></a>.</p>
 <h3 id="architecture-readiness-assessment">Architecture Readiness Assessment</h3>
 <p><strong>Status: READY WITH DOCUMENTED GAPS. Confidence: High.</strong></p>
-<p>All checklist items pass. No critical gaps block implementation. Mock-first authentication reclassifies G1.1, G1.2, G1.3 from Phase 0 blockers to pre-Phase-9 prerequisites. Phase 0 HMCTS dependencies reduce from 5 to 2 (G1.4 starter, G1.5 email). Risk #6 (HMCTS IdP integration timing) is mitigated.</p>
+<p><em>(Scope note: this assessment covers the build architecture (Phases 0–8). The <strong>wave-1 cutover</strong> additionally requires the SSCS-cohort readiness assessment<a href="#fn51" class="footnote-ref" id="fnref51" role="doc-noteref"><sup>51</sup></a> — covering JOH eLinks API integration readiness, MRD feed ingestion readiness, the two-population identity model, jurisdiction-aware authorisation, and GAPS-experienced UAT panel coverage — plus the SSCS as-is analysis pack under <code>docs/architecture/asis/</code>. Prior readiness reports assessed the Courts cohort + the now-retracted ETL.)</em></p>
+<p>All checklist items pass. No critical gaps block implementation. Mock-first authentication reclassifies G1.1, G1.2, G1.3 from Phase 0 blockers to pre-Phase-9 prerequisites. Phase 0 HMCTS dependencies reduce from 5 to 2 (G1.4 starter, G1.5 email); the JOH eLinks API contract and MRD feed arrangements are new Phase 0 external dependencies introduced by the revised D3 (tracked in <a href="architecture/tobe/gaps.html"><code>./architecture/gaps.md</code> G8</a>). Risk #6 (HMCTS IdP integration timing) is mitigated.</p>
 <p><strong>Why high confidence:</strong></p>
 <ul>
 <li>Aligned with PRD's locked decisions; the 7 architecture-phase TBDs are resolved without contradiction.</li>
 <li>The two foundational principles and the no-shared-library rule are applied consistently through Steps 3–6.</li>
 <li>Step 5 pattern definitions are concrete and CI-enforceable (Spotless, ArchUnit, Spectral, Pact, axe-core).</li>
-<li>Polyrepo structure matches phased rollout (D8) and per-service deployment independence (NFR40).</li>
+<li>Polyrepo structure matches phased rollout<a href="#fn52" class="footnote-ref" id="fnref52" role="doc-noteref"><sup>52</sup></a> and per-service deployment independence (NFR40).</li>
 <li>Mock-first authentication removes the HMCTS IdP roadmap from the Phase 0–8 critical path.</li>
 </ul>
 <p><strong>Strengths:</strong></p>
 <ul>
 <li><strong>Simplification</strong> — event bus, shared library, and monorepo all rejected.</li>
-<li><strong>Multi-AZ HA in UK South</strong> — single-AZ failure is tolerated transparently. HMCTS-region rollout isolation (NFR38) is at the app tier (FR58), not per-region infrastructure.</li>
+<li><strong>Multi-AZ HA in UK South</strong> — single-AZ failure is tolerated transparently. Wave rollout isolation (NFR38) is at the app tier via (jurisdiction, region) activation flags (FR57), not per-region infrastructure.</li>
 <li><strong>No shared library</strong> — cross-cutting concerns are per-service, removing redeployment coupling.</li>
 <li><strong>API-as-Product enforcement</strong> — versioning, OpenAPI, RFC 9457 problem-details, RFC 9745 + RFC 8594 deprecation signalling — all CI-enforced.</li>
-<li><strong>Manual UAT in the rollout gate</strong> — <code>docs/uat/</code> per service; APEX-experienced users sign off per role per region as the wave-cutover gate.</li>
+<li><strong>Manual UAT in the rollout gate</strong> — <code>docs/uat/</code> per service; jurisdiction-incumbent-experienced users sign off per role per wave as the wave-cutover gate.</li>
 <li><strong>Mock-first authentication</strong> decouples the build from the HMCTS IdP roadmap.</li>
+<li><strong>Upstream ingestion without new moving parts</strong> — the eLinks sync and MRD pick-up run in-process inside <code>ram-reference-data</code>: no new deployable, no new service principal, and identity lookup reads RAM's own tables so sign-in never depends on eLinks uptime.</li>
 </ul>
 <p><strong>Post-MVP enhancements (not blocking):</strong> Mermaid / C4 diagrams in <code>ram-architecture/diagrams/</code>; sample ADRs; per-service OpenAPI snippets; service mesh (only if observability or mTLS demands grow); caching (only if measurement shows the need); App Configuration for runtime tuning.</p>
 <h3 id="implementation-handoff">Implementation Handoff</h3>
 <p><strong>For AI agents:</strong></p>
 <ul>
 <li>Follow the architectural decisions in Steps 3–6.</li>
-<li>Use the patterns in <a href="./architecture/conventions.html"><code>./architecture/conventions.md</code></a> across all 11 services and the UI.</li>
+<li>Use the patterns in <a href="architecture/tobe/conventions.html"><code>./architecture/conventions.md</code></a> across all 11 services and the UI.</li>
 <li>Apply the two foundational principles: (1) API for workflows; shared DB for simple data access; (2) no premature optimisation. No shared runtime library.</li>
 <li>Per-service work happens in the service's own repo. Cross-service work happens via API contracts.</li>
 <li>Phase 0–8 authentication is <code>ram-mock-auth</code> only (<code>authorization_code</code> for humans; <code>client_credentials</code> for the payment batch). Real HMCTS IdP starts at the pre-Phase-9 cutover.</li>
@@ -1188,14 +1301,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </ul>
 <p><strong>First implementation steps:</strong></p>
 <ol type="1">
-<li>Confirm Phase 0 prerequisites: Azure subscription + UK regions; HMCTS Java/Spring Boot starter; HMCTS Email transport.</li>
+<li>Confirm Phase 0 prerequisites: Azure subscription + UK regions; Terraform state backend + plan/apply pipeline arrangement (G9); HMCTS Java/Spring Boot starter; HMCTS Email transport.</li>
 <li>Build the RAM Pathfinder scaffolding script at <code>ram-architecture/scaffolding/ram-scaffold.sh</code>, layered on the HMCTS starter, with RAM Pathfinder conventions baked in.</li>
 <li>Ship <code>ram-mock-auth</code> (Spring Authorization Server; refuses to start with <code>production</code> profile; supports <code>authorization_code</code> and <code>client_credentials</code>).</li>
-<li>Ship the three Phase 0 cross-cutting services: Reference Data, Authorisation, Notification. The shared <code>configuration_values</code> table is created by <code>ram-architecture</code>'s Flyway baseline. In parallel, build the Phase 0 Data Migration ETL at <code>ram-architecture/migration/</code> to load Reference Data + Users/Roles via the APIs.</li>
+<li>Ship the three Phase 0 cross-cutting services: Reference Data (including the JOH eLinks scheduled sync, the MRD blob pick-up, and the two-tier <code>jo_*</code>/<code>mrd_*</code>/RAM-owned table set), Authorisation (including <code>ram_auth_staff_identities</code> and the two-population identity lookup), Notification. The shared <code>ram_configuration_values</code> table is created by <code>ram-architecture</code>'s Flyway baseline. Confirm the JOH eLinks API contract and the MRD blob-drop arrangement early — both are Phase 0 external dependencies (G8).</li>
 <li>Deploy Phase 0 to dev. Exercise API-as-Product standards (versioning, OpenAPI, RFC 9457 problem-details, deprecation signalling). Validate Postman collections. Run automated tests. Manual UAT starts in Phase 1.</li>
 <li>Resolve programme-management dependencies before Phase 9.</li>
-<li>Begin Phase 1 (Judge service). Expand across Phases 2–8 in dependency order.</li>
-<li>Pre-Phase-9: real HMCTS IdP cutover — verify G1.1, G1.2, G1.3; switch staging <code>issuer-url</code> to HMCTS IdP (and resolve production service-principal issuer per G7.1); rehearse cutover; re-run automated tests + manual UAT against real IdP before opening the pilot region.</li>
+<li>Begin Phase 1 (JOH service — <code>ram-joh</code>). Expand across Phases 2–8 in dependency order.</li>
+<li>Pre-Phase-9: real HMCTS IdP cutover — verify G1.1, G1.2, G1.3; switch staging <code>issuer-url</code> to HMCTS IdP (and resolve production service-principal issuer per G7.1); rehearse cutover; re-run automated tests + manual UAT against real IdP. Complete the SSCS-cohort readiness assessment<a href="#fn53" class="footnote-ref" id="fnref53" role="doc-noteref"><sup>53</sup></a> before finalising the wave-1 cutover plan.</li>
 </ol>
 </div></details><details class="section" id="external-references"><summary><span class="section-title">External References</span></summary><div class="section-body">
 <p>Every IETF / standards reference cited in this architecture, with canonical links:</p>
@@ -1261,11 +1374,72 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tbody>
 </table>
 </div></details><details class="section" id="changelog"><summary><span class="section-title">Changelog</span></summary><div class="section-body">
-<p>See <a href="./architecture/changelog.html"><code>./architecture/changelog.md</code></a>. <strong>Latest:</strong> v2.9 — DB-level detail (column references, SQL operations, DDL) consolidated into <em>Data Architecture</em> (new <em>Retry safety and concurrency control</em> subsection); abstracted everywhere else. Vocabulary tables renamed for clarity: <code>fee_payment_statuses</code> → <code>judge_fee_entitlements</code>; <code>payment_statuses</code> → <code>payment_lifecycle_statuses</code>. Reference-data vocabulary corrected against the docs (<code>judge_types</code>, <code>session_types</code>, <code>absence_types</code>, <code>booking_statuses</code>, <code>payment_lifecycle_statuses</code>, <code>reconciliation_statuses</code>, <code>judge_fee_entitlements</code>, <code>regions</code>, <code>calendar_periods</code>). New tooling: <code>scripts/build-html.sh</code> (pandoc-based HTML site under <code>html/</code>); <code>sql/mock_ref_data.sql</code> + <code>sql/mock_judge_data.sql</code> (mock data, every value cross-referenced to the docs). Earlier: v2.8 — DR consolidated as a single open gap (G3.6); v2.7 — RFC citations updated to current RFCs + External References appendix.</p>
-</div></details>
+<p>See <a href="architecture/tobe/changelog.html"><code>./architecture/changelog.md</code></a>. <strong>Latest:</strong> v3.2 (2026-06-11) — <code>ram_</code> prefix on every RAM-owned table; <code>_overlays</code> suffix retired (<code>ram_joh_ticket</code>, <code>ram_joh_location</code>); <code>jo_sync_status</code> → <code>ram_sync_status</code>. Earlier: v3.1 (2026-06-11) — Terraform mandated for all infrastructure provisioning (HMCTS standard); colocated first-consumer ownership (shared estate in <code>ram-authorisation</code>'s <code>terraform/</code>; per-service resources per repo); new gap G9.1 (state backend + pipeline). Earlier: v3.0 (2026-06-11) — Sprint Change Proposal 2026-06-10 cascade: SSCS-first wave framing<a href="#fn54" class="footnote-ref" id="fnref54" role="doc-noteref"><sup>54</sup></a>; no-legacy-migration / two-tier reference-data ownership with JOH eLinks + MRD ingestion (revised D3, FR6/FR7, NFR24); two-population identity model with <code>ram_auth_staff_identities</code><a href="#fn55" class="footnote-ref" id="fnref55" role="doc-noteref"><sup>55</sup></a>; jurisdiction as first-class hierarchical dimension<a href="#fn56" class="footnote-ref" id="fnref56" role="doc-noteref"><sup>56</sup></a>; D12 scope boundary; <code>ram-judge</code> → <code>ram-joh</code> full rename; FR renumbering (FR58–FR61 → FR57–FR60); D10 admin-UI-post-MVP reconciliation. Earlier: v2.9 — DB-level detail (column references, SQL operations, DDL) consolidated into <em>Data Architecture</em> (new <em>Retry safety and concurrency control</em> subsection); abstracted everywhere else. Vocabulary tables renamed for clarity: <code>fee_payment_statuses</code> → <code>judge_fee_entitlements</code>; <code>payment_statuses</code> → <code>ram_payment_lifecycle_statuses</code>. Reference-data vocabulary corrected against the docs (<code>judge_types</code>, <code>ram_session_types</code>, <code>ram_absence_types</code>, <code>ram_booking_statuses</code>, <code>ram_payment_lifecycle_statuses</code>, <code>ram_reconciliation_statuses</code>, <code>judge_fee_entitlements</code>, <code>ram_regions</code>, <code>ram_calendar_periods</code>). New tooling: <code>scripts/build-html.sh</code> (pandoc-based HTML site under <code>html/</code>); <code>sql/mock_ref_data.sql</code> + <code>sql/mock_judge_data.sql</code> (mock data, every value cross-referenced to the docs). Earlier: v2.8 — DR consolidated as a single open gap (G3.6); v2.7 — RFC citations updated to current RFCs + External References appendix.</p>
+</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>D7 — MVP observability is log-based; user-action audit is post-MVP.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn20"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref20" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn21"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref21" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn22"><p>D7 — MVP observability is log-based; user-action audit is post-MVP.<a href="#fnref22" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn23"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref23" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn24"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref24" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn25"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref25" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn26"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref26" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn27"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref27" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn28"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref28" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn29"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref29" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn30"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref30" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn31"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref31" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn32"><p>D7 — MVP observability is log-based; user-action audit is post-MVP.<a href="#fnref32" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn33"><p>D7 — MVP observability is log-based; user-action audit is post-MVP.<a href="#fnref33" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn34"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref34" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn35"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref35" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn36"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref36" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn37"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref37" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn38"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref38" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn39"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref39" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn40"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref40" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn41"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref41" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn42"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref42" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn43"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref43" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn44"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref44" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn45"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref45" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn46"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref46" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn47"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref47" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn48"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref48" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn49"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref49" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn50"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref50" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn51"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref51" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn52"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref52" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn53"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref53" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn54"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref54" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn55"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref55" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn56"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref56" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#contents">Contents</a></li><li><a href="#system-context--at-a-glance">System context — at a glance</a></li><li><a href="#how-this-document-is-structured">How this document is structured</a></li><li><a href="#project-context-analysis">Project Context Analysis</a></li><li class="h3"><a href="#requirements-overview">Requirements Overview</a></li><li class="h3"><a href="#technical-constraints--dependencies">Technical Constraints &amp; Dependencies</a></li><li class="h3"><a href="#cross-cutting-concerns-identified">Cross-Cutting Concerns Identified</a></li><li class="h3"><a href="#architecture-phase-decisions-still-open">Architecture-phase decisions still open</a></li><li><a href="#starter-template-evaluation">Starter Template Evaluation</a></li><li class="h3"><a href="#foundational-principles">Foundational Principles</a></li><li class="h3"><a href="#primary-technology-domain">Primary Technology Domain</a></li><li class="h3"><a href="#starter-options--selection">Starter Options &amp; Selection</a></li><li class="h3"><a href="#initialisation-flow-build-tool-dependency-inventory-per-service-conventions">Initialisation Flow, Build Tool, Dependency Inventory, Per-service Conventions</a></li><li><a href="#core-architectural-decisions">Core Architectural Decisions</a></li><li class="h3"><a href="#decision-priority-analysis">Decision Priority Analysis</a></li><li class="h3"><a href="#data-architecture">Data Architecture</a></li><li class="h3"><a href="#authoritative-table-ownership-mapping">Authoritative Table Ownership Mapping</a></li><li class="h3"><a href="#authentication--security">Authentication &amp; Security</a></li><li class="h3"><a href="#api--communication-patterns">API &amp; Communication Patterns</a></li><li class="h3"><a href="#frontend-architecture">Frontend Architecture</a></li><li class="h3"><a href="#infrastructure--deployment">Infrastructure &amp; Deployment</a></li><li class="h3"><a href="#deployment-topology--single-azure-region-multi-az-ha">Deployment topology — single Azure region, multi-AZ HA</a></li><li class="h3"><a href="#decision-impact-analysis">Decision Impact Analysis</a></li><li class="h3"><a href="#tbds-resolved-by-this-step">TBDs Resolved by This Step</a></li><li><a href="#implementation-patterns--consistency-rules">Implementation Patterns &amp; Consistency Rules</a></li><li><a href="#project-structure--boundaries">Project Structure &amp; Boundaries</a></li><li class="h3"><a href="#repository-strategy--list">Repository Strategy &amp; List</a></li><li class="h3"><a href="#complete-project-directory-structures-per-service--ui--ram-architecture">Complete Project Directory Structures (per-service / UI / ram-architecture)</a></li><li class="h3"><a href="#architectural-boundaries">Architectural Boundaries</a></li><li class="h3"><a href="#requirements-to-structure-mapping">Requirements to Structure Mapping</a></li><li class="h3"><a href="#cross-cutting-concerns-to-file-locations">Cross-Cutting Concerns to File Locations</a></li><li class="h3"><a href="#integration-points--internal-communication">Integration Points — Internal Communication</a></li><li class="h3"><a href="#integration-points--external">Integration Points — External</a></li><li class="h3"><a href="#data-flow--canonical-operational-cycle-journey-1-from-prd">Data Flow — Canonical Operational Cycle (Journey 1 from PRD)</a></li><li class="h3"><a href="#file-organisation-development-workflow-deployment-pipeline">File Organisation, Development Workflow, Deployment Pipeline</a></li><li class="h3"><a href="#region-rollout-flow-phase-9">Region rollout flow (Phase 9+)</a></li><li><a href="#architecture-validation-results">Architecture Validation Results</a></li><li class="h3"><a href="#coherence-validation-white_check_mark">Coherence Validation ✅</a></li><li class="h3"><a href="#requirements-coverage-validation-white_check_mark">Requirements Coverage Validation ✅</a></li><li class="h3"><a href="#implementation-readiness-validation-white_check_mark">Implementation Readiness Validation ✅</a></li><li class="h3"><a href="#documented-gaps">Documented Gaps</a></li><li class="h3"><a href="#assumptions">Assumptions</a></li><li class="h3"><a href="#architecture-readiness-assessment">Architecture Readiness Assessment</a></li><li class="h3"><a href="#implementation-handoff">Implementation Handoff</a></li><li><a href="#external-references">External References</a></li><li><a href="#changelog">Changelog</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#contents">Contents</a></li><li><a href="#system-context--at-a-glance">System context — at a glance</a></li><li><a href="#how-this-document-is-structured">How this document is structured</a></li><li><a href="#project-context-analysis">Project Context Analysis</a></li><li class="h3"><a href="#requirements-overview">Requirements Overview</a></li><li class="h3"><a href="#technical-constraints--dependencies">Technical Constraints &amp; Dependencies</a></li><li class="h3"><a href="#cross-cutting-concerns-identified">Cross-Cutting Concerns Identified</a></li><li class="h3"><a href="#architecture-phase-decisions-still-open">Architecture-phase decisions still open</a></li><li><a href="#starter-template-evaluation">Starter Template Evaluation</a></li><li class="h3"><a href="#foundational-principles">Foundational Principles</a></li><li class="h3"><a href="#primary-technology-domain">Primary Technology Domain</a></li><li class="h3"><a href="#starter-options--selection">Starter Options &amp; Selection</a></li><li class="h3"><a href="#initialisation-flow-build-tool-dependency-inventory-per-service-conventions">Initialisation Flow, Build Tool, Dependency Inventory, Per-service Conventions</a></li><li><a href="#core-architectural-decisions">Core Architectural Decisions</a></li><li class="h3"><a href="#decision-priority-analysis">Decision Priority Analysis</a></li><li class="h3"><a href="#data-architecture">Data Architecture</a></li><li class="h3"><a href="#authoritative-table-ownership-mapping">Authoritative Table Ownership Mapping</a></li><li class="h3"><a href="#authentication--security">Authentication &amp; Security</a></li><li class="h3"><a href="#api--communication-patterns">API &amp; Communication Patterns</a></li><li class="h3"><a href="#frontend-architecture">Frontend Architecture</a></li><li class="h3"><a href="#infrastructure--deployment">Infrastructure &amp; Deployment</a></li><li class="h3"><a href="#deployment-topology--single-azure-region-multi-az-ha">Deployment topology — single Azure region, multi-AZ HA</a></li><li class="h3"><a href="#decision-impact-analysis">Decision Impact Analysis</a></li><li class="h3"><a href="#tbds-resolved-by-this-step">TBDs Resolved by This Step</a></li><li><a href="#implementation-patterns--consistency-rules">Implementation Patterns &amp; Consistency Rules</a></li><li><a href="#project-structure--boundaries">Project Structure &amp; Boundaries</a></li><li class="h3"><a href="#repository-strategy--list">Repository Strategy &amp; List</a></li><li class="h3"><a href="#complete-project-directory-structures-per-service--ui--ram-architecture">Complete Project Directory Structures (per-service / UI / ram-architecture)</a></li><li class="h3"><a href="#architectural-boundaries">Architectural Boundaries</a></li><li class="h3"><a href="#requirements-to-structure-mapping">Requirements to Structure Mapping</a></li><li class="h3"><a href="#cross-cutting-concerns-to-file-locations">Cross-Cutting Concerns to File Locations</a></li><li class="h3"><a href="#integration-points--internal-communication">Integration Points — Internal Communication</a></li><li class="h3"><a href="#integration-points--external">Integration Points — External</a></li><li class="h3"><a href="#data-flow--canonical-operational-cycle-journey-2-from-prd--courts-wave-2">Data Flow — Canonical Operational Cycle (Journey 2 from PRD — Courts, wave 2+)</a></li><li class="h3"><a href="#file-organisation-development-workflow-deployment-pipeline">File Organisation, Development Workflow, Deployment Pipeline</a></li><li class="h3"><a href="#wave-rollout-flow-phase-9-jurisdiction-first">Wave rollout flow (Phase 9+, jurisdiction-first)</a></li><li><a href="#architecture-validation-results">Architecture Validation Results</a></li><li class="h3"><a href="#coherence-validation-white_check_mark">Coherence Validation ✅</a></li><li class="h3"><a href="#requirements-coverage-validation-white_check_mark">Requirements Coverage Validation ✅</a></li><li class="h3"><a href="#implementation-readiness-validation-white_check_mark">Implementation Readiness Validation ✅</a></li><li class="h3"><a href="#documented-gaps">Documented Gaps</a></li><li class="h3"><a href="#assumptions">Assumptions</a></li><li class="h3"><a href="#architecture-readiness-assessment">Architecture Readiness Assessment</a></li><li class="h3"><a href="#implementation-handoff">Implementation Handoff</a></li><li><a href="#external-references">External References</a></li><li><a href="#changelog">Changelog</a></li></ul></aside>
 <script>
 (function(){
   // 1. Sidebar accordion: persist user's group open/close preference per group.

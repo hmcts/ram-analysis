@@ -24,7 +24,7 @@ artefactsRequiringFollowUp:
   - 'architecture/data-tables.md (table inventory needs the two-tier model + RAM-overlay tables keyed by personnel_number)'
   - 'architecture/sequence-diagrams/payment-batch-flow.md (preserved unchanged per D11; verify SSCS applicability)'
   - 'README.md (programme summary needs SSCS-first reflection)'
-  - 'resources/architecture/asis/ (new SSCS as-is analysis pack required parallel to the existing JI/APEX pack)'
+  - 'docs/architecture/asis/ (new SSCS as-is analysis pack required parallel to the existing JI/APEX pack)'
 ---
 
 # Sprint Change Proposal — 2026-06-10
@@ -79,7 +79,7 @@ RAM Pathfinder is the **system of record** for JOH availability and scheduling �
 | **D5** | Reframed per D11 — the cohort's incumbent system is the parity reference (GAPS for wave 1; APEX for waves 2+). |
 | **D8** | Reframed per D11 — rollout boundary is jurisdiction first, then per-region within jurisdiction. Jurisdiction is a first-class hierarchical attribute. |
 | **D9** | Superseded + restructured 2026-06-10 — no user migration; two distinct user populations (JOH + admin staff) with different identity-lookup paths. |
-| **D10** | Amended — SQL-ETL bootstrap sub-clause superseded by D11. Admin-UI-removed-from-MVP thrust unchanged. |
+| **D10** | Amended — SQL-ETL bootstrap sub-clause superseded by D11. Admin-UI-removed-from-MVP part unchanged. |
 | **D11** *(new)* | SSCS-first pilot wave. Cascades through D3, D5, D8, D9 (reframed as jurisdiction-aware); JOH terminology; SSCS-cohort readiness assessment required before Phase 9. |
 | **D12** *(new)* | RAM scope boundary — availability/scheduling, not case/hearing management. Bounds the 11-service decomposition. |
 
@@ -133,7 +133,7 @@ Amended entries: **JI** (now defined as the Courts cohort's legacy system specif
 | `architecture.md` + `architecture-summary.md` | Two-tier reference-data ownership; JOH eLinks + MRD facade architecture; D12 scope boundary; `ram-judge` → `ram-joh` rename; personnel_number-keyed RAM-overlay tables |
 | `architecture/data-tables.md` | Table inventory needs the two-tier model + overlay-table pattern |
 | `README.md` | Programme summary needs SSCS-first reflection; replace Courts-centric framing |
-| `resources/architecture/asis/` | **New SSCS as-is analysis pack required** parallel to the existing JI/APEX pack — JOH eLinks data shape, MRD entities, SSCS operational processes, GAPS as-is capture |
+| `docs/architecture/asis/` | **New SSCS as-is analysis pack required** parallel to the existing JI/APEX pack — JOH eLinks data shape, MRD entities, SSCS operational processes, GAPS as-is capture |
 
 ### Implementation Readiness impact
 
@@ -150,7 +150,7 @@ Prior readiness reports (2026-05-05, -06, -15, -15-rev2) assessed the **Courts c
 
 **Rationale:**
 
-- **Option 1 — Direct Adjustment** is viable and the bulk of the work. The 11-service architecture and Phase 0–8 build sequence are preserved per the user's chosen scope. PRD wording, Decisions Log entries, FR text, journeys, and integration requirements are amendable in place.
+- **Option 1 — Direct Adjustment** is viable and the bulk of the work. The 11-service architecture and Phase 0–8 build sequence are preserved per the user's chosen scope. PRD wording, Decisions Log entries, FR text, journeys, and integration requirements can be updated in place.
 - **Option 2 — Rollback** is not viable. Per the chosen scope ("11 services preserved, build sequence preserved"), nothing structural needs rolling back. Rolling back would discard the validated PRD and architecture work.
 - **Option 3 — MVP Review** is partially in play — the MVP target jurisdiction shifts from a Courts judicial region (wave 1) to the SSCS jurisdiction. This is a *retarget*, not a reduction. Captured as part of the Direct Adjustment.
 
@@ -202,7 +202,7 @@ Edit proposals applied (in order):
 | **Solution Architect (Winston, `bmad-agent-architect`)** | Lead architecture document amendments: two-tier reference-data ownership; JOH eLinks API + MRD facade; D12 scope boundary; personnel_number-keyed overlay tables; `ram-judge` → `ram-joh` rename evaluation. |
 | **Product Owner / Developer agents (`bmad-create-epics-and-stories`)** | Restructure Phase 0 epics 0.2 and 0.3 (ETL stories obsolete). Renumber FR references across `epics/fr-coverage-map.md` and `epics/requirements-inventory.md`. |
 | **Tech Writer (Paige, `bmad-agent-tech-writer`)** | Update `README.md` programme summary (SSCS-first framing) and `architecture-summary.md`. |
-| **Business Analyst (Mary, `bmad-agent-analyst`)** | Produce the new SSCS as-is analysis pack under `resources/architecture/asis/` (parallel to the JI/APEX pack). Document JOH eLinks data shape, MRD entities, SSCS operational processes, and GAPS as-is. |
+| **Business Analyst (Mary, `bmad-agent-analyst`)** | Produce the new SSCS as-is analysis pack under `docs/architecture/asis/` (parallel to the JI/APEX pack). Document JOH eLinks data shape, MRD entities, SSCS operational processes, and GAPS as-is. |
 
 ### Success criteria
 

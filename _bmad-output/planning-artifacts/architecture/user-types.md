@@ -4,12 +4,12 @@ title: User Types
 last_updated: 2026-05-12
 sources:
   - ../../../docs/architecture/asis/JI user types - 2.xlsx (authoritative as-is catalogue, Feb 2026 snapshot)
-  - ../prd.md (FR1–FR5, FR40, FR58, FR61, User Journeys)
+  - ../prd.md (FR1–FR5, FR40, FR57, FR60, User Journeys)
 ---
 
 # User Types
 
-> Sibling of [`../architecture.md`](../architecture.md). The as-is JI catalogue (`docs/architecture/asis/JI user types - 2.xlsx`, Feb 2026 snapshot) is authoritative for the role taxonomy. RAM Pathfinder carries these access types over 1:1; this document is the binding taxonomy reference for `ram-authorisation`, the Phase 0 user migration (D9), and the per-phase manual UAT scripts (FR61). Authentication is owned by HMCTS IdP (FR1); role + Region/Area mapping and effective-permission lookup live in `ram-authorisation` (FR2, FR3). See [`./sequence-diagrams/user-authentication-and-authorisation.md`](./sequence-diagrams/user-authentication-and-authorisation.md) for the call path.
+> Sibling of [`../architecture.md`](../architecture.md). The as-is JI catalogue (`docs/architecture/asis/JI user types - 2.xlsx`, Feb 2026 snapshot) is authoritative for the role taxonomy. RAM Pathfinder carries these access types over 1:1; this document is the binding taxonomy reference for `ram-authorisation`, the user bootstrap (restructured D9 — two populations, no legacy user migration), and the per-phase manual UAT scripts (FR60). *(The taxonomy below is the Courts/JI as-is catalogue; the SSCS as-is analysis pack[^d11] will extend it with SSCS access types — RTJ, Tribunal Judges, Tribunal Members, Caseworkers — before wave 1.)* Authentication is owned by HMCTS IdP (FR1); role + Region/Area mapping and effective-permission lookup live in `ram-authorisation` (FR2, FR3). See [`./sequence-diagrams/user-authentication-and-authorisation.md`](./sequence-diagrams/user-authentication-and-authorisation.md) for the call path.
 >
 > **Baseline capability for every access type:** access to standard reports. The capability lists below add to this baseline rather than repeat it.
 
@@ -75,7 +75,7 @@ Limited access for court users. Same daily operational footprint as Full Access 
 3. Request absences for judges at assigned location(s) — Regional team approval required.
 4. Request vacancies for judges at assigned location(s) — Regional team approval required.
 
-> Q3 resolution (2026-05-12) — *inferred from the xlsx description "as per Full Access but doesn't include full access to any judge types"*: the **only material difference** between Court (Limited) and Court (Full Access) is that Limited cannot maintain District Judge profiles. Confirmation of sittings/bookings, absence and vacancy requests are unchanged. Flagged in [`./gaps.md`](./gaps.md) for confirmation against APEX-experienced UAT.
+> Q3 resolution (2026-05-12) — *inferred from the xlsx description "as per Full Access but doesn't include full access to any judge types"*: the **only material difference** between Court (Limited) and Court (Full Access) is that Limited cannot maintain District Judge profiles. Confirmation of sittings/bookings, absence and vacancy requests are unchanged. Flagged in [`./gaps.md`](./gaps.md) for confirmation against incumbent-experienced UAT.
 
 ### Court (Read-only) — 27 active users
 
@@ -264,10 +264,10 @@ The Payment Authoriser is **not an RAM Pathfinder application access type**. It 
 **Modelling in RAM Pathfinder:**
 
 1. Stored as configuration, not as an authenticated principal.
-2. The list of valid Payment Authoriser recipients is administrable (Phase 0 design decision: most likely the shared `configuration_values` infrastructure table or an admin-maintained reference list — to be finalised in the Payment service's design).
+2. The list of valid Payment Authoriser recipients is administrable (Phase 0 design decision: most likely the shared `ram_configuration_values` infrastructure table or an admin-maintained reference list — to be finalised in the Payment service's design).
 3. Finance users select a Payment Authoriser from this list when generating a payment schedule (FR43).
 4. The recipient does **not** log into RAM Pathfinder. They receive the JFEPS Excel by email and forward it to Liberata out-of-system (D6, unchanged from APEX).
-5. The 2 individuals recorded against this entry in the as-is catalogue (Feb 2026) are tracked operationally but are not migrated as RAM Pathfinder users in Phase 0 (D9).
+5. The 2 individuals recorded against this entry in the as-is catalogue (Feb 2026) are tracked operationally but are not migrated as RAM Pathfinder users in Phase 0[^d9].
 
 ## Administrative / cross-cutting roles
 
@@ -275,22 +275,22 @@ These are not user-facing access types in the as-is catalogue; they are RAM Path
 
 | Role | Capabilities | Mapped to as-is access type | Key FRs |
 |---|---|---|---|
-| **System Administrator** | (1) Create users. (2) Update role and Region/Area assignments for migrated and new users. (3) Manage per-user activation flags for per-region rollout (FR58). | New in RAM Pathfinder — partially overlaps with Regional (Admin)'s Advice-Point request capability. | FR4, FR58 |
+| **System Administrator** | (1) Create users. (2) Update role and Region/Area assignments for migrated and new users. (3) Manage per-user activation flags for per-(jurisdiction, region) rollout (FR57). | New in RAM Pathfinder — partially overlaps with Regional (Admin)'s Advice-Point request capability. | FR4, FR57 |
 | **Re-opener** *(permission, not a separate role at MVP)* | (1) Re-open a verified sitting via the UI re-open action. (2) Must be different from the original confirmer (SIT-NFR-02). (3) Captures mandatory justification. (4) Fully audited. | Granted to **Regional (Admin)** only at MVP. | FR40 |
-| **Reference Data Owner** *(business role overlaid on Regional)* | (1) Named-owner sign-off on Reference Data list changes (FR6). (2) Sign-off on Phase 0 ETL migration of in-scope lists. | Overlaid on Regional (Admin) / Regional (Full Access). | FR6, Phase 0 D3 |
+| **Reference Data Owner** *(business role overlaid on Regional)* | (1) Named-owner sign-off on Reference Data list changes (FR6). (2) Named-owner sign-off applies to tier-(b) RAM-owned lists only — tier-(a) upstream-sourced data is corrected at source[^d3]. | Overlaid on Regional (Admin) / Regional (Full Access). | FR6, revised D3 |
 
 ## Authorisation model (summary)
 
 - **Authentication:** HMCTS IdP via OIDC `authorization_code` (FR1). RAM Pathfinder does not own password, session, or account lifecycle.
-- **Authorisation state:** `ram-authorisation` owns `auth_users`, `auth_roles`, `auth_user_roles`, `auth_user_region_scopes`, `auth_user_activation_flags`. Authoritative table ownership is recorded in [`./data-tables.md`](./data-tables.md).
+- **Authorisation state:** `ram-authorisation` owns `ram_auth_users`, `ram_auth_roles`, `ram_auth_user_roles`, `ram_auth_user_region_scopes`, `ram_auth_user_activation_flags`. Authoritative table ownership is recorded in [`./data-tables.md`](./data-tables.md).
 - **Enforcement:** every API call resolves principal → role(s) + Region/Area scope through Authorisation; implemented as per-service middleware (FR2). Effective-permission lookup is `POST /authz/check` (FR3).
 - **Phase 0 migration:** active APEX users + role/Region-Area scope assignments are loaded into RAM Pathfinder via the Authorisation API and mapped to IdP principals (D9, Risk #14). Unmatched records get an explicit decision — drop / hold / manual map. Zero ambiguous migrations.
-- **Per-user activation flag:** rollout gating uses `auth_user_activation_flags` (FR58) — migrated users do not use APEX; non-migrated users do not use RAM Pathfinder (D8).
+- **Per-user activation flag:** rollout gating uses `ram_auth_user_activation_flags` keyed by (jurisdiction, region) (FR57) — migrated users do not use the incumbent; non-migrated users do not use RAM Pathfinder[^d8][^d11].
 - **Verifier separation of duties:** confirmation and verification of sittings/bookings must be performed by different principals — enforced at the application tier on the sitting/booking row's `confirmed_by` field. Re-open enforces a similar constraint (FR40).
 
-## Manual UAT mapping (FR61)
+## Manual UAT mapping (FR60)
 
-Each domain service has a manual UAT script walked by APEX-experienced users from the in-region applicable access types before that service's regional rollout.
+Each domain service has a manual UAT script walked by jurisdiction-incumbent-experienced users from the in-wave applicable access types before that wave's rollout (GAPS-experienced users for SSCS wave 1; APEX-experienced users for Courts waves 2+).
 
 | Service / phase | UAT access types |
 |---|---|
@@ -306,8 +306,13 @@ Each domain service has a manual UAT script walked by APEX-experienced users fro
 ## Related documents
 
 - `docs/architecture/asis/JI user types - 2.xlsx` — authoritative as-is catalogue (Feb 2026)
-- [`../prd.md`](../prd.md) — *Target users*, *User Journeys*, FR1–FR5, FR40, FR58, FR61
+- [`../prd.md`](../prd.md) — *Target users*, *User Journeys*, FR1–FR5, FR40, FR57, FR60
 - [`./sequence-diagrams/user-authentication-and-authorisation.md`](./sequence-diagrams/user-authentication-and-authorisation.md) — authn / authz call path
 - [`./data-tables.md`](./data-tables.md) — `ram-authorisation` table inventory
 - [`./gaps.md`](./gaps.md) — open questions inherited from the as-is catalogue
 - [`./functional-requirements-coverage.md`](./functional-requirements-coverage.md) — per-FR architectural coverage
+
+[^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
+[^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
+[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.

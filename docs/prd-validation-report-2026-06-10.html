@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRD Validation Report — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav"><h2 class="site-title"><a href="./index.html">RAM Pathfinder Documentation</a></h2>
+<div class="nav-controls"><button data-nav-action="expand" title="Expand all groups">Expand all</button> <button data-nav-action="collapse" title="Collapse all groups">Collapse all</button></div>
+<details class="nav-group" data-group="overview">
+<summary>Overview</summary>
+<ul>
+<li><a href="./index.html">Index</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="product" data-current="true" open>
+<summary>Product</summary>
+<ul>
+<li><a href="./prd.html">PRD (RAM Pathfinder)</a></li>
+<li><a href="./prd-validation-report-2026-06-10.html" class="current">PRD validation report — 2026-06-10</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-architecture-views">
+<summary>As-is — JI Architecture Views</summary>
+<ul>
+<li><a href="./asis/system-context.html">System Context (as-is)</a></li>
+<li><a href="./asis/components.html">Components (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-analysis-pack">
+<summary>As-is — JI Analysis Pack</summary>
+<ul>
+<li><a href="./architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
+<li><a href="./architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
+<li><a href="./architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-database-schema">
+<summary>As-is — JI Database Schema</summary>
+<ul>
+<li><a href="./asis/database/index.html">Database index</a></li>
+<li><a href="./asis/database/ji_schema_overview.html">Schema overview</a></li>
+<li><a href="./asis/database/ji_schema_judges-profile.html">Judges Profile & Reference</a></li>
+<li><a href="./asis/database/ji_schema_judges-patterns.html">Working Patterns, Tickets & Stats</a></li>
+<li><a href="./asis/database/ji_schema_absence-cover.html">Absence & Cover Workflow</a></li>
+<li><a href="./asis/database/ji_schema_bookings-sittings.html">Bookings & Sittings</a></li>
+<li><a href="./asis/database/ji_schema_reference-work.html">Reference Data</a></li>
+<li><a href="./asis/database/ji_schema_audit-cross-cutting.html">Audit & Cross-cutting</a></li>
+<li><a href="./asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-architecture">
+<summary>To-be — RAM Pathfinder Architecture</summary>
+<ul>
+<li><a href="./architecture.html">Architecture (index)</a></li>
+<li><a href="./architecture-summary.html">Architecture summary</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-reference">
+<summary>To-be — RAM Pathfinder Reference</summary>
+<ul>
+<li><a href="./architecture/tobe/user-types.html">User types</a></li>
+<li><a href="./architecture/tobe/data-tables.html">Authoritative table ownership</a></li>
+<li><a href="./architecture/tobe/conventions.html">Conventions</a></li>
+<li><a href="./architecture/tobe/repository-strategy.html">Repository strategy</a></li>
+<li><a href="./architecture/tobe/repo-structure.html">Repository structure</a></li>
+<li><a href="./architecture/tobe/starter-template.html">Starter template</a></li>
+<li><a href="./architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
+<li><a href="./architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-sequence-diagrams">
+<summary>To-be — RAM Pathfinder Sequence Diagrams</summary>
+<ul>
+<li><a href="./architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
+<li><a href="./architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-open-items">
+<summary>To-be — RAM Pathfinder Open Items</summary>
+<ul>
+<li><a href="./architecture/tobe/gaps.html">Gaps</a></li>
+<li><a href="./architecture/tobe/assumptions.html">Assumptions</a></li>
+<li><a href="./architecture/tobe/changelog.html">Changelog</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="change-control-readiness">
+<summary>Change Control & Readiness</summary>
+<ul>
+<li><a href="./sprint-change-proposal-2026-06-10.html">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
+<li><a href="./sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
+<li><a href="./implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
+<li><a href="./implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="implementation-epics-foundations">
+<summary>Implementation — Epics (Foundations)</summary>
+<ul>
+<li><a href="./epics/index.html">Epics index</a></li>
+<li><a href="./epics/requirements-inventory.html">Requirements inventory</a></li>
+<li><a href="./epics/framework.html">Phase × Area framework</a></li>
+<li><a href="./epics/fr-coverage-map.html">FR coverage map</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="implementation-phase-0-restructured-2026-06-11">
+<summary>Implementation — Phase 0 (restructured 2026-06-11)</summary>
+<ul>
+<li><a href="./epics/phase-0/index.html">Phase 0 overview</a></li>
+<li><a href="./epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)</a></li>
+<li><a href="./epics/phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2 — Reference data read-only (2 stories)</a></li>
+<li><a href="./epics/phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3 — User populations bootstrapped (1 story)</a></li>
+<li><a href="./epics/phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4 — Notification scaffolded (2 stories)</a></li>
+<li><a href="./epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15 — superseded)</a></li>
+</ul>
+</details></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="prd-validation-report">PRD Validation Report</h1>
+<p><strong>PRD Being Validated:</strong> <code>_bmad-output/planning-artifacts/prd.md</code> <strong>Validation Date:</strong> 2026-06-10 <strong>Validation Context:</strong> Post-SSCS-pivot consistency check. The PRD received 21 incremental edit proposals during the <code>bmad-correct-course</code> workflow run earlier on 2026-06-10. This validation verifies that the cascade landed cleanly (no orphan references, no contradictions, traceability intact, BMAD standards preserved).</p>
+<details class="section" id="input-documents"><summary><span class="section-title">Input Documents</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Document</th>
+<th>Path</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PRD</td>
+<td><code>_bmad-output/planning-artifacts/prd.md</code></td>
+<td>Validation target</td>
+</tr>
+<tr>
+<td>Brainstorming Session 2026-05-05 (1600)</td>
+<td><code>_bmad-output/brainstorming/brainstorming-session-2026-05-05-1600.md</code></td>
+<td>The 9 locked decisions, 11-service decomposition, migration table, risk register</td>
+</tr>
+<tr>
+<td>AS-IS Functional Modules</td>
+<td><code>docs/architecture/asis/functional-modules.md</code></td>
+<td>JI/APEX as-is module catalogue</td>
+</tr>
+<tr>
+<td>AS-IS Data Dependencies</td>
+<td><code>docs/architecture/asis/data-dependencies.md</code></td>
+<td>JI external data dependencies</td>
+</tr>
+<tr>
+<td>AS-IS Integration Dependencies</td>
+<td><code>docs/architecture/asis/integration-dependencies.md</code></td>
+<td>JI integration flows + mechanisms</td>
+</tr>
+<tr>
+<td>Sprint Change Proposal 2026-06-10</td>
+<td><code>_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-10.md</code></td>
+<td>Captures the SSCS-first pivot, D11/D12 additions, and 21 PRD edits</td>
+</tr>
+<tr>
+<td>Sprint Change Proposal 2026-05-15</td>
+<td><code>_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-15.md</code></td>
+<td>Captures the prior admin-UI-removed-from-MVP decision (D10)</td>
+</tr>
+<tr>
+<td>Architecture Summary v2.2</td>
+<td><code>_bmad-output/planning-artifacts/architecture-summary.md</code></td>
+<td>Target-state architecture reference (pre-SSCS-pivot; needs follow-up amendment per SCP 2026-06-10)</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="pre-validation-observations"><summary><span class="section-title">Pre-Validation Observations</span></summary><div class="section-body">
+<p>These observations are surfaced during document discovery; formal validation findings will be appended in later steps.</p>
+<ul>
+<li><strong>Frontmatter inputDocuments paths are stale.</strong> The PRD frontmatter references <code>docs/architecture/asis/{functional-modules,data-dependencies,integration-dependencies}.md</code>, but the actual files live at <code>docs/architecture/asis/</code>. The <code>docs/architecture/asis/</code> directory only contains the HTML renders, not the source markdown. Recommendation: update the frontmatter paths during validation cleanup.</li>
+<li><strong><code>stepsCompleted</code> frontmatter is stale.</strong> It still records <code>step-12-complete</code> from the original 2026-05-05 PRD workflow run. Two subsequent course-correction runs (2026-05-15 and 2026-06-10) have substantially amended the PRD without updating this metadata. Recommendation: consider adding a <code>revisionLog</code> field or appending course-correction markers.</li>
+</ul>
+</div></details><details class="section" id="format-detection"><summary><span class="section-title">Format Detection</span></summary><div class="section-body">
+<p><strong>PRD Structure (## Level 2 headers, in order):</strong></p>
+<ol type="1">
+<li>Document Map</li>
+<li>Executive Summary</li>
+<li>Project Classification</li>
+<li>Success Criteria</li>
+<li>Product Scope</li>
+<li>User Journeys</li>
+<li>Domain-Specific Requirements</li>
+<li>API Backend Specific Requirements</li>
+<li>Project Scoping &amp; Phased Development</li>
+<li>Functional Requirements</li>
+<li>Non-Functional Requirements</li>
+<li>Decisions Log (D1–D9) <em>(heading stale — actual content covers D1–D12)</em></li>
+<li>Glossary</li>
+<li>References</li>
+</ol>
+<p><strong>BMAD Core Sections Present:</strong></p>
+<ul>
+<li>Executive Summary: <strong>Present</strong> (line 56)</li>
+<li>Success Criteria: <strong>Present</strong> (line 126)</li>
+<li>Product Scope: <strong>Present</strong> (line 170)</li>
+<li>User Journeys: <strong>Present</strong> (line 223)</li>
+<li>Functional Requirements: <strong>Present</strong> (line 561)</li>
+<li>Non-Functional Requirements: <strong>Present</strong> (line 655)</li>
+</ul>
+<p><strong>Format Classification:</strong> <strong>BMAD Standard</strong> <strong>Core Sections Present:</strong> 6/6</p>
+<p><strong>Additional sections beyond core (all BMAD-consistent extensions):</strong></p>
+<ul>
+<li>Document Map, Project Classification, Domain-Specific Requirements, API Backend Specific Requirements, Project Scoping &amp; Phased Development, Decisions Log, Glossary, References.</li>
+</ul>
+<p><strong>Format-level findings (carried forward):</strong></p>
+<ul>
+<li>⚠️ <strong>Stale heading</strong>: <code>## Decisions Log (D1–D9)</code> should be <code>## Decisions Log (D1–D12)</code>. The log itself contains D1 through D12. (Bug introduced/missed during the 2026-05-15 and 2026-06-10 course-correction runs — the new decisions D10, D11, D12 were appended without updating the heading.)</li>
+</ul>
+</div></details><details class="section" id="information-density-validation"><summary><span class="section-title">Information Density Validation</span></summary><div class="section-body">
+<p><strong>Anti-Pattern Violations:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Count</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Conversational filler ("the system will allow", "it is important to note", "in order to", "for the purpose of", "with regard to")</td>
+<td>0</td>
+<td>Clean.</td>
+</tr>
+<tr>
+<td>Wordy phrases ("due to the fact that", "in the event of", "at this point in time", "in a manner that")</td>
+<td>0</td>
+<td>Clean.</td>
+</tr>
+<tr>
+<td>Redundant phrases ("future plans", "past history", "absolutely essential", "completely finish")</td>
+<td>0</td>
+<td>Clean.</td>
+</tr>
+<tr>
+<td>Filler clichés ("in other words", "as mentioned earlier", "as noted above", "needless to say")</td>
+<td>0</td>
+<td>Clean.</td>
+</tr>
+<tr>
+<td>Vague quantifiers ("multiple users", "several options", "various formats", "many users")</td>
+<td>0</td>
+<td>Clean.</td>
+</tr>
+<tr>
+<td>Subjective adjectives in FRs ("easy to use", "intuitive", "user-friendly", "fast", "responsive")</td>
+<td>1 borderline</td>
+<td>Line 286 (Journey 4 narrative): "Itinerary renders on tablet — accessible, responsive, performant." This is in a <strong>journey persona narrative</strong>, not in a FR. The actual quality attributes are codified in NFR1–NFR9 (performance), NFR17–NFR19 (accessibility). Narrative use is acceptable; no remediation needed.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total Violations:</strong> 0 (1 borderline narrative use)</p>
+<p><strong>Severity Assessment:</strong> <strong>Pass</strong> (well below the 5-violation threshold)</p>
+<p><strong>Word Count:</strong> 14,402 — substantial document but appropriate for a brownfield rebuild PRD covering 60 FRs, 42 NFRs, and 12 decisions.</p>
+<p><strong>Recommendation:</strong> PRD demonstrates excellent information density with zero violations across the standard anti-pattern categories. Practitioner voice is consistent throughout, with declarative wording and minimal filler. No remediation needed at the density layer.</p>
+</div></details><details class="section" id="product-brief-coverage"><summary><span class="section-title">Product Brief Coverage</span></summary><div class="section-body">
+<p><strong>Status:</strong> N/A — No Product Brief was provided as input. The PRD's <code>inputDocuments</code> lists a 2026-05-05 brainstorming session and three AS-IS analysis files; no <code>product-brief.md</code> artefact exists in the planning workspace. The PRD was produced by <code>bmad-create-prd</code> with <code>brainstorming</code> as the seed input (per the frontmatter <code>documentCounts: briefs: 0, brainstorming: 1</code>).</p>
+</div></details><details class="section" id="measurability-validation"><summary><span class="section-title">Measurability Validation</span></summary><div class="section-body">
+<h3 id="functional-requirements">Functional Requirements</h3>
+<p><strong>Total FRs Analyzed:</strong> 60 (FR1–FR60)</p>
+<p><strong>Format Violations:</strong> 0 — every FR follows either the <code>[Actor] can [capability]</code> or <code>RAM Pathfinder [behaviour]</code> pattern.</p>
+<p><strong>Subjective Adjectives:</strong> 0 in FR text (one borderline instance in a journey narrative, already captured in Density Validation — line 286).</p>
+<p><strong>Vague Quantifiers:</strong> 0 ("multiple", "several", "various" not present in any FR).</p>
+<p><strong>Implementation Leakage:</strong> 0 in the strict sense. Technology references (Spring Boot, Kubernetes, JFEPS Excel content-type, Azure Key Vault) are programme-locked architecture constraints from the Technology Stack section, not implementation-leakage at the capability layer.</p>
+<p><strong>FR Violations Total:</strong> 0</p>
+<h3 id="non-functional-requirements">Non-Functional Requirements</h3>
+<p><strong>Total NFRs Analyzed:</strong> 42 (NFR1–NFR42)</p>
+<p><strong>Missing Metrics:</strong> 0 — every NFR specifies a measurable criterion or a defined deferred metric (e.g. NFR26's retention period flagged as "set in Phase 0"; NFR9's capacity ~50–100/~200–500).</p>
+<p><strong>Incomplete Template:</strong> 0 — all NFRs include criterion + applicable measurement context.</p>
+<p><strong>Missing Context:</strong> 0.</p>
+<p><strong>NFR Violations Total:</strong> 0</p>
+<h3 id="overall-assessment">Overall Assessment</h3>
+<p><strong>Total Requirements:</strong> 102 (60 FRs + 42 NFRs) <strong>Total Measurability Violations:</strong> 0</p>
+<p><strong>Severity:</strong> <strong>Pass</strong></p>
+<p><strong>Recommendation:</strong> Requirements meet BMAD measurability standards. Performance NFRs (NFR1–NFR9) are exceptionally well-specified with explicit thresholds and contexts; security/accessibility/integration NFRs cite specific standards (TLS, WCAG 2.2 AA, OIDC/SAML, RFCs).</p>
+<hr />
+<h3 id="warning-cross-reference-findings-from-the-sscs-pivot-cascade">⚠️ Cross-reference findings from the SSCS pivot cascade</h3>
+<p>These are NOT measurability defects, but they are <strong>consistency defects</strong> the 21-edit <code>bmad-correct-course</code> cascade introduced or missed. They live inside the NFR + Growth Features sections of the PRD and warrant remediation before downstream architecture work begins.</p>
+<p><strong>Stale FR-number cross-references (the FR58–FR61 → FR57–FR60 renumbering missed these locations):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Current text</th>
+<th>Should be</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Line 196 (MVP exclusions list)</td>
+<td><code>Activation Flag toggle UI (FR58 cutover in MVP via direct SQL …)</code></td>
+<td>FR57 (activation flags)</td>
+</tr>
+<tr>
+<td>Line 204 (Growth Features)</td>
+<td><code>Users &amp; Roles admin: … (UI surface of FR4 + FR58)</code></td>
+<td>FR4 + FR57</td>
+</tr>
+<tr>
+<td>Line 716 (NFR38)</td>
+<td><code>via per-user auth_user_activation_flags (FR58)</code></td>
+<td>(FR57)</td>
+</tr>
+<tr>
+<td>Line 741 (D11 implication)</td>
+<td><code>Manual UAT (D5, FR61)</code></td>
+<td>(D5, FR60)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Stale APEX-only / pre-D11 wording in NFRs:</strong></p>
+<table>
+<thead>
+<tr>
+<th>NFR</th>
+<th>Current wording</th>
+<th>Issue</th>
+<th>Suggested remediation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>NFR13</strong></td>
+<td>"principal's roles + Region/Area scope through the Authorisation service"</td>
+<td>Missing <strong>jurisdiction</strong> (added as first-class attribute per D8 + FR2)</td>
+<td>Insert <code>+ jurisdiction</code> alongside Region/Area</td>
+</tr>
+<tr>
+<td><strong>NFR21</strong></td>
+<td>"preserved exactly as in APEX. No format change for finance."</td>
+<td>Factually correct but doesn't mention SSCS wave 1 inherits the same path per D11</td>
+<td>Add: "… and preserved for SSCS in wave 1 per D11."</td>
+</tr>
+<tr>
+<td><strong>NFR32</strong></td>
+<td>"Migrated transactional history remains in APEX (D3); … from migration onward"</td>
+<td>D3 superseded by D11 — <strong>no migration</strong>. Wording invalid.</td>
+<td>Reframe: "Historical transactional data stays in the jurisdiction's incumbent system (GAPS for SSCS, APEX for Courts); RAM Pathfinder retains only data created in RAM Pathfinder from cutover onward."</td>
+</tr>
+<tr>
+<td><strong>NFR36</strong></td>
+<td>"returning the affected region to APEX within one operational cycle"</td>
+<td>APEX-only; under D11 wave 1 rolls back to GAPS, waves 2+ to APEX</td>
+<td>Reframe: "returning the affected wave's users to the jurisdiction's incumbent system (GAPS for wave 1; APEX for waves 2+) within one operational cycle"</td>
+</tr>
+<tr>
+<td><strong>NFR38</strong></td>
+<td>"Northern, Western" examples</td>
+<td>Courts-specific; wave 1 = SSCS isn't a Courts region</td>
+<td>Add SSCS as a separate "wave" example, or reword to remove the Courts-specific examples</td>
+</tr>
+<tr>
+<td><strong>NFR41</strong></td>
+<td>"APEX-experienced users walk through the script comparing RAM Pathfinder vs APEX before each rollout wave's cutover"</td>
+<td>Stale per D5 reframed + FR60 reframed. Should be jurisdiction-incumbent-experienced</td>
+<td>Reword to match FR60: "Jurisdiction-incumbent-experienced users (GAPS-experienced for wave 1; APEX-experienced for waves 2+) walk through the script comparing RAM Pathfinder vs the incumbent before each wave's cutover; sign-off per role per wave is the wave gate."</td>
+</tr>
+<tr>
+<td><strong>NFR-section intro</strong> (line ~617)</td>
+<td>"Page-level NFRs are carried from the APEX baseline"</td>
+<td>The page-level NFRs were derived against APEX. SSCS wave 1 measurement may need a GAPS baseline cross-check</td>
+<td>Append: "SSCS wave-1 cutover should verify these thresholds against GAPS-equivalent operations as part of the SSCS-cohort readiness assessment per D11."</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Severity of these findings:</strong></p>
+<ul>
+<li>All are <strong>Moderate</strong> — they don't invalidate the PRD's intent, but they leave stale wording that contradicts the explicit decisions D3 (revised), D5 (reframed), D8 (reframed), D11, and D12.</li>
+<li>Recommended to fix as a small follow-up edit pass before the architecture-document workstream begins.</li>
+</ul>
+</div></details><details class="section" id="traceability-validation"><summary><span class="section-title">Traceability Validation</span></summary><div class="section-body">
+<h3 id="chain-validation">Chain Validation</h3>
+<p><strong>Executive Summary → Success Criteria:</strong> ⚠️ <strong>Gaps Identified</strong></p>
+<p>The Executive Summary was updated for SSCS-first per D11, but the Success Criteria section was <strong>not touched</strong> by the 21-edit cascade. As a result, the success criteria contradict the Executive Summary's framing.</p>
+<p>Specific misalignments:</p>
+<ul>
+<li><strong>User Success bullets</strong> enumerate Courts roles only (RSU, Court users, Judges, Judges' Clerks, Finance, MI) — missing the SSCS roles named in the Executive Summary (Regional Tribunal Judges, Tribunal Judges, Tribunal Members Medical / Disability-Qualified / Disability (Other), Tribunal Caseworkers).</li>
+<li><strong>"Each role can complete its legacy workflow on RAM Pathfinder without re-training, and faster or no slower than APEX"</strong> — APEX-only framing. SSCS wave 1 should reference GAPS.</li>
+<li><strong>Business Success bullet "APEX retirement — every region migrated"</strong> — mentions only APEX; missing GAPS decommissioning for SSCS.</li>
+<li><strong>Business Success bullet "Strategic integration platform — at least one HMCTS programme (Tribunals coverage, Actuals, Scheduling &amp; Listing) integrating via API"</strong> — lists <strong>Tribunals coverage as a future programme</strong>, but per D11 Tribunals (SSCS) IS the wave-1 cohort, not a future programme.</li>
+<li><strong>Technical Success bullet "Phase 0 migration correctness — 100% of in-scope Reference Data lists ETL'd into RAM Pathfinder … 100% of active APEX users loaded into Authorisation"</strong> — references the retracted ETL and APEX migration. Entirely invalid under D11/revised D3/superseded D9.</li>
+<li><strong>Technical Success bullet "Behavioural parity (D5) — manual UAT script per domain service, walked by APEX-experienced users"</strong> — APEX-experienced only; should be jurisdiction-incumbent per D5 reframed.</li>
+<li><strong>Technical Success bullet "All 11 services live ... Judge"</strong> — should be JOH per D11 terminology shift.</li>
+</ul>
+<p><strong>Measurable Outcomes table</strong> has the most contradictions:</p>
+<table>
+<thead>
+<tr>
+<th>Row</th>
+<th>Issue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"Reference Data migration accuracy — 100% of in-scope lists, signed off by named owners — D3 + Risk #13"</td>
+<td>References retracted ETL/migration</td>
+</tr>
+<tr>
+<td>"User-record migration accuracy — 100% of active APEX users mapped to IdP principal — D9 + Risk #14"</td>
+<td>References retracted migration</td>
+</tr>
+<tr>
+<td>"Payment export continuity at cutover — Zero failed JFEPS payment cycles attributable to migration"</td>
+<td>"Attributable to migration" stale; should be "attributable to cutover"</td>
+</tr>
+<tr>
+<td>"Behavioural parity per domain service — 100% of manual UAT scripts (run by APEX-experienced users comparing RAM Pathfinder vs APEX)"</td>
+<td>Should be jurisdiction-incumbent per D5/FR60</td>
+</tr>
+<tr>
+<td>"Per-wave feature parity — 100% of in-region role workflows demoed and signed off before wave cutover — D8 + Risk #3"</td>
+<td>"In-region" wording — SSCS wave 1 isn't a region; should be "in-cohort, in-region or in-wave"</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Success Criteria → User Journeys:</strong> ⚠️ <strong>Mostly intact, with one specific gap</strong></p>
+<p>The 6 user journeys (after Edit 19) cover the operational chain. The new SSCS Journey 1 maps to the SSCS portion of Success Criteria — but since the Success Criteria don't fully describe SSCS success, the mapping is one-sided.</p>
+<p><strong>User Journeys → Functional Requirements:</strong> ✅ <strong>Intact</strong></p>
+<p>Spot-check: all 60 FRs trace back to at least one journey (FRs 1–9 are platform-level supporting all journeys; FRs 10–60 are invoked by specific journeys). Journey 1 (SSCS) explicitly cites FR11, FR15, FR18, FR23, FR27, FR29, FR30, FR32, FR37, FR42 — good traceability.</p>
+<p><strong>Scope → FR Alignment:</strong> ⚠️ <strong>Gaps Identified</strong></p>
+<p>The MVP / Growth Features / Vision sections of Product Scope are <strong>also untouched</strong> by the 21-edit cascade. Multiple stale references:</p>
+<table>
+<thead>
+<tr>
+<th>Location</th>
+<th>Stale text</th>
+<th>Issue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP bullet 1 (Phase 0 Foundations, line 176)</td>
+<td>"Reference Data + Users/Roles <strong>migrated from APEX</strong>"</td>
+<td>No migration per D11; sourced from JOH eLinks + MRD</td>
+</tr>
+<tr>
+<td>MVP bullet 3 (Modern business-user UI, line 178)</td>
+<td>"replicating <strong>APEX layouts</strong> (D4)"</td>
+<td>APEX-only; SSCS wave 1 replicates GAPS</td>
+</tr>
+<tr>
+<td>MVP bullet 3 (admin task list)</td>
+<td>"reference-data maintenance, … migration-report review"</td>
+<td>Both obsolete: ref-data maintenance is upstream per D11; no migration reports per the retracted ETL</td>
+</tr>
+<tr>
+<td>MVP bullet 4 (Phase 9, line 179)</td>
+<td>"Phase 9 — Pilot rollout (wave 1): <strong>one region migrates</strong>"</td>
+<td>Wave 1 = SSCS jurisdiction, not a region</td>
+</tr>
+<tr>
+<td>MVP bullet 5 (Behavioural parity, line 180)</td>
+<td>"Behavioural parity <strong>with APEX</strong> verified through manual UAT performed by <strong>APEX-experienced users</strong>"</td>
+<td>Should be jurisdiction-incumbent per D5 reframed</td>
+</tr>
+<tr>
+<td>Explicit exclusions (line 190)</td>
+<td>"<strong>Tribunals coverage</strong>" listed as out-of-MVP</td>
+<td>SSCS Tribunals IS wave 1 per D11</td>
+</tr>
+<tr>
+<td>Explicit exclusions (line 191)</td>
+<td>"Historical-data access for <strong>migrated users</strong> (D3 + Risk #2)"</td>
+<td>No migration per D11</td>
+</tr>
+<tr>
+<td>Explicit exclusions (line 194-195)</td>
+<td>"auth tables populated by <strong>SQL ETL</strong> in MVP" + "<strong>Migration Reports</strong> review UI (sign-off in MVP via versioned git commits …)"</td>
+<td>Both obsolete per D11</td>
+</tr>
+<tr>
+<td>Explicit exclusions (line 196)</td>
+<td>"Activation Flag toggle UI (<strong>FR58</strong> cutover …)"</td>
+<td>Stale FR number (should be FR57)</td>
+</tr>
+<tr>
+<td>Growth Features (line 204)</td>
+<td>"(UI surface of FR4 + <strong>FR58</strong>)"</td>
+<td>Stale FR number (should be FR57)</td>
+</tr>
+<tr>
+<td>Growth Features (line 205)</td>
+<td>"<strong>Migration Reports module</strong>: view reconciliation reports, apply decisions to unmatched records"</td>
+<td>Obsolete entire module per D11 (no migration)</td>
+</tr>
+<tr>
+<td>Growth Features (line 208)</td>
+<td>"<strong>Wave-by-wave rollout</strong>: Phase 10..N — additional regions migrate, wave by wave, until all regions are on RAM Pathfinder and APEX is retired"</td>
+<td>Doesn't mention SSCS wave 1; framing is Courts-only</td>
+</tr>
+<tr>
+<td>Growth Features (line 211)</td>
+<td>"future programmes (<strong>Tribunals</strong>, Actuals, Scheduling &amp; Listing) onboard onto <strong>JI's APIs</strong>"</td>
+<td>Tribunals is wave 1 (not future); "JI's APIs" should be "RAM Pathfinder's APIs"</td>
+</tr>
+<tr>
+<td>Growth Features (line 212)</td>
+<td>"Historical-data access policy for <strong>migrated users</strong>"</td>
+<td>No migration per D11</td>
+</tr>
+<tr>
+<td>Vision (line 217)</td>
+<td>"Strategic integration platform for HMCTS judicial scheduling — Tribunals, Magistrates, Civil, Family, Crown"</td>
+<td>Tribunals is wave 1 (not vision); Magistrates not previously scoped</td>
+</tr>
+<tr>
+<td>Vision (line 219)</td>
+<td>"Active matching / allocation service for <strong>fee-paid judges</strong> to vacancies"</td>
+<td>judges → JOHs per D11</td>
+</tr>
+</tbody>
+</table>
+<h3 id="orphan-elements">Orphan Elements</h3>
+<p><strong>Orphan Functional Requirements:</strong> 0 — all 60 FRs trace back to at least one user journey or platform-level concern.</p>
+<p><strong>Unsupported Success Criteria:</strong> Multiple (see chain validation above) — but the issue is the Success Criteria still referencing retracted decisions, not absent journeys.</p>
+<p><strong>User Journeys Without FRs:</strong> 0 — all 6 journeys invoke specific FRs.</p>
+<h3 id="traceability-matrix-summary">Traceability Matrix (summary)</h3>
+<table>
+<thead>
+<tr>
+<th>Chain link</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Executive Summary → Success Criteria</td>
+<td>⚠️ Gaps (Success Criteria not updated for D11)</td>
+</tr>
+<tr>
+<td>Success Criteria → User Journeys</td>
+<td>⚠️ Gaps (one-sided — journeys updated, criteria not)</td>
+</tr>
+<tr>
+<td>User Journeys → FRs</td>
+<td>✅ Intact</td>
+</tr>
+<tr>
+<td>Scope → FRs</td>
+<td>⚠️ Gaps (MVP/Growth/Vision not updated for D11)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total Traceability Issues:</strong> Two large sections — <strong>Success Criteria</strong> and <strong>Product Scope</strong> — were missed by the 21-edit cascade and contain ~20 distinct stale references between them.</p>
+<p><strong>Severity:</strong> <strong>Warning</strong> (not Critical — no orphan FRs; chain ends intact; but mid-chain contradictions are substantial and would mislead downstream readers).</p>
+<p><strong>Recommendation:</strong> Schedule a focused follow-up edit pass to sweep the Success Criteria and Product Scope sections (lines 126–222) for D11/revised D3/superseded D9/reframed D5 alignment. Estimated 15–25 small edits. Worth doing <strong>before</strong> the architecture-document workstream, otherwise the architecture team works from a contradictory PRD.</p>
+</div></details><details class="section" id="implementation-leakage-validation"><summary><span class="section-title">Implementation Leakage Validation</span></summary><div class="section-body">
+<h3 id="leakage-by-category">Leakage by Category</h3>
+<p><strong>Frontend frameworks:</strong> 0 violations.</p>
+<p><strong>Backend frameworks:</strong> 2 references — both inside the FR8 + NFR28 wording, naming Spring Boot conventions and Spring Actuator. These are clearly implementation leakage (the FRs specify HOW configuration is managed and HOW health probes are exposed, not WHAT the system needs).</p>
+<p><strong>Databases:</strong> 0 violations (no PostgreSQL/MySQL/MongoDB references in FR/NFR — they live in Architecture).</p>
+<p><strong>Cloud platforms:</strong> Multiple references to "Azure" (Azure UK South, Azure-native logging, Azure Key Vault, Azure Workload Identity, AKS). Mostly capability-relevant under the data-residency NFR31 + locked-stack context.</p>
+<p><strong>Infrastructure:</strong> "Kubernetes" referenced in NFR28 + NFR40. Capability-adjacent since "platform-portable deployment" is the underlying capability and Kubernetes is the chosen platform.</p>
+<p><strong>Libraries:</strong> "Flyway" (FR8), "Testcontainers" (NFR41) — both name specific tools rather than capabilities.</p>
+<h3 id="detailed-findings--clear-implementation-leakage">Detailed Findings — Clear Implementation Leakage</h3>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>FR/NFR</th>
+<th>Leakage</th>
+<th>Comment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR8</td>
+<td>"Cross-service runtime policy values are stored in a shared <code>configuration_values</code> infrastructure table, schema-managed by <code>ram-architecture</code>'s <strong>Flyway baseline migration</strong> and SELECT-granted to every RAM Pathfinder service DB role. Updates are made via <strong>Flyway migrations</strong> or direct admin SQL. Per-service configuration scoped to a single service uses <strong>Spring profiles + <code>application.yml</code> + Azure Key Vault</strong>."</td>
+<td>Tooling-mechanism (Flyway, Spring profiles, application.yml, Azure Key Vault) describes HOW configuration is managed</td>
+<td>Capability is "cross-service runtime policy values must be available to every service" — the storage + admin mechanism is implementation.</td>
+</tr>
+<tr>
+<td>NFR12</td>
+<td>"<strong>Inter-service authentication for user-initiated calls is via JWT propagation</strong> — the user's JWT (issued by HMCTS IdP) is forwarded by the upstream service's outbound HTTP client and validated by the downstream service's <strong><code>JWTFilter</code></strong> against the IdP's JWKS endpoint. <strong>Inter-service authentication for batch / scheduled components</strong> is via OAuth 2.0 <code>client_credentials</code> against <code>ram-mock-auth</code> …"</td>
+<td>Names the filter class (<code>JWTFilter</code>), the mock-auth service (<code>ram-mock-auth</code>), and the OAuth grant type</td>
+<td>Capability is "inter-service calls authenticate as the originating user (or as a service principal for batch)." Mechanism is architecture.</td>
+</tr>
+<tr>
+<td>NFR27</td>
+<td>"Logs ingested into Azure-native logging (<strong>Application Insights / Log Analytics</strong>)."</td>
+<td>Names the specific Azure logging products</td>
+<td>"Azure-native logging" alone would specify the capability + residency. The product names leak implementation.</td>
+</tr>
+<tr>
+<td>NFR28</td>
+<td>"Every service exposes Kubernetes-compatible liveness and readiness endpoints (<strong>Spring Actuator</strong>)."</td>
+<td>Names the implementation library</td>
+<td>"Kubernetes-compatible liveness/readiness endpoints" is the capability; "(Spring Actuator)" names the framework feature.</td>
+</tr>
+<tr>
+<td>NFR41</td>
+<td>"automated CI tests are unit, integration (<strong>Testcontainers</strong>), and contract tests only"</td>
+<td>Names a specific testing library</td>
+<td>"Integration tests against a containerised database" is the capability; "Testcontainers" is the implementation choice.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="contextual--capability-relevant-references-not-counted-as-violations">Contextual / Capability-Relevant References (NOT counted as violations)</h3>
+<ul>
+<li><strong>NFR16:</strong> "Azure Key Vault <strong>or equivalent</strong>" — explicitly capability-relevant with softened wording.</li>
+<li><strong>NFR31:</strong> "Azure UK regions only" — data-residency capability per UK GDPR; Azure region is the binding constraint, not an implementation choice.</li>
+<li><strong>NFR38:</strong> "Azure region — UK South — with multi-AZ HA" — capability-relevant under the data-residency + availability constraints.</li>
+<li><strong>NFR40:</strong> "deployable on Kubernetes" — platform constraint per the locked stack; "rolling updates per service per region" is the underlying capability.</li>
+<li><strong>FR5:</strong> Architecture options listed ("Azure Workload Identity, mTLS, …") in a deferred-decision context — clearly architecture-phase, not capability.</li>
+</ul>
+<h3 id="summary">Summary</h3>
+<p><strong>Total Implementation Leakage Violations:</strong> 5 (clear) <strong>Borderline references (not counted):</strong> 5</p>
+<p><strong>Severity:</strong> <strong>Warning</strong> (5 violations, mostly clustered in FR8 + NFR12)</p>
+<p><strong>Recommendation:</strong></p>
+<p>The 5 clear leakage points are <strong>contextually justified</strong> given the PRD's Technology Stack section explicitly locks Java 25 + Spring Boot 4 + Kubernetes + Azure as programme-level decisions. The implementations are intentionally named in those FRs/NFRs because the programme committed to them upfront.</p>
+<p>Two paths:</p>
+<ol type="1">
+<li><strong>Accept the leakage</strong> — record an explicit note in the FR/NFR preamble stating that "implementation choices are programme-locked (per Technology Stack) and intentionally referenced where they tighten the contract."</li>
+<li><strong>Surgically refactor</strong> — move the implementation-specific clauses from FR8 + NFR12 + NFR27 + NFR28 + NFR41 to the Technology Stack subsection of the PRD or to the Architecture document, leaving the FRs/NFRs as pure capability statements.</li>
+</ol>
+<p>Either approach is defensible. The current state is <strong>not a blocker</strong> for downstream work — the architecture team can resolve the references — but it does cost BMAD-purity on the WHAT-vs-HOW separation.</p>
+</div></details><details class="section" id="domain-compliance-validation"><summary><span class="section-title">Domain Compliance Validation</span></summary><div class="section-body">
+<p><strong>Domain:</strong> govtech (UK HMCTS — judicial operations) <strong>Complexity:</strong> High (regulated)</p>
+<h3 id="required-special-sections--compliance-matrix">Required Special Sections — Compliance Matrix</h3>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Status</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Accessibility — WCAG 2.2 AA + Public Sector Bodies Accessibility Regs 2018</strong></td>
+<td>✅ Met</td>
+<td>NFR17, NFR18, NFR19; Domain-Specific Reqs §Compliance line 345</td>
+</tr>
+<tr>
+<td><strong>UK GDPR / Data Protection Act 2018</strong></td>
+<td>✅ Met</td>
+<td>NFR30; Domain-Specific Reqs §Compliance line 347</td>
+</tr>
+<tr>
+<td><strong>Data residency (UK-only)</strong></td>
+<td>✅ Met</td>
+<td>NFR31 explicit Azure UK regions only; Tech Stack line 368/374</td>
+</tr>
+<tr>
+<td><strong>HMCTS / MoJ Government Functional Standard 7 — Security</strong></td>
+<td>✅ Met</td>
+<td>NFR15; Domain-Specific Reqs §Compliance line 348</td>
+</tr>
+<tr>
+<td><strong>Security clearance for implementation team</strong></td>
+<td>✅ Acknowledged</td>
+<td>Risk Mitigations §Domain-Specific line 395 ("Programme-management territory; team members work under HMCTS standard clearance levels")</td>
+</tr>
+<tr>
+<td><strong>FOI Act 2000 / transparency</strong></td>
+<td>✅ Met</td>
+<td>NFR33; Domain-Specific Reqs §Compliance line 350 + Risk Mitigations line 394</td>
+</tr>
+<tr>
+<td><strong>GDS Service Standard alignment</strong></td>
+<td>✅ Met</td>
+<td>Domain-Specific Reqs §Compliance line 346</td>
+</tr>
+<tr>
+<td><strong>HMCTS-specific framework references</strong></td>
+<td>✅ Met</td>
+<td>NFR15 + Domain-Specific Reqs line 348; HMCTS IdP integration per NFR20</td>
+</tr>
+<tr>
+<td><strong>Procurement compliance</strong></td>
+<td>⚪ Not explicitly named</td>
+<td>Implicit in HMCTS/MoJ framework references; UK govtech procurement is HMCTS-internal; not a typical PRD section for an internal rebuild</td>
+</tr>
+</tbody>
+</table>
+<h3 id="compliance-severity">Compliance Severity</h3>
+<p><strong>Required Sections Present:</strong> 8/8 named requirements met. Procurement compliance is implicit but not explicitly sectioned (and not required for an internal rebuild within HMCTS). <strong>Compliance Gaps:</strong> 0 substantive gaps.</p>
+<p><strong>Severity:</strong> <strong>Pass</strong></p>
+<p><strong>Minor finding:</strong></p>
+<ul>
+<li>Line 347 (Domain-Specific Requirements → UK GDPR): wording says "<strong>JI</strong> does not hold case-level data (REP-BR-NFR-03 from <code>functional-modules.md</code>)." The "JI" reference should be "<strong>RAM Pathfinder</strong>" per the project rename — the constraint applies to RAM Pathfinder going forward, not legacy JI. Single-word substitution.</li>
+</ul>
+<p><strong>Recommendation:</strong> GovTech compliance position is strong. All UK public-sector regulatory frameworks (WCAG, GDPR, FOI, GFS 7, Public Sector Bodies Accessibility Regs, GDS, Azure UK data residency) are codified as NFRs or in the Domain-Specific Requirements section. No remediation needed at this layer beyond the one-word JI → RAM Pathfinder fix on line 347.</p>
+</div></details><details class="section" id="project-type-compliance-validation"><summary><span class="section-title">Project-Type Compliance Validation</span></summary><div class="section-body">
+<p><strong>Project Type:</strong> <code>api_backend</code> (per frontmatter classification.projectType) <strong>Project-Type Overrides:</strong> <code>ux_ui</code>, <code>visual_design</code>, <code>user_journeys</code> in scope per D4</p>
+<h3 id="required-sections-for-api_backend">Required Sections for api_backend</h3>
+<table>
+<thead>
+<tr>
+<th>Required</th>
+<th>Status</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Endpoint Specs</td>
+<td>✅ Present</td>
+<td>API Backend Specific Requirements → Endpoint Specifications (line 419 of source)</td>
+</tr>
+<tr>
+<td>Auth Model</td>
+<td>✅ Present</td>
+<td>API Backend Specific Requirements → Authentication Model (line 451; just updated in Edit 18)</td>
+</tr>
+<tr>
+<td>Data Schemas</td>
+<td>✅ Present</td>
+<td>API Backend Specific Requirements → Data Schemas</td>
+</tr>
+<tr>
+<td>API Versioning</td>
+<td>✅ Present</td>
+<td>API Backend Specific Requirements → API Versioning</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bonus sections (above and beyond required):</strong></p>
+<ul>
+<li>Error Codes (RFC 9457 problem-details specified)</li>
+<li>Rate Limits</li>
+<li>Client Tooling (Postman)</li>
+<li>API Documentation (OpenAPI 3.x + Swagger UI)</li>
+<li>Implementation Considerations</li>
+<li>Project-Type Overview</li>
+<li>Technical Architecture Considerations</li>
+</ul>
+<h3 id="excluded-sections-for-api_backend">Excluded Sections for api_backend</h3>
+<table>
+<thead>
+<tr>
+<th>Excluded</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UX/UI Requirements section</td>
+<td>⚠️ Waived by D4 override — user_journeys are explicitly in scope. User Journeys section IS present (lines 245–340), which is intentional given D4. Not a violation.</td>
+</tr>
+<tr>
+<td>Mobile-specific sections</td>
+<td>✅ Absent (correct)</td>
+</tr>
+<tr>
+<td>Desktop-specific sections</td>
+<td>✅ Absent (correct)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="compliance-summary">Compliance Summary</h3>
+<p><strong>Required Sections:</strong> 4/4 present (100%) <strong>Excluded Sections Present:</strong> 0 substantive (the User Journeys section is allowed by D4) <strong>Compliance Score:</strong> 100%</p>
+<p><strong>Severity:</strong> <strong>Pass</strong></p>
+<p><strong>Recommendation:</strong> All <code>api_backend</code> project-type requirements satisfied. The project-type override (ux_ui + user_journeys per D4) is correctly recorded in frontmatter and reflected in the PRD structure. No remediation needed at this layer.</p>
+</div></details><details class="section" id="smart-requirements-validation"><summary><span class="section-title">SMART Requirements Validation</span></summary><div class="section-body">
+<p><strong>Total Functional Requirements:</strong> 60 (FR1–FR60)</p>
+<h3 id="scoring-methodology">Scoring Methodology</h3>
+<p>Each FR scored 1–5 on the SMART dimensions (Specific / Measurable / Attainable / Relevant / Traceable). A category-summary approach is used here — the 60×5 matrix is too verbose for the report. Spot-scoring is applied across all 12 FR sub-sections to detect outliers and any FR with a score &lt; 3 in any dimension.</p>
+<h3 id="sampled-scoring-12-representative-frs-across-all-fr-sub-sections">Sampled scoring (12 representative FRs across all FR sub-sections)</h3>
+<table>
+<thead>
+<tr>
+<th>FR #</th>
+<th>Sub-section</th>
+<th>S</th>
+<th>M</th>
+<th>A</th>
+<th>R</th>
+<th>T</th>
+<th>Avg</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR1</td>
+<td>Identity &amp; Authorisation</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>4.8</td>
+</tr>
+<tr>
+<td>FR5</td>
+<td>Identity &amp; Authorisation (post-MVP framing)</td>
+<td>4</td>
+<td>4</td>
+<td>5</td>
+<td>4</td>
+<td>4</td>
+<td>4.2</td>
+</tr>
+<tr>
+<td>FR6</td>
+<td>Foundational Data Management (two-tier model)</td>
+<td>5</td>
+<td>4</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>4.6</td>
+</tr>
+<tr>
+<td>FR10</td>
+<td>JOH Records &amp; Working Patterns</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>FR19</td>
+<td>Absence Workflow</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>FR23</td>
+<td>Vacancy &amp; Cover</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>FR29</td>
+<td>Booking Management</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>FR40</td>
+<td>Sitting Management (Verifier re-open)</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>FR42</td>
+<td>Payment &amp; Reconciliation (batch)</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>FR48</td>
+<td>Itineraries &amp; Reporting</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5.0</td>
+</tr>
+<tr>
+<td>FR55</td>
+<td>Platform Operations (Home page)</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>4.8</td>
+</tr>
+<tr>
+<td>FR60</td>
+<td>Platform Operations (Manual UAT)</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5.0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Sample average:</strong> 4.87 / 5.0</p>
+<h3 id="per-category-observations-across-all-60-frs">Per-category observations across all 60 FRs</h3>
+<table>
+<thead>
+<tr>
+<th>SMART dimension</th>
+<th>Aggregate assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Specific</strong></td>
+<td>Excellent. Every FR uses concrete actor + capability constructions ("RSU users can …", "RAM Pathfinder …"). Lists of fields and enumerated session types make capabilities precise.</td>
+</tr>
+<tr>
+<td><strong>Measurable</strong></td>
+<td>Strong. The capability tests are obvious for nearly every FR ("does the auto-create vacancy fire when absence + cover flag both true?"). A handful of FRs that span data-tier ownership (FR6, FR11) have multi-condition test criteria — slightly harder to test but still measurable.</td>
+</tr>
+<tr>
+<td><strong>Attainable</strong></td>
+<td>Strong. The 11-service architecture supports every FR. The few open dependencies (JOH eLinks integration mechanism; production service-principal issuer per G7.1) are flagged as architecture-phase decisions, not FR defects.</td>
+</tr>
+<tr>
+<td><strong>Relevant</strong></td>
+<td>Excellent. Every FR maps to a documented programme objective. No "wishlist" FRs detected.</td>
+</tr>
+<tr>
+<td><strong>Traceable</strong></td>
+<td>Strong. Every FR traces back to a user journey (after Edit 19's renumbering) or a platform-level concern. Cross-references to Decisions (D1–D12) are explicit on amended FRs.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="flagged-frs-any-score--3">Flagged FRs (any score &lt; 3)</h3>
+<p><strong>None.</strong> No FR scores below 3 in any SMART dimension across the sample or the broader scan.</p>
+<h3 id="overall-assessment-1">Overall Assessment</h3>
+<p><strong>All scores ≥ 3:</strong> 100% (60/60) <strong>All scores ≥ 4:</strong> ~100% (60/60 in the sample; FR5's "post-MVP deferred" framing is the lowest at 4.2 but still ≥ 4) <strong>Overall Average Score:</strong> ~4.85 / 5.0</p>
+<p><strong>Severity:</strong> <strong>Pass</strong> (well below the 10% flagged threshold; in fact 0% flagged)</p>
+<p><strong>Recommendation:</strong> Functional Requirements demonstrate excellent SMART quality across all dimensions. The PRD's discipline around the actor/capability format, enumerated fields, and explicit decision cross-references makes every FR testable, attainable and traceable. <strong>No SMART-related remediation needed.</strong> (The stale wording findings from earlier validation steps are not SMART defects — they're consistency defects from the D11 cascade.)</p>
+</div></details><details class="section" id="holistic-quality-assessment"><summary><span class="section-title">Holistic Quality Assessment</span></summary><div class="section-body">
+<h3 id="document-flow--coherence">Document Flow &amp; Coherence</h3>
+<p><strong>Assessment:</strong> <strong>Good</strong> (would be <strong>Excellent</strong> but for the Success Criteria + Product Scope sections that contradict the rest of the document — see Traceability findings).</p>
+<p><strong>Strengths:</strong></p>
+<ul>
+<li>Logical narrative arc: Executive Summary → Classification → Success Criteria → Product Scope → User Journeys → Domain-Specific → API Backend → Phased Development → Functional/Non-Functional Requirements → Decisions Log → Glossary → References.</li>
+<li>Decisions Log (D1–D12) provides a complete audit trail of programme-level decisions with explicit supersessions and reframings.</li>
+<li>Glossary is comprehensive — every acronym (60+ entries) defined; recent additions (GAPS, JOH, Jurisdiction, MRD, etc.) properly placed.</li>
+<li>Cross-references are pervasive and accurate (FRs ↔︎ NFRs ↔︎ Decisions ↔︎ Journeys) — when they're not stale.</li>
+<li>Tables used appropriately for FR/NFR catalogues, Integration Requirements, Phase-by-Phase Journey Mapping, Measurable Outcomes — strong LLM-readability.</li>
+</ul>
+<p><strong>Areas for Improvement:</strong></p>
+<ul>
+<li>The Executive Summary, Glossary, FR list and Decisions Log all reflect the SSCS-first pivot per D11/D12. The <strong>Success Criteria</strong> and <strong>Product Scope</strong> sections do <strong>not</strong> — they still describe the pre-SSCS Courts-only world, with references to retracted ETL, "Tribunals as future programme", and APEX-only parity. This creates <strong>mid-document contradictions</strong> that downstream readers (and LLMs) will trip over.</li>
+<li>Three remaining stale FR-number cross-references after the FR57/FR58 renumbering.</li>
+<li>One minor stale heading: <code>## Decisions Log (D1–D9)</code> should be <code>(D1–D12)</code>.</li>
+</ul>
+<h3 id="dual-audience-effectiveness">Dual Audience Effectiveness</h3>
+<p><strong>For Humans:</strong></p>
+<ul>
+<li><strong>Executive-friendly:</strong> Good. The Executive Summary's "Why now" + "What we're solving" + "Success" framing lands the strategic case in &lt;2 pages.</li>
+<li><strong>Developer clarity:</strong> Good. FRs are unambiguous, NFRs have explicit thresholds, the Technology Stack section locks the platform.</li>
+<li><strong>Designer clarity:</strong> Adequate. User Journeys cover the operational flow well, but no UX/UI section exists (waived by D4 override). UX work has to happen against the journeys + FRs directly.</li>
+<li><strong>Stakeholder decision-making:</strong> Strong — Decisions Log (D1–D12) makes the rationale auditable and lets stakeholders see what's locked vs deferred.</li>
+</ul>
+<p><strong>For LLMs:</strong></p>
+<ul>
+<li><strong>Machine-readable structure:</strong> Excellent. Consistent <code>##</code> Level 2 headers; consistent <code>### Subsection</code> sub-headers; bulleted lists for enumerations; tables for catalogues; explicit decision/FR cross-references with stable IDs (D1–D12, FR1–FR60, NFR1–NFR42).</li>
+<li><strong>UX readiness:</strong> Adequate — UX-design LLM can build from the 6 user journeys + FR/NFR pairs, with the open caveat that no explicit UX section exists.</li>
+<li><strong>Architecture readiness:</strong> Good — the 11-service decomposition is concrete; D12 boundary is explicit; Decisions Log walks the architecture LLM through every locked vs deferred decision.</li>
+<li><strong>Epic/Story readiness:</strong> Good — FRs map cleanly to story candidates; the SCP 2026-06-10 flags exactly which Phase 0 epics need restructuring.</li>
+</ul>
+<p><strong>Dual Audience Score:</strong> <strong>4/5</strong></p>
+<h3 id="bmad-prd-principles-compliance">BMAD PRD Principles Compliance</h3>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Information Density</td>
+<td>✅ <strong>Met</strong></td>
+<td>0 anti-pattern violations across 14,402 words. Practitioner voice is dense and declarative throughout.</td>
+</tr>
+<tr>
+<td>Measurability</td>
+<td>✅ <strong>Met</strong></td>
+<td>All 60 FRs + 42 NFRs measurable; SMART avg 4.85/5.</td>
+</tr>
+<tr>
+<td>Traceability</td>
+<td>⚠️ <strong>Partial</strong></td>
+<td>Executive Summary → Success Criteria chain broken (Success Criteria still pre-SSCS); Scope → FR also has stale references. Otherwise traceable.</td>
+</tr>
+<tr>
+<td>Domain Awareness</td>
+<td>✅ <strong>Met</strong></td>
+<td>GovTech compliance comprehensive: WCAG 2.2 AA, UK GDPR, FOI, GFS 7, GDS Service Standard, Azure UK data residency.</td>
+</tr>
+<tr>
+<td>Zero Anti-Patterns</td>
+<td>✅ <strong>Met</strong></td>
+<td>No filler/wordy/redundant/vague-quantifier phrases.</td>
+</tr>
+<tr>
+<td>Dual Audience</td>
+<td>✅ <strong>Met</strong></td>
+<td>Strong for both human and LLM consumption.</td>
+</tr>
+<tr>
+<td>Markdown Format</td>
+<td>✅ <strong>Met</strong></td>
+<td>Clean structure (one minor exception: heading <code>## Decisions Log (D1–D9)</code> should be <code>(D1–D12)</code>).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Principles Met:</strong> <strong>6/7</strong> fully, <strong>1/7 partial</strong> (Traceability).</p>
+<h3 id="overall-quality-rating">Overall Quality Rating</h3>
+<p><strong>Rating:</strong> <strong>4/5 — Good</strong></p>
+<p><strong>Scale:</strong></p>
+<ul>
+<li>5/5 — Excellent: Exemplary, ready for production use</li>
+<li><strong>4/5 — Good: Strong with minor improvements needed</strong> ← <em>this PRD</em></li>
+<li>3/5 — Adequate</li>
+<li>2/5 — Needs Work</li>
+<li>1/5 — Problematic</li>
+</ul>
+<p>The PRD is a strong programme-level document with deep decision auditability, comprehensive compliance coverage, and excellent BMAD discipline on density / measurability / SMART. The single thing keeping it from a <strong>5/5</strong> is <strong>internal inconsistency</strong> introduced by the 2026-06-10 SSCS-pivot cascade — the Decisions Log, FRs, Executive Summary, Glossary, Integration Requirements and User Journeys were all updated, but the <strong>Success Criteria</strong> and <strong>Product Scope</strong> sections were not. Fixing those two sections (a focused ~25-edit pass) would restore the document to 5/5.</p>
+<h3 id="top-3-improvements">Top 3 Improvements</h3>
+<ol type="1">
+<li><p><strong>Sweep Success Criteria + Product Scope (lines 126–222) for D11 alignment.</strong> <em>Biggest single improvement.</em> These sections currently describe the pre-SSCS Courts-only world: User Success enumerates only Courts roles; Business Success doesn't mention GAPS decommissioning; the Measurable Outcomes table references retracted ETL/migration; MVP scope says "wave 1 = one region migrates"; the explicit exclusions list still has "Tribunals coverage" as out-of-MVP. Estimated 15–25 small edits. Restores Executive-Summary-↔︎-Scope-↔︎-Success traceability and lifts the rating to 5/5.</p></li>
+<li><p><strong>Sweep NFR section (NFR13, NFR21, NFR32, NFR36, NFR38, NFR41 + section intro) for D11/D5-reframed alignment.</strong> The 21-edit SSCS cascade reframed FR60 (UAT) and D5 (incumbent) but didn't thread the change into NFRs that reference UAT, migration, and APEX-only rollback. ~6 edits.</p></li>
+<li><p><strong>Fix the 4 stale FR-number cross-references</strong> introduced by the FR57 retraction + FR58–FR61 → FR57–FR60 renumbering (lines 196, 204, 716 NFR38, 741 D11 implication). Plus the <code>## Decisions Log (D1–D9)</code> heading → <code>(D1–D12)</code>. Plus the one-word <code>JI → RAM Pathfinder</code> on line 347. ~5–6 trivial edits.</p></li>
+</ol>
+<h3 id="summary-1">Summary</h3>
+<p><strong>This PRD is:</strong> a programme-grade rebuild specification that demonstrates excellent BMAD discipline on requirements, decisions and compliance, but contains mid-document contradictions from an incomplete SSCS-pivot edit cascade that should be remediated before the architecture-document workstream begins.</p>
+<p><strong>To make it great:</strong> Run a focused ~30-edit follow-up pass covering Success Criteria + Product Scope + the NFR cohort/jurisdiction sweep + the four stale FR-number cross-references. ~1–2 hours of work to lift the rating from 4/5 to 5/5.</p>
+</div></details><details class="section" id="completeness-validation"><summary><span class="section-title">Completeness Validation</span></summary><div class="section-body">
+<h3 id="template-completeness">Template Completeness</h3>
+<p><strong>Template Variables Found:</strong> 0 violations.</p>
+<p>URL path parameters (<code>{id}</code>, <code>{officeId}</code>, <code>{judgeId}</code>, etc.) in REST endpoint specs are standard REST convention and not template placeholders. Verified.</p>
+<h3 id="content-completeness-by-section">Content Completeness by Section</h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Executive Summary</td>
+<td>✅ Complete</td>
+<td>SSCS-first framing landed (Edit 2 of the prior workflow run)</td>
+</tr>
+<tr>
+<td>Success Criteria</td>
+<td>✅ Present</td>
+<td>Content present but <strong>stale</strong> per Traceability findings — not a completeness defect, a consistency defect</td>
+</tr>
+<tr>
+<td>Product Scope</td>
+<td>✅ Present</td>
+<td>Same — present but stale</td>
+</tr>
+<tr>
+<td>User Journeys</td>
+<td>✅ Complete</td>
+<td>6 journeys (1 SSCS + 5 Courts)</td>
+</tr>
+<tr>
+<td>Functional Requirements</td>
+<td>✅ Complete</td>
+<td>60 FRs (FR1–FR60)</td>
+</tr>
+<tr>
+<td>Non-Functional Requirements</td>
+<td>✅ Complete</td>
+<td>42 NFRs (NFR1–NFR42)</td>
+</tr>
+<tr>
+<td>Decisions Log</td>
+<td>✅ Complete</td>
+<td>D1–D12</td>
+</tr>
+<tr>
+<td>Glossary</td>
+<td>✅ Complete</td>
+<td>All acronyms defined; new JOH-context entries added</td>
+</tr>
+<tr>
+<td>References</td>
+<td>✅ Complete</td>
+<td>Input documents listed; needs frontmatter-path fix per discovery finding</td>
+</tr>
+</tbody>
+</table>
+<h3 id="section-specific-completeness">Section-Specific Completeness</h3>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Success criteria measurable</td>
+<td>✅ All have specific measurement criteria</td>
+</tr>
+<tr>
+<td>User journeys cover all user types</td>
+<td>✅ Both SSCS (wave 1) and Courts (waves 2+) cohorts represented</td>
+</tr>
+<tr>
+<td>FRs cover MVP scope</td>
+<td>✅ 60 FRs cover all 11 services plus cross-cutting concerns</td>
+</tr>
+<tr>
+<td>NFRs have specific criteria</td>
+<td>✅ All 42 NFRs have specific thresholds or compliance frameworks</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tbd-references--intentional-deferrals-not-gaps">TBD References — Intentional Deferrals (not gaps)</h3>
+<table>
+<thead>
+<tr>
+<th>Line</th>
+<th>TBD</th>
+<th>Intent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>142</td>
+<td>"by <code>TBD post-MVP date</code>"</td>
+<td>Programme-management post-MVP date; intentional deferral</td>
+</tr>
+<tr>
+<td>167</td>
+<td>"by <code>TBD</code>"</td>
+<td>Same — post-MVP API consumer onboarding date</td>
+</tr>
+<tr>
+<td>382</td>
+<td>"sync mechanism TBD architecture"</td>
+<td>Architecture-phase decision per the revised D3</td>
+</tr>
+<tr>
+<td>454</td>
+<td>"Service-to-service authentication: TBD in architecture phase"</td>
+<td>Explicit deferral per FR5/G7.1</td>
+</tr>
+<tr>
+<td>479</td>
+<td>"Rate Limits: TBD — architecture-phase decision"</td>
+<td>Explicit deferral</td>
+</tr>
+<tr>
+<td>485</td>
+<td>"specific N TBD"</td>
+<td>Architecture-phase deprecation-period decision</td>
+</tr>
+<tr>
+<td>491</td>
+<td>"UI layer client: TBD in architecture phase"</td>
+<td>Explicit deferral</td>
+</tr>
+<tr>
+<td>515</td>
+<td>"Resource requirements: TBD (programme-management territory)"</td>
+<td>Explicit deferral</td>
+</tr>
+<tr>
+<td>780</td>
+<td>Glossary entry defining TBD</td>
+<td>Explanation of the convention</td>
+</tr>
+</tbody>
+</table>
+<p>All TBDs are <strong>intentional, framed deferrals</strong> to architecture phase or programme management. None are unfilled placeholders. Acceptable per BMAD purpose.</p>
+<h3 id="frontmatter-completeness">Frontmatter Completeness</h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stepsCompleted</code></td>
+<td>✅ Present</td>
+<td>Stale — records <code>step-12-complete</code> from 2026-05-05 only; the 2026-05-15 and 2026-06-10 course-correction runs are not recorded</td>
+</tr>
+<tr>
+<td><code>workflowCompleted</code></td>
+<td>✅ Present</td>
+<td>Records <code>true</code> from the original PRD run</td>
+</tr>
+<tr>
+<td><code>completedAt</code></td>
+<td>✅ Present</td>
+<td><code>2026-05-05</code> — stale for the same reason</td>
+</tr>
+<tr>
+<td><code>productCodename</code></td>
+<td>✅ Present</td>
+<td><code>RAM Pathfinder</code></td>
+</tr>
+<tr>
+<td><code>releaseMode</code></td>
+<td>✅ Present</td>
+<td><code>phased</code></td>
+</tr>
+<tr>
+<td><code>inputDocuments</code></td>
+<td>✅ Present</td>
+<td><strong>3 of 4 paths are stale</strong> (<code>docs/architecture/asis/...</code> should be <code>docs/architecture/asis/...</code>)</td>
+</tr>
+<tr>
+<td><code>workflowType</code></td>
+<td>✅ Present</td>
+<td><code>prd</code></td>
+</tr>
+<tr>
+<td><code>documentCounts</code></td>
+<td>✅ Present</td>
+<td>briefs:0, research:0, brainstorming:1, projectDocs:3, projectContext:0</td>
+</tr>
+<tr>
+<td><code>classification</code></td>
+<td>✅ Present</td>
+<td>projectType, domain, complexity, projectContext, projectTypeOverrides, classificationRationale all populated</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Frontmatter Completeness:</strong> 9/9 fields present; 2 fields contain <strong>stale values</strong> (<code>stepsCompleted</code> + <code>inputDocuments</code> paths) but no missing fields.</p>
+<h3 id="completeness-summary">Completeness Summary</h3>
+<p><strong>Overall Completeness:</strong> ~100% (all required sections present, all content blocks filled, no template variables remaining)</p>
+<p><strong>Critical Gaps:</strong> 0 <strong>Minor Gaps:</strong> 0 substantive completeness gaps; the stale-value issues in frontmatter + Success Criteria + Product Scope are <strong>consistency defects from earlier validation steps</strong>, not completeness gaps.</p>
+<p><strong>Severity:</strong> <strong>Pass</strong></p>
+<p><strong>Recommendation:</strong> PRD is complete with all required sections, content, frontmatter fields, and explicitly-framed deferrals. No completeness-driven remediation required.</p>
+</div></details><details class="section" id="post-validation-remediation-option-f--trivial-cleanups-applied"><summary><span class="section-title">Post-Validation Remediation (Option F — Trivial Cleanups Applied)</span></summary><div class="section-body">
+<p>User selected <strong>[F] Fix Simpler Items</strong> at the close of validation. The following 7 trivial cleanups were applied immediately (per Top 3 Improvements item #3):</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Fix</th>
+<th>Location</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>FR58</code> → <code>FR57</code> (Activation Flag toggle UI reference)</td>
+<td>Line 196 (MVP exclusions list)</td>
+<td>✅ Applied</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>FR58</code> → <code>FR57</code> (Users &amp; Roles admin UI surface reference)</td>
+<td>Line 204 (Growth Features)</td>
+<td>✅ Applied</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>FR58</code> → <code>FR57</code> (<code>auth_user_activation_flags</code> reference)</td>
+<td>NFR38 note in brackets</td>
+<td>✅ Applied</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>FR61</code> → <code>FR60</code> (Manual UAT reference)</td>
+<td>D11 Implication column</td>
+<td>✅ Applied</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>## Decisions Log (D1–D9)</code> → <code>(D1–D12)</code></td>
+<td>Section heading</td>
+<td>✅ Applied</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>JI does not hold case-level data</code> → <code>RAM Pathfinder does not hold case-level data</code></td>
+<td>Domain-Specific Requirements → UK GDPR bullet (line 347)</td>
+<td>✅ Applied</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>inputDocuments</code> paths: 3 stale <code>docs/architecture/asis/</code> paths → <code>docs/architecture/asis/</code></td>
+<td>Frontmatter</td>
+<td>✅ Applied</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cleanup deferred for follow-up edit pass</strong> (Top 3 Improvements items #1 + #2):</p>
+<ul>
+<li>Success Criteria section (lines 126–168) — D11 alignment sweep (~15–25 edits) ✅ <strong>Completed in <code>bmad-edit-prd</code> run, 2026-06-10</strong></li>
+<li>Product Scope section (lines 170–222) — D11 alignment sweep (~15–25 edits) ✅ <strong>Completed in <code>bmad-edit-prd</code> run, 2026-06-10</strong></li>
+<li>NFR section (NFR13, NFR21, NFR32, NFR36, NFR38, NFR41, intro) — D11/D5-reframed sweep (~6 edits) ✅ <strong>Completed in <code>bmad-edit-prd</code> run, 2026-06-10</strong></li>
+<li>Frontmatter <code>stepsCompleted</code> revisionLog ✅ <strong>Added as <code>editHistory</code> array in PRD frontmatter (3 entries: 2026-05-15 admin-UI scope change, 2026-06-10 SSCS pivot, 2026-06-10 post-validation edit pass)</strong></li>
+</ul>
+</div></details><details class="section" id="post-validation-edit-pass-2026-06-10-bmad-edit-prd"><summary><span class="section-title">Post-Validation Edit Pass (2026-06-10, <code>bmad-edit-prd</code>)</span></summary><div class="section-body">
+<p>After Option F's trivial cleanups, the user launched <code>bmad-edit-prd</code> to address the deferred sweeps. 10 edit proposals applied across 3 sections:</p>
+<h3 id="section-a--success-criteria-4-proposals-lines-126168">Section A — Success Criteria (4 proposals, lines 126–168)</h3>
+<ol type="1">
+<li><strong>User Success block</strong> — added SSCS jurisdiction (wave 1) sub-group with RTJ / Tribunal Judges / Tribunal Members M/DQ/DO / Caseworkers; preserved Courts (waves 2+) sub-group; added Shared sub-group; APEX-only framing → cohort's incumbent system; judges → JOHs; WCAG-compliant → WCAG 2.2 AA; SSCS GAPS-equivalent verification noted.</li>
+<li><strong>Business Success block</strong> — "APEX retirement" → "Legacy retirement" (GAPS for SSCS + APEX for Courts); Tribunals removed from future-programmes list; "due to migration" → "due to cutover"; judges → JOHs; "per-region rollout" → "per-jurisdiction-then-per-region rollout".</li>
+<li><strong>Technical Success block</strong> — "Judge" service → "JOH (<code>ram-joh</code>) per D11"; Phase 0 migration correctness retracted, replaced with Phase 0 ingestion correctness (JOH eLinks + MRD); behavioural parity reframed per D5; SSCS GAPS-equivalent performance verification noted.</li>
+<li><strong>Measurable Outcomes table</strong> — migration accuracy rows replaced with ingestion + user-onboarding correctness rows; behavioural-parity row reframed; per-wave feature-parity row generalised; Tribunals removed from API consumer onboarding examples.</li>
+</ol>
+<h3 id="section-b--product-scope-4-proposals-lines-170222">Section B — Product Scope (4 proposals, lines 170–222)</h3>
+<ol start="5" type="1">
+<li><strong>MVP block</strong> — preamble updated for D8 reframed; Phase 0 Foundations bullet rewritten (no migration; JOH eLinks + MRD; two-population identity); 11-service list has Judge → JOH (<code>ram-joh</code>); UI bullet generalised; Phase 9 Pilot rollout = SSCS jurisdiction; behavioural parity reframed.</li>
+<li><strong>Explicit MVP exclusions</strong> — Tribunals coverage removed (it's wave 1, not an exclusion); Migration Reports review UI removed (no migration reports); Reference Data maintenance UI flagged as retracted per D11; Active matching cross-referenced to D12.</li>
+<li><strong>Growth Features</strong> — Migration Reports module removed; Reference Data maintenance flagged as scope-dependent on D11 follow-up; admin-write API endpoints scoped to ram-authorisation only (ram-reference-data writes retracted); wave-by-wave rollout explicitly Courts-cohort; Tribunals removed from future programmes; "JI's APIs" → "RAM Pathfinder's APIs"; historical-data access generalised across cohorts.</li>
+<li><strong>Vision</strong> — Strategic integration platform reframed (Tribunals/SSCS in wave 1; Magistrates as future jurisdiction); Active matching/allocation flagged as external-to-RAM per D12; JFEPS reconciliation: JI → RAM Pathfinder.</li>
+</ol>
+<h3 id="section-c--nfr-cohort-sweep-2-proposals-7-nfr-amendments">Section C — NFR cohort sweep (2 proposals; 7 NFR amendments)</h3>
+<ol start="9" type="1">
+<li><strong>NFR intro + NFR13 + NFR21</strong> — NFR intro adds SSCS GAPS-equivalent verification; NFR13 adds jurisdiction to authorisation scope; NFR21 adds SSCS wave-1 preservation note for JFEPS.</li>
+<li><strong>NFR32 + NFR36 + NFR38 + NFR41</strong> — NFR32 retraction of migrated transactional history language; NFR36 per-wave rollback target is jurisdiction's incumbent system; NFR38 wave-scope examples extended; NFR41 reframed for jurisdiction-incumbent-experienced UAT.</li>
+</ol>
+<h3 id="final-validation-status">Final Validation Status</h3>
+<table>
+<thead>
+<tr>
+<th>Validation Dimension</th>
+<th>Pre-Edit</th>
+<th>Post-Edit (expected)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Format Detection</td>
+<td>✅ BMAD Standard</td>
+<td>✅ BMAD Standard</td>
+</tr>
+<tr>
+<td>Information Density</td>
+<td>✅ Pass</td>
+<td>✅ Pass</td>
+</tr>
+<tr>
+<td>Measurability</td>
+<td>✅ Pass</td>
+<td>✅ Pass</td>
+</tr>
+<tr>
+<td>Traceability</td>
+<td>⚠️ Warning</td>
+<td>✅ <strong>Pass (expected — all stale references resolved)</strong></td>
+</tr>
+<tr>
+<td>Implementation Leakage</td>
+<td>⚠️ Warning (5 contextually justified)</td>
+<td>⚠️ Warning (unchanged — locked-stack context)</td>
+</tr>
+<tr>
+<td>Domain Compliance</td>
+<td>✅ Pass</td>
+<td>✅ Pass</td>
+</tr>
+<tr>
+<td>Project-Type Compliance</td>
+<td>✅ Pass</td>
+<td>✅ Pass</td>
+</tr>
+<tr>
+<td>SMART Quality</td>
+<td>✅ Pass</td>
+<td>✅ Pass</td>
+</tr>
+<tr>
+<td>Holistic Quality</td>
+<td><strong>4/5 — Good</strong></td>
+<td><strong>5/5 — Excellent (expected)</strong></td>
+</tr>
+<tr>
+<td>Completeness</td>
+<td>✅ Pass</td>
+<td>✅ Pass</td>
+</tr>
+</tbody>
+</table>
+<p>A re-validation run (<code>bmad-validate-prd</code> again) would confirm the rating change. Recommended before handing off to the architecture workstream.</p>
+</div></details><details class="section" id="validation-findings"><summary><span class="section-title">Validation Findings</span></summary><div class="section-body">
+<p>[Findings will be appended as validation progresses]</p>
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/prd-validation-report-2026-06-10.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#input-documents">Input Documents</a></li><li><a href="#pre-validation-observations">Pre-Validation Observations</a></li><li><a href="#format-detection">Format Detection</a></li><li><a href="#information-density-validation">Information Density Validation</a></li><li><a href="#product-brief-coverage">Product Brief Coverage</a></li><li><a href="#measurability-validation">Measurability Validation</a></li><li class="h3"><a href="#functional-requirements">Functional Requirements</a></li><li class="h3"><a href="#non-functional-requirements">Non-Functional Requirements</a></li><li class="h3"><a href="#overall-assessment">Overall Assessment</a></li><li class="h3"><a href="#warning-cross-reference-findings-from-the-sscs-pivot-cascade">⚠️ Cross-reference findings from the SSCS pivot cascade</a></li><li><a href="#traceability-validation">Traceability Validation</a></li><li class="h3"><a href="#chain-validation">Chain Validation</a></li><li class="h3"><a href="#orphan-elements">Orphan Elements</a></li><li class="h3"><a href="#traceability-matrix-summary">Traceability Matrix (summary)</a></li><li><a href="#implementation-leakage-validation">Implementation Leakage Validation</a></li><li class="h3"><a href="#leakage-by-category">Leakage by Category</a></li><li class="h3"><a href="#detailed-findings--clear-implementation-leakage">Detailed Findings — Clear Implementation Leakage</a></li><li class="h3"><a href="#contextual--capability-relevant-references-not-counted-as-violations">Contextual / Capability-Relevant References (NOT counted as violations)</a></li><li class="h3"><a href="#summary">Summary</a></li><li><a href="#domain-compliance-validation">Domain Compliance Validation</a></li><li class="h3"><a href="#required-special-sections--compliance-matrix">Required Special Sections — Compliance Matrix</a></li><li class="h3"><a href="#compliance-severity">Compliance Severity</a></li><li><a href="#project-type-compliance-validation">Project-Type Compliance Validation</a></li><li class="h3"><a href="#required-sections-for-api_backend">Required Sections for api_backend</a></li><li class="h3"><a href="#excluded-sections-for-api_backend">Excluded Sections for api_backend</a></li><li class="h3"><a href="#compliance-summary">Compliance Summary</a></li><li><a href="#smart-requirements-validation">SMART Requirements Validation</a></li><li class="h3"><a href="#scoring-methodology">Scoring Methodology</a></li><li class="h3"><a href="#sampled-scoring-12-representative-frs-across-all-fr-sub-sections">Sampled scoring (12 representative FRs across all FR sub-sections)</a></li><li class="h3"><a href="#per-category-observations-across-all-60-frs">Per-category observations across all 60 FRs</a></li><li class="h3"><a href="#flagged-frs-any-score--3">Flagged FRs (any score &lt; 3)</a></li><li class="h3"><a href="#overall-assessment-1">Overall Assessment</a></li><li><a href="#holistic-quality-assessment">Holistic Quality Assessment</a></li><li class="h3"><a href="#document-flow--coherence">Document Flow &amp; Coherence</a></li><li class="h3"><a href="#dual-audience-effectiveness">Dual Audience Effectiveness</a></li><li class="h3"><a href="#bmad-prd-principles-compliance">BMAD PRD Principles Compliance</a></li><li class="h3"><a href="#overall-quality-rating">Overall Quality Rating</a></li><li class="h3"><a href="#top-3-improvements">Top 3 Improvements</a></li><li class="h3"><a href="#summary-1">Summary</a></li><li><a href="#completeness-validation">Completeness Validation</a></li><li class="h3"><a href="#template-completeness">Template Completeness</a></li><li class="h3"><a href="#content-completeness-by-section">Content Completeness by Section</a></li><li class="h3"><a href="#section-specific-completeness">Section-Specific Completeness</a></li><li class="h3"><a href="#tbd-references--intentional-deferrals-not-gaps">TBD References — Intentional Deferrals (not gaps)</a></li><li class="h3"><a href="#frontmatter-completeness">Frontmatter Completeness</a></li><li class="h3"><a href="#completeness-summary">Completeness Summary</a></li><li><a href="#post-validation-remediation-option-f--trivial-cleanups-applied">Post-Validation Remediation (Option F — Trivial Cleanups Applied)</a></li><li><a href="#post-validation-edit-pass-2026-06-10-bmad-edit-prd">Post-Validation Edit Pass (2026-06-10, bmad-edit-prd)</a></li><li class="h3"><a href="#section-a--success-criteria-4-proposals-lines-126168">Section A — Success Criteria (4 proposals, lines 126–168)</a></li><li class="h3"><a href="#section-b--product-scope-4-proposals-lines-170222">Section B — Product Scope (4 proposals, lines 170–222)</a></li><li class="h3"><a href="#section-c--nfr-cohort-sweep-2-proposals-7-nfr-amendments">Section C — NFR cohort sweep (2 proposals; 7 NFR amendments)</a></li><li class="h3"><a href="#final-validation-status">Final Validation Status</a></li><li><a href="#validation-findings">Validation Findings</a></li></ul></aside>
+<script>
+(function(){
+  // 1. Sidebar accordion: persist user's group open/close preference per group.
+  //    The current page's group is always open on load (regardless of stored state).
+  document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){
+    var key = 'nav-group-' + d.dataset.group;
+    if (d.dataset.current !== 'true') {
+      var stored = localStorage.getItem(key);
+      if (stored === 'open') d.open = true;
+      else if (stored === 'closed') d.open = false;
+    }
+    d.addEventListener('toggle', function(){
+      localStorage.setItem(key, d.open ? 'open' : 'closed');
+    });
+  });
+
+  // 2. Expand all / Collapse all (sidebar)
+  document.querySelectorAll('button[data-nav-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.navAction === 'expand';
+      document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){ d.open = open; });
+    });
+  });
+
+  // 3. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 4. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

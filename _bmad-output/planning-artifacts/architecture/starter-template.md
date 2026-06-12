@@ -80,7 +80,7 @@ The HMCTS Crime SpringBoot template provides (verified by review on 2026-05-06):
 - **Logstash Logback Encoder** (`net.logstash.logback:logstash-logback-encoder:9.0`) for structured JSON logs; async appender.
 - **OpenTelemetry** (`spring-boot-starter-opentelemetry`) for traces; OTel Collector → Azure Application Insights as the export target.
 - Correlation ID filter at request entry; correlation ID propagation in service-to-service calls.
-- Spring Boot Actuator endpoints (`/actuator/health`, `/actuator/info`, `/actuator/readiness`); `/actuator/metrics` and Prometheus endpoint not exposed at MVP per D7.
+- Spring Boot Actuator endpoints (`/actuator/health`, `/actuator/info`, `/actuator/readiness`); `/actuator/metrics` and Prometheus endpoint not exposed at MVP[^d7].
 - Application Insights instrumentation key configured via env vars (`APPINSIGHTS_INSTRUMENTATIONKEY`).
 
 **Security defaults (per HMCTS Crime SpringBoot template):**
@@ -119,11 +119,13 @@ The scaffolding script applies RAM Pathfinder-specific defaults on top of the HM
 - Default Application Insights workspace: RAM Pathfinder shared workspace (HMCTS-provided).
 - Default Reference Data and Authorisation service URL placeholders.
 - Boilerplate `@ControllerAdvice` for [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details error envelopes (formerly RFC 7807; obsoleted July 2023 — content type and field shape unchanged).
-- Boilerplate `JWTFilter` + `AuthDetails` bean (per HMCTS template pattern); modified to call RAM Pathfinder Authorisation service per request (RAM Pathfinder variance from template's claims-only approach — required by FR58).
-- Boilerplate Reference Data direct-SQL access (JPA entities mapped to whitelisted Reference Data tables — 15 tables, see [`./data-tables.md`](./data-tables.md): `regions`, `offices`, `calendar_periods`, plus the 12 vocabulary tables); no client class.
+- Boilerplate `JWTFilter` + `AuthDetails` bean (per HMCTS template pattern); modified to call RAM Pathfinder Authorisation service per request (RAM Pathfinder variance from template's claims-only approach — required by FR2/FR57).
+- Boilerplate Reference Data direct-SQL access (JPA entities mapped to whitelisted Reference Data tables — both tiers, see [`./data-tables.md`](./data-tables.md): upstream-sourced `jo_*`/`mrd_*` plus RAM-owned `ram_regions`, `ram_offices`, `ram_calendar_periods` and vocabularies); no client class.
 - *(removed 2026-05-06)* Boilerplate APEX-comparison test base class — retracted. Behavioural parity is verified via **manual UAT performed by APEX-experienced users** (FR61 / NFR41 revised). Per-service UAT scripts live under `docs/uat/` in the service repo, not as test code.
 - Default port `8082` (per HMCTS template).
 
 These are **scaffolded once per service**; subsequent edits live in the service's own repo. There is no upstream library that can force a redeployment.
 
 **Note:** Project initialisation using these commands and the scaffolding script should be the first implementation story per service.
+
+[^d7]: D7 — MVP observability is log-based; user-action audit is post-MVP.

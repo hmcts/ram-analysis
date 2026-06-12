@@ -52,9 +52,9 @@ The 42 Non-Functional Requirements are organised into 8 categories. Each subsect
 - **NFR21 — JFEPS / Liberata integration unchanged:** Payment schedule format (JFEPS-compatible Excel), email-to-Authoriser delivery, and authoriser-forwards-to-Liberata workflow are preserved exactly as in APEX.
 - **NFR22 — HMCTS email infrastructure:** Outbound transactional emails (booking ack, absence ack, payment schedules) dispatch via HMCTS email; delivery is reliable but not low-latency-critical.
 - **NFR23 — DA&I MI Feed:** Aggregate-only REST API contract; no case-level data exposed under any consumer authorisation.
-- **NFR24 — eLinks / HR systems:** No automated integration in MVP scope; manual data entry by RSU continues.
+- **NFR24 — JOH eLinks API + MRD integration (MVP scope)**[^d11]: JOH eLinks API is an MVP integration — the canonical source for judicial-holder reference data[^d3]. MRD data is ingested via a weekly Excel feed pending availability of MRD's public APIs. Manual data entry by RSU is no longer the operating model for these sources; corrections happen at source. Other HR systems beyond JOH eLinks / MRD remain out of MVP scope.
 
-**Architectural support:** OIDC integration via mock auth (Phase 0–8) + HMCTS IdP (pre-Phase-9 onward); JFEPS-Excel email via Notification unchanged; HMCTS email via Notification; MI Feed REST contract; no eLinks integration.
+**Architectural support:** OIDC integration via mock auth (Phase 0–8) + HMCTS IdP (pre-Phase-9 onward); JFEPS-Excel email via Notification unchanged (preserved for SSCS wave 1[^d11]); HMCTS email via Notification; MI Feed REST contract; **JOH eLinks in-process scheduled sync + MRD blob-drop pick-up inside `ram-reference-data`** (see [`../architecture.md`](../architecture.md) → *Upstream reference-data ingestion*).
 
 ## Observability (NFR25–NFR29)
 
@@ -62,15 +62,15 @@ The 42 Non-Functional Requirements are organised into 8 categories. Each subsect
 - **NFR26 — Log retention:** Logs retained sufficient for pilot incident triage; specific retention period set in Phase 0 within HMCTS data-retention policy.
 - **NFR27 — Log ingestion:** Logs ingested into Azure-native logging (Application Insights / Log Analytics).
 - **NFR28 — Health and readiness probes:** Every service exposes Kubernetes-compatible liveness and readiness endpoints (Spring Actuator).
-- **NFR29 — Roadmap commitments (post-MVP, not in MVP):** Structured user-action auditing and full metrics/trace observability beyond logs are post-MVP per D7.
+- **NFR29 — Roadmap commitments (post-MVP, not in MVP):** Structured user-action auditing and full metrics/trace observability beyond logs are post-MVP[^d7].
 
-**Architectural support:** Logback + Logstash JSON encoder → OpenTelemetry → Application Insights (per HMCTS Crime template); correlation-ID MDC; Spring Actuator probes (`/actuator/health`, `/actuator/info`, `/actuator/readiness`); 30-day hot + 90-day cold retention. User-action audit + metrics deferred per D7.
+**Architectural support:** Logback + Logstash JSON encoder → OpenTelemetry → Application Insights (per HMCTS Crime template); correlation-ID MDC; Spring Actuator probes (`/actuator/health`, `/actuator/info`, `/actuator/readiness`); 30-day hot + 90-day cold retention. User-action audit + metrics deferred[^d7].
 
 ## Data Privacy & Sovereignty (NFR30–NFR33)
 
 - **NFR30 — UK GDPR / Data Protection Act 2018 compliance:** Personal data scope is limited to user/judge identity, contact details, payroll numbers, and operational metadata. No case-level data anywhere in RAM Pathfinder.
 - **NFR31 — Data residency:** All RAM Pathfinder services and data hosted in Azure UK regions only. No personal data leaves the UK.
-- **NFR32 — Retention:** Data retention per HMCTS retention schedules. Migrated transactional history remains in APEX (D3); RAM Pathfinder retains only data created in RAM Pathfinder from migration onward.
+- **NFR32 — Retention:** Data retention per HMCTS retention schedules. Migrated transactional history remains in APEX[^d3]; RAM Pathfinder retains only data created in RAM Pathfinder from migration onward.
 - **NFR33 — FOI scope:** Aggregate operational data exposable per FOI requests; case-level data is forbidden by contract and therefore outside FOI scope by construction.
 
 **Architectural support:** Azure UK regions only; PostgreSQL Flexible Server in UK South; case-level data forbidden by schema (no fields exist); FOI scope by contract.
@@ -81,15 +81,21 @@ The 42 Non-Functional Requirements are organised into 8 categories. Each subsect
 - **NFR35 — Payment-cycle continuity:** Zero failed JFEPS payment cycles attributable to RAM Pathfinder deployment, rollout, or runtime issues. Payment generation can fall back to manual handling within a payment cycle if RAM Pathfinder is unavailable.
 - **NFR36 — Per-wave rollback:** Each rollout wave has a documented rollback path returning the affected region to APEX within one operational cycle if the wave's gate is breached post-cutover.
 - **NFR37 — Strategy A degraded-mode contract:** If federated read latency breaches NFR8, RAM Pathfinder degrades to Strategy C cached projection rather than failing; cache freshness window is published in the service's OpenAPI spec metadata and surfaced in response headers (e.g. `Cache-Control`, `Age`).
-- **NFR38 — HMCTS-judicial-region rollout isolation:** A wave activation or feature change targeting one HMCTS judicial region does not affect users in other HMCTS regions. *("Region" here means HMCTS judicial region per D8 — not Azure region. Architectural enforcement is at the application tier via per-user `auth_user_activation_flags` (FR58), not at the infrastructure tier.)*
+- **NFR38 — rollout-wave isolation** *(jurisdiction-first[^d8])*: A wave activation or feature change targeting one (jurisdiction, region) does not affect users in other waves. *(Architectural enforcement is at the application tier via per-user `ram_auth_user_activation_flags` carrying the (jurisdiction, region) tuple (FR57), not at the infrastructure tier.)*
 
-**Architectural support:** Operational hours availability; per-wave rollback via region activation flag (FR58); **single AKS cluster in UK South with multi-AZ node pools** (zone-redundant HA at app tier); **PostgreSQL Flexible Server zone-redundant HA** in UK South; HMCTS-judicial-region isolation (NFR38) enforced at app tier via FR58 activation flags. Disaster recovery is an open gap — see [`./gaps.md` G3.6](./gaps.md).
+**Architectural support:** Operational hours availability; per-wave rollback via (jurisdiction, region) activation flags (FR57); **single AKS cluster in UK South with multi-AZ node pools** (zone-redundant HA at app tier); **PostgreSQL Flexible Server zone-redundant HA** in UK South; wave isolation (NFR38) enforced at app tier via FR57 activation flags. Disaster recovery is an open gap — see [`./gaps.md` G3.6](./gaps.md).
 
 ## Maintainability (NFR39–NFR42)
 
-- **NFR39 — API-as-Product standards:** Every service exposes versioned contracts, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details error envelopes, and a published OpenAPI specification (per FR59). Versioning and deprecation policy is a Phase 0 deliverable. Deprecation signalling uses [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset` headers.
+- **NFR39 — API-as-Product standards:** Every service exposes versioned contracts, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details error envelopes, and a published OpenAPI specification (per FR58). Versioning and deprecation policy is a Phase 0 deliverable. Deprecation signalling uses [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset` headers.
 - **NFR40 — Per-service deployment unit:** Each of the 11 services is independently deployable on Kubernetes; rolling updates per service per region without coupling.
-- **NFR41 — Behavioural-parity UAT suite** *(revised 2026-05-06)*: Every domain service has a **manual UAT script** (per FR61) maintained alongside the service. APEX-experienced users walk through the script comparing RAM Pathfinder vs APEX before each rollout wave's cutover; sign-off (per role per region) is the wave gate. There is no automated parity test suite — automated CI tests are unit, integration (Testcontainers), and contract tests only.
+- **NFR41 — Behavioural-parity UAT suite**[^d11][^d5]: Every domain service has a **manual UAT script** (per FR60) maintained alongside the service. Jurisdiction-incumbent-experienced users walk through the script comparing RAM Pathfinder vs the incumbent before each wave's cutover (GAPS users for SSCS wave 1; APEX users for Courts waves 2+); sign-off (per role per wave) is the wave gate. There is no automated parity test suite — automated CI tests are unit, integration (Testcontainers), and contract tests only.
 - **NFR42 — Postman collections:** Each phase produces a Postman collection that exercises the phase's endpoints; collections are versioned alongside the services.
 
 **Architectural support:** API-as-Product standards (versioned, OpenAPI spec, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details, [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745) `Deprecation` + [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) `Sunset` for deprecation signalling); per-service deployment unit (one Spring Boot app, one container, one Helm chart); manual UAT scripts under `docs/uat/` per service; per-phase Postman collections.
+
+[^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
+[^d5]: D5 — the jurisdiction's incumbent system is the behavioural reference, verified by manual UAT.
+[^d7]: D7 — MVP observability is log-based; user-action audit is post-MVP.
+[^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
+[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.

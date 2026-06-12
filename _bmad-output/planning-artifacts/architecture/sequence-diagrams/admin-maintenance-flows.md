@@ -15,10 +15,10 @@ Four phases: (1) admin login + role-gate; (2) Reference Data write path; (3) Use
 
 ## Not in this diagram
 
-- **Phase 0 Data Migration ETL** — bulk-loads Reference Data and Users/Roles from APEX in one shot, calling the same APIs shown here in Phases 2 and 3 but operator-initiated and not via `ram-admin-ui`. ETL lives at `ram-architecture/migration/`. Not drawn separately at this scope — it's a programme deliverable, not a runtime business flow.
-- **Per-region phased activation cutover** (FR58) — wave-cutover operation that flips `auth_user_activation_flags`. Same shape as Path B but operator-initiated per wave. Could be diagrammed if useful — flag if you want it.
+- **Upstream reference-data ingestion** *(replaces the retracted Phase 0 ETL — revised D3, 2026-06-10)* — the JOH eLinks nightly sync and MRD weekly blob pick-up populate the tier-(a) `jo_*`/`mrd_*` tables in-process inside `ram-reference-data`; never via admin UI or admin API. See [`./joh-onboarding-and-sitting-generation.md`](./joh-onboarding-and-sitting-generation.md) Phase 1. The admin maintenance flows here apply to **tier-(b) RAM-owned data only** (FR6).
+- **Per-(jurisdiction, region) phased activation cutover** (FR57) — wave-cutover operation that flips `ram_auth_user_activation_flags` by jurisdiction + region. Operator-initiated per wave, DBA-via-SQL per the rollout runbook in MVP[^d10].
 - **Named-owner sign-off workflow detail** — Reference Data writes are subject to named-owner sign-off per FR6; the diagram captures the validation point but not the full multi-step approval. Sign-off mechanics are programme-level.
-- **Post-MVP admin modules** — per-region activation dashboard, migration reconciliation viewer, user-action audit viewer. Module placeholders are reserved in `ram-admin-ui` but not built at MVP.
+- **Post-MVP admin modules** — per-(jurisdiction, region) activation dashboard and user-action audit viewer. Module placeholders are reserved in `ram-admin-ui`, which is itself post-MVP[^d10] — in MVP every flow on this page is performed by DBAs via direct SQL per operational runbooks.
 
 ## Cross-cutting steps omitted for clarity
 
@@ -35,7 +35,7 @@ Four phases: (1) admin login + role-gate; (2) Reference Data write path; (3) Use
 |---|---|---|---|
 | 1 — Admin login + role-gate | Sys Admin | OIDC SSO same as business users; `ram-authorisation` role-gate restricts `ram-admin-ui` access to `sys-admin` role | Admin lands on `ram-admin-ui` Home with admin-scoped navigation; non-admin users see a 403 if they try to reach this hostname |
 | 2 — Reference Data write path (FR6) | Sys Admin | `ram-reference-data` is the single writer for the 15 Reference Data tables (revised FR7); writes are validated, audited, and persisted to the shared schema | Reference Data row created / updated; visible to every other RAM Pathfinder service on its next direct-SQL read (no cache, no propagation step) |
-| 3 — User & Role write path (FR4) | Sys Admin | `ram-authorisation` owns the 5 auth tables (`auth_users`, `auth_roles`, `auth_user_roles`, `auth_user_region_scopes`, `auth_user_activation_flags`); writes are validated and persisted | User / role / scope row created / updated; affected user sees the new effective permissions on their *next* request via per-request `authz/check` |
+| 3 — User & Role write path (FR4) | Sys Admin | `ram-authorisation` owns the 5 auth tables (`ram_auth_users`, `ram_auth_roles`, `ram_auth_user_roles`, `ram_auth_user_region_scopes`, `ram_auth_user_activation_flags`); writes are validated and persisted | User / role / scope row created / updated; affected user sees the new effective permissions on their *next* request via per-request `authz/check` |
 | 4 — Downstream visibility | (none — passive) | No cache, no event bus, no propagation step (architecture Principle 2 + REST-first synchronous coordination) | Next consumer call picks up the change naturally |
 
 ## Where to find more detail
@@ -50,5 +50,7 @@ Four phases: (1) admin login + role-gate; (2) Reference Data write path; (3) Use
 | FR4 (User & Role admin) + FR6 (Reference Data maintenance) | PRD `FR4`, `FR6`; both annotated in [`./functional-requirements-coverage.md`](../functional-requirements-coverage.md) with the admin UI location |
 | Why admin and business UI are separate repos (v2.10) | [`../../architecture.md` → Step 4 *Frontend Architecture*](../../architecture.md); [`./changelog.md` v2.10](../changelog.md) |
 | Per-request authz resolution that picks up Path B changes on the next call | [`./user-authentication-and-authorisation.md`](./user-authentication-and-authorisation.md) Phase 3 |
-| Phase 0 Data Migration ETL — the bulk-load equivalent of Phases 2 + 3 | [`../repo-structure.md` → `ram-architecture/migration/`](../repo-structure.md); epics.md AR46–AR49 |
+| Upstream reference-data ingestion (replaces the retracted ETL) | [`../../architecture.md` → *Upstream reference-data ingestion*](../../architecture.md); [`../data-tables.md`](../data-tables.md) tier-(a) tables |
 | As-is equivalent — Module 11 *Admin* had only narrow self-service (password change, new-user request); higher-impact admin was off-screen in OPT Support. RAM Pathfinder brings it into a first-class admin module. | [`../../../docs/architecture/asis/functional-modules.md` → Module 11](../../../../docs/architecture/asis/functional-modules.md) |
+
+[^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.

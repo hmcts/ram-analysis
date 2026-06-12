@@ -32,7 +32,7 @@ uxDeferralReason: Project currently scoped to domains and APIs only; UI deferred
 # Implementation Readiness Assessment Report
 
 **Date:** 2026-05-15
-**Project:** ji-analysis
+**Project:** ram-analysis
 
 ## 1. Document Inventory
 
@@ -245,7 +245,7 @@ PRD: `prd.md`, 728 lines, completed 2026-05-05 (`workflowCompleted: true`), with
 
 ### PRD Completeness Assessment (initial)
 
-- ✅ **Scope clarity** — MVP, Growth, Vision distinctly delineated with explicit exclusions list.
+- ✅ **Scope clarity** — MVP, Growth, Vision clearly separated with an explicit exclusions list.
 - ✅ **Traceability anchors** — FR/NFR numbered IDs, D1–D9 decision IDs, RFC citations, cross-references to source documents.
 - ✅ **User journeys** — 5 journeys cover the main operational cycle, daily confirmation, judge self-service, external API consumer, and a known cross-region edge case during partial rollout.
 - ✅ **Compliance & constraints** — UK govtech specifics (WCAG 2.2 AA, UK GDPR, FOI, GovS 7) addressed; data-residency NFR31 binding.

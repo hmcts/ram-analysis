@@ -3,9 +3,9 @@ validationTarget: '_bmad-output/planning-artifacts/prd.md'
 validationDate: '2026-06-10'
 inputDocuments:
   - '_bmad-output/brainstorming/brainstorming-session-2026-05-05-1600.md'
-  - 'resources/architecture/asis/functional-modules.md'
-  - 'resources/architecture/asis/data-dependencies.md'
-  - 'resources/architecture/asis/integration-dependencies.md'
+  - 'docs/architecture/asis/functional-modules.md'
+  - 'docs/architecture/asis/data-dependencies.md'
+  - 'docs/architecture/asis/integration-dependencies.md'
   - '_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-10.md'
   - '_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-15.md'
   - '_bmad-output/planning-artifacts/architecture-summary.md'
@@ -27,9 +27,9 @@ overallStatus: 'Warning'
 |---|---|---|
 | PRD | `_bmad-output/planning-artifacts/prd.md` | Validation target |
 | Brainstorming Session 2026-05-05 (1600) | `_bmad-output/brainstorming/brainstorming-session-2026-05-05-1600.md` | The 9 locked decisions, 11-service decomposition, migration table, risk register |
-| AS-IS Functional Modules | `resources/architecture/asis/functional-modules.md` | JI/APEX as-is module catalogue |
-| AS-IS Data Dependencies | `resources/architecture/asis/data-dependencies.md` | JI external data dependencies |
-| AS-IS Integration Dependencies | `resources/architecture/asis/integration-dependencies.md` | JI integration flows + mechanisms |
+| AS-IS Functional Modules | `docs/architecture/asis/functional-modules.md` | JI/APEX as-is module catalogue |
+| AS-IS Data Dependencies | `docs/architecture/asis/data-dependencies.md` | JI external data dependencies |
+| AS-IS Integration Dependencies | `docs/architecture/asis/integration-dependencies.md` | JI integration flows + mechanisms |
 | Sprint Change Proposal 2026-06-10 | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-10.md` | Captures the SSCS-first pivot, D11/D12 additions, and 21 PRD edits |
 | Sprint Change Proposal 2026-05-15 | `_bmad-output/planning-artifacts/sprint-change-proposal-2026-05-15.md` | Captures the prior admin-UI-removed-from-MVP decision (D10) |
 | Architecture Summary v2.2 | `_bmad-output/planning-artifacts/architecture-summary.md` | Target-state architecture reference (pre-SSCS-pivot; needs follow-up amendment per SCP 2026-06-10) |
@@ -38,7 +38,7 @@ overallStatus: 'Warning'
 
 These observations are surfaced during document discovery; formal validation findings will be appended in later steps.
 
-- **Frontmatter inputDocuments paths are stale.** The PRD frontmatter references `docs/architecture/asis/{functional-modules,data-dependencies,integration-dependencies}.md`, but the actual files live at `resources/architecture/asis/`. The `docs/architecture/asis/` directory only contains the HTML renders, not the source markdown. Recommendation: update the frontmatter paths during validation cleanup.
+- **Frontmatter inputDocuments paths are stale.** The PRD frontmatter references `docs/architecture/asis/{functional-modules,data-dependencies,integration-dependencies}.md`, but the actual files live at `docs/architecture/asis/`. The `docs/architecture/asis/` directory only contains the HTML renders, not the source markdown. Recommendation: update the frontmatter paths during validation cleanup.
 - **`stepsCompleted` frontmatter is stale.** It still records `step-12-complete` from the original 2026-05-05 PRD workflow run. Two subsequent course-correction runs (2026-05-15 and 2026-06-10) have substantially amended the PRD without updating this metadata. Recommendation: consider adding a `revisionLog` field or appending course-correction markers.
 
 ## Format Detection
@@ -337,7 +337,7 @@ Either approach is defensible. The current state is **not a blocker** for downst
 
 - Line 347 (Domain-Specific Requirements → UK GDPR): wording says "**JI** does not hold case-level data (REP-BR-NFR-03 from `functional-modules.md`)." The "JI" reference should be "**RAM Pathfinder**" per the project rename — the constraint applies to RAM Pathfinder going forward, not legacy JI. Single-word substitution.
 
-**Recommendation:** GovTech compliance posture is strong. All UK public-sector regulatory frameworks (WCAG, GDPR, FOI, GFS 7, Public Sector Bodies Accessibility Regs, GDS, Azure UK data residency) are codified as NFRs or in the Domain-Specific Requirements section. No remediation needed at this layer beyond the one-word JI → RAM Pathfinder fix on line 347.
+**Recommendation:** GovTech compliance position is strong. All UK public-sector regulatory frameworks (WCAG, GDPR, FOI, GFS 7, Public Sector Bodies Accessibility Regs, GDS, Azure UK data residency) are codified as NFRs or in the Domain-Specific Requirements section. No remediation needed at this layer beyond the one-word JI → RAM Pathfinder fix on line 347.
 
 ## Project-Type Compliance Validation
 
@@ -373,7 +373,7 @@ Either approach is defensible. The current state is **not a blocker** for downst
 ### Compliance Summary
 
 **Required Sections:** 4/4 present (100%)
-**Excluded Sections Present:** 0 substantive (the User Journeys section is sanctioned by D4)
+**Excluded Sections Present:** 0 substantive (the User Journeys section is allowed by D4)
 **Compliance Score:** 100%
 
 **Severity:** **Pass**
@@ -568,7 +568,7 @@ All TBDs are **intentional, framed deferrals** to architecture phase or programm
 | `completedAt` | ✅ Present | `2026-05-05` — stale for the same reason |
 | `productCodename` | ✅ Present | `RAM Pathfinder` |
 | `releaseMode` | ✅ Present | `phased` |
-| `inputDocuments` | ✅ Present | **3 of 4 paths are stale** (`docs/architecture/asis/...` should be `resources/architecture/asis/...`) |
+| `inputDocuments` | ✅ Present | **3 of 4 paths are stale** (`docs/architecture/asis/...` should be `docs/architecture/asis/...`) |
 | `workflowType` | ✅ Present | `prd` |
 | `documentCounts` | ✅ Present | briefs:0, research:0, brainstorming:1, projectDocs:3, projectContext:0 |
 | `classification` | ✅ Present | projectType, domain, complexity, projectContext, projectTypeOverrides, classificationRationale all populated |
@@ -594,11 +594,11 @@ User selected **[F] Fix Simpler Items** at the close of validation. The followin
 |---|---|---|---|
 | 1 | `FR58` → `FR57` (Activation Flag toggle UI reference) | Line 196 (MVP exclusions list) | ✅ Applied |
 | 2 | `FR58` → `FR57` (Users & Roles admin UI surface reference) | Line 204 (Growth Features) | ✅ Applied |
-| 3 | `FR58` → `FR57` (`auth_user_activation_flags` reference) | NFR38 parenthetical | ✅ Applied |
+| 3 | `FR58` → `FR57` (`auth_user_activation_flags` reference) | NFR38 note in brackets | ✅ Applied |
 | 4 | `FR61` → `FR60` (Manual UAT reference) | D11 Implication column | ✅ Applied |
 | 5 | `## Decisions Log (D1–D9)` → `(D1–D12)` | Section heading | ✅ Applied |
 | 6 | `JI does not hold case-level data` → `RAM Pathfinder does not hold case-level data` | Domain-Specific Requirements → UK GDPR bullet (line 347) | ✅ Applied |
-| 7 | `inputDocuments` paths: 3 stale `docs/architecture/asis/` paths → `resources/architecture/asis/` | Frontmatter | ✅ Applied |
+| 7 | `inputDocuments` paths: 3 stale `docs/architecture/asis/` paths → `docs/architecture/asis/` | Frontmatter | ✅ Applied |
 
 **Cleanup deferred for follow-up edit pass** (Top 3 Improvements items #1 + #2):
 

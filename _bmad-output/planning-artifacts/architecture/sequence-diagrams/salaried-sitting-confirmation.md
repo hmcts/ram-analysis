@@ -19,7 +19,7 @@ Four phases: (1) list daily sittings awaiting confirmation; (2) confirm with act
 - **Fee-paid booking confirmation** — distinct flow in [`./absence-to-reconciliation.md`](./absence-to-reconciliation.md) Phase 4 (`POST /v1/bookings/{id}/confirm`).
 - **Ad-hoc sitting creation** (FR39) — a small follow-up CRUD; same shape as Phase 2 with a different starting point.
 - **Sittings → Payments handoff** — Phase 2 of [`./payment-batch-flow.md`](./payment-batch-flow.md) shows the batch reading confirmed bookings + sittings; not duplicated here.
-- **Working-pattern generation of the planned sittings being confirmed** — see [`./judge-onboarding-and-sitting-generation.md`](./judge-onboarding-and-sitting-generation.md) Phase 3.
+- **Working-pattern generation of the planned sittings being confirmed** — see [`./joh-onboarding-and-sitting-generation.md`](./joh-onboarding-and-sitting-generation.md) Phase 3.
 - **External Request-for-Change ticketing** — does not exist in RAM Pathfinder (revised 2026-05-11). Post-verification amendment is a UI action gated by RBAC, with mandatory justification captured in-form and full audit. The legacy APEX "RFC" external workflow is retired.
 
 ## Cross-cutting steps omitted for clarity

@@ -1,0 +1,117 @@
+# RAM Pathfinder — System Context (D2 + ELK prototype)
+# Render: d2 --layout elk system-context.d2 system-context-d2.png
+
+direction: down
+
+vars: {
+  d2-config: {
+    layout-engine: elk
+  }
+}
+
+classes: {
+  external: {
+    style: {fill: "#e8e8e8"; stroke: "#808080"; border-radius: 6; font-size: 16}
+  }
+  xcut: {
+    style: {fill: "#cfe6f7"; stroke: "#3070a0"; border-radius: 6; font-size: 16}
+  }
+  domain: {
+    style: {fill: "#d8eede"; stroke: "#2f7a3e"; border-radius: 6; font-size: 16}
+  }
+  readmodel: {
+    style: {fill: "#e6d5ed"; stroke: "#7030a0"; border-radius: 6; font-size: 16}
+  }
+  authn-edge: {
+    style: {stroke: "#3070a0"; stroke-dash: 3; font-size: 14}
+  }
+  ext-edge: {
+    style: {stroke: "#808080"; stroke-dash: 3; font-size: 14}
+  }
+  dev-edge: {
+    style: {stroke: "#b06060"; stroke-dash: 1; font-size: 14}
+  }
+  main-edge: {
+    style: {font-size: 14}
+  }
+}
+
+title: |md
+  # RAM Pathfinder — System Context
+  High-level service map · 2026-06-12
+| {near: top-center}
+
+users: "Users\nJOHs · Caseworkers · RSU · Court\nClerks · Finance · MI" {
+  class: external
+  style.fill: "#f7f7f7"
+}
+
+ui: "ram-ui\nSPA · GOV.UK Design System" {
+  style: {fill: "#fff4c8"; stroke: "#b08800"; border-radius: 6; font-size: 16}
+}
+
+apim: "Azure API Management\nJWT validation · rate limits" {
+  style: {fill: "#cfe6f7"; stroke: "#3070a0"; border-radius: 6; font-size: 16}
+}
+
+mockauth: "ram-mock-auth\ndev/CI only — never in production" {
+  style: {fill: "#f5dede"; stroke: "#b06060"; stroke-dash: 3; border-radius: 6; font-size: 16}
+}
+
+xcutting: "Cross-cutting services (Phase 0)" {
+  style: {fill: "#eaf3fb"; stroke: "#3070a0"; font-size: 18; bold: true}
+  refdata: "ram-reference-data\ntwo-tier: jo_* + mrd_* (read-only)\n+ RAM-owned reference tables" {class: xcut}
+  notify: "ram-notification\noutbound transactional email" {class: xcut}
+  authz: "ram-authorisation\nper-request authz\ntwo-population identity" {class: xcut}
+}
+
+domain: "Domain services (Phases 1–6)" {
+  style: {fill: "#eef9f0"; stroke: "#2f7a3e"; font-size: 18; bold: true}
+  joh: "ram-joh\nworking patterns · ticket/location\noverlays · jurisdictional split" {class: domain}
+  absence: "ram-absence\nabsences + approval\ntriggers vacancy creation" {class: domain}
+  vacancy: "ram-vacancy\ncover-required vacancies\nfilled flag granted to Booking" {class: domain}
+  booking: "ram-booking\nfee-paid bookings + verification\nrow-locks target vacancy in-tx" {class: domain}
+  sitting: "ram-sitting\nsalaried-JOH sittings\nverification · AM/PM split" {class: domain}
+  payment: "ram-payment\npayments + reconciliation\nJFEPS Excel via Notification" {class: domain}
+}
+
+readmodels: "Read-model services (Phases 7–8)" {
+  style: {fill: "#f3e8f9"; stroke: "#7030a0"; font-size: 18; bold: true}
+  itinerary: "ram-itinerary\nCourt + JOH itinerary · Forward Look\nSQL JOINs (no own tables)" {class: readmodel}
+  mifeed: "ram-mi-feed\naggregate reports · DA&I feed\nSQL JOINs (no own tables)" {class: readmodel}
+}
+
+db: "PostgreSQL Flexible Server\nsingle shared schema · UK South\n55 tables" {
+  style: {fill: "#f3dfbf"; stroke: "#a06030"; border-radius: 6; font-size: 16}
+}
+
+# External systems are individually placed (grey, dashed) so each sits beside
+# the RAM service it talks to — short edges beat a far-away grouping box.
+idp: "HMCTS IdP\nOIDC · authN — external" {class: external}
+elinks: "JOH eLinks API — external\n15 jo_* entities" {class: external}
+mrd: "MRD — external\nweekly Excel feed" {class: external}
+email: "HMCTS Email — external" {class: external}
+jfeps: "JFEPS / Liberata — external\npayment processing" {class: external}
+casemgmt: "External case-management\nSSCS case mgmt · Courts Listing" {class: external}
+dai: "DA&I — external\nMI consumer (post-MVP)" {class: external}
+
+# ---- interactions ----
+users -> idp: authenticate (SSO) → JWT {class: authn-edge}
+users -> ui: HTTPS + JWT {class: main-edge}
+ui -> apim: HTTPS + bearer {class: main-edge}
+apim -> domain: user-facing APIs {class: main-edge}
+xcutting -> domain: serves authz · ref data · email {class: main-edge; style.stroke: "#2f7a3e"; style.stroke-width: 2}
+readmodels -> db: SQL JOIN federation {class: main-edge; style.stroke: "#7030a0"; style.stroke-width: 2}
+xcutting.authz -> idp: JWT validation via JWKS {class: authn-edge}
+xcutting.refdata -> elinks: nightly in-process sync {class: authn-edge}
+xcutting.refdata -> mrd: {class: authn-edge}
+apim -> casemgmt: JOH availability + booking APIs (from Phase 9) {class: ext-edge}
+xcutting.notify -> email: SMTP / Graph {class: ext-edge}
+email -> jfeps: JFEPS Excel (authoriser upload) {class: ext-edge}
+readmodels.mifeed -> dai: aggregate REST (post-MVP) {class: ext-edge}
+mockauth -> ui: dev/CI only {class: dev-edge}
+
+
+# ---- invisible spine (layout only): Users / UI / APIM / Cross-cutting / Domain / Read-models / DB ----
+apim -> xcutting.notify: {style.opacity: 0}
+domain.booking -> readmodels.itinerary: {style.opacity: 0}

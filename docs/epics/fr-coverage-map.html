@@ -51,6 +51,10 @@ main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;d
 main a{color:#0969da;text-decoration:none}
 main a:hover{text-decoration:underline}
 main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
 main li{margin:2px 0}
 main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
 main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
@@ -91,6 +95,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <summary>Product</summary>
 <ul>
 <li><a href="../prd.html">PRD (RAM Pathfinder)</a></li>
+<li><a href="../prd-validation-report-2026-06-10.html">PRD validation report — 2026-06-10</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="as-is-ji-architecture-views">
@@ -98,6 +103,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ul>
 <li><a href="../asis/system-context.html">System Context (as-is)</a></li>
 <li><a href="../asis/components.html">Components (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-analysis-pack">
+<summary>As-is — JI Analysis Pack</summary>
+<ul>
+<li><a href="../architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
+<li><a href="../architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
+<li><a href="../architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="as-is-ji-database-schema">
@@ -114,55 +127,56 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="../asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-architecture">
+<details class="nav-group" data-group="to-be-ram-pathfinder-architecture">
 <summary>To-be — RAM Pathfinder Architecture</summary>
 <ul>
 <li><a href="../architecture.html">Architecture (index)</a></li>
 <li><a href="../architecture-summary.html">Architecture summary</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-reference">
+<details class="nav-group" data-group="to-be-ram-pathfinder-reference">
 <summary>To-be — RAM Pathfinder Reference</summary>
 <ul>
-<li><a href="../architecture/user-types.html">User types</a></li>
-<li><a href="../architecture/data-tables.html">Authoritative table ownership</a></li>
-<li><a href="../architecture/conventions.html">Conventions</a></li>
-<li><a href="../architecture/repository-strategy.html">Repository strategy</a></li>
-<li><a href="../architecture/repo-structure.html">Repository structure</a></li>
-<li><a href="../architecture/starter-template.html">Starter template</a></li>
-<li><a href="../architecture/functional-requirements-coverage.html">Functional requirements coverage</a></li>
-<li><a href="../architecture/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
+<li><a href="../architecture/tobe/user-types.html">User types</a></li>
+<li><a href="../architecture/tobe/data-tables.html">Authoritative table ownership</a></li>
+<li><a href="../architecture/tobe/conventions.html">Conventions</a></li>
+<li><a href="../architecture/tobe/repository-strategy.html">Repository strategy</a></li>
+<li><a href="../architecture/tobe/repo-structure.html">Repository structure</a></li>
+<li><a href="../architecture/tobe/starter-template.html">Starter template</a></li>
+<li><a href="../architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
+<li><a href="../architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-sequence-diagrams">
+<details class="nav-group" data-group="to-be-ram-pathfinder-sequence-diagrams">
 <summary>To-be — RAM Pathfinder Sequence Diagrams</summary>
 <ul>
-<li><a href="../architecture/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
-<li><a href="../architecture/sequence-diagrams/judge-onboarding-and-sitting-generation.html">Judge onboarding & sitting gen.</a></li>
-<li><a href="../architecture/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
-<li><a href="../architecture/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
-<li><a href="../architecture/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
-<li><a href="../architecture/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
-<li><a href="../architecture/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
-<li><a href="../architecture/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
+<li><a href="../architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="to-be-ram-open-items">
+<details class="nav-group" data-group="to-be-ram-pathfinder-open-items">
 <summary>To-be — RAM Pathfinder Open Items</summary>
 <ul>
-<li><a href="../architecture/gaps.html">Gaps</a></li>
-<li><a href="../architecture/assumptions.html">Assumptions</a></li>
-<li><a href="../architecture/changelog.html">Changelog</a></li>
+<li><a href="../architecture/tobe/gaps.html">Gaps</a></li>
+<li><a href="../architecture/tobe/assumptions.html">Assumptions</a></li>
+<li><a href="../architecture/tobe/changelog.html">Changelog</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="implementation-readiness">
-<summary>Implementation Readiness</summary>
+<details class="nav-group" data-group="change-control-readiness">
+<summary>Change Control & Readiness</summary>
 <ul>
-<li><a href="../implementation-readiness-report-2026-05-15-rev2.html">Report — 2026-05-15 rev2 (current, post-D10)</a></li>
+<li><a href="../sprint-change-proposal-2026-06-10.html">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
 <li><a href="../sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
-<li><a href="../implementation-readiness-report-2026-05-15.html">Report — 2026-05-15 rev1 (superseded by rev2)</a></li>
-<li><a href="../implementation-readiness-report-2026-05-06.html">Report — 2026-05-06 (historical)</a></li>
-<li><a href="../implementation-readiness-report-2026-05-05.html">Report — 2026-05-05 (historical)</a></li>
+<li><a href="../implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
+<li><a href="../implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
+<li><a href="../implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
+<li><a href="../implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
 </ul>
 </details>
 <details class="nav-group" data-group="implementation-epics-foundations" data-current="true" open>
@@ -174,22 +188,22 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><a href="../epics/fr-coverage-map.html" class="current">FR coverage map</a></li>
 </ul>
 </details>
-<details class="nav-group" data-group="implementation-phase-0">
-<summary>Implementation — Phase 0 ✓</summary>
+<details class="nav-group" data-group="implementation-phase-0-restructured-2026-06-11">
+<summary>Implementation — Phase 0 (restructured 2026-06-11)</summary>
 <ul>
 <li><a href="../epics/phase-0/index.html">Phase 0 overview</a></li>
-<li><a href="../epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates (5 stories)</a></li>
-<li><a href="../epics/phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2 — Ref Data SQL-loaded (3 stories)</a></li>
-<li><a href="../epics/phase-0/epic-0.3-admin-manages-users-roles.html">Epic 0.3 — Users/Roles SQL-loaded (1 story)</a></li>
+<li><a href="../epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)</a></li>
+<li><a href="../epics/phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2 — Reference data read-only (2 stories)</a></li>
+<li><a href="../epics/phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3 — User populations bootstrapped (1 story)</a></li>
 <li><a href="../epics/phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4 — Notification scaffolded (2 stories)</a></li>
-<li><a href="../epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15)</a></li>
+<li><a href="../epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15 — superseded)</a></li>
 </ul>
 </details></aside>
 <main class="content">
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="fr-coverage-map">FR Coverage Map</h1>
 <p>This is the canonical FR-to-Epic mapping. It is updated each time a phase advances from framework to concrete epics + stories. The Phase × Area framework in <a href="framework.html">framework.md</a> is the architectural spine; this map is the implementation index.</p>
-<details class="section" id="phase-0-concrete-epics-0104--complete-revised-2026-05-15"><summary><span class="section-title">Phase 0 (concrete epics 0.1–0.4 — complete, revised 2026-05-15)</span></summary><div class="section-body">
+<details class="section" id="phase-0-concrete-epics-0104--pending-sscs-cohort-revalidation"><summary><span class="section-title">Phase 0 (concrete epics 0.1–0.4 — pending SSCS-cohort revalidation)</span></summary><div class="section-body">
 <table>
 <thead>
 <tr>
@@ -202,27 +216,27 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tbody>
 <tr>
 <td>FR1</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a></td>
+<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> (sign-in + two-population identity resolution) + <a href="phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3</a> (the data resolved against)</td>
 <td>—</td>
-<td>SSO via <code>ram-mock-auth</code> in non-prod</td>
+<td>IdP email → <code>jo_people</code> personnel number (JOH) or <code>ram_auth_staff_identities</code> UUID (staff),<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
 </tr>
 <tr>
 <td>FR2</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a></td>
+<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Story 0.1.5</td>
 <td>—</td>
-<td>Authorisation principal → roles + scope (read-only API)</td>
+<td>Authorisation principal → roles + <strong>jurisdiction</strong> + Region/Area scope (read-only API)</td>
 </tr>
 <tr>
 <td>FR3</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a></td>
+<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Story 0.1.5</td>
 <td>—</td>
 <td><code>GET /v1/users/{id}/effective-permissions</code></td>
 </tr>
 <tr>
 <td><strong>FR4</strong></td>
-<td><strong>Data layer only</strong> in <a href="phase-0/epic-0.3-admin-manages-users-roles.html">Epic 0.3</a> (auth tables populated by SQL ETL; editable by DBAs via SQL)</td>
-<td><strong>YES — UI surface</strong> for sysadmins to update assignments <strong>is post-MVP</strong></td>
-<td>Was previously planned in Epic 0.2/0.3 admin UI stories — those stories were removed in the 2026-05-15 scope revision</td>
+<td><strong>Data layer only</strong> in <a href="phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3</a> (auth tables maintainable by DBAs via SQL per the identity-bootstrap runbook)</td>
+<td><strong>YES — UI surface</strong> for sysadmins <strong>is post-MVP</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></td>
+<td>Bootstrap mechanism itself is outside the PRD's scope<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></td>
 </tr>
 <tr>
 <td>FR5</td>
@@ -232,21 +246,21 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td><strong>FR6</strong></td>
-<td><strong>Data layer + read API only</strong> in <a href="phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2</a> (read-only <code>GET</code> endpoints; data loaded by SQL ETL)</td>
-<td><strong>YES — RSU UI for maintenance</strong> is post-MVP</td>
-<td>Read API works in Phase 0; the named-owner sign-off workflow for ongoing changes moves to the post-MVP admin UI roadmap</td>
+<td><strong>Tier (a)</strong>: <a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Stories 0.1.3/0.1.4 (eLinks sync + MRD ingestion — read-only in RAM, corrections at source). <strong>Tier (b)</strong>: <a href="phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2</a> Story 0.2.1 (tables + seed + DBA runbook). Read API over both tiers: Story 0.2.2.</td>
+<td><strong>YES — tier-(b) RSU maintenance UI</strong> is post-MVP<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Tier (a) never gets a RAM write surface in any phase.</td>
+<td>Two ownership tiers in separate tables preserve lineage</td>
 </tr>
 <tr>
 <td>FR7</td>
-<td><a href="phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2</a></td>
+<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> (tier-(a) grants) + <a href="phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2</a> (tier-(b) grants + pattern complete)</td>
 <td>—</td>
-<td>Direct SQL via SELECT grants — pattern established</td>
+<td>Direct SQL via SELECT grants; <strong>writes follow the tier</strong> (ingestion for tier (a); DBA SQL for tier (b))</td>
 </tr>
 <tr>
 <td>FR8</td>
 <td>distributed (lands in <a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> first)</td>
 <td>—</td>
-<td>Shared <code>configuration_values</code> Flyway baseline</td>
+<td>Shared <code>ram_configuration_values</code> Flyway baseline</td>
 </tr>
 <tr>
 <td>FR9</td>
@@ -256,75 +270,46 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td>FR55</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a></td>
+<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Story 0.1.7</td>
 <td>—</td>
 <td>Home shell with role-scoped navigation</td>
 </tr>
 <tr>
 <td>FR56</td>
 <td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> (business stack)</td>
-<td><strong>Partial — admin stack</strong> is post-MVP</td>
-<td>The <code>ram-ui</code> business-user stack is delivered in Phase 0; the <code>ram-admin-ui</code> admin stack is post-MVP</td>
+<td><strong>Partial — admin stack</strong> is post-MVP<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></td>
+<td><code>ram-ui</code> delivered in Phase 0; <code>ram-admin-ui</code> post-MVP</td>
 </tr>
 <tr>
-<td>FR57</td>
-<td><a href="phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2</a> (Ref Data ETL via SQL) + <a href="phase-0/epic-0.3-admin-manages-users-roles.html">Epic 0.3</a> (Users/Roles ETL via SQL)</td>
-<td>—</td>
-<td>Both ETL streams now load via direct SQL rather than via API; named-owner sign-off via versioned git commits</td>
-</tr>
-<tr>
-<td>FR58</td>
-<td><a href="phase-0/epic-0.3-admin-manages-users-roles.html">Epic 0.3</a> (initial flag state via ETL — all FALSE) — orchestration in Phase 9+ (per-region flip via direct SQL by DBA)</td>
+<td><strong>FR57</strong> <em>(was FR58)</em></td>
+<td><a href="phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3</a> (initial all-FALSE flag state keyed by (jurisdiction, region)) — cutover orchestration in Phase 9+ (per-wave flip via direct SQL by DBA)</td>
 <td><strong>Partial — activation toggle UI</strong> is post-MVP</td>
-<td>MVP cutover happens by DBA running <code>UPDATE auth_user_activation_flags SET activated = TRUE WHERE region = …</code> per the rollout runbook</td>
+<td>Cutover: <code>UPDATE ram_auth_user_activation_flags SET activated = TRUE WHERE jurisdiction = '…' AND region = '…'</code> per rollout runbook</td>
 </tr>
 <tr>
-<td>FR59</td>
-<td><a href="phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2</a></td>
+<td><strong>FR58</strong> <em>(was FR59)</em></td>
+<td><a href="phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2</a> Story 0.2.2 (first exercise) + every service story</td>
 <td>—</td>
-<td>API-as-Product first exercise on Reference Data read API</td>
+<td>API-as-Product read-side standards</td>
 </tr>
 <tr>
-<td>FR60</td>
-<td><a href="phase-0/epic-0.2-admin-manages-ref-data.html">Epic 0.2</a></td>
+<td><strong>FR59</strong> <em>(was FR60)</em></td>
+<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Story 0.1.1 (first exercise) + every service story</td>
 <td>—</td>
-<td>Structured logs first exercise</td>
+<td>Structured logs + correlation IDs</td>
+</tr>
+<tr>
+<td><em>(NFR24)</em></td>
+<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Stories 0.1.3/0.1.4</td>
+<td>MRD reader swaps to API post-MVP (when MRD APIs ship)</td>
+<td>JOH eLinks + MRD are MVP integrations<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> — listed here because the old map carried the retracted ETL FR in this slot</td>
 </tr>
 </tbody>
 </table>
-<h3 id="phase-0--post-mvp-deferral-summary-2026-05-15-revision">Phase 0 → post-MVP deferral summary (2026-05-15 revision)</h3>
-<table>
-<thead>
-<tr>
-<th>FR</th>
-<th>What's in Phase 0 (MVP)</th>
-<th>What's deferred to post-MVP</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>FR4</td>
-<td>Auth tables loaded via SQL ETL; data editable by DBAs via direct SQL</td>
-<td>Admin UI surface for system administrators to update role + Region/Area scope assignments</td>
-</tr>
-<tr>
-<td>FR6</td>
-<td>Read API + SQL-loaded data with git-based owner sign-off</td>
-<td>RSU UI for view/edit/create on controlled lists; pending-change workflow with named-owner sign-off via UI</td>
-</tr>
-<tr>
-<td>FR56</td>
-<td>Business-user <code>ram-ui</code> (modern stack, WCAG 2.2 AA)</td>
-<td>Admin-user <code>ram-admin-ui</code> (same stack, distinct hostname) — was already partially admin-only; now fully post-MVP</td>
-</tr>
-<tr>
-<td>FR58</td>
-<td>Activation flag table populated by ETL; cutover flips via DBA SQL</td>
-<td>Activation toggle UI for system administrators</td>
-</tr>
-</tbody>
-</table>
-</div></details><details class="section" id="phases-19-fr10fr54-fr61--pending"><summary><span class="section-title">Phases 1–9+ (FR10–FR54, FR61) — pending</span></summary><div class="section-body">
+<blockquote>
+<p>There is no data-migration FR: the former Phase 0 ETL was retracted<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> and FR58–FR61 became FR57–FR60. Reference data arrives via upstream ingestion (Epic 0.1); user records are bootstrapped outside the PRD's scope<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>; tier-(a) corrections happen at source and tier-(b) changes follow the DBA runbook change-trail.</p>
+</blockquote>
+</div></details><details class="section" id="phases-19-fr10fr54-fr60--pending"><summary><span class="section-title">Phases 1–9+ (FR10–FR54, FR60) — pending</span></summary><div class="section-body">
 <p>To be populated by subsequent runs of <code>bmad-create-epics-and-stories</code> step 2 against the corresponding Phase × Area entries in <a href="framework.html">framework.md</a>. Phase 0 sets the pattern; later phases follow the same vertical-slice user-value framing.</p>
 <table>
 <thead>
@@ -339,7 +324,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td>FR10–FR18</td>
 <td>1</td>
-<td>Judge Records &amp; Working Patterns</td>
+<td>JOH Records &amp; Working Patterns (profiles are <em>views</em> over tier (a) + <code>ram-joh</code> overlays; FR14 is display-only — conversions happen upstream)</td>
 <td>⚪</td>
 </tr>
 <tr>
@@ -357,7 +342,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td>FR29–FR34</td>
 <td>4</td>
-<td>Booking Management (second user-initiated Notification consumer via FR32 ack email)</td>
+<td>Booking Management (second user-initiated Notification consumer via FR32 ack email; bookings reference JOHs by <code>personnel_number</code>)</td>
 <td>⚪</td>
 </tr>
 <tr>
@@ -375,13 +360,13 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td>FR42, FR43, FR45</td>
 <td>6</td>
-<td>Payment Batch (<strong>first non-user-initiated Notification consumer</strong> — <code>client_credentials</code> flow established here, was previously planned in Phase 0)</td>
+<td>Payment Batch (<strong>first non-user-initiated Notification consumer</strong> — <code>client_credentials</code> flow established here)</td>
 <td>⚪</td>
 </tr>
 <tr>
 <td>FR44, FR46, FR47</td>
 <td>6</td>
-<td>Payment Processing</td>
+<td>Payment Processing (JFEPS preserved for SSCS wave 1<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>/NFR21)</td>
 <td>⚪</td>
 </tr>
 <tr>
@@ -393,79 +378,83 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td>FR53, FR54</td>
 <td>8</td>
-<td>MI Feed &amp; Reporting</td>
+<td>MI Feed &amp; Reporting (external case-management systems consume from Phase 9<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a> — read-only)</td>
 <td>⚪</td>
 </tr>
 <tr>
-<td>FR61</td>
+<td>FR60 <em>(was FR61)</em></td>
 <td>9+</td>
-<td>Pilot Rollout</td>
+<td>Wave Rollout (jurisdiction-first: SSCS/GAPS-experienced UAT wave 1; Courts/APEX-experienced waves 2+)</td>
 <td>⚪</td>
 </tr>
 </tbody>
 </table>
-</div></details><details class="section" id="post-mvp-roadmap-consolidated-2026-05-15"><summary><span class="section-title">Post-MVP roadmap (consolidated, 2026-05-15)</span></summary><div class="section-body">
-<p>Items removed from MVP per the 2026-05-15 admin-UI-out-of-scope decision:</p>
+</div></details><details class="section" id="post-mvp-roadmap-consolidated-revised-2026-06-11"><summary><span class="section-title">Post-MVP roadmap (consolidated, revised 2026-06-11)</span></summary><div class="section-body">
 <table>
 <thead>
 <tr>
 <th>Capability</th>
-<th>Original Phase 0 owner (now removed)</th>
-<th>Post-MVP owner</th>
+<th>Owner</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>ram-admin-ui</code> repo scaffold + auth wrapper</td>
-<td>was Story 0.2.3</td>
 <td>Post-MVP UI programme</td>
 </tr>
 <tr>
-<td>Reference Data admin module (list/edit/create + sign-off workflow)</td>
-<td>was Story 0.2.4</td>
+<td>Reference Data maintenance module (<strong>tier (b) only</strong>)</td>
 <td>Post-MVP UI programme</td>
 </tr>
 <tr>
-<td>Reference Data API write endpoints (<code>POST/PUT/PATCH/DELETE</code>)</td>
-<td>was part of Story 0.2.2</td>
+<td>Reference Data API write endpoints (<strong>tier (b) only</strong>)</td>
 <td>Post-MVP — paired with the admin UI</td>
 </tr>
 <tr>
-<td><code>ram-authorisation</code> admin write endpoints (<code>PUT /admin/users/{id}/...</code>)</td>
-<td>was Story 0.3.1</td>
+<td><code>ram-authorisation</code> admin write endpoints</td>
 <td>Post-MVP — paired with the admin UI</td>
 </tr>
 <tr>
-<td>Users &amp; Roles admin module</td>
-<td>was Story 0.3.2</td>
-<td>Post-MVP UI programme</td>
-</tr>
-<tr>
-<td>Migration Reports admin module</td>
-<td>was Story 0.3.4</td>
+<td>Users &amp; Roles admin module (roles, jurisdiction, Region/Area scope)</td>
 <td>Post-MVP UI programme</td>
 </tr>
 <tr>
 <td>Admin "Send Test Email" UI</td>
-<td>was Story 0.4.4</td>
 <td>Post-MVP UI programme</td>
 </tr>
 <tr>
 <td>Delivery-log viewer UI</td>
-<td>(no prior story; Postman covered)</td>
 <td>Post-MVP UI programme</td>
 </tr>
 <tr>
-<td>Activation-flag toggle UI</td>
-<td>(no prior story; Phase 9+ direct SQL covers MVP)</td>
+<td>Activation-flag toggle UI (per (jurisdiction, region))</td>
 <td>Post-MVP UI programme</td>
+</tr>
+<tr>
+<td>MRD API integration (replaces the Excel blob-drop reader)</td>
+<td>Post-MVP — when MRD ships public APIs (the tables and consumers are unchanged; only the reader swaps)</td>
 </tr>
 </tbody>
 </table>
-</div></details>
+</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/fr-coverage-map.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-concrete-epics-0104--complete-revised-2026-05-15">Phase 0 (concrete epics 0.1–0.4 — complete, revised 2026-05-15)</a></li><li class="h3"><a href="#phase-0--post-mvp-deferral-summary-2026-05-15-revision">Phase 0 → post-MVP deferral summary (2026-05-15 revision)</a></li><li><a href="#phases-19-fr10fr54-fr61--pending">Phases 1–9+ (FR10–FR54, FR61) — pending</a></li><li><a href="#post-mvp-roadmap-consolidated-2026-05-15">Post-MVP roadmap (consolidated, 2026-05-15)</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-concrete-epics-0104--pending-sscs-cohort-revalidation">Phase 0 (concrete epics 0.1–0.4 — pending SSCS-cohort revalidation)</a></li><li><a href="#phases-19-fr10fr54-fr60--pending">Phases 1–9+ (FR10–FR54, FR60) — pending</a></li><li><a href="#post-mvp-roadmap-consolidated-revised-2026-06-11">Post-MVP roadmap (consolidated, revised 2026-06-11)</a></li></ul></aside>
 <script>
 (function(){
   // 1. Sidebar accordion: persist user's group open/close preference per group.

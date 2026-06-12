@@ -1,7 +1,7 @@
 ---
 stepsCompleted: ['step-01-document-discovery', 'step-02-prd-analysis', 'step-03-epic-coverage-validation', 'step-04-ux-alignment', 'step-05-epic-quality-review', 'step-06-final-assessment']
 workflowCompleted: true
-projectName: 'ji-analysis'
+projectName: 'ram-analysis'
 productCodename: 'RAM Pathfinder'
 inputDocuments:
   - '_bmad-output/planning-artifacts/prd.md'
@@ -16,7 +16,7 @@ workflowCompleted: false
 # Implementation Readiness Assessment Report
 
 **Date:** 2026-05-05
-**Project:** ji-analysis (RAM Pathfinder — RAM Pathfinder)
+**Project:** ram-analysis (RAM Pathfinder — RAM Pathfinder)
 
 > ⚠️ **Superseded — historical snapshot.** Superseded by [`./implementation-readiness-report-2026-05-06.md`](./implementation-readiness-report-2026-05-06.md). Areas of this report have since been revised by **architecture v2.6 (2026-05-07)** and **v2.7 (2026-05-08)** and should be read against the current PRD/architecture rather than this snapshot:
 >

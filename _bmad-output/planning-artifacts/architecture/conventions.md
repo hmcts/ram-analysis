@@ -18,26 +18,28 @@ This document is the consistency contract for the 11 services and the UI. Patter
 **Database (PostgreSQL):**
 
 - **Schema:** single shared schema (e.g. `ram` or default `public`). All RAM Pathfinder tables live in this schema. Per-service DB roles enforce write boundaries; the team that writes the Flyway migration owns the table.
-- **Tables:** `snake_case`, plural. Two naming variants:
-  - **Primary domain entities** use entity-plural without prefix. Full inventory in [`./data-tables.md`](./data-tables.md). Owner is unambiguous from the inventory.
-  - **Service-internal or potentially-ambiguous tables** use service-prefix: `payment_reconciliations`, `notification_dispatches`, `auth_user_roles`, `auth_user_region_scopes`. Use the prefix when the table name alone wouldn't disclose its owner, or when there's a credible risk of collision.
+- **Tables:** `snake_case`. **Ownership is in the prefix** *(revised 2026-06-11)*:
+  - **`ram_` — every RAM-owned table**, entity-plural: `ram_bookings`, `ram_absences`, `ram_regions`, `ram_auth_users`, `ram_payment_reconciliations`, `ram_configuration_values`. JOH operational state over upstream entities is named directly — `ram_joh_ticket`, `ram_joh_location` — **no `_overlays` suffix pattern**.
+  - **`jo_` / `mrd_` — upstream-sourced tier-(a) tables** (source-system prefix): `jo_people`, `jo_jurisdictions`, `mrd_specialisms`. Read-only in RAM; written only by the ingestion mechanisms.
+  - **`mock_` — dev-only mock-auth tables** (`mock_oauth_clients`, `mock_user_roster`): never deployed to production, exempt from the `ram_` rule — the `mock_` prefix already marks them as not-production.
+  - Full inventory in [`./data-tables.md`](./data-tables.md).
 - **Authoritative ownership mapping** is documented in [`./data-tables.md`](./data-tables.md) (table-ownership table maps every RAM Pathfinder table → owning service-role). The team that authors the Flyway migration is the owning team.
 - **Fitness function in CI** verifies: (a) no two services' Flyway migrations create overlapping table names; (b) DB role grants align with the documented ownership; (c) tables not in the ownership mapping are flagged.
 - **Columns:** `snake_case` — `id`, `created_at`, `updated_at`, `payroll_number`, `is_active`.
 - **Primary keys:** `id`, type `uuid`. UUIDs avoid integer-range coupling and "guess the next ID" patterns. Cost over bigint is negligible at this scale. PK generation detail in [`../architecture.md`](../architecture.md) → *Data Architecture*.
-- **Foreign keys:** `{referenced_table_singular}_id` — `judge_id`, `booking_id`, `vacancy_id`. FKs reference tables in the shared schema; no cross-schema FK overhead.
-- **Indexes:** `idx_{table}_{columns}` — `idx_judges_email`, `idx_bookings_judge_id_date`.
+- **Foreign keys:** `{referenced_entity_singular}_id` — `booking_id`, `vacancy_id`, `absence_id`. JOH references use **`personnel_number`** → `jo_people` (the canonical JOH identifier), not a surrogate id. FKs reference tables in the shared schema; no cross-schema FK overhead.
+- **Indexes:** `idx_{table}_{columns}` — `idx_ram_bookings_personnel_number_date`, `idx_ram_absences_personnel_number`.
 - **Unique constraints:** named `uq_{table}_{columns}`. Per-table examples in [`./data-tables.md`](./data-tables.md).
 - **Audit columns:** every table has `created_at timestamptz NOT NULL`, `updated_at timestamptz NOT NULL`. `created_by` and `updated_by` (UUID, FK to user identity) added when D7 user-action audit is implemented post-MVP.
 
 **API endpoints:**
 
-- **Resources:** plural nouns — `/v1/judges`, `/v1/bookings`, `/v1/payments`.
-- **Resource IDs in path:** `/v1/judges/{judgeId}`.
-- **Sub-resources:** `/v1/judges/{judgeId}/working-patterns`, `/v1/judges/{judgeId}/tickets`.
+- **Resources:** plural nouns — `/v1/johs`, `/v1/bookings`, `/v1/payments`.
+- **Resource IDs in path:** `/v1/bookings/{bookingId}`; JOH resources key on the personnel number — `/v1/johs/{personnelNumber}`.
+- **Sub-resources:** `/v1/johs/{personnelNumber}/working-patterns`, `/v1/johs/{personnelNumber}/tickets`.
 - **Actions on resources:** `POST /v1/absences/{absenceId}/approve`, `POST /v1/sittings/{sittingId}/verify`. Actions are URL-segments, not RPC-style endpoint names.
-- **Path variables:** `{camelCase}` — `{judgeId}`, `{bookingId}`.
-- **Query parameters:** `camelCase` — `?regionId=...&fromDate=...&judgeType=...`.
+- **Path variables:** `{camelCase}` — `{personnelNumber}`, `{bookingId}`.
+- **Query parameters:** `camelCase` — `?regionId=...&fromDate=...&johType=...`.
 - **HTTP headers:** `Title-Kebab-Case`, no `X-` prefix per [RFC 6648](https://datatracker.ietf.org/doc/html/rfc6648) — `Idempotency-Key`, `Correlation-Id`, `Sunset` (per [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)), `Deprecation` (per [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745)).
 - **Versioning prefix:** `/v1/` for major version 1, `/v2/` for v2, etc. (per Step 4 in [`../architecture.md`](../architecture.md)).
 
@@ -83,7 +85,7 @@ ram-{service}/
 ├── src/test/java/uk/gov/hmcts/ram/{service}/
 │   └── {layer}/                        (mirrors src/main package layout — unit + integration tests)
 ├── docs/
-│   └── uat/                            (manual UAT scripts: APEX-vs-RAM Pathfinder behavioural-parity walkthroughs per FR61 / NFR41 revised)
+│   └── uat/                            (manual UAT scripts: incumbent-vs-RAM Pathfinder behavioural-parity walkthroughs per FR60 / NFR41 revised)
 ├── helm/                                (Kubernetes Helm chart)
 ├── postman/                             (Postman collections per phase)
 ├── build.gradle                     (Gradle Groovy DSL (per HMCTS template))
@@ -154,7 +156,7 @@ ram-ui/
 
 **API response envelope:**
 
-- **Success:** direct resource representation, no wrapper. `GET /v1/judges/{id}` returns the Judge JSON directly.
+- **Success:** direct resource representation, no wrapper. `GET /v1/johs/{personnelNumber}` returns the JOH JSON directly.
 - **Error:** [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) `application/problem+json` envelope (obsoletes RFC 7807; same content type and field shape) per Step 4 in [`../architecture.md`](../architecture.md).
 
 **HTTP status codes (consistent usage):**
@@ -204,7 +206,7 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - **Client registration**: a service-principal entry exists in the OIDC issuer's client store. In non-prod that's `mock_oauth_clients` on `ram-mock-auth`; in production it's whichever issuer is chosen per [`./gaps.md` G7.1](./gaps.md) (default recommendation: Azure Workload Identity, which substitutes managed-identity tokens for client-secret-based ones).
 - **Token acquisition**: at run start (or on token expiry), the batch component does `POST /oauth2/token` with `grant_type=client_credentials`. Spring Boot 4's `OAuth2AuthorizedClientManager` handles caching + refresh.
 - **Outbound calls**: the resulting service JWT is attached as `Authorization: Bearer …` to outbound HTTP calls (e.g. to the Notification API). The receiving service's `JWTFilter` validates it via the same JWKS path used for human user JWTs — same code path; only the principal's "kind" claim differs.
-- **Authorisation**: service principals have records in `auth_users` with a kind flag (e.g. `principal_kind = service`) distinguishing them from humans. `ram-authorisation` resolves their permissions the same way as human users.
+- **Authorisation**: service principals have records in `ram_auth_users` with a kind flag (e.g. `principal_kind = service`) distinguishing them from humans. `ram-authorisation` resolves their permissions the same way as human users.
 - **Scheduling**: implementation choice between Spring `@Scheduled` (in-process; runs inside the same JVM as the synchronous service API) and a Kubernetes CronJob (separate pod; scales independently). Either is acceptable at MVP — the batch's external observable behaviour is the same.
 
 **Correlation ID propagation:**
@@ -263,7 +265,7 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - Integration tests: `*IT.java`, Testcontainers for PostgreSQL, run on every commit.
 - Contract tests (Pact or equivalent): per-consumer / per-provider, run on every commit.
 - E2E tests (UI): Playwright, one suite per phase, run as a phase gate.
-- **Manual UAT — APEX-vs-RAM Pathfinder behavioural parity (FR61 / NFR41 revised 2026-05-06):** scripted walkthroughs maintained under `docs/uat/` per service. Performed by APEX-experienced users (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) opening APEX side-by-side with RAM Pathfinder, comparing behaviour for the workflows + edge cases the script enumerates, and signing off per role per region. Sign-off is the wave-cutover gate; there is no automated APEX-comparison harness in CI.
+- **Manual UAT — incumbent-vs-RAM Pathfinder behavioural parity (FR60 / NFR41, reframed 2026-06-10[^d11][^d5]):** scripted walkthroughs maintained under `docs/uat/` per service. Performed by jurisdiction-incumbent-experienced users — GAPS-experienced (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for SSCS wave 1; APEX-experienced (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) for Courts waves 2+ — opening the incumbent side-by-side with RAM Pathfinder, comparing behaviour for the workflows + edge cases the script enumerates, and signing off per role per wave. Sign-off is the wave-cutover gate; there is no automated incumbent-comparison harness in CI.
 - **Coverage target:** behaviour coverage, not line coverage. PRs include behaviour-test rationale, not coverage stats.
 
 **Logging conventions (per HMCTS Crime template):**
@@ -291,7 +293,7 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - Follow the package layout `uk.gov.hmcts.ram.{service}.{layer}`.
 - Use Gradle Groovy DSL (per HMCTS Crime SpringBoot template) with Gradle Wrapper.
 - Implement RFC 9457 errors via per-service `@ControllerAdvice` (no shared library).
-- Implement Authorisation enforcement via per-service custom `JWTFilter` + `AuthDetails` request-scoped bean (HMCTS template pattern); the filter calls RAM Pathfinder Authorisation per request to resolve role + Region/Area scope (RAM Pathfinder variance from template's claims-only approach — required by FR58).
+- Implement Authorisation enforcement via per-service custom `JWTFilter` + `AuthDetails` request-scoped bean (HMCTS template pattern); the filter calls RAM Pathfinder Authorisation per request to resolve roles + jurisdiction + Region/Area scope and the activation flag (RAM Pathfinder variance from template's claims-only approach — required by FR2/FR57).
 - Generate OpenAPI 3.x specs via Swagger Core; publish per-service spec as a Maven artefact (`uk.gov.hmcts.ram:api-ram-{service}:{version}`).
 - Emit structured JSON logs (Logstash encoder) with correlation IDs; export traces via OpenTelemetry.
 - Use Flyway migrations in `src/main/resources/db/migration/` (per HMCTS Crime SpringBoot template).
@@ -300,7 +302,7 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - Emit JaCoCo coverage reports and CycloneDX SBOM as part of CI artefacts.
 - Provide a Helm chart for AKS deployment.
 - Provide a Postman collection per phase that exercises the service's endpoints.
-- Include unit tests, integration tests (Testcontainers PostgreSQL), and contract tests. *(Domain services additionally maintain a manual UAT script under `docs/uat/` per FR61 / NFR41 revised; this is documentation owned by the service, not a CI gate.)*
+- Include unit tests, integration tests (Testcontainers PostgreSQL), and contract tests. *(Domain services additionally maintain a manual UAT script under `docs/uat/` per FR60 / NFR41 revised; this is documentation owned by the service, not a CI gate.)*
 
 **Pattern enforcement mechanisms:**
 
@@ -323,20 +325,23 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 
 **Good — naming:**
 
-- Database: entity-plural table name; `snake_case` columns; `id uuid PRIMARY KEY`; `created_at` / `updated_at` audit columns; natural-key uniqueness via `uq_{table}_{columns}`. Full per-table detail in [`./data-tables.md`](./data-tables.md).
-- API: `GET /v1/judges/{judgeId}`
-- Java: `@RestController class JudgeController { ResponseEntity<JudgeDto> getJudge(@PathVariable UUID judgeId) { ... } }`
-- TypeScript: `function JudgeProfile({ judgeId }: { judgeId: string }) { ... }`
-- JSON: `{ "judgeId": "uuid-here", "firstName": "...", "payrollNumber": "...", "isActive": true, "createdAt": "2026-05-06T10:00:00Z" }`
+- Database: `ram_`-prefixed entity-plural table name (RAM-owned) or source-prefixed (`jo_`/`mrd_`, upstream); `snake_case` columns; `id uuid PRIMARY KEY`; `created_at` / `updated_at` audit columns; natural-key uniqueness via `uq_{table}_{columns}`. Full per-table detail in [`./data-tables.md`](./data-tables.md).
+- API: `GET /v1/johs/{personnelNumber}`
+- Java: `@RestController class JohController { ResponseEntity<JohDto> getJoh(@PathVariable String personnelNumber) { ... } }`
+- TypeScript: `function JohProfile({ personnelNumber }: { personnelNumber: string }) { ... }`
+- JSON: `{ "personnelNumber": "...", "firstName": "...", "payrollNumber": "...", "isActive": true, "createdAt": "2026-05-06T10:00:00Z" }`
 
 **Anti-patterns — do not:**
 
 - ❌ Mixed casing in DB (`Id`, `FirstName`). Use `snake_case`.
-- ❌ Snake_case in JSON: `{ "judge_id": ..., "first_name": ... }` (mixes Java-style with JS clients).
-- ❌ Wrap success responses: `{ "data": { "judgeId": ... }, "error": null }`.
+- ❌ Snake_case in JSON: `{ "personnel_number": ..., "first_name": ... }` (mixes Java-style with JS clients).
+- ❌ Wrap success responses: `{ "data": { "personnelNumber": ... }, "error": null }`.
 - ❌ Custom error formats: `{ "errorMsg": "..." }` instead of RFC 9457.
 - ❌ Ad-hoc HTTP statuses: `200 OK` with `{"success": false}` body for failures.
 - ❌ "Smart" / RPC-style routes: `POST /v1/processBookingAndCreatePayment` (mixes resources). Use `POST /v1/bookings` then `POST /v1/payments/process`.
 - ❌ Bigint primary keys (use UUID per the standard above).
 - ❌ Local time zones in stored timestamps (always UTC).
 - ❌ Logging PII or bank details at any level.
+
+[^d5]: D5 — the jurisdiction's incumbent system is the behavioural reference, verified by manual UAT.
+[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
