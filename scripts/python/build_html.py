@@ -148,6 +148,7 @@ ASIS_MARKDOWN: List[Tuple[str, str]] = [
     ("functional-modules.md", "architecture/asis/functional-modules"),
     ("data-dependencies.md", "architecture/asis/data-dependencies"),
     ("integration-dependencies.md", "architecture/asis/integration-dependencies"),
+    ("tribunals/sscs/tribunal-payment-templates.md", "architecture/asis/tribunals/sscs/tribunal-payment-templates"),
 ]
 
 # Sidebar navigation. Each entry: (display label, source path without .md, is_special)
@@ -169,6 +170,9 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
         ("Functional modules (as-is)", "architecture/asis/functional-modules", False),
         ("Data dependencies (as-is)", "architecture/asis/data-dependencies", False),
         ("Integration dependencies (as-is)", "architecture/asis/integration-dependencies", False),
+    ]),
+    ("As-is — Tribunals / SSCS", [
+        ("Tribunal payment templates (as-is)", "architecture/asis/tribunals/sscs/tribunal-payment-templates", False),
     ]),
     ("As-is — JI Database Schema", [
         ("Database index", "asis/database/index", False),

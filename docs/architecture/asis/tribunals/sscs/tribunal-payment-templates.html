@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tribunal Payment Templates — As-Is (Tribunals / SSCS) — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav"><h2 class="site-title"><a href="../../../../index.html">RAM Pathfinder Documentation</a></h2>
+<div class="nav-controls"><button data-nav-action="expand" title="Expand all groups">Expand all</button> <button data-nav-action="collapse" title="Collapse all groups">Collapse all</button></div>
+<details class="nav-group" data-group="overview">
+<summary>Overview</summary>
+<ul>
+<li><a href="../../../../index.html">Index</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="product">
+<summary>Product</summary>
+<ul>
+<li><a href="../../../../prd.html">PRD (RAM Pathfinder)</a></li>
+<li><a href="../../../../prd-validation-report-2026-06-10.html">PRD validation report — 2026-06-10</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-architecture-views">
+<summary>As-is — JI Architecture Views</summary>
+<ul>
+<li><a href="../../../../asis/system-context.html">System Context (as-is)</a></li>
+<li><a href="../../../../asis/components.html">Components (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-analysis-pack">
+<summary>As-is — JI Analysis Pack</summary>
+<ul>
+<li><a href="../../../../architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
+<li><a href="../../../../architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
+<li><a href="../../../../architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-tribunals-sscs" data-current="true" open>
+<summary>As-is — Tribunals / SSCS</summary>
+<ul>
+<li><a href="../../../../architecture/asis/tribunals/sscs/tribunal-payment-templates.html" class="current">Tribunal payment templates (as-is)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="as-is-ji-database-schema">
+<summary>As-is — JI Database Schema</summary>
+<ul>
+<li><a href="../../../../asis/database/index.html">Database index</a></li>
+<li><a href="../../../../asis/database/ji_schema_overview.html">Schema overview</a></li>
+<li><a href="../../../../asis/database/ji_schema_judges-profile.html">Judges Profile & Reference</a></li>
+<li><a href="../../../../asis/database/ji_schema_judges-patterns.html">Working Patterns, Tickets & Stats</a></li>
+<li><a href="../../../../asis/database/ji_schema_absence-cover.html">Absence & Cover Workflow</a></li>
+<li><a href="../../../../asis/database/ji_schema_bookings-sittings.html">Bookings & Sittings</a></li>
+<li><a href="../../../../asis/database/ji_schema_reference-work.html">Reference Data</a></li>
+<li><a href="../../../../asis/database/ji_schema_audit-cross-cutting.html">Audit & Cross-cutting</a></li>
+<li><a href="../../../../asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-architecture">
+<summary>To-be — RAM Pathfinder Architecture</summary>
+<ul>
+<li><a href="../../../../architecture.html">Architecture (index)</a></li>
+<li><a href="../../../../architecture-summary.html">Architecture summary</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-reference">
+<summary>To-be — RAM Pathfinder Reference</summary>
+<ul>
+<li><a href="../../../../architecture/tobe/user-types.html">User types</a></li>
+<li><a href="../../../../architecture/tobe/data-tables.html">Authoritative table ownership</a></li>
+<li><a href="../../../../architecture/tobe/conventions.html">Conventions</a></li>
+<li><a href="../../../../architecture/tobe/repository-strategy.html">Repository strategy</a></li>
+<li><a href="../../../../architecture/tobe/repo-structure.html">Repository structure</a></li>
+<li><a href="../../../../architecture/tobe/starter-template.html">Starter template</a></li>
+<li><a href="../../../../architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
+<li><a href="../../../../architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-sequence-diagrams">
+<summary>To-be — RAM Pathfinder Sequence Diagrams</summary>
+<ul>
+<li><a href="../../../../architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
+<li><a href="../../../../architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
+<li><a href="../../../../architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
+<li><a href="../../../../architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
+<li><a href="../../../../architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
+<li><a href="../../../../architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
+<li><a href="../../../../architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
+<li><a href="../../../../architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="to-be-ram-pathfinder-open-items">
+<summary>To-be — RAM Pathfinder Open Items</summary>
+<ul>
+<li><a href="../../../../architecture/tobe/gaps.html">Gaps</a></li>
+<li><a href="../../../../architecture/tobe/assumptions.html">Assumptions</a></li>
+<li><a href="../../../../architecture/tobe/changelog.html">Changelog</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="change-control-readiness">
+<summary>Change Control & Readiness</summary>
+<ul>
+<li><a href="../../../../sprint-change-proposal-2026-06-10.html">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
+<li><a href="../../../../sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
+<li><a href="../../../../implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
+<li><a href="../../../../implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
+<li><a href="../../../../implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
+<li><a href="../../../../implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="implementation-epics-foundations">
+<summary>Implementation — Epics (Foundations)</summary>
+<ul>
+<li><a href="../../../../epics/index.html">Epics index</a></li>
+<li><a href="../../../../epics/requirements-inventory.html">Requirements inventory</a></li>
+<li><a href="../../../../epics/framework.html">Phase × Area framework</a></li>
+<li><a href="../../../../epics/fr-coverage-map.html">FR coverage map</a></li>
+</ul>
+</details>
+<details class="nav-group" data-group="implementation-phase-0-restructured-2026-06-11">
+<summary>Implementation — Phase 0 (restructured 2026-06-11)</summary>
+<ul>
+<li><a href="../../../../epics/phase-0/index.html">Phase 0 overview</a></li>
+<li><a href="../../../../epics/phase-0/epic-0.1-user-authenticates.html">Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)</a></li>
+<li><a href="../../../../epics/phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2 — Reference data read-only (2 stories)</a></li>
+<li><a href="../../../../epics/phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3 — User populations bootstrapped (1 story)</a></li>
+<li><a href="../../../../epics/phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4 — Notification scaffolded (2 stories)</a></li>
+<li><a href="../../../../epics/phase-0/validation-report-2026-05-15.html">Phase 0 Validation Report (2026-05-15 — superseded)</a></li>
+</ul>
+</details></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="tribunal-payment-templates--as-is-tribunals--sscs">Tribunal Payment Templates — As-Is (Tribunals / SSCS)</h1>
+<p>This document records the spreadsheet templates currently used by tribunal systems to supply fee-paid judicial payment information to the JFEPS team. It is a record of the <strong>as-is</strong> process. Six templates were reviewed from the source pack <code>ji-input-docs/Tribunal-Payment-Templates/</code>. For each template the full structure is documented — sheets, layout, every column, header conventions, totals conventions and observed value vocabularies. No payment data, personal identifiers or fee amounts are reproduced; sample rows in the source files were inspected only to establish structure and field formats.</p>
+<details class="section" id="at-a-glance"><summary><span class="section-title">At a Glance</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Template file</th>
+<th>Flow (as named in file)</th>
+<th>Jurisdiction / area</th>
+<th>Format</th>
+<th>Sheets</th>
+<th>Layout style</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>14b - SSCS - from Crystal to BF.xls</code></td>
+<td>Crystal → BF</td>
+<td>SSCS</td>
+<td>Legacy <code>.xls</code></td>
+<td><code>Sheet1</code></td>
+<td>Report banner + flat attendance rows</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>18a - Courts - from OPT to BF - new template.xlsx</code></td>
+<td>OPT → BF</td>
+<td>Courts (deputy / fee-paid judiciary)</td>
+<td><code>.xlsx</code></td>
+<td><code>Itinerary</code></td>
+<td>Fee matrix — one column per judicial role, account-code row above headers</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>19b - SEND - from Crystal to BF (1)KM (1).xlsx</code></td>
+<td>Crystal → BF</td>
+<td>SEND</td>
+<td><code>.xlsx</code></td>
+<td><code>Sheet1</code></td>
+<td>Report banner + flat attendance rows + grand-total footer</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>JFS-1130-Sittings File - AST 1 (2).xlsx</code></td>
+<td>Sittings file → JEF import</td>
+<td>AST (Asylum Support)</td>
+<td><code>.xlsx</code></td>
+<td><code>JEF Import Sheet</code></td>
+<td>Import-ready claim lines, 22 named columns</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>List Assist SSCS template.xlsx</code></td>
+<td>List Assist → JOH fee reconciliation</td>
+<td>SSCS</td>
+<td><code>.xlsx</code></td>
+<td><code>JOHFeeReconciliation</code></td>
+<td>Report header block + flat reconciliation rows</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>Martha2 (1).xlsx</code></td>
+<td>Martha → payment file</td>
+<td>Tribunal payment file (Martha)</td>
+<td><code>.xlsx</code></td>
+<td><code>Payment File</code>, <code>Index</code></td>
+<td>Totals row above header + flat payment rows</td>
+</tr>
+</tbody>
+</table>
+<p>Three distinct shapes recur across the six templates:</p>
+<ol type="1">
+<li><strong>Crystal Reports attendance exports</strong> (templates 1 and 3) — a one-line report banner, a header row, one row per panel-member attendance, fee in the final column.</li>
+<li><strong>Fee-matrix / payment-file layouts</strong> (templates 2 and 6) — one row per person per activity, with either fee-by-role columns (18a) or fee/travel/subsistence/misc columns (Martha2).</li>
+<li><strong>System-import / reconciliation layouts</strong> (templates 4 and 5) — column sets defined by the consuming system (JEF import schema; List Assist JOH fee reconciliation report).</li>
+</ol>
+<hr />
+</div></details><details class="section" id="1-sscs--from-crystal-to-bf-14b---sscs---from-crystal-to-bfxls"><summary><span class="section-title">1. SSCS — from Crystal to BF (<code>14b - SSCS - from Crystal to BF.xls</code>)</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>Crystal Reports export (SSCS)</td>
+</tr>
+<tr>
+<td><strong>Destination (as named)</strong></td>
+<td>BF</td>
+</tr>
+<tr>
+<td><strong>File format</strong></td>
+<td>Legacy Excel 97-2003 (<code>.xls</code>)</td>
+</tr>
+<tr>
+<td><strong>Sheets</strong></td>
+<td><code>Sheet1</code> (single sheet)</td>
+</tr>
+<tr>
+<td><strong>Banner row</strong></td>
+<td>Row 1, column A: <code>Report B - Panel Members Attendance for period DD/MM/YYYY - DD/MM/YYYY (Printed on DD/MM/YYYY)</code></td>
+</tr>
+<tr>
+<td><strong>Header row</strong></td>
+<td>Row 2</td>
+</tr>
+<tr>
+<td><strong>Data rows</strong></td>
+<td>Row 3 onwards, one row per panel-member attendance</td>
+</tr>
+<tr>
+<td><strong>Totals</strong></td>
+<td>None — no footer or grand-total row</td>
+</tr>
+<tr>
+<td><strong>Granularity</strong></td>
+<td>One row per member per session attended</td>
+</tr>
+</tbody>
+</table>
+<h3 id="column-structure">Column structure</h3>
+<table>
+<thead>
+<tr>
+<th>Col</th>
+<th>Heading</th>
+<th>Type / format</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><code>Name</code></td>
+<td>Text</td>
+<td>Panel member name</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>NINO</code></td>
+<td>Text</td>
+<td>National Insurance number; mixed upper/lower case observed in the source — no case normalisation applied by the export</td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>ATTENDED</code></td>
+<td>Text flag</td>
+<td><code>Y</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td><code>Date</code></td>
+<td><strong>Text</strong>, <code>MM/DD/YYYY</code></td>
+<td>Stored as a text string in US month-first order, not as an Excel date</td>
+</tr>
+<tr>
+<td>E</td>
+<td><code>Period</code></td>
+<td>Text enum</td>
+<td><code>Morning</code>, <code>Afternoon</code></td>
+</tr>
+<tr>
+<td>F</td>
+<td><code>Session Category</code></td>
+<td>Text</td>
+<td>Pattern <code>NN - Category</code>; values carry <strong>leading and trailing spaces</strong> in the export</td>
+</tr>
+<tr>
+<td>G</td>
+<td><code>Venue</code></td>
+<td>Text</td>
+<td>Venue name (court/venue)</td>
+</tr>
+<tr>
+<td>H</td>
+<td><code>Cost Centre</code></td>
+<td>Text</td>
+<td>Pattern <code>NNNN-NNNNNNNN</code> (4-digit prefix, hyphen, 8-digit cost centre)</td>
+</tr>
+<tr>
+<td>I</td>
+<td><code>Account Code</code></td>
+<td>Number</td>
+<td>10-digit general-ledger account code, stored as a numeric value</td>
+</tr>
+<tr>
+<td>J</td>
+<td><code>Fee</code></td>
+<td>Number</td>
+<td>Fee amount, decimal</td>
+</tr>
+</tbody>
+</table>
+<h3 id="notes">Notes</h3>
+<ul>
+<li>The worksheet carries roughly 4,200 formatted-but-empty rows beyond the content (an artefact of the Crystal Reports export); only the banner, header and data rows hold values.</li>
+<li>The reporting period and print date are embedded in the row-1 banner text rather than in dedicated cells.</li>
+</ul>
+<hr />
+</div></details><details class="section" id="2-courts--from-opt-to-bf-new-template-18a---courts---from-opt-to-bf---new-templatexlsx"><summary><span class="section-title">2. Courts — from OPT to BF, new template (<code>18a - Courts - from OPT to BF - new template.xlsx</code>)</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>OPT</td>
+</tr>
+<tr>
+<td><strong>Destination (as named)</strong></td>
+<td>BF</td>
+</tr>
+<tr>
+<td><strong>File format</strong></td>
+<td><code>.xlsx</code></td>
+</tr>
+<tr>
+<td><strong>Sheets</strong></td>
+<td><code>Itinerary</code> (single sheet)</td>
+</tr>
+<tr>
+<td><strong>Account-code row</strong></td>
+<td>Row 3 — a 10-digit account code sits <strong>above each fee column</strong> (H–P); see mapping below</td>
+</tr>
+<tr>
+<td><strong>Header row</strong></td>
+<td>Row 4</td>
+</tr>
+<tr>
+<td><strong>Data rows</strong></td>
+<td>Row 5 onwards</td>
+</tr>
+<tr>
+<td><strong>Totals</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Granularity</strong></td>
+<td>One row per person per activity per date; the fee amount is placed in the <strong>column matching the judicial role</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="column-structure-1">Column structure</h3>
+<table>
+<thead>
+<tr>
+<th>Col</th>
+<th>Heading</th>
+<th>Type / format</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><code>Payroll ID</code></td>
+<td>Mixed</td>
+<td>Numeric IDs and <code>PAYnnnnnn</code>-style references both observed</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>Name</code></td>
+<td>Text</td>
+<td>Judicial office holder name</td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>Cost Centre</code></td>
+<td>Number</td>
+<td>8-digit cost centre</td>
+</tr>
+<tr>
+<td>D</td>
+<td><code>Analysis</code></td>
+<td>—</td>
+<td>Present in the header; unpopulated in the template sample</td>
+</tr>
+<tr>
+<td>E</td>
+<td><code>Activity</code></td>
+<td>Text enum</td>
+<td><code>Sitting</code>, <code>Appraisal</code>, <code>Sickness</code></td>
+</tr>
+<tr>
+<td>F</td>
+<td><code>Date</code></td>
+<td>Excel date</td>
+<td>Displayed <code>mm-dd-yy</code></td>
+</tr>
+<tr>
+<td>G</td>
+<td><code>Session Length</code></td>
+<td>Text enum</td>
+<td><code>All day</code></td>
+</tr>
+<tr>
+<td>H</td>
+<td><code>Deputy District Judge (DDJ)</code></td>
+<td>Number</td>
+<td>Fee amount when the role is DDJ</td>
+</tr>
+<tr>
+<td>I</td>
+<td><code>Recorder</code></td>
+<td>Number</td>
+<td>Fee amount when the role is Recorder</td>
+</tr>
+<tr>
+<td>J</td>
+<td><code>Deputy Circuit Judge (DCJ)</code></td>
+<td>Number</td>
+<td>Fee amount when the role is DCJ</td>
+</tr>
+<tr>
+<td>K</td>
+<td><code>Deputy/Retired High Court Judge (DHCJ)</code></td>
+<td>Number</td>
+<td>Fee amount when the role is DHCJ</td>
+</tr>
+<tr>
+<td>L</td>
+<td><code>Deputy District Judge Mags. Court (DDJ MC)</code></td>
+<td>Number</td>
+<td>Fee amount when the role is DDJ MC</td>
+</tr>
+<tr>
+<td>M</td>
+<td><code>Deputy Masters</code></td>
+<td>Number</td>
+<td>Fee amount when the role is Deputy Master</td>
+</tr>
+<tr>
+<td>N</td>
+<td><code>Retired Lord Justice</code></td>
+<td>Number</td>
+<td>Fee amount when the role is Retired Lord Justice</td>
+</tr>
+<tr>
+<td>O</td>
+<td><code>Appraisal</code></td>
+<td>Number</td>
+<td>Appraisal fee amount</td>
+</tr>
+<tr>
+<td>P</td>
+<td><code>Sick Pay</code></td>
+<td>Number</td>
+<td>Sick-pay amount</td>
+</tr>
+<tr>
+<td>Q</td>
+<td><em>(no heading)</em></td>
+<td>Text</td>
+<td>Unlabelled reference column; carries a source/batch reference string combining an office number, source system, location and date (e.g. <code>NN OPT &lt;LOCATION&gt; D/M/YY</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="account-code-row-row-3">Account-code row (row 3)</h3>
+<p>Each fee column carries its general-ledger account code in row 3, directly above the column heading:</p>
+<table>
+<thead>
+<tr>
+<th>Fee column</th>
+<th>Heading</th>
+<th>Account code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H</td>
+<td>Deputy District Judge (DDJ)</td>
+<td><code>5111102022</code></td>
+</tr>
+<tr>
+<td>I</td>
+<td>Recorder</td>
+<td><code>5111102024</code></td>
+</tr>
+<tr>
+<td>J</td>
+<td>Deputy Circuit Judge (DCJ)</td>
+<td><code>5111102027</code></td>
+</tr>
+<tr>
+<td>K</td>
+<td>Deputy/Retired High Court Judge (DHCJ)</td>
+<td><code>5111102025</code></td>
+</tr>
+<tr>
+<td>L</td>
+<td>Deputy District Judge Mags. Court (DDJ MC)</td>
+<td><code>5111102021</code></td>
+</tr>
+<tr>
+<td>M</td>
+<td>Deputy Masters</td>
+<td><code>5111102028</code></td>
+</tr>
+<tr>
+<td>N</td>
+<td>Retired Lord Justice</td>
+<td><code>5111102023</code></td>
+</tr>
+<tr>
+<td>O</td>
+<td>Appraisal</td>
+<td><code>5224102116</code></td>
+</tr>
+<tr>
+<td>P</td>
+<td>Sick Pay</td>
+<td><code>5111102045</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="notes-1">Notes</h3>
+<ul>
+<li>Exactly one fee column is populated per row — the row's judicial role is implied by which column holds the amount, plus the <code>Activity</code> value (a <code>Sickness</code> activity row still places its amount in a role column).</li>
+<li>Rows 1–2 are empty; the sheet's content starts at the row-3 account codes.</li>
+<li>A single person (same <code>Payroll ID</code>) can appear on multiple rows for different activities and dates.</li>
+</ul>
+<hr />
+</div></details><details class="section" id="3-send--from-crystal-to-bf-19b---send---from-crystal-to-bf-1km-1xlsx"><summary><span class="section-title">3. SEND — from Crystal to BF (<code>19b - SEND - from Crystal to BF (1)KM (1).xlsx</code>)</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>Crystal Reports export (SEND)</td>
+</tr>
+<tr>
+<td><strong>Destination (as named)</strong></td>
+<td>BF</td>
+</tr>
+<tr>
+<td><strong>File format</strong></td>
+<td><code>.xlsx</code></td>
+</tr>
+<tr>
+<td><strong>Sheets</strong></td>
+<td><code>Sheet1</code> (single sheet)</td>
+</tr>
+<tr>
+<td><strong>Banner row</strong></td>
+<td>Row 1 (see layout below)</td>
+</tr>
+<tr>
+<td><strong>Header row</strong></td>
+<td>Row 2</td>
+</tr>
+<tr>
+<td><strong>Data rows</strong></td>
+<td>Row 3 onwards</td>
+</tr>
+<tr>
+<td><strong>Totals</strong></td>
+<td>Grand-total footer row immediately after the last data row (see layout below)</td>
+</tr>
+<tr>
+<td><strong>Granularity</strong></td>
+<td>One row per panel member per session attended</td>
+</tr>
+</tbody>
+</table>
+<h3 id="banner-row-layout-row-1">Banner row layout (row 1)</h3>
+<table>
+<thead>
+<tr>
+<th>Cell(s)</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B1</td>
+<td>Literal text <code>PANEL MEMBERS ATTENDANCE  FOR WEEK ENDING</code></td>
+</tr>
+<tr>
+<td>G1, H1</td>
+<td>Week-ending date (Excel date, duplicated across both cells)</td>
+</tr>
+<tr>
+<td>I1</td>
+<td>Literal text <code>From</code></td>
+</tr>
+<tr>
+<td>J1</td>
+<td>Period-from date (Excel date)</td>
+</tr>
+<tr>
+<td>K1</td>
+<td>Literal text <code>To</code></td>
+</tr>
+<tr>
+<td>L1</td>
+<td>Period-to date (Excel date)</td>
+</tr>
+<tr>
+<td>M1</td>
+<td>Literal text <code>REPORT B</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="column-structure-2">Column structure</h3>
+<table>
+<thead>
+<tr>
+<th>Col</th>
+<th>Heading</th>
+<th>Type / format</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><code>Name</code></td>
+<td>Text</td>
+<td>Panel member name</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>NINO</code></td>
+<td>Text</td>
+<td>National Insurance number; mixed case and embedded tab characters observed in the source data</td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>ATTENDED</code></td>
+<td>Text flag</td>
+<td><code>Y</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td><code>Date</code></td>
+<td>Excel date</td>
+<td>Attendance date</td>
+</tr>
+<tr>
+<td>E</td>
+<td><code>Period</code></td>
+<td>Text enum</td>
+<td><code>All Day</code>, <code>Afternoon</code>; blank on some rows</td>
+</tr>
+<tr>
+<td>F</td>
+<td><code>Session ID</code></td>
+<td>Number</td>
+<td>9-digit session identifier</td>
+</tr>
+<tr>
+<td>G</td>
+<td><code>Venue</code></td>
+<td>Text</td>
+<td>Pattern <code>SEND - &lt;Location&gt;</code></td>
+</tr>
+<tr>
+<td>H</td>
+<td><code>BEC</code></td>
+<td>Number</td>
+<td>8-digit cost-centre code (Budget Expenditure Code)</td>
+</tr>
+<tr>
+<td>I</td>
+<td><code>NAC</code></td>
+<td>Number</td>
+<td>10-digit account code (Nominal Account Code)</td>
+</tr>
+<tr>
+<td>J</td>
+<td><code>Fee</code></td>
+<td>Number</td>
+<td>Fee amount, decimal</td>
+</tr>
+</tbody>
+</table>
+<h3 id="grand-total-footer-row-layout">Grand-total footer row layout</h3>
+<p>The footer row sits directly below the last data row and mixes labels and figures across the same columns:</p>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>Literal text <code>Grand Total:</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td>Literal text <code>Grand Total</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td>Literal text <code>Total Number Attended</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td>Count of attendances (number)</td>
+</tr>
+<tr>
+<td>I</td>
+<td>Total fees (number)</td>
+</tr>
+<tr>
+<td>J</td>
+<td>Literal text <code>Total Fees Paid</code></td>
+</tr>
+<tr>
+<td>K</td>
+<td>Total fees (number, repeated)</td>
+</tr>
+<tr>
+<td>L</td>
+<td>Literal text <code>Total Number of Records</code></td>
+</tr>
+<tr>
+<td>M</td>
+<td>Record count (number)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="notes-2">Notes</h3>
+<ul>
+<li>The footer's totals (attendance count, record count) reflect the full source report, not just the rows present in the sheet — the template sample carries totals far larger than its visible row count, indicating the file is a truncated extract of a bigger weekly report.</li>
+<li>One stray residual value sits in column J on the row below the footer in the template sample.</li>
+<li>The <code>BEC</code> / <code>NAC</code> pair is this template's naming for what <code>14b</code> calls <code>Cost Centre</code> / <code>Account Code</code>.</li>
+</ul>
+<hr />
+</div></details><details class="section" id="4-ast-sittings-file--jef-import-jfs-1130-sittings-file---ast-1-2xlsx"><summary><span class="section-title">4. AST Sittings file — JEF import (<code>JFS-1130-Sittings File - AST 1 (2).xlsx</code>)</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source / purpose</strong></td>
+<td>Sittings file for AST (Asylum Support Tribunal), shaped as a <strong>JEF import sheet</strong> — the column set is the JEF expense-import schema</td>
+</tr>
+<tr>
+<td><strong>File format</strong></td>
+<td><code>.xlsx</code></td>
+</tr>
+<tr>
+<td><strong>Sheets</strong></td>
+<td><code>JEF Import Sheet</code> (single sheet)</td>
+</tr>
+<tr>
+<td><strong>Header row</strong></td>
+<td>Row 1</td>
+</tr>
+<tr>
+<td><strong>Data rows</strong></td>
+<td>Row 2 onwards, one row per expense claim line</td>
+</tr>
+<tr>
+<td><strong>Totals</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Granularity</strong></td>
+<td>One row per claimant per sitting claim</td>
+</tr>
+</tbody>
+</table>
+<h3 id="column-structure-3">Column structure</h3>
+<p>All 22 named columns of the JEF import schema are present. Several are part of the schema but left unpopulated in this sittings-file usage — these are marked below.</p>
+<table>
+<thead>
+<tr>
+<th>Col</th>
+<th>Heading</th>
+<th>Type / format</th>
+<th>Populated in template</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><code>ExpenseTypeName</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>JEF expense-type key; pattern <code>FtT-SEC-AS-Judge-LW-A Sitting</code></td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>ClaimantEmailAddress</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Claimant identified by email address</td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>ClaimDate</code></td>
+<td><strong>Text</strong>, <code>MM/DD/YYYY</code></td>
+<td>Yes</td>
+<td>Stored as text in US month-first order</td>
+</tr>
+<tr>
+<td>D</td>
+<td><code>Description</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Pattern <code>AST Sitting DD-MM-YYYY</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td><code>BusinessUse</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Carries the case reference list: <code>Case Reference Number: NNNNNX, NNNNNX, …</code></td>
+</tr>
+<tr>
+<td>F</td>
+<td><code>ProjectCode</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>G</td>
+<td><code>TaskCode</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>H</td>
+<td><code>Quantity</code></td>
+<td>Number</td>
+<td>Yes</td>
+<td>Number of sessions claimed (integer)</td>
+</tr>
+<tr>
+<td>I</td>
+<td><code>Rate</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>J</td>
+<td><code>Gross</code></td>
+<td>Number</td>
+<td>Yes</td>
+<td>Gross claim amount</td>
+</tr>
+<tr>
+<td>K</td>
+<td><code>VATCode</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>L</td>
+<td><code>VAT</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>M</td>
+<td><code>CurrencyIsoCode</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td><code>GBP</code></td>
+</tr>
+<tr>
+<td>N</td>
+<td><code>DefaultCurrencyVAT</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>O</td>
+<td><code>ActualDistance</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>P</td>
+<td><code>VehicleName</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>Q</td>
+<td><code>UserDefinableNumber</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>R</td>
+<td><code>VATReceiptOption</code></td>
+<td>Text enum</td>
+<td>Yes</td>
+<td><code>No receipt required (Fees)</code></td>
+</tr>
+<tr>
+<td>S</td>
+<td><code>BankAccountName</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>T</td>
+<td><code>SelectUsers</code></td>
+<td>—</td>
+<td>No</td>
+<td>Schema column, blank in this usage</td>
+</tr>
+<tr>
+<td>U</td>
+<td><code>Tag:Appointment</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Appointment tag; pattern <code>FtT-SEC-Asylum Support-Judge-LW</code></td>
+</tr>
+<tr>
+<td>V</td>
+<td><code>Tag:Hearing Venue</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Hearing-venue tag, e.g. venue-name string</td>
+</tr>
+</tbody>
+</table>
+<h3 id="notes-3">Notes</h3>
+<ul>
+<li>This is the only template in the set that identifies the claimant by <strong>email address</strong> rather than by name + NINO or payroll reference.</li>
+<li>It is also the only template carrying <strong>case reference numbers</strong> (in <code>BusinessUse</code>).</li>
+<li>The two <code>Tag:</code> columns are JEF tag-typed fields (tag category embedded in the column name after the colon).</li>
+<li>A 23rd column position exists in the sheet's used range but has no heading and no values.</li>
+</ul>
+<hr />
+</div></details><details class="section" id="5-list-assist-sscs-template-list-assist-sscs-templatexlsx"><summary><span class="section-title">5. List Assist SSCS template (<code>List Assist SSCS template.xlsx</code>)</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>List Assist</td>
+</tr>
+<tr>
+<td><strong>Purpose (as named in sheet)</strong></td>
+<td>JOH Fee Reconciliation</td>
+</tr>
+<tr>
+<td><strong>File format</strong></td>
+<td><code>.xlsx</code></td>
+</tr>
+<tr>
+<td><strong>Sheets</strong></td>
+<td><code>JOHFeeReconciliation</code> (single sheet)</td>
+</tr>
+<tr>
+<td><strong>Title row</strong></td>
+<td>Row 1, column A: literal text <code>JOH Fee Reconciliation</code></td>
+</tr>
+<tr>
+<td><strong>Report-metadata row</strong></td>
+<td>Row 2, merged across <code>A2:G2</code>: two lines — <code>Report generator name: &lt;email address&gt;</code> and <code>Period Covered: DD/MM/YYYY To DD/MM/YYYY</code></td>
+</tr>
+<tr>
+<td><strong>Header row</strong></td>
+<td>Row 5 (rows 3–4 are empty); headers occupy columns <strong>B–R</strong>, column A is unused</td>
+</tr>
+<tr>
+<td><strong>Data rows</strong></td>
+<td>Row 6 onwards</td>
+</tr>
+<tr>
+<td><strong>Totals</strong></td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Granularity</strong></td>
+<td>One row per JOH (judicial office holder) per session</td>
+</tr>
+</tbody>
+</table>
+<h3 id="column-structure-4">Column structure</h3>
+<table>
+<thead>
+<tr>
+<th>Col</th>
+<th>Heading</th>
+<th>Type / format</th>
+<th>Populated in template</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><em>(unused)</em></td>
+<td>—</td>
+<td>—</td>
+<td>No heading, no values</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>Member Name</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Format <code>Surname, Forename</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>JOH Unique ID</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>8-digit identifier stored as text</td>
+</tr>
+<tr>
+<td>D</td>
+<td><code>Role</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>e.g. <code>Tribunal Member Medical</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td><code>ATTENDED</code></td>
+<td>Text flag</td>
+<td>Yes</td>
+<td><code>Y</code></td>
+</tr>
+<tr>
+<td>F</td>
+<td><code>Date</code></td>
+<td>Excel date</td>
+<td>Yes</td>
+<td>Displayed <code>mm/dd/yyyy</code></td>
+</tr>
+<tr>
+<td>G</td>
+<td><code>Period</code></td>
+<td>Text enum</td>
+<td>Yes</td>
+<td><code>Morning</code></td>
+</tr>
+<tr>
+<td>H</td>
+<td><code>Session Category</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Pattern <code>SSCS NN AM/PM</code></td>
+</tr>
+<tr>
+<td>I</td>
+<td><code>Region</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>e.g. region name</td>
+</tr>
+<tr>
+<td>J</td>
+<td><code>Venue</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Pattern <code>SSCS &lt;Location&gt;</code></td>
+</tr>
+<tr>
+<td>K</td>
+<td><code>Room</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Pattern <code>&lt;Location&gt; Courtroom NN</code></td>
+</tr>
+<tr>
+<td>L</td>
+<td><code>Cost Centre</code></td>
+<td>Text</td>
+<td>Yes</td>
+<td>Pattern <code>NNNN-NNNNNNNN</code> (same shape as template 1)</td>
+</tr>
+<tr>
+<td>M</td>
+<td><code>Account Code</code></td>
+<td>Number</td>
+<td>Yes</td>
+<td>10-digit account code</td>
+</tr>
+<tr>
+<td>N</td>
+<td><code>Fee</code></td>
+<td>Number</td>
+<td>Yes</td>
+<td>Fee amount, decimal</td>
+</tr>
+<tr>
+<td>O</td>
+<td><code>Session Start Time</code></td>
+<td>—</td>
+<td>No</td>
+<td>Header present; unpopulated in the template sample</td>
+</tr>
+<tr>
+<td>P</td>
+<td><code>Session End Time</code></td>
+<td>—</td>
+<td>No</td>
+<td>Header present; unpopulated in the template sample</td>
+</tr>
+<tr>
+<td>Q</td>
+<td><code>JOH Arrival Time</code></td>
+<td>—</td>
+<td>No</td>
+<td>Header present; unpopulated in the template sample</td>
+</tr>
+<tr>
+<td>R</td>
+<td><code>JOH Departure Time</code></td>
+<td>—</td>
+<td>No</td>
+<td>Header present; unpopulated in the template sample</td>
+</tr>
+</tbody>
+</table>
+<h3 id="notes-4">Notes</h3>
+<ul>
+<li>This is the richest attendance layout in the set: it adds <code>Region</code>, <code>Room</code>, <code>Session Category</code> and four session/arrival timing columns that no other template carries.</li>
+<li>The report generator (a named user's email address) and the period covered are embedded in the merged row-2 cell rather than in separate labelled cells.</li>
+<li>The <code>JOH Unique ID</code> replaces NINO as the person identifier — the only attendance-style template not using NINO.</li>
+</ul>
+<hr />
+</div></details><details class="section" id="6-martha-payment-file-martha2-1xlsx"><summary><span class="section-title">6. Martha payment file (<code>Martha2 (1).xlsx</code>)</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>Martha</td>
+</tr>
+<tr>
+<td><strong>File format</strong></td>
+<td><code>.xlsx</code></td>
+</tr>
+<tr>
+<td><strong>Sheets</strong></td>
+<td><code>Payment File</code> (primary), <code>Index</code> (secondary — see below)</td>
+</tr>
+<tr>
+<td><strong>Totals row</strong></td>
+<td>Row 3 — sits <strong>above</strong> the header row: label <code>TOTAL:</code> in column I, then totals for FEE, TRAVEL, SUBSISTENCE, MISC and TOTAL in columns J–N</td>
+</tr>
+<tr>
+<td><strong>Header row</strong></td>
+<td>Row 4 (rows 1–2 are empty)</td>
+</tr>
+<tr>
+<td><strong>Data rows</strong></td>
+<td>Row 5 onwards</td>
+</tr>
+<tr>
+<td><strong>Granularity</strong></td>
+<td>One row per member per activity per date range</td>
+</tr>
+</tbody>
+</table>
+<h3 id="payment-file-sheet--column-structure"><code>Payment File</code> sheet — column structure</h3>
+<table>
+<thead>
+<tr>
+<th>Col</th>
+<th>Heading</th>
+<th>Type / format</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td><code>MEMBER (Name Only)</code></td>
+<td>Text</td>
+<td>Member name; heading explicitly constrains the field to name only</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>PAY REF</code></td>
+<td>Mixed</td>
+<td>Numeric references and <code>PAYnnnnnn</code>-style references both observed</td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>ROLE</code></td>
+<td>Text enum</td>
+<td><code>Member (Lay)</code>, <code>Member (Medical)</code>, <code>Tribunal Judge</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td><code>SALARY</code></td>
+<td>Text enum</td>
+<td><code>Fee Paid</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td><code>BEC</code></td>
+<td>Number</td>
+<td>8-digit cost-centre code</td>
+</tr>
+<tr>
+<td>F</td>
+<td><code>ACTIVITY</code></td>
+<td>Text enum</td>
+<td><code>Sitting</code>, <code>Other</code></td>
+</tr>
+<tr>
+<td>G</td>
+<td><code>START</code></td>
+<td>Excel date</td>
+<td>Activity start date, displayed <code>mm-dd-yy</code></td>
+</tr>
+<tr>
+<td>H</td>
+<td><code>END</code></td>
+<td>Excel date</td>
+<td>Activity end date — can span a multi-day range</td>
+</tr>
+<tr>
+<td>I</td>
+<td><code>CLAIM</code></td>
+<td>Text enum</td>
+<td><code>Expected (Full)</code></td>
+</tr>
+<tr>
+<td>J</td>
+<td><code>FEE</code></td>
+<td>Number</td>
+<td>Fee amount</td>
+</tr>
+<tr>
+<td>K</td>
+<td><code>TRAVEL</code></td>
+<td>Number</td>
+<td>Travel amount</td>
+</tr>
+<tr>
+<td>L</td>
+<td><code>SUBSISTENCE</code></td>
+<td>Number</td>
+<td>Subsistence amount</td>
+</tr>
+<tr>
+<td>M</td>
+<td><code>MISC</code></td>
+<td>Number</td>
+<td>Miscellaneous amount</td>
+</tr>
+<tr>
+<td>N</td>
+<td><code>TOTAL</code></td>
+<td>Number</td>
+<td>Row total</td>
+</tr>
+</tbody>
+</table>
+<h3 id="totals-row-layout-row-3-above-the-headers">Totals row layout (row 3, above the headers)</h3>
+<table>
+<thead>
+<tr>
+<th>Cell</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>I3</td>
+<td>Literal text <code>TOTAL:</code></td>
+</tr>
+<tr>
+<td>J3</td>
+<td>Sum of <code>FEE</code> column</td>
+</tr>
+<tr>
+<td>K3</td>
+<td>Sum of <code>TRAVEL</code> column</td>
+</tr>
+<tr>
+<td>L3</td>
+<td>Sum of <code>SUBSISTENCE</code> column</td>
+</tr>
+<tr>
+<td>M3</td>
+<td>Sum of <code>MISC</code> column</td>
+</tr>
+<tr>
+<td>N3</td>
+<td>Sum of <code>TOTAL</code> column</td>
+</tr>
+</tbody>
+</table>
+<p>The totals are stored as plain values, not as live formulas.</p>
+<h3 id="index-sheet"><code>Index</code> sheet</h3>
+<p>The <code>Index</code> sheet repeats the same 14-column shape as <code>Payment File</code> but with <strong>no header row and no totals row</strong> — data starts at row 2. The template sample's rows include zero-value and <strong>negative</strong> fee entries alongside unchanged totals, consistent with a working/adjustments area rather than a second payment file. Its role is not labelled anywhere in the workbook.</p>
+<h3 id="notes-5">Notes</h3>
+<ul>
+<li>Martha2 is the only template in the set that splits payment into <strong>FEE / TRAVEL / SUBSISTENCE / MISC / TOTAL</strong> components and the only one with a claim-status field (<code>CLAIM</code>).</li>
+<li>The same member can appear on multiple rows with different <code>PAY REF</code> values in the sample, suggesting the reference is per-claim rather than per-person.</li>
+<li>The <code>Payment File</code> sheet's used range extends to ~9,100 formatted rows; only the totals row, header row and data rows hold values.</li>
+</ul>
+<hr />
+</div></details><details class="section" id="cross-template-observations"><summary><span class="section-title">Cross-template observations</span></summary><div class="section-body">
+<h3 id="common-concepts-different-names">Common concepts, different names</h3>
+<p>The same underlying concepts appear under different column names across the six templates:</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>14b SSCS (Crystal)</th>
+<th>18a Courts (OPT)</th>
+<th>19b SEND (Crystal)</th>
+<th>JFS-1130 AST (JEF)</th>
+<th>List Assist SSCS</th>
+<th>Martha2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Person identifier</td>
+<td><code>NINO</code></td>
+<td><code>Payroll ID</code></td>
+<td><code>NINO</code></td>
+<td><code>ClaimantEmailAddress</code></td>
+<td><code>JOH Unique ID</code></td>
+<td><code>PAY REF</code></td>
+</tr>
+<tr>
+<td>Person name</td>
+<td><code>Name</code></td>
+<td><code>Name</code></td>
+<td><code>Name</code></td>
+<td>— (email only)</td>
+<td><code>Member Name</code></td>
+<td><code>MEMBER (Name Only)</code></td>
+</tr>
+<tr>
+<td>Role</td>
+<td>—</td>
+<td>implied by fee column</td>
+<td>—</td>
+<td><code>ExpenseTypeName</code> / <code>Tag:Appointment</code></td>
+<td><code>Role</code></td>
+<td><code>ROLE</code></td>
+</tr>
+<tr>
+<td>Attendance flag</td>
+<td><code>ATTENDED</code></td>
+<td>—</td>
+<td><code>ATTENDED</code></td>
+<td>—</td>
+<td><code>ATTENDED</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Activity type</td>
+<td>—</td>
+<td><code>Activity</code></td>
+<td>—</td>
+<td><code>Description</code></td>
+<td>—</td>
+<td><code>ACTIVITY</code></td>
+</tr>
+<tr>
+<td>Date</td>
+<td><code>Date</code> (text)</td>
+<td><code>Date</code></td>
+<td><code>Date</code></td>
+<td><code>ClaimDate</code> (text)</td>
+<td><code>Date</code></td>
+<td><code>START</code> / <code>END</code></td>
+</tr>
+<tr>
+<td>Session period</td>
+<td><code>Period</code></td>
+<td><code>Session Length</code></td>
+<td><code>Period</code></td>
+<td><code>Quantity</code> (count)</td>
+<td><code>Period</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Venue</td>
+<td><code>Venue</code></td>
+<td>—</td>
+<td><code>Venue</code></td>
+<td><code>Tag:Hearing Venue</code></td>
+<td><code>Venue</code> + <code>Room</code> + <code>Region</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Cost centre</td>
+<td><code>Cost Centre</code></td>
+<td><code>Cost Centre</code></td>
+<td><code>BEC</code></td>
+<td>—</td>
+<td><code>Cost Centre</code></td>
+<td><code>BEC</code></td>
+</tr>
+<tr>
+<td>Account code</td>
+<td><code>Account Code</code></td>
+<td>row-3 code per fee column</td>
+<td><code>NAC</code></td>
+<td>—</td>
+<td><code>Account Code</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td>Fee</td>
+<td><code>Fee</code></td>
+<td>one column per role</td>
+<td><code>Fee</code></td>
+<td><code>Gross</code></td>
+<td><code>Fee</code></td>
+<td><code>FEE</code>…<code>TOTAL</code> split</td>
+</tr>
+<tr>
+<td>Session/category</td>
+<td><code>Session Category</code></td>
+<td>—</td>
+<td><code>Session ID</code></td>
+<td><code>BusinessUse</code> (case refs)</td>
+<td><code>Session Category</code></td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="structural-inconsistencies-in-the-as-is-process">Structural inconsistencies in the as-is process</h3>
+<ul>
+<li><strong>Person identification is not standardised</strong> — four different identifier schemes are in use (NINO, payroll/pay reference, JOH unique ID, email address), and NINO values arrive without case normalisation.</li>
+<li><strong>Date handling is inconsistent</strong> — two templates store dates as text in US <code>MM/DD/YYYY</code> order (14b, JFS-1130); the rest use native Excel dates with varying display formats (<code>mm-dd-yy</code>, <code>mm/dd/yyyy</code>).</li>
+<li><strong>Cost-centre representation varies</strong> — <code>NNNN-NNNNNNNN</code> text in 14b and List Assist versus a bare 8-digit number (<code>Cost Centre</code>/<code>BEC</code>) in 18a, 19b and Martha2.</li>
+<li><strong>Account-code placement varies</strong> — a per-row column (14b, 19b, List Assist) versus a per-column header value (18a) versus absent entirely (JFS-1130, Martha2).</li>
+<li><strong>Totals conventions vary</strong> — none (14b, 18a, JFS-1130, List Assist), a footer row below the data (19b), or a totals row above the header (Martha2).</li>
+<li><strong>Header position varies</strong> — row 1 (JFS-1130), row 2 (14b, 19b), row 4 (Martha2), row 5 starting at column B (List Assist), row 4 with an account-code row above (18a).</li>
+<li><strong>Export artefacts</strong> — the Crystal-sourced files carry thousands of formatted-but-empty rows; values arrive with leading/trailing spaces and embedded tab characters.</li>
+</ul>
+<hr />
+<blockquote>
+<p>Source pack: <code>ji-input-docs/Tribunal-Payment-Templates/</code> (6 files, reviewed 2026-06-12). Structure was extracted programmatically from each workbook (sheets, used ranges, merged cells, headers, cell formats); no payment data is reproduced in this document.</p>
+</blockquote>
+</div></details>
+<p class="source-note">Source: <code>docs/architecture/asis/tribunals/sscs/tribunal-payment-templates.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#at-a-glance">At a Glance</a></li><li><a href="#1-sscs--from-crystal-to-bf-14b---sscs---from-crystal-to-bfxls">1. SSCS — from Crystal to BF (14b - SSCS - from Crystal to BF.xls)</a></li><li class="h3"><a href="#column-structure">Column structure</a></li><li class="h3"><a href="#notes">Notes</a></li><li><a href="#2-courts--from-opt-to-bf-new-template-18a---courts---from-opt-to-bf---new-templatexlsx">2. Courts — from OPT to BF, new template (18a - Courts - from OPT to BF - new template.xlsx)</a></li><li class="h3"><a href="#column-structure-1">Column structure</a></li><li class="h3"><a href="#account-code-row-row-3">Account-code row (row 3)</a></li><li class="h3"><a href="#notes-1">Notes</a></li><li><a href="#3-send--from-crystal-to-bf-19b---send---from-crystal-to-bf-1km-1xlsx">3. SEND — from Crystal to BF (19b - SEND - from Crystal to BF (1)KM (1).xlsx)</a></li><li class="h3"><a href="#banner-row-layout-row-1">Banner row layout (row 1)</a></li><li class="h3"><a href="#column-structure-2">Column structure</a></li><li class="h3"><a href="#grand-total-footer-row-layout">Grand-total footer row layout</a></li><li class="h3"><a href="#notes-2">Notes</a></li><li><a href="#4-ast-sittings-file--jef-import-jfs-1130-sittings-file---ast-1-2xlsx">4. AST Sittings file — JEF import (JFS-1130-Sittings File - AST 1 (2).xlsx)</a></li><li class="h3"><a href="#column-structure-3">Column structure</a></li><li class="h3"><a href="#notes-3">Notes</a></li><li><a href="#5-list-assist-sscs-template-list-assist-sscs-templatexlsx">5. List Assist SSCS template (List Assist SSCS template.xlsx)</a></li><li class="h3"><a href="#column-structure-4">Column structure</a></li><li class="h3"><a href="#notes-4">Notes</a></li><li><a href="#6-martha-payment-file-martha2-1xlsx">6. Martha payment file (Martha2 (1).xlsx)</a></li><li class="h3"><a href="#payment-file-sheet--column-structure">Payment File sheet — column structure</a></li><li class="h3"><a href="#totals-row-layout-row-3-above-the-headers">Totals row layout (row 3, above the headers)</a></li><li class="h3"><a href="#index-sheet">Index sheet</a></li><li class="h3"><a href="#notes-5">Notes</a></li><li><a href="#cross-template-observations">Cross-template observations</a></li><li class="h3"><a href="#common-concepts-different-names">Common concepts, different names</a></li><li class="h3"><a href="#structural-inconsistencies-in-the-as-is-process">Structural inconsistencies in the as-is process</a></li></ul></aside>
+<script>
+(function(){
+  // 1. Sidebar accordion: persist user's group open/close preference per group.
+  //    The current page's group is always open on load (regardless of stored state).
+  document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){
+    var key = 'nav-group-' + d.dataset.group;
+    if (d.dataset.current !== 'true') {
+      var stored = localStorage.getItem(key);
+      if (stored === 'open') d.open = true;
+      else if (stored === 'closed') d.open = false;
+    }
+    d.addEventListener('toggle', function(){
+      localStorage.setItem(key, d.open ? 'open' : 'closed');
+    });
+  });
+
+  // 2. Expand all / Collapse all (sidebar)
+  document.querySelectorAll('button[data-nav-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.navAction === 'expand';
+      document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){ d.open = open; });
+    });
+  });
+
+  // 3. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 4. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>
