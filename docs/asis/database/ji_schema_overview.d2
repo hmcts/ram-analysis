@@ -1,0 +1,105 @@
+vars: { d2-config: { layout-engine: elk } }
+direction: right
+
+title: |md
+  ## JI as-is database schema — overview
+  46 production tables in 6 areas · inter-area FK relationships aggregated (edge label = count) · 0 explicit FK constraints in source DDL
+| { near: top-center; style.font-size: 22 }
+
+judges_profile: "Judges Profile & Reference (8 tables)" {
+  style.fill: "#E3F2FD"
+  style.stroke: "#999"
+  grid-columns: 1
+  TBL_JUDGES: "TBL_JUDGES (31) [BI BU]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGES_MASTER: "TBL_JUDGES_MASTER (34) [BI BU]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGES_USER_LINKS: "TBL_JUDGES_USER_LINKS (7) [BI BU]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGE_TYPES: "TBL_JUDGE_TYPES (23)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGE_STATUSES: "TBL_JUDGE_STATUSES (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGE_CIRCUITS: "TBL_JUDGE_CIRCUITS (5)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_LEADERSHIP_JUDGE_TYPES: "TBL_LEADERSHIP_JUDGE_TYPES (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGE_TYPE_PROMOTION: "TBL_JUDGE_TYPE_PROMOTION (4)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+}
+
+judges_patterns: "Working Patterns, Tickets & Stats (11 tables)" {
+  style.fill: "#E8F5E9"
+  style.stroke: "#999"
+  grid-columns: 1
+  TBL_JUDGES_WORK_PATTERNS: "TBL_JUDGES_WORK_PATTERNS (16) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGES_WP_DETAIL: "TBL_JUDGES_WP_DETAIL (9) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGES_JURIS_SPLIT: "TBL_JUDGES_JURIS_SPLIT (4) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGE_JURIS: "TBL_JUDGE_JURIS (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGE_TICKET_TYPES: "TBL_JUDGE_TICKET_TYPES (4)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGES_TICKETS: "TBL_JUDGES_TICKETS (10) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGE_COURTS_LINK: "TBL_JUDGE_COURTS_LINK (10) [BI BU]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGE_FEE_RATES: "TBL_JUDGE_FEE_RATES (5)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGES_ANNUAL_LEAVE: "TBL_JUDGES_ANNUAL_LEAVE (12)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGES_BOOKING_STATS: "TBL_JUDGES_BOOKING_STATS (8)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JUDGES_MONTHLY_STATS: "TBL_JUDGES_MONTHLY_STATS (85)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+}
+
+absence_cover: "Absence & Cover Workflow (8 tables)" {
+  style.fill: "#FFF3E0"
+  style.stroke: "#999"
+  grid-columns: 1
+  TBL_JI_ABS_OB: "TBL_JI_ABS_OB (36) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_ABS_OB_DETAIL: "TBL_JI_ABS_OB_DETAIL (25) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_ABS_OB_CATS: "TBL_JI_ABS_OB_CATS (4)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_ABS_OB_TYPES: "TBL_JI_ABS_OB_TYPES (12)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_ABS_OB_VAC_OPTS: "TBL_JI_ABS_OB_VAC_OPTS (22) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_VACANCIES: "TBL_JI_VACANCIES (28) [BI BU]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_VACANCY_GROUPS: "TBL_JI_VACANCY_GROUPS (32) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_VAC_CANCEL_REASONS: "TBL_JI_VAC_CANCEL_REASONS (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+}
+
+bookings_sittings: "Bookings & Sittings (5 tables)" {
+  style.fill: "#FCE4EC"
+  style.stroke: "#999"
+  grid-columns: 1
+  TBL_JI_FP_BOOKINGS: "TBL_JI_FP_BOOKINGS (42) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_FP_BOOKING_DETAIL: "TBL_JI_FP_BOOKING_DETAIL (46) [BI BU]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_FP_BOOKING_TYPES: "TBL_JI_FP_BOOKING_TYPES (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_FP_CANCELLERS: "TBL_JI_FP_CANCELLERS (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_PLANNED_SITTINGS: "TBL_JI_PLANNED_SITTINGS (37) [BI BU]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+}
+
+reference_work: "Reference Data — Work, Durations, Areas, Links (11 tables)" {
+  style.fill: "#F3E5F5"
+  style.stroke: "#999"
+  grid-columns: 1
+  TBL_JI_PLANNED_WORK_TYPES: "TBL_JI_PLANNED_WORK_TYPES (8)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_PLANNED_WORK_CATS: "TBL_JI_PLANNED_WORK_CATS (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_ACTUAL_WORK_TYPES: "TBL_JI_ACTUAL_WORK_TYPES (6)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_ACTUAL_WORK_CATS: "TBL_JI_ACTUAL_WORK_CATS (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_SITTING_DURS: "TBL_JI_SITTING_DURS (5)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_AREAS: "TBL_JI_AREAS (5)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_EXTRA_NWDS: "TBL_JI_EXTRA_NWDS (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_LOC_JT_AWD_LINKS: "TBL_JI_LOC_JT_AWD_LINKS (4)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_LOC_JT_PWD_LINKS: "TBL_JI_LOC_JT_PWD_LINKS (4)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_LOC_JT_SD_LINKS: "TBL_JI_LOC_JT_SD_LINKS (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_UA_JT_LINKS: "TBL_JI_UA_JT_LINKS (2)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+}
+
+audit_cross_cutting: "Audit & Cross-cutting (3 tables)" {
+  style.fill: "#FFFDE7"
+  style.stroke: "#999"
+  grid-columns: 1
+  TBL_JI_CHANGES: "TBL_JI_CHANGES (5) [BI]" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_CHANGE_TYPES: "TBL_JI_CHANGE_TYPES (3)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+  TBL_JI_RESTR_ITIN_USERS: "TBL_JI_RESTR_ITIN_USERS (4)" { shape: rectangle; style.fill: "#ffffff"; style.font-size: 13 }
+}
+
+absence_cover -> judges_profile: "6" { style.stroke: "#1f6feb"; style.stroke-width: 3; style.font-color: "#0a3069" }
+absence_cover -> reference_work: "6" { style.stroke: "#1f6feb"; style.stroke-width: 3; style.font-color: "#0a3069" }
+absence_cover -> judges_patterns: "4" { style.stroke: "#1f6feb"; style.stroke-width: 2; style.font-color: "#0a3069" }
+reference_work -> judges_profile: "6" { style.stroke: "#1f6feb"; style.stroke-width: 3; style.font-color: "#0a3069" }
+bookings_sittings -> judges_profile: "3" { style.stroke: "#1f6feb"; style.stroke-width: 2; style.font-color: "#0a3069" }
+bookings_sittings -> reference_work: "5" { style.stroke: "#1f6feb"; style.stroke-width: 2; style.font-color: "#0a3069" }
+bookings_sittings -> absence_cover: "2" { style.stroke: "#1f6feb"; style.stroke-width: 1; style.font-color: "#0a3069" }
+bookings_sittings -> judges_patterns: "2" { style.stroke: "#1f6feb"; style.stroke-width: 1; style.font-color: "#0a3069" }
+judges_patterns -> judges_profile: "10" { style.stroke: "#1f6feb"; style.stroke-width: 4; style.font-color: "#0a3069" }
+judges_patterns -> reference_work: "1" { style.stroke: "#1f6feb"; style.stroke-width: 1; style.font-color: "#0a3069" }
+
+legend: |md
+  **Legend** — box = area · `TBL_NAME (n)` n = column count · `[B/A × I/U/D]` = trigger badge  
+  Arrow label = count of inferred inter-area FKs (stroke width scales with count)
+| { near: bottom-center; style.font-size: 13 }

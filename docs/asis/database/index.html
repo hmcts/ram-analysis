@@ -310,15 +310,21 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>Parses <code>JI_Tables_1.txt</code> → <code>ji_schema.json</code></td>
 </tr>
 <tr>
+<td><a href="https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram_d2.py"><code>scripts/python/build_schema_diagram_d2.py</code></a></td>
+<td>Loads JSON → infers FKs + clusters → generates <strong>D2</strong> sources (<code>.d2</code>) → renders PNG via the <strong>ELK</strong> layout engine (orthogonal routing, minimised crossings)</td>
+</tr>
+<tr>
 <td><a href="https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram.py"><code>scripts/python/build_schema_diagram.py</code></a></td>
-<td>Loads JSON → infers FKs + clusters → generates Graphviz DOT → renders PNG → writes companion markdown</td>
+<td><em>Legacy.</em> Same inference/clustering logic but emits Graphviz DOT. The D2 generator imports its functions so the two cannot drift; it also still writes <code>ji_schema_companion.md</code>.</td>
 </tr>
 </tbody>
 </table>
-<p>Regenerate everything from scratch:</p>
+<p>The diagrams ship as D2 (<code>.d2</code>) sources rendered to PNG. Each <code>.d2</code> pins the layout engine in-file (<code>vars.d2-config.layout-engine: elk</code>), so it also renders correctly through the shared <code>scripts/render_diagram.sh</code> wrapper. Detail diagrams use D2's native <code>sql_table</code> ER shape.</p>
+<p>Regenerate everything from scratch (requires <code>brew install d2</code>):</p>
 <pre class="sh"><code>cd &lt;repo-root&gt;
 python3 scripts/python/parse_ji_ddl.py
-python3 scripts/python/build_schema_diagram.py</code></pre>
+python3 scripts/python/build_schema_diagram.py      # companion markdown (+ legacy DOT/PNG)
+python3 scripts/python/build_schema_diagram_d2.py   # diagrams (D2 + ELK) — run last; overwrites the PNGs</code></pre>
 </div></details><details class="section" id="how-to-read-the-diagrams"><summary><span class="section-title">How to read the diagrams</span></summary><div class="section-body">
 <h3 id="overview-ji_schema_overviewpng">Overview (<code>ji_schema_overview.png</code>)</h3>
 <ul>
@@ -327,20 +333,19 @@ python3 scripts/python/build_schema_diagram.py</code></pre>
 <li><strong>No per-table edges</strong>. To see column-level FKs, open the relevant per-area detail PNG.</li>
 </ul>
 <h3 id="detail-diagrams-per-area">Detail diagrams (per area)</h3>
-<p>Every detail PNG includes a built-in legend.</p>
+<p>Every detail PNG includes a built-in legend. Each table is a D2 <code>sql_table</code> shape; ELK lays the tables out and routes the FK lines orthogonally to keep crossings to a minimum.</p>
 <ul>
-<li><strong>Tables are laid out in a grid</strong> of ~√N tables per row to spread the diagram horizontally rather than stacking.</li>
-<li><strong>Header bar</strong>: <code>TBL_NAME</code> + trigger badges (e.g. <code>[BI BU]</code> = before-insert + before-update); next row shows the PK columns.</li>
-<li><strong>Column rows</strong> list every column with type and inline markers.</li>
+<li><strong>Header bar</strong>: <code>TBL_NAME</code> + trigger badges (e.g. <code>[BI BU]</code> = before-insert + before-update).</li>
+<li><strong>Column rows</strong> list every column with its type and inline markers (shown on the right of the row).</li>
 <li><strong>Column markers</strong>:
 <ul>
 <li><code>PK</code> — primary key</li>
-<li><code>FK</code> — foreign key, <strong>target is in the same area</strong> (line is drawn)</li>
-<li><code>UK</code> — unique key (from a <code>*_UK</code> named index)</li>
-<li><code>NN</code> — NOT NULL</li>
+<li><code>FK</code> — foreign key, <strong>target is in the same area</strong> (a line is drawn from this column to the target)</li>
+<li><code>UNQ</code> — unique key (from a <code>*_UK</code> named index)</li>
+<li><em>(NOT NULL is no longer shown on the diagram to reduce clutter — nullability is in <code>ji_schema.json</code>.)</em></li>
 </ul></li>
-<li><strong>Italicised column name + <code>→ TBL_NAME</code> marker</strong> — the column references a table in <strong>another area</strong>. <strong>No edge is drawn</strong> (open the named area's detail diagram, or the overview, to see the relationship visually).</li>
-<li><strong>Italicised column name + italic hint</strong> (e.g. <code>→ LOCATIONS / OFFICES</code>) — the column references a table <strong>not in the source PDF</strong>. See <code>ji_schema_companion.md</code> for the full external-reference inventory.</li>
+<li><strong><code>→ TBL_NAME</code> in the type cell</strong> — the column references a table in <strong>another area</strong>. <strong>No edge is drawn</strong> (open the named area's detail diagram, or the overview, to see the relationship visually).</li>
+<li><strong><code>→ hint</code> in the type cell</strong> (e.g. <code>→ LOCATIONS / OFFICES</code>) — the column references a table <strong>not in the source PDF</strong>. See <code>ji_schema_companion.md</code> for the full external-reference inventory.</li>
 <li><strong>Edge styles</strong> (intra-area lines only):
 <ul>
 <li>Solid blue — <strong>HIGH</strong> confidence FK (exact PK match)</li>

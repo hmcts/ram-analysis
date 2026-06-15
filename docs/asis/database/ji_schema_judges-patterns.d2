@@ -1,0 +1,148 @@
+vars: { d2-config: { layout-engine: elk } }
+direction: right
+
+title: |md
+  ## JI as-is schema — Working Patterns, Tickets & Stats
+  PK / FK (in-area) / UNQ markers · trigger badges `[B/A × I/U/D]` · intra-area FK edges only · cross-area & external refs shown in the type cell
+| { near: top-center; style.font-size: 22 }
+
+TBL_JUDGES_WORK_PATTERNS: "TBL_JUDGES_WORK_PATTERNS [BI]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGES_WORK_PATTERN_ID: "NUMBER" {constraint: [primary_key]}
+  JUDGES_MASTER_ID: "NUMBER → TBL_JUDGES_MASTER"
+  WORK_PATTERN_TYPE_ID: "NUMBER(2,0)"
+  START_DATE: "DATE"
+  END_DATE: "DATE"
+  COMMENTS: "VARCHAR2(4000)"
+  CREATED_BY: "VARCHAR2(255)"
+  CREATED_DATE: "DATE"
+  JUDGE_CODE: "NUMBER(6,0) → TBL_JUDGES"
+  TARGET_ANN_SITTING_DAYS: "NUMBER(4,1)"
+  BASE_LOC_TYPE_ID: "NUMBER(2,0) → LOCATION TYPES"
+  BASE_LOC_ID: "NUMBER(6,0) → LOCATIONS"
+  FTE_PERC: "NUMBER(5,2)"
+  DELETED: "CHAR(1)"
+  DELETED_BY: "VARCHAR2(255)"
+  DELETED_DATE: "DATE"
+}
+
+TBL_JUDGES_WP_DETAIL: "TBL_JUDGES_WP_DETAIL [BI]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGES_WP_DETAIL_ID: "NUMBER" {constraint: [primary_key]}
+  JUDGES_WORK_PATTERN_ID: "NUMBER" {constraint: [foreign_key]}
+  LOC_TYPE_ID: "NUMBER(2,0) → LOCATION TYPES"
+  LOC_ID: "NUMBER(6,0) → LOCATIONS / OFFICES"
+  WEEK_SORT: "NUMBER(2,0)"
+  DAY_SORT: "NUMBER(3,0)"
+  JI_PLANNED_WORK_TYPE_ID: "NUMBER(3,0) → TBL_JI_PLANNED_WORK_TYPES"
+  CUT_OWNER_ID: "NUMBER → COURTROOMS / CUT_*"
+  JUDGE_CODE_OVERRIDE: "NUMBER(6,0)"
+}
+
+TBL_JUDGES_JURIS_SPLIT: "TBL_JUDGES_JURIS_SPLIT [BI]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGES_JURIS_SPLIT_ID: "NUMBER" {constraint: [primary_key]}
+  JUDGES_WORK_PATTERN_ID: "NUMBER" {constraint: [foreign_key]}
+  JUDGE_JURIS_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  SPLIT_PC: "NUMBER(3,0)"
+}
+
+TBL_JUDGE_JURIS: "TBL_JUDGE_JURIS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGE_JURIS_ID: "NUMBER(2,0)" {constraint: [primary_key]}
+  JUDGE_JURIS_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+}
+
+TBL_JUDGE_TICKET_TYPES: "TBL_JUDGE_TICKET_TYPES" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGE_TICKET_TYPE_ID: "NUMBER(3,0)" {constraint: [primary_key]}
+  JUDGE_TICKET_TYPE_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+  JUDGE_TICKET_TYPE_ABBR: "VARCHAR2(5)"
+}
+
+TBL_JUDGES_TICKETS: "TBL_JUDGES_TICKETS [BI]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGES_TICKET_ID: "NUMBER" {constraint: [primary_key]}
+  JUDGE_CODE: "NUMBER(6,0) → TBL_JUDGES"
+  JUDGE_TICKET_TYPE_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  START_DATE: "DATE"
+  END_DATE: "DATE"
+  COMMENTS: "VARCHAR2(4000)"
+  CREATED_BY: "VARCHAR2(255)"
+  CREATED_DATE: "DATE"
+  LAST_MODIFIED_BY: "VARCHAR2(255)"
+  LAST_MODIFIED_DATE: "DATE"
+}
+
+TBL_JUDGE_COURTS_LINK: "TBL_JUDGE_COURTS_LINK [BI BU]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGE_COURTS_LINK_ID: "NUMBER" {constraint: [primary_key]}
+  JUDGE_CODE: "NUMBER → TBL_JUDGES" {constraint: [unique]}
+  COURT_ID: "NUMBER(6,0) → COURTS" {constraint: [unique]}
+  CREATED_BY: "VARCHAR2(100)"
+  CREATED_DATE: "DATE"
+  LAST_MODIFIED_BY: "VARCHAR2(100)"
+  LAST_MODIFIED_DATE: "DATE"
+  AREA_ID: "NUMBER(6,0)"
+  REGION_ID: "NUMBER(6,0) → REGIONS"
+  COMMENTS: "VARCHAR2(4000)"
+}
+
+TBL_JUDGE_FEE_RATES: "TBL_JUDGE_FEE_RATES" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGE_TYPE_ID: "NUMBER(2,0) → TBL_JUDGE_TYPES" {constraint: [primary_key]}
+  DATE_FROM: "DATE" {constraint: [primary_key]}
+  DATE_TO: "DATE"
+  DAILY_FEE_AMT: "NUMBER(7,2)"
+  DAILY_FEE_AMT_LW: "NUMBER(7,2)"
+}
+
+TBL_JUDGES_ANNUAL_LEAVE: "TBL_JUDGES_ANNUAL_LEAVE" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGES_MASTER_ID: "NUMBER → TBL_JUDGES_MASTER" {constraint: [primary_key]}
+  START_YEARMONTH: "NUMBER(6,0)" {constraint: [primary_key]}
+  LEAVE_BF: "NUMBER(5,2)"
+  SITTING_COMMITMENT: "NUMBER(5,2)"
+  WORKING_DAYS_IN_YEAR: "NUMBER(5,2)"
+  DAYS_IN_LIEU: "NUMBER(5,2)"
+  LEAVE_CF: "NUMBER(5,2)"
+  LEAVE_AT_START: "NUMBER(5,2)"
+  LEAVE_BAL: "NUMBER(5,2)"
+  LAST_MODIFIED_BY: "VARCHAR2(100)"
+  LAST_MODIFIED_DATE: "DATE"
+  AVAIL_LEAVE_FOR_YEAR: "NUMBER(5,2)"
+}
+
+TBL_JUDGES_BOOKING_STATS: "TBL_JUDGES_BOOKING_STATS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  START_YEARMONTH: "NUMBER(6,0)" {constraint: [primary_key]}
+  JUDGE_CODE: "NUMBER(6,0) → TBL_JUDGES" {constraint: [primary_key]}
+  MIN_ANN_SITTING_DAYS: "NUMBER(4,1)"
+  MAX_ANN_SITTING_DAYS: "NUMBER(4,1)"
+  DAYS_SAT_TO_DATE: "NUMBER(5,2)"
+  DAYS_BOOKED_IN_YEAR: "NUMBER(5,2)"
+  LAST_MODIFIED_BY: "VARCHAR2(100)"
+  LAST_MODIFIED_DATE: "DATE"
+}
+
+TBL_JUDGES_JURIS_SPLIT.JUDGES_WORK_PATTERN_ID -> TBL_JUDGES_WORK_PATTERNS.JUDGES_WORK_PATTERN_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JUDGES_JURIS_SPLIT.JUDGE_JURIS_ID -> TBL_JUDGE_JURIS.JUDGE_JURIS_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JUDGES_TICKETS.JUDGE_TICKET_TYPE_ID -> TBL_JUDGE_TICKET_TYPES.JUDGE_TICKET_TYPE_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JUDGES_WP_DETAIL.JUDGES_WORK_PATTERN_ID -> TBL_JUDGES_WORK_PATTERNS.JUDGES_WORK_PATTERN_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+
+legend: |md
+  **Legend** — `PK` primary · `FK` in-area (line) · `UNQ` unique · `→ TBL_X` cross-area ref (no line) · `→ hint` external (not in PDF)  
+  ━━ blue solid = HIGH-confidence FK · - - grey dashed = MEDIUM-confidence FK
+| { near: bottom-center; style.font-size: 13 }
