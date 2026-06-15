@@ -44,14 +44,18 @@ Schema diagrams reverse-engineered from `JI Tables - 1.pdf` (the Oracle DDL dump
 | Script | Role |
 |---|---|
 | [`scripts/python/parse_ji_ddl.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/parse_ji_ddl.py) | Parses `JI_Tables_1.txt` → `ji_schema.json` |
-| [`scripts/python/build_schema_diagram.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram.py) | Loads JSON → infers FKs + clusters → generates Graphviz DOT → renders PNG → writes companion markdown |
+| [`scripts/python/build_schema_diagram_d2.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram_d2.py) | Loads JSON → infers FKs + clusters → generates **D2** sources (`.d2`) → renders PNG via the **ELK** layout engine (orthogonal routing, minimised crossings) |
+| [`scripts/python/build_schema_diagram.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram.py) | _Legacy._ Same inference/clustering logic but emits Graphviz DOT. The D2 generator imports its functions so the two cannot drift; it also still writes `ji_schema_companion.md`. |
 
-Regenerate everything from scratch:
+The diagrams ship as D2 (`.d2`) sources rendered to PNG. Each `.d2` pins the layout engine in-file (`vars.d2-config.layout-engine: elk`), so it also renders correctly through the shared `scripts/render_diagram.sh` wrapper. Detail diagrams use D2's native `sql_table` ER shape.
+
+Regenerate everything from scratch (requires `brew install d2`):
 
 ```sh
 cd <repo-root>
 python3 scripts/python/parse_ji_ddl.py
-python3 scripts/python/build_schema_diagram.py
+python3 scripts/python/build_schema_diagram.py      # companion markdown (+ legacy DOT/PNG)
+python3 scripts/python/build_schema_diagram_d2.py   # diagrams (D2 + ELK) — run last; overwrites the PNGs
 ```
 
 ## How to read the diagrams
@@ -64,18 +68,17 @@ python3 scripts/python/build_schema_diagram.py
 
 ### Detail diagrams (per area)
 
-Every detail PNG includes a built-in legend.
+Every detail PNG includes a built-in legend. Each table is a D2 `sql_table` shape; ELK lays the tables out and routes the FK lines orthogonally to keep crossings to a minimum.
 
-- **Tables are laid out in a grid** of ~√N tables per row to spread the diagram horizontally rather than stacking.
-- **Header bar**: `TBL_NAME` + trigger badges (e.g. `[BI BU]` = before-insert + before-update); next row shows the PK columns.
-- **Column rows** list every column with type and inline markers.
+- **Header bar**: `TBL_NAME` + trigger badges (e.g. `[BI BU]` = before-insert + before-update).
+- **Column rows** list every column with its type and inline markers (shown on the right of the row).
 - **Column markers**:
   - `PK` — primary key
-  - `FK` — foreign key, **target is in the same area** (line is drawn)
-  - `UK` — unique key (from a `*_UK` named index)
-  - `NN` — NOT NULL
-- **Italicised column name + `→ TBL_NAME` marker** — the column references a table in **another area**. **No edge is drawn** (open the named area's detail diagram, or the overview, to see the relationship visually).
-- **Italicised column name + italic hint** (e.g. `→ LOCATIONS / OFFICES`) — the column references a table **not in the source PDF**. See `ji_schema_companion.md` for the full external-reference inventory.
+  - `FK` — foreign key, **target is in the same area** (a line is drawn from this column to the target)
+  - `UNQ` — unique key (from a `*_UK` named index)
+  - _(NOT NULL is no longer shown on the diagram to reduce clutter — nullability is in `ji_schema.json`.)_
+- **`→ TBL_NAME` in the type cell** — the column references a table in **another area**. **No edge is drawn** (open the named area's detail diagram, or the overview, to see the relationship visually).
+- **`→ hint` in the type cell** (e.g. `→ LOCATIONS / OFFICES`) — the column references a table **not in the source PDF**. See `ji_schema_companion.md` for the full external-reference inventory.
 - **Edge styles** (intra-area lines only):
   - Solid blue — **HIGH** confidence FK (exact PK match)
   - Dashed grey — **MEDIUM** confidence FK (prefixed PK match, e.g. `START_SITTING_DUR_ID` → `SITTING_DUR_ID`)

@@ -1,0 +1,122 @@
+vars: { d2-config: { layout-engine: elk } }
+direction: right
+
+title: |md
+  ## JI as-is schema — Reference Data — Work, Durations, Areas, Links
+  PK / FK (in-area) / UNQ markers · trigger badges `[B/A × I/U/D]` · intra-area FK edges only · cross-area & external refs shown in the type cell
+| { near: top-center; style.font-size: 22 }
+
+TBL_JI_PLANNED_WORK_TYPES: "TBL_JI_PLANNED_WORK_TYPES" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JI_PLANNED_WORK_TYPE_ID: "NUMBER(3,0)" {constraint: [primary_key]}
+  JI_PLANNED_WORK_TYPE_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+  JI_PLANNED_WORK_CAT_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  JI_ACTUAL_WORK_TYPE_ID: "NUMBER(3,0)" {constraint: [foreign_key]}
+  SECTION_9: "CHAR(1)"
+  LINKED_TICKET_TYPE_ID: "NUMBER(3,0)"
+  JI_ACTUAL_WORK_CAT_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+}
+
+TBL_JI_PLANNED_WORK_CATS: "TBL_JI_PLANNED_WORK_CATS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JI_PLANNED_WORK_CAT_ID: "NUMBER(2,0)" {constraint: [primary_key]}
+  JI_PLANNED_WORK_CAT_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+}
+
+TBL_JI_ACTUAL_WORK_TYPES: "TBL_JI_ACTUAL_WORK_TYPES" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JI_ACTUAL_WORK_TYPE_ID: "NUMBER(3,0)" {constraint: [primary_key]}
+  JI_ACTUAL_WORK_TYPE_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+  JI_ACTUAL_WORK_CAT_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  SECTION_9: "CHAR(1)"
+  JI_PLANNED_WORK_CAT_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+}
+
+TBL_JI_ACTUAL_WORK_CATS: "TBL_JI_ACTUAL_WORK_CATS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JI_ACTUAL_WORK_CAT_ID: "NUMBER(2,0)" {constraint: [primary_key]}
+  JI_ACTUAL_WORK_CAT_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+}
+
+TBL_JI_SITTING_DURS: "TBL_JI_SITTING_DURS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JI_SITTING_DUR_ID: "NUMBER(2,0)" {constraint: [primary_key]}
+  JI_SITTING_DUR_NAME: "VARCHAR2(100)"
+  DAYS: "NUMBER(4,2)"
+  IN_USE_ABS_OB: "CHAR(1)"
+  IN_USE_SITTINGS: "CHAR(1)"
+}
+
+TBL_JI_AREAS: "TBL_JI_AREAS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JI_AREA_ID: "NUMBER(4,0)" {constraint: [primary_key]}
+  JI_AREA_NAME: "VARCHAR2(255)"
+  JI_AREA_NAME_ABBR: "VARCHAR2(100)"
+  REGION_ID: "NUMBER → REGIONS"
+  SORT: "NUMBER(4,0)"
+}
+
+TBL_JI_EXTRA_NWDS: "TBL_JI_EXTRA_NWDS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  NON_WORKING_DAY: "DATE" {constraint: [primary_key]}
+  JUDGE_TYPE_ID: "NUMBER → TBL_JUDGE_TYPES" {constraint: [primary_key]}
+  JUDGE_CIRCUIT_CODE: "VARCHAR2(2) → TBL_JUDGE_CIRCUITS" {constraint: [primary_key]}
+}
+
+TBL_JI_LOC_JT_AWD_LINKS: "TBL_JI_LOC_JT_AWD_LINKS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  LOC_TYPE_ID: "NUMBER(6,0) → LOCATION TYPES" {constraint: [primary_key]}
+  JUDGE_TYPE_ID: "NUMBER(2,0) → TBL_JUDGE_TYPES" {constraint: [primary_key]}
+  JI_ACTUAL_WORK_TYPE_ID: "NUMBER(3,0)" {constraint: [primary_key]}
+  ROLE_SPECIFIC: "CHAR(1)"
+}
+
+TBL_JI_LOC_JT_PWD_LINKS: "TBL_JI_LOC_JT_PWD_LINKS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  LOC_TYPE_ID: "NUMBER(6,0) → LOCATION TYPES" {constraint: [primary_key]}
+  JUDGE_TYPE_ID: "NUMBER(2,0) → TBL_JUDGE_TYPES" {constraint: [primary_key]}
+  JI_PLANNED_WORK_TYPE_ID: "NUMBER(3,0)" {constraint: [primary_key]}
+  ROLE_SPECIFIC: "CHAR(1)"
+}
+
+TBL_JI_LOC_JT_SD_LINKS: "TBL_JI_LOC_JT_SD_LINKS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  LOC_TYPE_ID: "NUMBER(6,0) → LOCATION TYPES" {constraint: [primary_key]}
+  JUDGE_TYPE_ID: "NUMBER(2,0) → TBL_JUDGE_TYPES" {constraint: [primary_key]}
+  JI_SITTING_DUR_ID: "NUMBER(2,0)" {constraint: [primary_key]}
+}
+
+TBL_JI_UA_JT_LINKS: "TBL_JI_UA_JT_LINKS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  USER_ACCESS_LEVEL: "NUMBER(2,0)" {constraint: [primary_key]}
+  JUDGE_TYPE_ID: "NUMBER(2,0) → TBL_JUDGE_TYPES" {constraint: [primary_key]}
+}
+
+TBL_JI_ACTUAL_WORK_TYPES.JI_ACTUAL_WORK_CAT_ID -> TBL_JI_ACTUAL_WORK_CATS.JI_ACTUAL_WORK_CAT_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JI_ACTUAL_WORK_TYPES.JI_PLANNED_WORK_CAT_ID -> TBL_JI_PLANNED_WORK_CATS.JI_PLANNED_WORK_CAT_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JI_LOC_JT_AWD_LINKS.JI_ACTUAL_WORK_TYPE_ID -> TBL_JI_ACTUAL_WORK_TYPES.JI_ACTUAL_WORK_TYPE_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JI_LOC_JT_PWD_LINKS.JI_PLANNED_WORK_TYPE_ID -> TBL_JI_PLANNED_WORK_TYPES.JI_PLANNED_WORK_TYPE_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JI_LOC_JT_SD_LINKS.JI_SITTING_DUR_ID -> TBL_JI_SITTING_DURS.JI_SITTING_DUR_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JI_PLANNED_WORK_TYPES.JI_PLANNED_WORK_CAT_ID -> TBL_JI_PLANNED_WORK_CATS.JI_PLANNED_WORK_CAT_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JI_PLANNED_WORK_TYPES.JI_ACTUAL_WORK_TYPE_ID -> TBL_JI_ACTUAL_WORK_TYPES.JI_ACTUAL_WORK_TYPE_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JI_PLANNED_WORK_TYPES.JI_ACTUAL_WORK_CAT_ID -> TBL_JI_ACTUAL_WORK_CATS.JI_ACTUAL_WORK_CAT_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+
+legend: |md
+  **Legend** — `PK` primary · `FK` in-area (line) · `UNQ` unique · `→ TBL_X` cross-area ref (no line) · `→ hint` external (not in PDF)  
+  ━━ blue solid = HIGH-confidence FK · - - grey dashed = MEDIUM-confidence FK
+| { near: bottom-center; style.font-size: 13 }
