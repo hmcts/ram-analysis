@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ram-analysis (RAM Pathfinder) — Epic Breakdown — RAM Pathfinder Documentation</title>
+<title>Functional Decomposition — JI Legacy Application (As-Is) — RAM Pathfinder Documentation</title>
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:16px}
@@ -86,128 +86,113 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
 <main class="content">
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
-<h1 id="ram-analysis-ram-pathfinder--epic-breakdown">ram-analysis (RAM Pathfinder) — Epic Breakdown</h1>
-<p>This is the <strong>sharded entry point</strong> for the RAM Pathfinder epic and story breakdown. Each section below lives in its own file for maintainability — the prior single-file <code>epics.md</code> reached ~1,500 lines covering Phase 0 alone, and Phases 1–9+ would push it past 4,000 lines.</p>
-<details class="section" id="overview"><summary><span class="section-title">Overview</span></summary><div class="section-body">
-<p>RAM Pathfinder is HMCTS's greenfield JOH availability-and-scheduling platform — replacing the combined ListAssist/GAPS usage in the SSCS Tribunals jurisdiction in wave 1 and the as-is JI application (Oracle APEX) in the Courts jurisdictions in waves 2+<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Scope boundary<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: availability/scheduling only; case and hearing management live in external systems that consume RAM's APIs. This document decomposes the requirements from the PRD as amended 2026-06-10 (60 FRs, 42 NFRs, D1–D12 — SSCS-first wave 1<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>) and the Architecture v3.0 (HMCTS Crime SpringBoot starter, polyrepo, shared-DB + per-service DB roles, two-tier reference data ingested from JOH eLinks + MRD, two-population identity, Kubernetes on Azure AKS) into implementable stories.</p>
-<p>UX Design document is not present; downstream epics inherit UI requirements directly from PRD FRs (FR55, FR56) and architecture conventions (GOV.UK Design System base, WCAG 2.2 AA per NFR17). This gap is documented in the 2026-05-06 readiness report.</p>
-</div></details><details class="section" id="document-map"><summary><span class="section-title">Document Map</span></summary><div class="section-body">
-<h3 id="foundations-project-wide-context">Foundations (project-wide context)</h3>
+<h1 id="functional-decomposition--ji-legacy-application-as-is">Functional Decomposition — JI Legacy Application (As-Is)</h1>
+<p>A high-level inventory of <em>what the legacy Judicial Itineraries (JI) application lets a user do</em> — its functions, not its implementation. It exists to inform the design of the RAM Pathfinder replacement: it fixes the set of capabilities the new system must cover or consciously drop.</p>
 <table>
 <thead>
 <tr>
-<th>File</th>
-<th>Contents</th>
+<th>Attribute</th>
+<th>Detail</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><a href="requirements-inventory.html">requirements-inventory.md</a></td>
-<td>All FRs (FR1–FR60, renumbered 2026-06-10), NFRs (NFR1–NFR42), Architecture-derived ARs (AR1–AR52), and UX Design Requirements (none — accepted gap)</td>
+<td>Source of truth</td>
+<td>Screenshots of the legacy JI application (<code>ji-input-docs/ji-screenshots/</code> — 36 screens across Manage JOH, Absences/Vacancies/Bookings, Itinerary, Sittings)</td>
 </tr>
 <tr>
-<td><a href="framework.html">framework.md</a></td>
-<td>Phase × Area architectural framework — the spine that organises concrete epics across 10 sequential phases</td>
+<td>Method</td>
+<td>Each function phrased as <em>verb + object</em>; variations collapsed; classified into exactly one domain</td>
 </tr>
 <tr>
-<td><a href="fr-coverage-map.html">fr-coverage-map.md</a></td>
-<td>Single source of truth for FR → Epic mapping across the whole programme</td>
+<td>Scope</td>
+<td>Capabilities visible on screen only. No prior knowledge of similar systems was used to add functions.</td>
+</tr>
+<tr>
+<td>Out of scope</td>
+<td>Fields, buttons, screen/tab names, navigation, internal logic, data flows, calculations</td>
 </tr>
 </tbody>
 </table>
-<h3 id="phase-level-breakdowns-one-folder-per-phase">Phase-level breakdowns (one folder per phase)</h3>
-<table>
-<thead>
-<tr>
-<th>Phase</th>
-<th>Folder</th>
-<th>Status</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>0</strong> — Foundations</td>
-<td><a href="phase-0/index.html">phase-0/</a></td>
-<td>🟡 Epics + stories complete (12 stories) — pending SSCS-cohort revalidation</td>
-</tr>
-<tr>
-<td><strong>1</strong> — JOH</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-<tr>
-<td><strong>2</strong> — Absence</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-<tr>
-<td><strong>3</strong> — Vacancy</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-<tr>
-<td><strong>4</strong> — Booking</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-<tr>
-<td><strong>5</strong> — Sitting</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-<tr>
-<td><strong>6</strong> — Payment</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-<tr>
-<td><strong>7</strong> — Itineraries</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-<tr>
-<td><strong>8</strong> — MI Feed &amp; Reporting</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-<tr>
-<td><strong>9+</strong> — Wave Rollout (jurisdiction-first)</td>
-<td><em>to be storied</em></td>
-<td>⚪ Framework only</td>
-</tr>
-</tbody>
-</table>
-</div></details><details class="section" id="how-this-document-is-produced"><summary><span class="section-title">How this document is produced</span></summary><div class="section-body">
-<p>Each phase advances through four steps of the <code>bmad-create-epics-and-stories</code> workflow:</p>
-<ol type="1">
-<li><strong>Validate prerequisites</strong> — confirm PRD + Architecture available, extract requirements</li>
-<li><strong>Design epics</strong> — group requirements into user-value epics (not technical milestones)</li>
-<li><strong>Create stories</strong> — produce Gherkin-AC user stories sized for a single dev-agent session</li>
-<li><strong>Final validation</strong> — verify FR/NFR coverage, dependency soundness, architecture compliance</li>
-</ol>
-<p>Phase 0 has completed all four steps. Phases 1–9+ are at the framework stage only (Step 1 inputs ready; Steps 2–4 not yet run).</p>
-</div></details><details class="section" id="how-to-find-your-way"><summary><span class="section-title">How to find your way</span></summary><div class="section-body">
+<p>Functions are grouped into six domains: <strong>JOH data management</strong>, <strong>Absence</strong>, <strong>Vacancy</strong>, <strong>Sitting</strong>, <strong>Payment</strong>, <strong>Itinerary management</strong>. The absence → vacancy → booking → payment → reconciliation lifecycle is described in the system's own words on the <em>Absence, Vacancy and Booking tasks</em> landing screen, which anchors the domain boundaries below.</p>
+<details class="section" id="joh-data-management"><summary><span class="section-title">JOH data management</span></summary><div class="section-body">
+<p>Maintaining records about judicial office holders: profiles, status, ticketing/eligibility, venues, working patterns and targets.</p>
 <ul>
-<li><strong>Looking for what to build next?</strong> Start at the phase index (e.g. <a href="phase-0/index.html">phase-0/index.md</a>) and pick an epic.</li>
-<li><strong>Looking for a specific story?</strong> Stories are named <code>Story {phase}.{epic}.{n}</code> (e.g. Story 0.1.5). They live under <code>phase-{n}/epic-{n}.{m}-{slug}.md</code>. They live under <code>phase-{n}/epic-{n}.{m}-{slug}.md</code>.</li>
-<li><strong>Looking for an FR?</strong> Use <a href="fr-coverage-map.html">fr-coverage-map.md</a>.</li>
-<li><strong>Looking for an architecture rule?</strong> Use <a href="requirements-inventory.html">requirements-inventory.md</a> — ARs are in the Additional Requirements section.</li>
-<li><strong>Verifying readiness?</strong> Run <code>bmad-check-implementation-readiness</code> from the repo root; it understands this sharded shape.</li>
+<li>Search for judicial office holders by location, type and status</li>
+<li>Maintain a JOH's profile and contact details</li>
+<li>Maintain a JOH's side-specific details, tickets and eligibility</li>
+<li>Record a JOH's base location, alternative venues and retirement date</li>
+<li>Maintain a JOH's working pattern and jurisdictional split</li>
+<li>Set a JOH's target sitting days</li>
+<li>View a JOH's sitting and availability statistics</li>
+<li>Export the managed-judge list to Excel</li>
 </ul>
-</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
-
-<p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/index.md</code></p>
+</div></details><details class="section" id="absence"><summary><span class="section-title">Absence</span></summary><div class="section-body">
+<p>Recording and managing a member becoming unavailable, including approval and the decision on whether cover is needed.</p>
+<ul>
+<li>Request an absence for a JOH (by judge or local office)</li>
+<li>Record an out-of-bounds (OB) period for a JOH</li>
+<li>Approve or reject a requested absence</li>
+<li>Indicate whether an approved absence requires fee-paid cover</li>
+<li>View requested and confirmed absences</li>
+<li>Send a notification email when recording an absence</li>
+</ul>
+</div></details><details class="section" id="vacancy"><summary><span class="section-title">Vacancy</span></summary><div class="section-body">
+<p>Managing an unfilled slot once it exists: identifying it, advertising it, and filling it with fee-paid cover.</p>
+<ul>
+<li>Create a vacancy arising from an approved absence</li>
+<li>Create a vacancy not arising from an absence</li>
+<li>Advertise vacancies / maintain the advertising plan</li>
+<li>View outstanding and all vacancies</li>
+<li>Fill a vacancy by booking a fee-paid judge (including cross-region cover)</li>
+<li>Create a filled vacancy and its fee-paid booking in one step</li>
+<li>Cancel a fee-paid booking when cover is no longer required</li>
+</ul>
+</div></details><details class="section" id="sitting"><summary><span class="section-title">Sitting</span></summary><div class="section-body">
+<p>Planning and running sessions: creating them, allocating members, and confirming what actually happened.</p>
+<ul>
+<li>Create a sitting/session for a salaried judge</li>
+<li>View planned sittings by salaried judges</li>
+<li>Confirm and verify a sitting and record the actual work type set</li>
+<li>Cancel a sitting</li>
+<li>Book an off-circuit judge as a standalone sitting</li>
+<li>Book a High Court judge into the itinerary</li>
+<li>Book a reserved-matter sitting</li>
+</ul>
+</div></details><details class="section" id="payment"><summary><span class="section-title">Payment</span></summary><div class="section-body">
+<p>Paying members: clearing sessions for payment, sending payment data to finance, and reconciling it.</p>
+<ul>
+<li>Confirm that a fee-paid judge sat and record the work heard (clear for payment)</li>
+<li>Confirm and send fee payments to finance (LIBERATA), notifying the authoriser</li>
+<li>Reconcile fee payments against the LIBERATA cash report and identify discrepancies</li>
+</ul>
+</div></details><details class="section" id="itinerary-management"><summary><span class="section-title">Itinerary management</span></summary><div class="section-body">
+<p>Viewing and maintaining itineraries — both court-driven (office) and judge-driven.</p>
+<ul>
+<li>View and update the court (office) itinerary of sittings, bookings, vacancies and unfilled absences</li>
+<li>View and update a JOH's itinerary of sittings and absences</li>
+<li>View a forward look of sittings and absences across judges</li>
+<li>Create an ad-hoc itinerary for a JOH</li>
+<li>Email a JOH their itinerary</li>
+<li>Export an itinerary or report to Excel</li>
+</ul>
+</div></details><details class="section" id="inferred--needs-confirmation"><summary><span class="section-title">Inferred — needs confirmation</span></summary><div class="section-body">
+<ul>
+<li><strong>Create a new "JOB" for a JOH</strong> — a <em>Create New JOB</em> button is visible on the judge's Itinerary tab, alongside <em>Create Ad Hoc Itinerary</em>, but the screenshots don't reveal what it produces (judicial office booking? job/sitting record?). Listed here rather than guessing its capability.</li>
+<li><strong>Automated allocation of members to sessions</strong> — not evidenced. Every sitting creation and booking seen is manual; no auto-allocation or panel-composition screen appears.</li>
+</ul>
+</div></details><details class="section" id="notes-on-scope-and-ambiguity"><summary><span class="section-title">Notes on scope and ambiguity</span></summary><div class="section-body">
+<ul>
+<li>The <strong>Reports</strong> and <strong>Admin</strong> top-nav tabs appear on every screen, but no screenshot shows their contents — so no functions are listed for them. (The <em>Forward Look</em> report does appear, under Judge Itinerary, and is captured above.)</li>
+<li><strong>"Send Adj. Email"</strong> — the abbreviation is unconfirmed (adjustment vs adjournment); the function is kept generic as a notification email.</li>
+<li><strong>Salaried-judge sitting confirmation</strong> (Sitting) and <strong>fee-paid "judge sat" confirmation</strong> (Payment) look similar but are distinct: one verifies the planned salaried sitting and its work type; the other clears a fee-paid booking for payment. They are kept in separate domains.</li>
+</ul>
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture/analysis/function-decomposition.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#overview">Overview</a></li><li><a href="#document-map">Document Map</a></li><li class="h3"><a href="#foundations-project-wide-context">Foundations (project-wide context)</a></li><li class="h3"><a href="#phase-level-breakdowns-one-folder-per-phase">Phase-level breakdowns (one folder per phase)</a></li><li><a href="#how-this-document-is-produced">How this document is produced</a></li><li><a href="#how-to-find-your-way">How to find your way</a></li></ul></aside>
-<script>window.__NAV_BASE__="../";window.__PAGE__="epics/index";</script>
-<script src="../nav.js"></script>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#joh-data-management">JOH data management</a></li><li><a href="#absence">Absence</a></li><li><a href="#vacancy">Vacancy</a></li><li><a href="#sitting">Sitting</a></li><li><a href="#payment">Payment</a></li><li><a href="#itinerary-management">Itinerary management</a></li><li><a href="#inferred--needs-confirmation">Inferred — needs confirmation</a></li><li><a href="#notes-on-scope-and-ambiguity">Notes on scope and ambiguity</a></li></ul></aside>
+<script>window.__NAV_BASE__="../../../";window.__PAGE__="architecture/tobe/analysis/function-decomposition";</script>
+<script src="../../../nav.js"></script>
 <script>
 (function(){
   // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).

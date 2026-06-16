@@ -5,9 +5,17 @@ Reads markdown from `_bmad-output/planning-artifacts/` and writes HTML to `docs/
 at the repo root (published via GitHub Pages). Mirrors the source directory
 structure. Rewrites `.md` links to `.html` and repo-root-relative links into
 the as-is pack to site-relative ones. Copies images, PDFs, dot, and mmd files
-alongside. Generates an index page and a sidebar navigation present on every
-page. The as-is source pack lives inside docs/architecture/asis/ (the Pages
-site must be self-contained); it and other KEEP paths survive rebuilds.
+alongside. Generates an index page. The as-is source pack lives inside
+docs/architecture/asis/ (the Pages site must be self-contained); it and other
+KEEP paths survive rebuilds.
+
+Sidebar navigation is NOT baked into each page. It is emitted once as a shared
+`docs/nav.js` (see `build_nav_js`); every page carries only an empty
+`#nav-root` placeholder and two per-page constants, and loads the sidebar via
+`<script src>`. Consequence: adding a page regenerates only that page, the
+landing `index.html`, and `nav.js` — not the whole site. Because the sidebar is
+loaded by a script (not `fetch`), pages still render their nav when opened over
+`file://`; serving over HTTP (e.g. `python3 -m http.server`) is not required.
 
 Requirements: pandoc on PATH. No third-party Python dependencies.
 
@@ -16,6 +24,7 @@ Run via the shell wrapper `scripts/build-html.sh` from any working directory.
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -189,6 +198,9 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
         ("Architecture (index)", "architecture", False),
         ("Architecture summary", "architecture-summary", False),
     ]),
+    ("To-be — RAM Pathfinder Analysis", [
+        ("Function decomposition (as-is capabilities)", "architecture/tobe/analysis/function-decomposition", False),
+    ]),
     ("To-be — RAM Pathfinder Reference", [
         ("User types", "architecture/tobe/user-types", False),
         ("Authoritative table ownership", "architecture/tobe/data-tables", False),
@@ -341,29 +353,9 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 
 INLINE_JS = """
 (function(){
-  // 1. Sidebar accordion: persist user's group open/close preference per group.
-  //    The current page's group is always open on load (regardless of stored state).
-  document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){
-    var key = 'nav-group-' + d.dataset.group;
-    if (d.dataset.current !== 'true') {
-      var stored = localStorage.getItem(key);
-      if (stored === 'open') d.open = true;
-      else if (stored === 'closed') d.open = false;
-    }
-    d.addEventListener('toggle', function(){
-      localStorage.setItem(key, d.open ? 'open' : 'closed');
-    });
-  });
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
 
-  // 2. Expand all / Collapse all (sidebar)
-  document.querySelectorAll('button[data-nav-action]').forEach(function(b){
-    b.addEventListener('click', function(){
-      var open = b.dataset.navAction === 'expand';
-      document.querySelectorAll('aside.nav details.nav-group').forEach(function(d){ d.open = open; });
-    });
-  });
-
-  // 3. When a fragment link points to a heading inside a collapsed <details>,
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
   //    open all ancestor <details> elements so the target is visible.
   function openAncestors(id){
     if (!id) return;
@@ -393,7 +385,7 @@ INLINE_JS = """
     setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
   });
 
-  // 4. Expand all / Collapse all (content sections)
+  // 2. Expand all / Collapse all (content sections)
   document.querySelectorAll('button[data-section-action]').forEach(function(b){
     b.addEventListener('click', function(){
       var open = b.dataset.sectionAction === 'expand';
@@ -523,36 +515,70 @@ def build_inpage_toc(body_html: str) -> str:
     return '<aside class="toc"><h4>On this page</h4><ul>' + "".join(items) + "</ul></aside>"
 
 
-def slugify_group(group_name: str) -> str:
-    """Stable group key for localStorage and data-group attributes."""
-    return re.sub(r"[^a-z0-9]+", "-", group_name.lower()).strip("-")
+def build_nav_js() -> str:
+    """Emit the sidebar as a single shared `nav.js` loaded by every page.
 
+    The nav lives in ONE file. Each page carries only an empty `#nav-root`
+    placeholder plus two per-page constants set inline before this script runs:
 
-def nav_html(current_relpath: str, page_to_root: str) -> str:
-    parts = [f'<h2 class="site-title"><a href="{page_to_root}index.html">RAM Pathfinder Documentation</a></h2>']
-    parts.append(
-        '<div class="nav-controls">'
-        '<button data-nav-action="expand" title="Expand all groups">Expand all</button> '
-        '<button data-nav-action="collapse" title="Collapse all groups">Collapse all</button>'
-        '</div>'
+      - ``window.__NAV_BASE__`` — relative prefix from the page to the site root
+        (e.g. ``"./"`` or ``"../../../"``); used to resolve nav links and the
+        site title regardless of how deep the page sits.
+      - ``window.__PAGE__`` — the page's site-relative id (e.g.
+        ``"architecture/tobe/analysis/function-decomposition"``); used to mark
+        the active link and auto-open its group.
+
+    Because both constants depend only on a page's OWN location, adding a new
+    page never changes existing pages — only this file and the new page are
+    regenerated. The markup produced here mirrors the old server-side nav so the
+    CSS in each page is unchanged. Loaded via ``<script src>`` (not ``fetch``)
+    so it also works when previewing pages over ``file://``.
+    """
+    nav_json = json.dumps(NAV)
+    # The builder runs immediately; it constructs the markup, then re-attaches
+    # the accordion persistence + expand/collapse handlers (previously inline).
+    return (
+        "(function(){\n"
+        f"  var NAV = {nav_json};\n"
+        "  var base = window.__NAV_BASE__ || './';\n"
+        "  var page = window.__PAGE__ || '';\n"
+        "  var root = document.getElementById('nav-root');\n"
+        "  if (!root) return;\n"
+        "  function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''); }\n"
+        "  var h = '<h2 class=\"site-title\"><a href=\"' + base + 'index.html\">RAM Pathfinder Documentation</a></h2>';\n"
+        "  h += '<div class=\"nav-controls\"><button data-nav-action=\"expand\" title=\"Expand all groups\">Expand all</button> "
+        "<button data-nav-action=\"collapse\" title=\"Collapse all groups\">Collapse all</button></div>';\n"
+        "  NAV.forEach(function(group){\n"
+        "    var name = group[0], items = group[1];\n"
+        "    var isCurrent = items.some(function(it){ return it[1] === page; });\n"
+        "    h += '<details class=\"nav-group\" data-group=\"' + slug(name) + '\"' + (isCurrent ? ' data-current=\"true\" open' : '') + '>';\n"
+        "    h += '<summary>' + name + '</summary><ul>';\n"
+        "    items.forEach(function(it){\n"
+        "      var href = base + it[1] + '.html';\n"
+        "      var cls = (it[1] === page) ? ' class=\"current\"' : '';\n"
+        "      h += '<li><a href=\"' + href + '\"' + cls + '>' + it[0] + '</a></li>';\n"
+        "    });\n"
+        "    h += '</ul></details>';\n"
+        "  });\n"
+        "  root.innerHTML = h;\n"
+        "  // Persist each group's open/closed state; the current page's group stays open on load.\n"
+        "  root.querySelectorAll('details.nav-group').forEach(function(d){\n"
+        "    var key = 'nav-group-' + d.dataset.group;\n"
+        "    if (d.dataset.current !== 'true') {\n"
+        "      var stored = localStorage.getItem(key);\n"
+        "      if (stored === 'open') d.open = true; else if (stored === 'closed') d.open = false;\n"
+        "    }\n"
+        "    d.addEventListener('toggle', function(){ localStorage.setItem(key, d.open ? 'open' : 'closed'); });\n"
+        "  });\n"
+        "  // Expand all / Collapse all (sidebar).\n"
+        "  root.querySelectorAll('button[data-nav-action]').forEach(function(b){\n"
+        "    b.addEventListener('click', function(){\n"
+        "      var open = b.dataset.navAction === 'expand';\n"
+        "      root.querySelectorAll('details.nav-group').forEach(function(d){ d.open = open; });\n"
+        "    });\n"
+        "  });\n"
+        "})();\n"
     )
-    for group_name, items in NAV:
-        is_current_group = any(relpath == current_relpath for _label, relpath, _is_special in items)
-        open_attr = " open" if is_current_group else ""
-        current_attr = ' data-current="true"' if is_current_group else ""
-        group_key = slugify_group(group_name)
-        parts.append(
-            f'<details class="nav-group" data-group="{group_key}"{current_attr}{open_attr}>'
-        )
-        parts.append(f"<summary>{group_name}</summary>")
-        parts.append("<ul>")
-        for label, relpath, _is_special in items:
-            href = f"{page_to_root}{relpath}.html"
-            cls = ' class="current"' if relpath == current_relpath else ""
-            parts.append(f'<li><a href="{href}"{cls}>{label}</a></li>')
-        parts.append("</ul>")
-        parts.append("</details>")
-    return "\n".join(parts)
 
 
 def wrap_h2_sections(body_html: str) -> Tuple[str, bool]:
@@ -593,13 +619,15 @@ PAGE_TEMPLATE = """<!DOCTYPE html>
 <style>{css}</style>
 </head>
 <body class="{body_class}">
-<aside class="nav">{nav}</aside>
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
 <main class="content">
 {section_controls}
 {content}
 {source_note}
 </main>
 {toc}
+<script>window.__NAV_BASE__="{nav_base}";window.__PAGE__="{page_id}";</script>
+<script src="{nav_base}nav.js"></script>
 <script>{js}</script>
 </body>
 </html>
@@ -651,7 +679,8 @@ def write_page(out_path: Path, title: str, content: str, current_relpath: str, s
         title=title,
         css=CSS,
         js=INLINE_JS,
-        nav=nav_html(current_relpath, page_to_root),
+        nav_base=page_to_root,
+        page_id=current_relpath,
         section_controls=section_controls,
         content=content,
         source_note=source_note,
@@ -856,6 +885,10 @@ def main() -> int:
     # write index page
     write_page(OUT / "index.html", "JI / RAM Pathfinder Documentation", build_index_body(), "index", None)
     print("build: index.html")
+
+    # write the single shared sidebar; every page loads this via <script src>
+    (OUT / "nav.js").write_text(build_nav_js())
+    print("build: nav.js (shared sidebar)")
 
     print(f"\nDone. Output: {OUT}")
     return 0
