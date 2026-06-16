@@ -44,8 +44,8 @@ Schema diagrams reverse-engineered from `JI Tables - 1.pdf` (the Oracle DDL dump
 | Script | Role |
 |---|---|
 | [`scripts/python/parse_ji_ddl.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/parse_ji_ddl.py) | Parses `JI_Tables_1.txt` → `ji_schema.json` |
-| [`scripts/python/build_schema_diagram_d2.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram_d2.py) | Loads JSON → infers FKs + clusters → generates **D2** sources (`.d2`) → renders PNG via the **ELK** layout engine (orthogonal routing, minimised crossings) |
-| [`scripts/python/build_schema_diagram.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram.py) | _Legacy._ Same inference/clustering logic but emits Graphviz DOT. The D2 generator imports its functions so the two cannot drift; it also still writes `ji_schema_companion.md`. |
+| [`scripts/python/build_schema_diagram.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram.py) | The schema model: loads JSON → backfills PKs → infers FKs → clusters tables. Run directly it writes `ji_schema_companion.md`. The D2 generator imports its functions, so the model lives in one place. |
+| [`scripts/python/build_schema_diagram_d2.py`](https://github.com/hmcts/ram-analysis/blob/main/scripts/python/build_schema_diagram_d2.py) | Imports the model above → generates **D2** sources (`.d2`) → renders PNG via the **ELK** layout engine (orthogonal routing, minimised crossings) |
 
 The diagrams ship as D2 (`.d2`) sources rendered to PNG. Each `.d2` pins the layout engine in-file (`vars.d2-config.layout-engine: elk`), so it also renders correctly through the shared `scripts/render_diagram.sh` wrapper. Detail diagrams use D2's native `sql_table` ER shape.
 
@@ -54,8 +54,8 @@ Regenerate everything from scratch (requires `brew install d2`):
 ```sh
 cd <repo-root>
 python3 scripts/python/parse_ji_ddl.py
-python3 scripts/python/build_schema_diagram.py      # companion markdown (+ legacy DOT/PNG)
-python3 scripts/python/build_schema_diagram_d2.py   # diagrams (D2 + ELK) — run last; overwrites the PNGs
+python3 scripts/python/build_schema_diagram.py      # companion markdown
+python3 scripts/python/build_schema_diagram_d2.py   # diagrams (D2 + ELK)
 ```
 
 ## How to read the diagrams
