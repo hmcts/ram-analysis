@@ -29,7 +29,7 @@ Maintaining records about judicial office holders: profiles, status, ticketing/e
 Recording and managing a member becoming unavailable, including approval and the decision on whether cover is needed.
 
 - Request an absence for a JOH (by judge or local office)
-- Record an out-of-bounds (OB) period for a JOH
+- Record an Other Business (OB) period for a JOH
 - Approve or reject a requested absence
 - Indicate whether an approved absence requires fee-paid cover
 - View requested and confirmed absences
