@@ -120,8 +120,8 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><strong><code>ram-reference-data</code></strong></td>
 <td>0</td>
-<td>Owns all 32 reference-data tables — tier (a) upstream-sourced (15 <code>jo_*</code> + <code>mrd_*</code>) and tier (b) RAM-owned (<code>ram_regions</code> / <code>ram_offices</code> / <code>ram_calendar_periods</code> + vocabularies), plus <code>ram_sync_status</code>.</td>
-<td>In-process JOH eLinks nightly sync + MRD weekly blob pick-up (tier a); versioned read API (jurisdiction-filtered<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>); tier-(b) maintenance by DBAs via SQL in MVP<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>; reads happen via direct SQL by other services.</td>
+<td>Owns all 32 reference-data tables — tier (a) upstream-sourced (15 <code>jo_*</code> + <code>mrd_*</code>) and tier (b) RAM-owned (<code>ram_regions</code> / <code>ram_offices</code> / <code>ram_calendar_periods</code> + vocabularies), plus <code>ram_sync_status</code>. <strong>First service scaffolded</strong> (integrations-first sequencing, decision #12 / SCP 2026-06-17); <strong>carries the shared Azure estate Terraform</strong> (relocated from <code>ram-authorisation</code> per the AR53 first-consumer rule).</td>
+<td>In-process JOH eLinks nightly sync + MRD weekly blob pick-up (tier a — the programme's first deliverable and first external integration); versioned read API (jurisdiction-filtered<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> — downstream of auth, lands after the auth epic); tier-(b) maintenance by DBAs via SQL in MVP<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>; reads happen via direct SQL by other services.</td>
 </tr>
 <tr>
 <td><strong><code>ram-authorisation</code></strong></td>

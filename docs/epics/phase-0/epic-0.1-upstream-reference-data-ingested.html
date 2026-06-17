@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Epic 0.1: Upstream JOH/MRD reference data is ingested — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="epic-01-upstream-johmrd-reference-data-is-ingested">Epic 0.1: Upstream JOH/MRD reference data is ingested</h1>
+<p><strong>User outcome:</strong> Judicial-holder reference data flows into RAM Pathfinder from its upstream sources of truth — the <strong>JOH eLinks API</strong> (15 <code>jo_*</code> entities, nightly) and the <strong>MRD</strong> weekly dataset (supplementary <code>mrd_*</code> data) — so that <code>jo_people</code> exists and is current, <code>jo_jurisdictions</code> is available as the first-class jurisdiction dimension (D8), and judicial-holder reference data is authoritative in RAM <strong>without any legacy migration</strong> (revised D3, NFR24). This is the platform's foundational data layer: every downstream consumer of JOH identity and reference data depends on it, and JOH sign-in (Epic 0.2) is impossible until <code>jo_people</code> — the identity-lookup target — is populated.</p>
+<p><strong>Why this is the first epic:</strong> the ingestion is the programme's <strong>first external integration</strong> and the cleanest decoupled vertical slice — it runs in-process inside <code>ram-reference-data</code>, reads/writes only its own tables, and needs no caller identity, no JWT, and no other service. It therefore leads the build (integrations-first carve-out, decision #12 / SCP 2026-06-17). It is also where the HMCTS-starter platform pattern and the shared Azure estate are first stood up: <strong><code>ram-reference-data</code> is the first service scaffolded and carries the shared-estate Terraform</strong> (AKS, PostgreSQL, ACR, APIM, App Insights), relocated from <code>ram-authorisation</code> per the AR53 first-consumer rule.</p>
+<p><strong>What is NOT here:</strong> the <strong>read-only, jurisdiction-filtered Reference Data API</strong> that exposes this ingested data is <strong>Epic 0.3</strong>, not this epic — it depends on the auth mechanism (<code>JWTFilter</code> for token validation and <code>ram-authorisation</code>'s <code>authz/check</code> for the requester's jurisdiction used in filtering, D8), so it lands immediately after the auth epic (Epic 0.2). Tier-(b) RAM-owned reference tables are also Epic 0.3. Authorisation, <code>ram-mock-auth</code>, <code>ram-ui</code>, and sign-in are Epic 0.2.</p>
+<p><strong>Hosting decision (reaffirmed, decision #12):</strong> the ingestion orchestration stays <strong>in-process</strong> inside <code>ram-reference-data</code> — there is <strong>no <code>ram-integrations</code> repo</strong>. Tier-(a) tables are owned solely by the <code>ram_reference_data</code> DB role (AR49); a separate deployable would break that single-writer invariant and reopen the service-auth gap (G7) for no resilience gain.</p>
+<p><strong>Vertical slice:</strong></p>
+<ul>
+<li><strong>GitHub manual-setup runbook</strong> at <code>ram-architecture/runbooks/github-setup.md</code> (the <code>gh</code> CLI is <strong>not</strong> available — all GitHub admin operations are manual via the web UI; <code>ram-scaffold.sh</code> handles only local scaffolding + <code>git push</code> to a pre-created remote)</li>
+<li><strong>First scaffolded backend service: <code>ram-reference-data</code></strong> (HMCTS Crime SpringBoot template + <code>ram-scaffold.sh</code> conventions per AR2–AR4)</li>
+<li><strong>Shared Azure estate Terraform-provisioned from <code>ram-reference-data</code>'s <code>terraform/</code></strong> (AKS, shared global PostgreSQL Flexible Server + per-service DB roles, ACR, APIM, App Insights) per AR53 + decision #12</li>
+<li>Shared <code>ram_configuration_values</code> Flyway baseline established by <code>ram-architecture</code> ahead of <code>ram-reference-data</code> (FR8); SELECT-granted to every service role</li>
+<li>Tier-(a) upstream-sourced tables: 15 <code>jo_*</code> + <code>mrd_specialisms</code> + <code>ram_sync_status</code> (RAM-internal ingestion run log), service-owned Flyway migrations (AR18–AR20), tier-(a) write-protection (only <code>ram_reference_data</code> holds INSERT/UPDATE — AR49, FR6)</li>
+<li><strong>JOH eLinks nightly in-process <code>@Scheduled</code> sync</strong> (AR46, AR48)</li>
+<li><strong>MRD weekly Excel blob ingestion</strong> via Azure Blob drop + scheduled pick-up (AR47)</li>
+</ul>
+<p><strong>FRs covered:</strong> FR1 (the identity-lookup <em>target</em> data — <code>jo_people</code> populated), FR6 tier-(a), FR7 tier-(a) grants, FR8 (shared <code>ram_configuration_values</code> baseline first lands here); NFR24 (JOH eLinks + MRD MVP integrations).</p>
+<p><strong>Key NFRs first exercised here:</strong> NFR10 (TLS at APIM), NFR11 (data-at-rest), NFR16 (Key Vault — incl. the eLinks API credential), NFR24 (JOH eLinks + MRD integrations), NFR25–NFR28 (structured logs + Application Insights ingestion + liveness/readiness probes), NFR31 (Azure UK South data residency), NFR40 (per-service deployable on Kubernetes), NFR42 (Postman collections), NFR59 (structured logs first exercised at scaffold).</p>
+<p><strong>Out of scope (explicitly):</strong> the read-only Reference Data API + jurisdiction filtering (Epic 0.3, Story 0.3.2 — downstream of auth). Tier-(b) RAM-owned reference tables (Epic 0.3, Story 0.3.1). All authentication / authorisation / UI (Epic 0.2). MRD API integration (post-MVP — when MRD ships public APIs). Hand-editing of tier-(a) data in RAM (never, in any phase — corrections at source per FR6).</p>
+<hr />
+<details class="section" id="story-011-scaffold-ram-reference-data-from-the-hmcts-starter-and-provision-the-shared-azure-estate"><summary><span class="section-title">Story 0.1.1: Scaffold <code>ram-reference-data</code> from the HMCTS starter and provision the shared Azure estate</span></summary><div class="section-body">
+<p>As a <strong>platform engineer</strong>, I want to scaffold the <strong>first</strong> RAM Pathfinder backend service — <code>ram-reference-data</code> — from the HMCTS Crime SpringBoot template using <code>ram-scaffold.sh</code>, and to provision the shared Azure estate from this repo's <code>terraform/</code>, So that <strong>subsequent services follow a consistent, version-pinned, supply-chain-secured baseline</strong>, the shared cluster/database/registry/gateway/observability exist for every later service to consume, and the team can demonstrate the deployment pipeline end-to-end before any domain logic is written.</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> the engineer has performed the GitHub manual-setup checklist (<code>ram-architecture/runbooks/github-setup.md</code>) <strong>before</strong> running the scaffold:</p>
+<ul>
+<li>Created an empty private GitHub repo <code>ram-reference-data</code> under the HMCTS org <strong>via the GitHub web UI</strong></li>
+<li>Enabled branch protection on <code>main</code> via Settings → Branches (require PR review, require status checks, require linear history)</li>
+<li>Note: the <code>gh</code> CLI is <strong>NOT</strong> available in the engineering environment — all GitHub admin config (repo creation, branch protection, team access) happens manually via the web UI per the runbook<br/><strong>And</strong> the engineer has a clean local development environment with Java 25, Gradle Wrapper, and Docker<br/><strong>When</strong> the engineer runs <code>ram-scaffold.sh ram-reference-data</code> from <code>ram-architecture/scaffolding/</code><br/><strong>Then</strong> the script scaffolds a Spring Boot 4.0.x project <strong>locally</strong> from <code>https://github.com/hmcts/spring-boot-template</code>, then commits and pushes to the pre-created remote on a feature branch via plain <code>git</code> (no <code>gh</code> CLI invocation)<br/><strong>And</strong> the project contents include a Spring Boot 4.0.x scaffold from <code>https://github.com/hmcts/spring-boot-template</code><br/><strong>And</strong> Gradle build uses Groovy DSL with Spring Boot Gradle plugin 4.0.6 and <code>io.spring.dependency-management:1.1.7</code> (per AR5)<br/><strong>And</strong> Group ID is <code>uk.gov.hmcts.ram</code>, artefact is <code>ram-reference-data</code>, base package is <code>uk.gov.hmcts.ram.referencedata</code>, default port is 8082 (per AR3)<br/><strong>And</strong> initial commit message is exactly <em>"Scaffold RAM Pathfinder reference-data from HMCTS starter"</em> (per AR4)<br/><strong>And</strong> Lombok 1.18.46 + MapStruct 1.6.3 are configured (per AR6)<br/><strong>And</strong> JJWT 0.13.0 + OWASP Encoder 1.4.0 are on the classpath (per AR7)<br/><strong>And</strong> springdoc-openapi is configured for OpenAPI 3.x generation (per AR8)<br/><strong>And</strong> JaCoCo, CycloneDX SBOM, gradle-git-properties, gradle-versions, and gradle-docker-compose plugins are configured (per AR9–AR13)<br/><strong>And</strong> Spring Boot Test with JUnit 5 (<code>junit-bom:6.0.3</code>), Testcontainers PostgreSQL 1.21.4, Spring Boot Testcontainers 4.0.6, and spring-boot-starter-webmvc-test are configured (per AR14–AR15)<br/><strong>And</strong> Spectral, ArchUnit, Spotless, and Checkstyle are configured (per AR17)<br/><strong>And</strong> a Helm chart skeleton exists at <code>charts/ram-reference-data/</code> with <code>values-dev.yaml</code>, <code>values-staging.yaml</code>, <code>values-production.yaml</code> overlays (per AR24)<br/><strong>And</strong> a <code>terraform/</code> directory exists with per-environment stacks (<code>dev</code> / <code>staging</code> / <code>production</code>) per AR53 — holding both the <strong>shared estate</strong> (this is the first-scaffolded service per decision #12) and this service's own resources (Key Vault namespace; the MRD storage added in Story 0.1.4)<br/><strong>And</strong> GitHub Actions workflows exist at <code>.github/workflows/ci.yml</code>, <code>deploy-dev.yml</code>, <code>deploy-staging.yml</code>, <code>deploy-production.yml</code> (per AR28)<br/><strong>And</strong> <code>CODEOWNERS</code> and <code>PULL_REQUEST_TEMPLATE.md</code> exist (per AR29)<br/><strong>And</strong> a Postman collection skeleton exists at <code>postman/ram-reference-data-phase0.postman_collection.json</code> (per AR41).</li>
+</ul>
+<p><strong>Given</strong> the scaffolded service runs locally via <code>./gradlew bootRun</code> after a <code>docker-compose up postgres</code><br/><strong>When</strong> the engineer queries <code>http://localhost:8082/actuator/health</code><br/><strong>Then</strong> the response is <code>200 OK</code> with body <code>{"status":"UP"}</code><br/><strong>And</strong> <code>/actuator/info</code> returns Git metadata embedded by gradle-git-properties (per NFR28, AR11)<br/><strong>And</strong> <code>/actuator/readiness</code> returns <code>200 OK</code><br/><strong>And</strong> structured JSON logs via Logstash Logback Encoder 9.0 appear on stdout (per AR30, NFR25)<br/><strong>And</strong> logs include a <code>correlationId</code> populated by <code>CorrelationIdFilter</code> for each request (per AR32) — FR59 structured logging is first exercised here.</p>
+<p><strong>Given</strong> this is the <strong>first service scaffolded</strong> and therefore the <strong>first consumer</strong> of the shared Azure estate (AR53 colocated first-consumer rule, decision #12 — the shared estate Terraform is relocated here from <code>ram-authorisation</code>)<br/><strong>When</strong> the shared Azure estate — AKS cluster + node pools, PostgreSQL Flexible Server, Azure Container Registry, APIM instance + base policies, Application Insights / Log Analytics workspace — is provisioned via <strong>Terraform in this repo's <code>terraform/</code> directory</strong> (no Bicep, no portal click-ops)<br/><strong>And</strong> <code>terraform apply</code> has run for the dev stack<br/><strong>Then</strong> every shared-estate resource above exists in UK South with the documented SKUs (multi-AZ node pools; zone-redundant PostgreSQL HA; APIM and ACR zone-redundant SKUs per A34)<br/><strong>And</strong> the Terraform state backend + plan/apply pipeline arrangement follows the HMCTS-confirmed pattern (gaps.md G9).</p>
+<p><strong>Given</strong> the <code>ram-architecture</code> Flyway baseline migration runs <strong>before</strong> <code>ram-reference-data</code> (it owns the shared infrastructure table)<br/><strong>When</strong> the baseline is applied to the dev PostgreSQL instance<br/><strong>Then</strong> the shared <code>ram_configuration_values</code> infrastructure table exists (per FR8, AR19)<br/><strong>And</strong> <code>ram-reference-data</code>'s DB role has <code>SELECT</code> on <code>ram_configuration_values</code> (per AR22)<br/><strong>And</strong> <code>ram-reference-data</code>'s own service-owned Flyway migrations directory exists but is empty (tier-(a) tables created in Story 0.1.2).</p>
+<p><strong>Given</strong> the deployed service is publicly reachable through APIM (Terraform-provisioned above)<br/><strong>When</strong> an HTTP request reaches APIM<br/><strong>Then</strong> the APIM endpoint terminates TLS using the latest TLS version supported by the platform (per NFR10)<br/><strong>And</strong> HTTP-only requests are rejected with a redirect to HTTPS<br/><strong>And</strong> the APIM policy is verified by a CI check using <code>testssl.sh</code> (or equivalent) in <code>ci.yml</code> that fails on any TLS version below the platform's current minimum.</p>
+<p><strong>Given</strong> Azure-managed PostgreSQL is provisioned for the dev environment (via the Terraform stack above, per AR53)<br/><strong>When</strong> the Helm chart's <code>values-dev.yaml</code> is applied<br/><strong>Then</strong> the database connection string references an Azure Database for PostgreSQL Flexible Server instance with storage encryption at rest enabled (per NFR11)<br/><strong>And</strong> the AKS persistent volumes used by any stateful workload are provisioned with Azure-managed encryption at rest<br/><strong>And</strong> the configuration is documented in <code>ram-architecture/ADR-XXXX-data-at-rest-encryption.md</code>.</p>
+<p><strong>Given</strong> the Application Insights workspace is provisioned for RAM Pathfinder (via the Terraform stack above, per AR53)<br/><strong>When</strong> the engineer configures log retention policy<br/><strong>Then</strong> the retention period is set to the value agreed with HMCTS data-retention policy owners (default at Phase 0: <strong>90 days for non-prod</strong>, <strong>365 days for production</strong>, subject to HMCTS sign-off; per NFR26)<br/><strong>And</strong> the chosen value is recorded in <code>ram-architecture/ADR-XXXX-log-retention.md</code> with the responsible HMCTS owner identity<br/><strong>And</strong> the retention setting is applied to the Application Insights workspace via <strong>Terraform</strong> (in this repo's <code>terraform/</code> stack, per AR53 — Terraform is the HMCTS standard; no Bicep).</p>
+<p><strong>Given</strong> the engineer pushes the initial commit to a feature branch via <code>git push</code><br/><strong>And</strong> opens a Pull Request from that branch to <code>main</code> <strong>manually via the GitHub web UI</strong> (no <code>gh</code> CLI)<br/><strong>When</strong> the GitHub Actions <code>ci.yml</code> workflow runs<br/><strong>Then</strong> the workflow runs build + test + Spectral lint + ArchUnit + Spotless + Checkstyle + Helm lint<br/><strong>And</strong> all checks pass on the scaffolded baseline<br/><strong>And</strong> code coverage report is produced by JaCoCo.</p>
+<p><strong>Given</strong> the PR is merged to <code>main</code> <strong>via the GitHub web UI</strong> (the engineer clicks "Merge pull request" after reviewer approval; no <code>gh</code> CLI)<br/><strong>When</strong> <code>deploy-dev.yml</code> triggers automatically<br/><strong>Then</strong> the service deploys to the dev AKS cluster in UK South (per AR23, NFR31)<br/><strong>And</strong> the container image is pushed to Azure Container Registry<br/><strong>And</strong> the deployed pod passes liveness + readiness probes (per NFR28)<br/><strong>And</strong> Azure Application Insights receives the first structured log entries via OpenTelemetry Collector (per AR31, NFR27).</p>
+<p><strong>References:</strong> FR8, FR58, FR59; NFR10, NFR11, NFR15, NFR16, NFR24, NFR25–NFR28, NFR31, NFR40, NFR42; AR2–AR17, AR23–AR32, AR41, AR53; <strong>D10</strong> (<code>gh</code> CLI not available — manual GitHub web-UI setup per <code>ram-architecture/runbooks/github-setup.md</code>); <strong>decision #12 / SCP 2026-06-17</strong> (<code>ram-reference-data</code> is the first service scaffolded; shared-estate Terraform relocated here from <code>ram-authorisation</code>).</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>Tier-(a) <code>jo_*</code> / <code>mrd_*</code> tables and <code>ram_sync_status</code> — Story 0.1.2</li>
+<li>The eLinks sync and MRD ingestion mechanisms — Stories 0.1.3 / 0.1.4</li>
+<li>Tier-(b) RAM-owned tables + the read-only API — Epic 0.3</li>
+</ul>
+<hr />
+</div></details><details class="section" id="story-012-tier-a-upstream-jo_-tables-ram_sync_status-and-tier-a-write-protection"><summary><span class="section-title">Story 0.1.2: Tier-(a) upstream <code>jo_*</code> tables, <code>ram_sync_status</code>, and tier-(a) write protection</span></summary><div class="section-body">
+<p>As a <strong>RAM Pathfinder platform</strong> (and every downstream consumer of JOH identity and reference data), I want the 15 <code>jo_*</code> upstream-sourced tables and the <code>ram_sync_status</code> run-log created with service-owned Flyway migrations and enforced single-writer ownership, So that <strong><code>jo_people</code> and the rest of the tier-(a) surface exist with the correct schema and write protection before the eLinks sync populates them</strong> (FR6 tier (a), AR49).</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> <code>ram-reference-data</code> is scaffolded per Story 0.1.1<br/><strong>When</strong> the engineer adds Flyway migration <code>V1__init_tier_a_upstream_tables.sql</code><br/><strong>Then</strong> the 15 <code>jo_*</code> tables exist with schemas per <code>architecture/data-tables.md</code> (<code>jo_people</code>, <code>jo_appointments</code>, <code>jo_judiciary_role_assignments</code>, <code>jo_authorisations_with_dates</code>, <code>jo_appointment_titles</code>, <code>jo_base_locations</code>, <code>jo_contract_types</code>, <code>jo_genders</code>, <code>jo_judiciary_roles</code>, <code>jo_jurisdictions</code>, <code>jo_locations</code>, <code>jo_location_types</code>, <code>jo_tickets</code>, <code>jo_ticket_categories</code>, <code>jo_ticket_category_types</code>)<br/><strong>And</strong> <code>ram_sync_status</code> exists (RAM-internal ingestion run log)<br/><strong>And</strong> <code>jo_people.personnel_number</code> is the primary key — the canonical JOH identifier referenced by every downstream domain table (per AR22)<br/><strong>And</strong> <code>jo_jurisdictions</code> preserves the upstream parent-child hierarchy shape (or establishes it on ingest)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a><br/><strong>And</strong> the <code>ram_reference_data</code> DB role owns the tables; <strong>no other role holds INSERT/UPDATE on any <code>jo_*</code> table</strong> (tier-(a) write protection per AR49, FR6)<br/><strong>And</strong> SELECT grants exist for <code>ram_authorisation</code> (identity lookup, Epic 0.2) and placeholder roles for future services<br/><strong>And</strong> the ArchUnit/grants fitness function in CI verifies the tier-(a) write-protection rule.</p>
+<p><strong>References:</strong> FR6 tier (a), FR7 (writes follow the tier); NFR15; AR18–AR20, AR22, AR49; D3 (revised), D8, D9 (restructured).</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>The eLinks sync that populates these tables — Story 0.1.3</li>
+<li>The <code>mrd_*</code> tables — Story 0.1.4</li>
+<li>Tier-(b) RAM-owned tables (regions, offices, vocabularies) — Epic 0.3, Story 0.3.1</li>
+<li>The read-only REST API — Epic 0.3, Story 0.3.2</li>
+</ul>
+<hr />
+</div></details><details class="section" id="story-013-joh-reference-data-flows-into-ram-nightly-from-the-joh-elinks-api"><summary><span class="section-title">Story 0.1.3: JOH reference data flows into RAM nightly from the JOH eLinks API</span></summary><div class="section-body">
+<p>As a <strong>RAM Pathfinder platform</strong> (and every downstream consumer of JOH identity and reference data), I want an in-process scheduled sync that pulls the JOH eLinks API nightly and refreshes the tier-(a) <code>jo_*</code> tables, So that <strong><code>jo_people</code> exists and is current — making JOH sign-in resolvable (FR1), jurisdiction available (<code>jo_jurisdictions</code>, D8), and judicial-holder reference data authoritative without any legacy migration</strong> (revised D3, NFR24).</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> the tier-(a) <code>jo_*</code> tables and <code>ram_sync_status</code> exist per Story 0.1.2<br/><strong>When</strong> the engineer implements the eLinks sync as an in-process <code>@Scheduled</code> task (per AR46 — no new deployable, no service principal)<br/><strong>Then</strong> the sync runs on its nightly schedule and pulls all 15 entities from the JOH eLinks API using the outbound credential held in Azure Key Vault (per NFR16)<br/><strong>And</strong> it <strong>full-refresh-upserts</strong> each table keyed on the upstream natural key (<code>personnel_number</code> for <code>jo_people</code>)<br/><strong>And</strong> rows absent upstream are <strong>marked inactive — never hard-deleted</strong> (FK protection per AR46)<br/><strong>And</strong> the run is recorded in <code>ram_sync_status</code> with source, started/finished timestamps, outcome, per-entity row counts, and error detail (per AR48)<br/><strong>And</strong> the sync is also manually triggerable by ops (e.g. an actuator-adjacent admin endpoint or k8s Job) for out-of-cycle refreshes.</p>
+<p><strong>Given</strong> the JOH eLinks API is unreachable or returns a malformed payload mid-sync<br/><strong>When</strong> the sync fails<br/><strong>Then</strong> the previous good state remains fully in place (ingestion is transactional per entity set — never partially written, per AR48)<br/><strong>And</strong> the failure is recorded in <code>ram_sync_status</code> and surfaced via structured logs with correlation ID for ops triage<br/><strong>And</strong> reference data is at most one sync cycle stale.</p>
+<p><strong>Given</strong> the sync has run successfully at least once in dev<br/><strong>When</strong> <code>ram-authorisation</code> (Epic 0.2, Story 0.2.3) looks up a seeded JOH email<br/><strong>Then</strong> the lookup resolves against <code>jo_people</code> to a personnel number<br/><strong>And</strong> dev/CI environments use seeded <code>jo_*</code> fixtures loaded by the one-off seed scripts where a live eLinks connection is unavailable (per AR52 — the sync code path is integration-tested against a WireMock/stub eLinks API in CI).</p>
+<p><strong>Given</strong> the JOH eLinks API contract has not yet been confirmed (gaps.md G8.1)<br/><strong>When</strong> the contract lands<br/><strong>Then</strong> the ingestion mapping is validated against it (every upstream field RAM needs has a slot; the natural-key scheme holds; cadence/SLA workable)<br/><strong>And</strong> any unmapped upstream structure raises an architectural PR (per G8.1) — this AC is the story's external-dependency gate and is tracked explicitly in sprint planning.</p>
+<p><strong>References:</strong> FR1 (identity lookup target), FR6 tier (a), FR7 (writes follow the tier); NFR16, NFR24, NFR25–NFR28; AR46, AR48, AR49; gaps.md G8.1; D3 (revised), D8, D9 (restructured).</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>MRD ingestion — Story 0.1.4</li>
+<li>The read-only REST API — Epic 0.3, Story 0.3.2</li>
+</ul>
+<hr />
+</div></details><details class="section" id="story-014-mrd-supplementary-reference-data-is-ingested-from-the-weekly-excel-feed"><summary><span class="section-title">Story 0.1.4: MRD supplementary reference data is ingested from the weekly Excel feed</span></summary><div class="section-body">
+<p>As a <strong>RAM Pathfinder platform</strong> (and downstream consumers of JOH Specialisations), I want the MRD team's weekly Excel workbook ingested from an Azure Blob drop into the <code>mrd_*</code> tables, So that <strong>supplementary judicial reference data not present in JOH eLinks (notably JOH Specialisations) is available in RAM</strong> (revised D3, NFR24) without waiting for MRD's public APIs.</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> a dedicated Azure storage account + Blob container exists for the MRD feed — provisioned via <strong>Terraform in this repo's <code>terraform/</code> directory</strong> (per AR53: <code>ram-reference-data</code> is the first repo to need this resource; access for the MRD team or ops to drop the weekly workbook)<br/><strong>And</strong> Flyway migration <code>V2__init_mrd_tables.sql</code> creates <code>mrd_specialisms</code> (further <code>mrd_*</code> tables added as MRD entities enter scope) owned by <code>ram_reference_data</code> with the same tier-(a) write protection as the <code>jo_*</code> tables (per AR49)<br/><strong>When</strong> the weekly workbook lands in the container<br/><strong>Then</strong> a <code>@Scheduled</code> task in <code>ram-reference-data</code> detects it on its polling cycle (per AR47).</p>
+<p><strong>Given</strong> the ingestion task picks up a workbook<br/><strong>When</strong> processing runs<br/><strong>Then</strong> the workbook is validated before any write — shape (expected sheets/columns), vocabulary (values resolvable against controlled lists), and referential checks (Specialisations reference resolvable JOH personnel numbers / jurisdiction codes)<br/><strong>And</strong> valid rows are upserted into the <code>mrd_*</code> tables keyed on the upstream natural key<br/><strong>And</strong> the processed file is <strong>archived</strong> (moved to an <code>archive/</code> path in the container, retained for lineage/audit per AR47)<br/><strong>And</strong> the run is recorded in <code>ram_sync_status</code> (source = <code>mrd-excel</code>) with row counts and outcome (per AR48).</p>
+<p><strong>Given</strong> the same workbook is dropped twice (or the task restarts mid-cycle)<br/><strong>When</strong> ingestion re-runs<br/><strong>Then</strong> the result is idempotent per file — no duplicate rows, no spurious updates (per AR47).</p>
+<p><strong>Given</strong> a workbook fails validation<br/><strong>When</strong> the task rejects it<br/><strong>Then</strong> no <code>mrd_*</code> table is modified (previous good state intact, per AR48)<br/><strong>And</strong> the file is moved to a <code>rejected/</code> path with a validation report alongside it<br/><strong>And</strong> the failure is recorded in <code>ram_sync_status</code> and surfaced via structured logs for ops to liaise with the MRD team (corrections happen at source per FR6 tier (a)).</p>
+<p><strong>Given</strong> MRD's public APIs become available post-MVP<br/><strong>When</strong> the integration is upgraded<br/><strong>Then</strong> only the reader component swaps (blob pick-up → API client); the <code>mrd_*</code> tables and downstream consumers are unchanged (per AR47 — the blob-drop seam is the explicit upgrade point).</p>
+<p><strong>References:</strong> FR6 tier (a), FR7; NFR16, NFR24, NFR25–NFR28; AR47, AR48, AR49, AR53; gaps.md G8.1; D3 (revised).</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>MRD API integration (post-MVP — when MRD ships public APIs)</li>
+<li>Hand-editing of <code>mrd_*</code> data in RAM (never, in any phase — tier (a) per FR6)</li>
+</ul>
+</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/phase-0/epic-0.1-upstream-reference-data-ingested.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#story-011-scaffold-ram-reference-data-from-the-hmcts-starter-and-provision-the-shared-azure-estate">Story 0.1.1: Scaffold ram-reference-data from the HMCTS starter and provision the shared Azure estate</a></li><li><a href="#story-012-tier-a-upstream-jo_-tables-ram_sync_status-and-tier-a-write-protection">Story 0.1.2: Tier-(a) upstream jo_* tables, ram_sync_status, and tier-(a) write protection</a></li><li><a href="#story-013-joh-reference-data-flows-into-ram-nightly-from-the-joh-elinks-api">Story 0.1.3: JOH reference data flows into RAM nightly from the JOH eLinks API</a></li><li><a href="#story-014-mrd-supplementary-reference-data-is-ingested-from-the-weekly-excel-feed">Story 0.1.4: MRD supplementary reference data is ingested from the weekly Excel feed</a></li></ul></aside>
+<script>window.__NAV_BASE__="../../";window.__PAGE__="epics/phase-0/epic-0.1-upstream-reference-data-ingested";</script>
+<script src="../../nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

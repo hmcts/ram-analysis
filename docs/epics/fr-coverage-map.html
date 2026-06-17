@@ -88,7 +88,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="fr-coverage-map">FR Coverage Map</h1>
 <p>This is the canonical FR-to-Epic mapping. It is updated each time a phase advances from framework to concrete epics + stories. The Phase × Area framework in <a href="framework.html">framework.md</a> is the architectural spine; this map is the implementation index.</p>
-<details class="section" id="phase-0-concrete-epics-0104--pending-sscs-cohort-revalidation"><summary><span class="section-title">Phase 0 (concrete epics 0.1–0.4 — pending SSCS-cohort revalidation)</span></summary><div class="section-body">
+<details class="section" id="phase-0-concrete-epics-0105--integrations-first-restructure-2026-06-17--decision-12-pending-sscs-cohort-revalidation"><summary><span class="section-title">Phase 0 (concrete epics 0.1–0.5 — integrations-first restructure 2026-06-17 / decision #12; pending SSCS-cohort revalidation)</span></summary><div class="section-body">
 <table>
 <thead>
 <tr>
@@ -101,25 +101,25 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tbody>
 <tr>
 <td>FR1</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> (sign-in + two-population identity resolution) + <a href="phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3</a> (the data resolved against)</td>
+<td><a href="phase-0/epic-0.2-user-authenticates.html">Epic 0.2</a> (sign-in + two-population identity resolution, Stories 0.2.3/0.2.5) + <a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> (<code>jo_people</code> ingested — the JOH lookup target) + <a href="phase-0/epic-0.4-user-populations-bootstrapped.html">Epic 0.4</a> (the auth records resolved against)</td>
 <td>—</td>
 <td>IdP email → <code>jo_people</code> personnel number (JOH) or <code>ram_auth_staff_identities</code> UUID (staff),<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
 </tr>
 <tr>
 <td>FR2</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Story 0.1.5</td>
+<td><a href="phase-0/epic-0.2-user-authenticates.html">Epic 0.2</a> Story 0.2.3</td>
 <td>—</td>
 <td>Authorisation principal → roles + <strong>jurisdiction</strong> + Region/Area scope (read-only API)</td>
 </tr>
 <tr>
 <td>FR3</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Story 0.1.5</td>
+<td><a href="phase-0/epic-0.2-user-authenticates.html">Epic 0.2</a> Story 0.2.3</td>
 <td>—</td>
 <td><code>GET /v1/users/{id}/effective-permissions</code></td>
 </tr>
 <tr>
 <td><strong>FR4</strong></td>
-<td><strong>Data layer only</strong> in <a href="phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3</a> (auth tables maintainable by DBAs via SQL per the identity-bootstrap runbook)</td>
+<td><strong>Data layer only</strong> in <a href="phase-0/epic-0.4-user-populations-bootstrapped.html">Epic 0.4</a> (auth tables maintainable by DBAs via SQL per the identity-bootstrap runbook)</td>
 <td><strong>YES — UI surface</strong> for sysadmins <strong>is post-MVP</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a></td>
 <td>Bootstrap mechanism itself is outside the PRD's scope<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></td>
 </tr>
@@ -131,68 +131,68 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td><strong>FR6</strong></td>
-<td><strong>Tier (a)</strong>: <a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Stories 0.1.3/0.1.4 (eLinks sync + MRD ingestion — read-only in RAM, corrections at source). <strong>Tier (b)</strong>: <a href="phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2</a> Story 0.2.1 (tables + seed + DBA runbook). Read API over both tiers: Story 0.2.2.</td>
+<td><strong>Tier (a)</strong>: <a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> Story 0.1.2 (tables) + Stories 0.1.3/0.1.4 (eLinks sync + MRD ingestion — read-only in RAM, corrections at source). <strong>Tier (b)</strong>: <a href="phase-0/epic-0.3-reference-data-read-only-api.html">Epic 0.3</a> Story 0.3.1 (tables + seed + DBA runbook). Read API over both tiers: Story 0.3.2.</td>
 <td><strong>YES — tier-(b) RSU maintenance UI</strong> is post-MVP<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Tier (a) never gets a RAM write surface in any phase.</td>
 <td>Two ownership tiers in separate tables preserve lineage</td>
 </tr>
 <tr>
 <td>FR7</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> (tier-(a) grants) + <a href="phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2</a> (tier-(b) grants + pattern complete)</td>
+<td><a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> Story 0.1.2 (tier-(a) grants) + <a href="phase-0/epic-0.3-reference-data-read-only-api.html">Epic 0.3</a> Story 0.3.1 (tier-(b) grants + pattern complete)</td>
 <td>—</td>
 <td>Direct SQL via SELECT grants; <strong>writes follow the tier</strong> (ingestion for tier (a); DBA SQL for tier (b))</td>
 </tr>
 <tr>
 <td>FR8</td>
-<td>distributed (lands in <a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> first)</td>
+<td>distributed (lands in <a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> Story 0.1.1 first)</td>
 <td>—</td>
 <td>Shared <code>ram_configuration_values</code> Flyway baseline</td>
 </tr>
 <tr>
 <td>FR9</td>
-<td><a href="phase-0/epic-0.4-system-dispatches-emails.html">Epic 0.4</a></td>
+<td><a href="phase-0/epic-0.5-system-dispatches-emails.html">Epic 0.5</a></td>
 <td>—</td>
-<td>Notification dispatch + delivery log. User-JWT propagation only at Phase 0; <code>client_credentials</code> flow moved to Phase 6</td>
+<td>Notification dispatch + delivery log (<code>ram_notification_dispatches</code>). User-JWT propagation only at Phase 0; <code>client_credentials</code> flow moved to Phase 6</td>
 </tr>
 <tr>
 <td>FR55</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Story 0.1.7</td>
+<td><a href="phase-0/epic-0.2-user-authenticates.html">Epic 0.2</a> Story 0.2.5</td>
 <td>—</td>
 <td>Home shell with role-scoped navigation</td>
 </tr>
 <tr>
 <td>FR56</td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> (business stack)</td>
+<td><a href="phase-0/epic-0.2-user-authenticates.html">Epic 0.2</a> (business stack)</td>
 <td><strong>Partial — admin stack</strong> is post-MVP<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></td>
 <td><code>ram-ui</code> delivered in Phase 0; <code>ram-admin-ui</code> post-MVP</td>
 </tr>
 <tr>
 <td><strong>FR57</strong> <em>(was FR58)</em></td>
-<td><a href="phase-0/epic-0.3-user-populations-bootstrapped.html">Epic 0.3</a> (initial all-FALSE flag state keyed by (jurisdiction, region)) — cutover orchestration in Phase 9+ (per-wave flip via direct SQL by DBA)</td>
+<td><a href="phase-0/epic-0.4-user-populations-bootstrapped.html">Epic 0.4</a> (initial all-FALSE flag state keyed by (jurisdiction, region)) — cutover orchestration in Phase 9+ (per-wave flip via direct SQL by DBA)</td>
 <td><strong>Partial — activation toggle UI</strong> is post-MVP</td>
 <td>Cutover: <code>UPDATE ram_auth_user_activation_flags SET activated = TRUE WHERE jurisdiction = '…' AND region = '…'</code> per rollout runbook</td>
 </tr>
 <tr>
 <td><strong>FR58</strong> <em>(was FR59)</em></td>
-<td><a href="phase-0/epic-0.2-reference-data-read-only.html">Epic 0.2</a> Story 0.2.2 (first exercise) + every service story</td>
+<td><a href="phase-0/epic-0.2-user-authenticates.html">Epic 0.2</a> Story 0.2.3 (Authorisation read API — first exercise) + <a href="phase-0/epic-0.3-reference-data-read-only-api.html">Epic 0.3</a> Story 0.3.2 (Reference Data read API) + every service story</td>
 <td>—</td>
 <td>API-as-Product read-side standards</td>
 </tr>
 <tr>
 <td><strong>FR59</strong> <em>(was FR60)</em></td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Story 0.1.1 (first exercise) + every service story</td>
+<td><a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> Story 0.1.1 (first exercise — first scaffolded service) + every service story</td>
 <td>—</td>
 <td>Structured logs + correlation IDs</td>
 </tr>
 <tr>
 <td><em>(NFR24)</em></td>
-<td><a href="phase-0/epic-0.1-user-authenticates.html">Epic 0.1</a> Stories 0.1.3/0.1.4</td>
+<td><a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> Stories 0.1.3/0.1.4</td>
 <td>MRD reader swaps to API post-MVP (when MRD APIs ship)</td>
-<td>JOH eLinks + MRD are MVP integrations<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> — listed here because the old map carried the retracted ETL FR in this slot</td>
+<td>JOH eLinks + MRD are MVP integrations<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> — the programme's first deliverable under the integrations-first carve-out (decision #12)</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>There is no data-migration FR: the former Phase 0 ETL was retracted<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> and FR58–FR61 became FR57–FR60. Reference data arrives via upstream ingestion (Epic 0.1); user records are bootstrapped outside the PRD's scope<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>; tier-(a) corrections happen at source and tier-(b) changes follow the DBA runbook change-trail.</p>
+<p>There is no data-migration FR: the former Phase 0 ETL was retracted<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> and FR58–FR61 became FR57–FR60. Reference data arrives via upstream ingestion (Epic 0.1, now the first epic under the integrations-first carve-out / decision #12); user records are bootstrapped outside the PRD's scope<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>; tier-(a) corrections happen at source and tier-(b) changes follow the DBA runbook change-trail.</p>
 </blockquote>
 </div></details><details class="section" id="phases-19-fr10fr54-fr60--pending"><summary><span class="section-title">Phases 1–9+ (FR10–FR54, FR60) — pending</span></summary><div class="section-body">
 <p>To be populated by subsequent runs of <code>bmad-create-epics-and-stories</code> step 2 against the corresponding Phase × Area entries in <a href="framework.html">framework.md</a>. Phase 0 sets the pattern; later phases follow the same vertical-slice user-value framing.</p>
@@ -339,7 +339,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/fr-coverage-map.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-concrete-epics-0104--pending-sscs-cohort-revalidation">Phase 0 (concrete epics 0.1–0.4 — pending SSCS-cohort revalidation)</a></li><li><a href="#phases-19-fr10fr54-fr60--pending">Phases 1–9+ (FR10–FR54, FR60) — pending</a></li><li><a href="#post-mvp-roadmap-consolidated-revised-2026-06-11">Post-MVP roadmap (consolidated, revised 2026-06-11)</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-concrete-epics-0105--integrations-first-restructure-2026-06-17--decision-12-pending-sscs-cohort-revalidation">Phase 0 (concrete epics 0.1–0.5 — integrations-first restructure 2026-06-17 / decision #12; pending SSCS-cohort revalidation)</a></li><li><a href="#phases-19-fr10fr54-fr60--pending">Phases 1–9+ (FR10–FR54, FR60) — pending</a></li><li><a href="#post-mvp-roadmap-consolidated-revised-2026-06-11">Post-MVP roadmap (consolidated, revised 2026-06-11)</a></li></ul></aside>
 <script>window.__NAV_BASE__="../";window.__PAGE__="epics/fr-coverage-map";</script>
 <script src="../nav.js"></script>
 <script>

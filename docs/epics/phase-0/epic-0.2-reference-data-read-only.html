@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Epic 0.2: RAM-owned reference data is maintained and all reference data is served read-only — RAM Pathfinder Documentation</title>
+<title>(Superseded) Epic 0.2: RAM-owned reference data is maintained and all reference data is served read-only — RAM Pathfinder Documentation</title>
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:16px}
@@ -86,72 +86,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
 <main class="content">
 
-<h1 id="epic-02-ram-owned-reference-data-is-maintained-and-all-reference-data-is-served-read-only">Epic 0.2: RAM-owned reference data is maintained and all reference data is served read-only</h1>
-<p><strong>User outcome:</strong> Tier-(b) RAM-owned reference data (Regions, Offices, calendar / financial-year boundaries, operational vocabularies) exists, is seeded, and is maintainable by DBAs via direct SQL per operational runbook<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. All reference data — both the upstream-sourced tier-(a) tables ingested in Epic 0.1 and the tier-(b) tables created here — is queryable read-only via <code>ram-reference-data</code>'s versioned REST API, <strong>jurisdiction-filtered</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. <strong>No admin UI is in scope for MVP</strong>; tier-(a) data is never hand-edited in RAM in any phase (corrections at source per FR6).</p>
-<p><strong>Vertical slice:</strong></p>
+<h1 id="superseded-epic-02-ram-owned-reference-data-is-maintained-and-all-reference-data-is-served-read-only">(Superseded) Epic 0.2: RAM-owned reference data is maintained and all reference data is served read-only</h1>
+<blockquote>
+<p><strong>This file is superseded</strong> by the integrations-first restructure (<a href="../../sprint-change-proposal-2026-06-17.html">SCP 2026-06-17</a> / architecture decision #12). It is renumbered and renamed:</p>
 <ul>
-<li>Tier-(b) RAM-owned tables (15: <code>ram_regions</code>, <code>ram_offices</code>, <code>ram_calendar_periods</code> + 12 operational vocabularies incl. <code>ram_joh_types</code>, <code>ram_joh_fee_entitlements</code>) with service-owned Flyway migrations (per AR18–AR20) — the <code>ram-reference-data</code> service itself was scaffolded in Story 0.1.3</li>
-<li>Tier-(b) seed data via Flyway seed migration + the DBA maintenance runbook (D10 operating model)</li>
-<li>Per-service <code>SELECT</code> grants pattern completed for direct-SQL reads across both tiers (per FR7 / Principle 2)</li>
-<li>Reference Data <strong>read-only</strong> REST API: <code>GET</code> endpoints over both tiers, <strong>jurisdiction-filtered responses</strong><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>, for consumption by <code>ram-ui</code>, downstream services, and OpenAPI clients. <strong>No <code>POST</code>/<code>PUT</code>/<code>DELETE</code> endpoints</strong> — tier (a) is written only by the Epic 0.1 ingestion mechanisms; tier (b) by DBAs via SQL per runbook</li>
-<li>First end-to-end exercise of API-as-Product <strong>read-side</strong> standards: URL versioning (<code>/v1/reference-data/...</code>), OpenAPI 3.x spec published as Maven artefact, RFC 9457 problem-details errors, RFC 9745 <code>Deprecation</code> + RFC 8594 <code>Sunset</code> deprecation signalling (FR58)</li>
-<li>First Postman collection for Phase 0 published under <code>postman/ram-reference-data-phase0.postman_collection.json</code> (NFR42 first instance)</li>
+<li><strong><a href="epic-0.3-reference-data-read-only-api.html">Epic 0.3 — Reference data is served read-only via a versioned, jurisdiction-filtered API</a></strong> (tier-(b) tables + the read-only API). It now sits <em>after</em> the auth epic because the jurisdiction-filtered API depends on <code>JWTFilter</code> + <code>authz/check</code>.</li>
 </ul>
-<p><strong>FRs covered:</strong> FR6 (tier-(b) maintenance per runbook; read API over both tiers), FR7 (direct-SQL read pattern + writes-follow-the-tier), FR58 (versioned read API contract), FR59 (structured logs)</p>
-<p><strong>FRs partially covered / deferred:</strong></p>
-<ul>
-<li><strong>FR6 tier-(b) maintenance UI</strong> — post-MVP <code>ram-admin-ui</code><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>; MVP maintenance is DBA-via-SQL per runbook</li>
-<li><strong>FR4</strong> — admin UI for role / jurisdiction / Region-Area assignment updates is post-MVP</li>
-</ul>
-<p><strong>Key NFRs:</strong> NFR14 (no forbidden data — vocabularies contain no case/bank data by construction), NFR40 (service independently deployable), NFR42 (Postman collection). <strong>NFR17–NFR19 (accessibility) do not apply in Phase 0</strong> because no UI surface for this domain is delivered; they re-engage when the maintenance UI ships post-MVP.</p>
-<p><strong>Out of scope for Phase 0 (deferred post-MVP):</strong></p>
-<ul>
-<li>Admin-gated <code>POST/PUT/DELETE</code> endpoints on Reference Data API (tier (b) only — tier (a) never gets a RAM write surface)</li>
-<li><code>ram-admin-ui</code> Reference Data maintenance module</li>
-<li><em>(There is no legacy-data ETL and no git-based sign-off workflow — revised D3. Upstream data arrives via Epic 0.1's ingestion mechanisms.)</em></li>
-</ul>
-<hr />
-<h2 id="story-021-tier-b-ram-owned-reference-tables-seed-data-and-the-dba-maintenance-runbook">Story 0.2.1: Tier-(b) RAM-owned reference tables, seed data, and the DBA maintenance runbook</h2>
-<p>As a <strong>platform engineer</strong> (and the DBAs who operate reference data in MVP), I want the 15 tier-(b) RAM-owned reference tables created, seeded, and covered by an operational maintenance runbook, So that <strong>RAM-owned reference data that does not exist upstream (Regions, Offices, calendar boundaries, operational vocabularies) is available to every service and maintainable<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> operating model</strong> — never overwritten by the upstream sync.</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<p><strong>Given</strong> <code>ram-reference-data</code> is scaffolded and carries the tier-(a) tables per Story 0.1.3<br/><strong>When</strong> the engineer adds Flyway migration <code>V3__init_tier_b_ram_owned_tables.sql</code><br/><strong>Then</strong> the 15 tier-(b) tables exist with schemas per <code>architecture/data-tables.md</code>: <code>ram_regions</code>, <code>ram_offices</code>, <code>ram_calendar_periods</code>, plus the 12 operational vocabularies (<code>ram_joh_types</code>, <code>ram_work_types</code>, <code>ram_court_types</code>, <code>ram_ticket_types</code>, <code>ram_session_types</code>, <code>ram_absence_types</code>, <code>ram_working_pattern_types</code>, <code>ram_booking_statuses</code>, <code>ram_sitting_outcomes</code>, <code>ram_joh_fee_entitlements</code>, <code>ram_payment_lifecycle_statuses</code>, <code>ram_reconciliation_statuses</code>)<br/><strong>And</strong> the <code>ram_reference_data</code> DB role owns the tables (per AR19)<br/><strong>And</strong> SELECT grants exist for every current and placeholder service DB role (per FR7, AR22)<br/><strong>And</strong> the ArchUnit/grants fitness function verifies ownership and that the upstream sync code paths <strong>cannot write tier-(b) tables</strong> (tier separation per FR6 — RAM-owned data is never overwritten by sync)<br/><strong>And</strong> the three upstream-overlap candidates (<code>ram_joh_types</code>, <code>ram_court_types</code>, <code>ram_ticket_types</code>) carry a schema comment referencing gaps.md G8.2 (each may retire in favour of its <code>jo_*</code> counterpart once the eLinks contract is confirmed).</p>
-<p><strong>Given</strong> the engineer adds the seed migration for tier-(b) data<br/><strong>When</strong> Flyway applies it<br/><strong>Then</strong> <code>ram_regions</code>, <code>ram_offices</code>, <code>ram_calendar_periods</code>, and all 12 vocabularies are populated with the documented controlled-list values (cross-referenced to the architecture's data-tables inventory)<br/><strong>And</strong> the seed values include the SSCS wave-1-relevant entries (e.g. session and work types applicable to tribunal sittings) flagged for confirmation against the SSCS as-is pack<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a><br/><strong>And</strong> dev/CI environments get the same seed via the standard Flyway path (no separate seeding mechanism for tier (b)).</p>
-<p><strong>Given</strong> the DBA maintenance runbook is written at <code>ram-architecture/runbooks/reference-data-maintenance.md</code><br/><strong>When</strong> a tier-(b) change is needed in MVP (e.g. a new office, a vocabulary value)<br/><strong>Then</strong> the runbook documents: the change request trail (who asked, why), the SQL pattern per table, the verification query, and the rollback statement<br/><strong>And</strong> the runbook states explicitly that tier-(a) (<code>jo_*</code>/<code>mrd_*</code>) tables are <strong>never</strong> hand-edited — corrections happen at source (Judicial Office / MRD team) and arrive via the next sync (FR6)<br/><strong>And</strong> the runbook is referenced from the service README.</p>
-<p><strong>References:</strong> FR6 (tier (b)), FR7, FR59; NFR14, NFR40; AR18–AR20, AR22, AR49; D10, D11; gaps.md G8.2.</p>
-<p><strong>Explicitly NOT in scope (deferred post-MVP):</strong></p>
-<ul>
-<li>RSU-facing maintenance UI in <code>ram-admin-ui</code><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></li>
-<li>Write API endpoints for tier (b)</li>
-</ul>
-<hr />
-<h2 id="story-022-reference-data-read-only-rest-api-with-jurisdiction-filtering-versioning-openapi-rfc-9457-errors">Story 0.2.2: Reference Data read-only REST API with jurisdiction filtering, versioning, OpenAPI, RFC 9457 errors</h2>
-<p>As an <strong>API consumer</strong> (<code>ram-ui</code> now; downstream services in Phase 1+; external case-management systems from Phase 9<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>), I want a versioned <strong>read-only</strong> Reference Data API over both ownership tiers with <strong>jurisdiction-filtered responses</strong>, full OpenAPI spec, RFC 9457 error envelopes, and APIM-injected deprecation headers, So that <strong>Phase 1+ services can query controlled lists and JOH reference data at runtime, scoped to the requester's jurisdiction</strong><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>, and the API-as-Product read-side standards are validated on Reference Data before any domain service is built (per PRD Key Characteristic 4 / D1).</p>
-<p><strong>Acceptance Criteria:</strong></p>
-<p><strong>Given</strong> <code>ram-reference-data</code> carries both tiers (tier (a) per Stories 0.1.3/0.1.4; tier (b) per Story 0.2.1)<br/><strong>When</strong> the engineer implements read endpoints<br/><strong>Then</strong> <code>GET /v1/reference-data/regions</code>, <code>/offices</code>, <code>/calendar</code>, <code>/vocabularies/{list}</code> (tier b) and <code>GET /v1/reference-data/johs</code>, <code>/jurisdictions</code>, <code>/tickets</code> (tier a, composing <code>jo_*</code> data) return <code>200 OK</code> with structured JSON<br/><strong>And</strong> read endpoints are protected by <code>JWTFilter</code> (any authenticated principal can read; per NFR13)<br/><strong>And</strong> <strong>responses are filtered by the requester's jurisdiction</strong> resolved from <code>AuthDetails</code> (D8/FR2) — e.g. an SSCS-scoped requester sees Tribunals/SSCS-relevant entries; the jurisdiction hierarchy from <code>jo_jurisdictions</code> drives parent/child inclusion<br/><strong>And</strong> the API does not blend tier lineage — each resource documents which tier it serves (FR6)<br/><strong>And</strong> <strong>no write endpoints</strong> (<code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>) are implemented — controller layer rejects with <code>405 Method Not Allowed</code> and an RFC 9457 problem-details body explaining the tier-appropriate write path (tier (a): corrections at source; tier (b): DBA runbook in MVP)<br/><strong>And</strong> OpenAPI spec generated by springdoc lists all read endpoints with full request/response schemas.</p>
-<p><strong>Given</strong> the engineer implements pagination + filtering<br/><strong>When</strong> a consumer queries <code>GET /v1/reference-data/offices?region=northern&amp;page=2&amp;size=50</code><br/><strong>Then</strong> the response includes paginated data with a standard envelope <code>{items, page, size, totalElements, totalPages}</code><br/><strong>And</strong> invalid query parameters return <code>400 Bad Request</code> with RFC 9457 problem-details (per AR37, NFR39).</p>
-<p><strong>Given</strong> the OpenAPI spec is generated and Spectral lint runs in CI<br/><strong>When</strong> the spec is built<br/><strong>Then</strong> the spec passes Spectral lint (per AR17)<br/><strong>And</strong> the spec is published to internal Maven as <code>uk.gov.hmcts.ram:api-ram-reference-data:1.0.0</code> (per AR8)<br/><strong>And</strong> Swagger UI is exposed for developer browsing (ops-restricted at APIM).</p>
-<p><strong>Given</strong> APIM is configured for <code>ram-reference-data</code> per AR27 + AR39<br/><strong>When</strong> a response leaves APIM to the client<br/><strong>Then</strong> rate-limit headers are present per APIM policy<br/><strong>And</strong> <code>Deprecation</code> (RFC 9745) and <code>Sunset</code> (RFC 8594) headers are injected on endpoints flagged in the OpenAPI spec as <code>deprecated: true</code> (none at Phase 0; mechanism verified by a test endpoint)<br/><strong>And</strong> <code>/actuator/*</code> paths are blocked at APIM (per AR33).</p>
-<p><strong>Given</strong> the engineer publishes the first Phase 0 Postman collection<br/><strong>When</strong> the collection runs in CI<br/><strong>Then</strong> <code>postman/ram-reference-data-phase0.postman_collection.json</code> exercises every read endpoint across both tiers<br/><strong>And</strong> the collection covers happy path + jurisdiction filtering (two requesters in different jurisdictions see different result sets) + 400 (invalid query) + 401 (unauthenticated) + 405 (write attempt) (per NFR42)<br/><strong>And</strong> the collection is versioned alongside the service.</p>
-<p><strong>References:</strong> FR6 (read surface over both tiers), FR7, FR58, FR59; NFR12, NFR13, NFR14, NFR39, NFR42; AR8, AR17, AR27, AR33, AR34, AR37, AR38, AR39, AR41; D8, D12.</p>
-<p><strong>Explicitly NOT in scope (deferred post-MVP):</strong></p>
-<ul>
-<li>Admin write endpoints (<code>POST/PUT/PATCH/DELETE</code>) for tier (b)</li>
-<li>Any write surface for tier (a) (never, in any phase)</li>
-</ul>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section>
+<p>Tier-(a) <code>jo_*</code> tables and <code>ram-reference-data</code> scaffolding moved to <strong><a href="epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a></strong>. See <a href="index.html">phase-0/index.md</a>. Prior content is in git history.</p>
+</blockquote>
 
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/phase-0/epic-0.2-reference-data-read-only.md</code></p>
 </main>

@@ -290,11 +290,11 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </ul>
 <h3 id="infrastructure--deployment">Infrastructure / deployment</h3>
 <ul>
-<li>AR23 — Kubernetes on Azure AKS, production in UK South, multi-AZ HA. Container images → Azure Container Registry. Each of the 11 services is a containerised Spring Boot app. The AKS/ACR estate is Terraform-provisioned per AR53 (lives in <code>ram-authorisation</code> as first consumer).</li>
+<li>AR23 — Kubernetes on Azure AKS, production in UK South, multi-AZ HA. Container images → Azure Container Registry. Each of the 11 services is a containerised Spring Boot app. The AKS/ACR estate is Terraform-provisioned per AR53 (lives in <code>ram-reference-data</code> as first consumer — decision #12 / SCP 2026-06-17).</li>
 <li>AR24 — Helm chart per service with <code>values-{env}.yaml</code> overlay per environment (<code>dev</code>, <code>staging</code>, <code>production</code>). Production values include <code>topologySpreadConstraints</code> for AZ spread, min replicas, multi-AZ node pool selection. Helm chart is <strong>not</strong> in HMCTS template baseline — added by <code>ram-scaffold.sh</code> per G1.4a.</li>
 <li>AR25 — Secrets in Azure Key Vault (via Spring Cloud Azure); no secrets in source control or env-baked images. Each service's Key Vault namespace is Terraform-provisioned in that service's repo (AR53).</li>
 <li>AR26 — Per-environment configuration via Spring profiles + <code>application-{env}.yml</code>; cross-service runtime policy values in the shared <code>ram_configuration_values</code> table (read-only via direct SQL).</li>
-<li>AR27 — Azure API Management (APIM) at the edge for rate limits, header injection, deprecation/<code>Sunset</code> policies, and ops-restricting <code>/actuator/*</code> namespace. APIM instance + base policies Terraform-provisioned in <code>ram-authorisation</code> (first consumer); per-API policy additions in each service's <code>terraform/</code> (AR53).</li>
+<li>AR27 — Azure API Management (APIM) at the edge for rate limits, header injection, deprecation/<code>Sunset</code> policies, and ops-restricting <code>/actuator/*</code> namespace. APIM instance + base policies Terraform-provisioned in <code>ram-reference-data</code> (first consumer — decision #12 / SCP 2026-06-17); per-API policy additions in each service's <code>terraform/</code> (AR53).</li>
 </ul>
 <h3 id="ci--cd-pipeline-per-service">CI / CD pipeline (per service)</h3>
 <ul>
@@ -349,9 +349,9 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ul>
 <li>AR53 <em>(new 2026-06-11)</em> — <strong>All Azure infrastructure is provisioned via Terraform</strong> (HMCTS standard) — no Bicep, no portal click-ops. <strong>Terraform code is colocated with the application: it lives in the first repo that needs the resource</strong> — infra cannot live separate from the application that needs it. Allocation under this rule:
 <ul>
-<li><strong><code>ram-authorisation</code></strong> (the first scaffolded service, Story 0.1.1) carries the <strong>shared estate</strong>: AKS cluster + node pools, PostgreSQL Flexible Server, Azure Container Registry, APIM instance + base policies, Application Insights / Log Analytics workspace (incl. retention settings).</li>
+<li><strong><code>ram-reference-data</code></strong> (the first scaffolded service, Epic 0.1 Story 0.1.1, under the integrations-first sequencing — decision #12 / SCP 2026-06-17) carries the <strong>shared estate</strong>: AKS cluster + node pools, PostgreSQL Flexible Server, Azure Container Registry, APIM instance + base policies, Application Insights / Log Analytics workspace (incl. retention settings). <em>(Relocated from <code>ram-authorisation</code> — it was the first scaffolded service before the integrations-first carve-out.)</em></li>
 <li><strong>Each service repo</strong> carries Terraform for its <strong>own resources</strong>: its Key Vault namespace, service-specific storage, APIM per-API policy additions.</li>
-<li><strong><code>ram-reference-data</code></strong> carries the MRD feed storage account + blob container (Story 0.1.4 — first consumer).</li>
+<li><strong><code>ram-reference-data</code></strong> additionally carries the MRD feed storage account + blob container (Epic 0.1 Story 0.1.4 — first consumer).</li>
 <li><strong><code>ram-ui</code></strong> carries its Azure Static Web App.</li>
 <li>Terraform lives under <code>terraform/</code> in each repo with per-environment stacks (<code>dev</code> / <code>staging</code> / <code>production</code>); <code>ram-scaffold.sh</code> adds the <code>terraform/</code> skeleton alongside the Helm chart (same pattern as G1.4a).</li>
 <li><strong>Helm remains the application-deployment mechanism</strong> onto the Terraform-provisioned AKS cluster — Terraform provisions the estate; Helm deploys workloads onto it; Flyway owns DB schema. The three do not overlap.</li>

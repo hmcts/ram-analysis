@@ -227,6 +227,7 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
         ("Changelog", "architecture/tobe/changelog", False),
     ]),
     ("Change Control & Readiness", [
+        ("Sprint Change Proposal — 2026-06-17 (integrations-first carve-out)", "sprint-change-proposal-2026-06-17", False),
         ("Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)", "sprint-change-proposal-2026-06-10", False),
         ("Sprint Change Proposal — 2026-05-15", "sprint-change-proposal-2026-05-15", False),
         ("Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)", "implementation-readiness-report-2026-05-15-rev2", False),
@@ -240,12 +241,13 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
         ("Phase × Area framework", "epics/framework", False),
         ("FR coverage map", "epics/fr-coverage-map", False),
     ]),
-    ("Implementation — Phase 0 (restructured 2026-06-11)", [
+    ("Implementation — Phase 0 (integrations-first, restructured 2026-06-17)", [
         ("Phase 0 overview", "epics/phase-0/index", False),
-        ("Epic 0.1 — User authenticates incl. eLinks/MRD ingestion (7 stories)", "epics/phase-0/epic-0.1-user-authenticates", False),
-        ("Epic 0.2 — Reference data read-only (2 stories)", "epics/phase-0/epic-0.2-reference-data-read-only", False),
-        ("Epic 0.3 — User populations bootstrapped (1 story)", "epics/phase-0/epic-0.3-user-populations-bootstrapped", False),
-        ("Epic 0.4 — Notification scaffolded (2 stories)", "epics/phase-0/epic-0.4-system-dispatches-emails", False),
+        ("Epic 0.1 — Upstream JOH/MRD reference data is ingested (4 stories)", "epics/phase-0/epic-0.1-upstream-reference-data-ingested", False),
+        ("Epic 0.2 — User authenticates (5 stories)", "epics/phase-0/epic-0.2-user-authenticates", False),
+        ("Epic 0.3 — Reference data read-only API (2 stories)", "epics/phase-0/epic-0.3-reference-data-read-only-api", False),
+        ("Epic 0.4 — User populations bootstrapped (1 story)", "epics/phase-0/epic-0.4-user-populations-bootstrapped", False),
+        ("Epic 0.5 — Notification scaffolded (2 stories)", "epics/phase-0/epic-0.5-system-dispatches-emails", False),
         ("Phase 0 Validation Report (2026-05-15 — superseded)", "epics/phase-0/validation-report-2026-05-15", False),
     ]),
 ]

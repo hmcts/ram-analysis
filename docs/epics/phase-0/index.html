@@ -88,16 +88,49 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="phase-0--foundations">Phase 0 — Foundations</h1>
 <blockquote>
-<p>Phase 0 is the platform smoke-test (per PRD Key Characteristic 4). All API-as-Product standards (versioning, OpenAPI, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a>, <code>Deprecation</code>/<code>Sunset</code>) are exercised on Reference Data <strong>reads</strong> and Authorisation lookups before any domain service is built.</p>
-<p>The Phase 0 areas in <a href="../framework.html">../framework.md</a> are an <strong>architectural map</strong>. The four concrete user-value epics below are the <strong>implementation plan</strong> — each delivers a demoable user outcome and consolidates the supporting technical work as stories within the epic.</p>
+<p><strong>✅ Integrations-first restructure executed — <a href="../../sprint-change-proposal-2026-06-17.html">SCP 2026-06-17</a> (architecture decision #12).</strong> Phase 0 is now sequenced <strong>integrations-first</strong>: the JOH eLinks + MRD ingestion is the <strong>first epic</strong> (Epic 0.1), decoupled from the auth/UI slice, and <code>ram-reference-data</code> is the first service scaffolded — carrying the shared-estate Terraform relocated from <code>ram-authorisation</code> per AR53. Ingestion stays in-process — <strong>no <code>ram-integrations</code> repo</strong>. The jurisdiction-filtered Reference Data read API sits <em>after</em> the auth epic (Epic 0.3), because it depends on <code>JWTFilter</code> (token validation) + <code>ram-authorisation</code>'s <code>authz/check</code> (the jurisdiction it filters on). No scope was added or removed; story count rose 12 → 14 purely from splitting the old combined <code>ram-reference-data</code> scaffold/tables/sync story into three.</p>
+<table>
+<thead>
+<tr>
+<th>OLD (≤2026-06-11)</th>
+<th>NEW (2026-06-17)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Epic 0.1 <em>User authenticates</em> (incl. ingestion), 7 stories</td>
+<td><strong>Epic 0.1 <em>Upstream JOH/MRD ingestion</em></strong> (0.1.1 scaffold+estate, 0.1.2 tier-(a) tables, 0.1.3 eLinks sync, 0.1.4 MRD) — 4 stories</td>
+</tr>
+<tr>
+<td>Epic 0.2 <em>Reference data read-only</em>, 2 stories</td>
+<td><strong>Epic 0.2 <em>User authenticates</em></strong> (0.2.1 auth scaffold, 0.2.2 mock-auth, 0.2.3 authz, 0.2.4 ram-ui, 0.2.5 sign-in) — 5 stories</td>
+</tr>
+<tr>
+<td>Epic 0.3 <em>User populations bootstrapped</em>, 1 story</td>
+<td><strong>Epic 0.3 <em>Reference data read-only API</em></strong> (0.3.1 tier-(b) tables, 0.3.2 read API) — 2 stories</td>
+</tr>
+<tr>
+<td>Epic 0.4 <em>Notification scaffolded</em>, 2 stories</td>
+<td><strong>Epic 0.4 <em>User populations bootstrapped</em></strong> — 1 story</td>
+</tr>
+<tr>
+<td>—</td>
+<td><strong>Epic 0.5 <em>Notification scaffolded</em></strong> — 2 stories</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<blockquote>
+<p>Phase 0 is the platform smoke-test (per PRD Key Characteristic 4). All API-as-Product standards (versioning, OpenAPI, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a>, <code>Deprecation</code>/<code>Sunset</code>) are exercised on Authorisation lookups and Reference Data <strong>reads</strong> before any domain service is built.</p>
+<p>The Phase 0 areas in <a href="../framework.html">../framework.md</a> are an <strong>architectural map</strong>. The five concrete user-value epics below are the <strong>implementation plan</strong> — each delivers a demoable user outcome and consolidates the supporting technical work as stories within the epic.</p>
 </blockquote>
 <details class="section" id="phase-0-scope-model"><summary><span class="section-title">Phase 0 scope model</span></summary><div class="section-body">
 <ul>
 <li><strong>No legacy data migration</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> — no data migrates from APEX or GAPS, ever. Judicial-holder reference data is <strong>ingested from upstream sources of truth</strong>: the JOH eLinks API (nightly in-process sync) and MRD (weekly Excel via blob drop). Historical data stays in each jurisdiction's incumbent system.</li>
-<li><strong>Upstream ingestion lives in Epic 0.1</strong> — JOH sign-in resolves identity against <code>jo_people</code>, so the eLinks sync (Story 0.1.3) and MRD ingestion (Story 0.1.4) are part of the authentication vertical slice, and the first external integration the programme tackles.</li>
-<li><strong>Two user populations</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: JOH users resolve IdP email → <code>jo_people</code> → personnel number; HMCTS admin staff resolve via <code>ram_auth_staff_identities</code> → RAM-assigned UUID. Both share one authorisation model.</li>
-<li><strong>Jurisdiction is first-class</strong><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>: authz responses carry roles + jurisdiction + Region/Area scope; reference-data API responses are jurisdiction-filtered; activation flags key on the (jurisdiction, region) tuple (FR57).</li>
-<li><strong>Admin UI is post-MVP</strong><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>: tier-(b) reference data and user/role/scope maintenance are DBA-via-SQL per runbook.</li>
+<li><strong>Upstream ingestion is Epic 0.1 — the first deliverable</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> — carved out as a standalone, auth-independent vertical slice (eLinks sync Story 0.1.3, MRD ingestion Story 0.1.4) and the first external integration the programme tackles. <code>ram-reference-data</code> is scaffolded first and carries the shared Azure estate Terraform (AR53 first-consumer rule). The orchestration stays in-process — <strong>no <code>ram-integrations</code> repo</strong> (tier-(a) tables are single-writer-owned by <code>ram_reference_data</code> per AR49).</li>
+<li><strong>Two user populations</strong><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>: JOH users resolve IdP email → <code>jo_people</code> → personnel number; HMCTS admin staff resolve via <code>ram_auth_staff_identities</code> → RAM-assigned UUID. Both share one authorisation model.</li>
+<li><strong>Jurisdiction is first-class</strong><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>: authz responses carry roles + jurisdiction + Region/Area scope; reference-data API responses are jurisdiction-filtered; activation flags key on the (jurisdiction, region) tuple (FR57).</li>
+<li><strong>Admin UI is post-MVP</strong><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>: tier-(b) reference data and user/role/scope maintenance are DBA-via-SQL per runbook.</li>
 </ul>
 </div></details><details class="section" id="epics"><summary><span class="section-title">Epics</span></summary><div class="section-body">
 <table>
@@ -111,25 +144,31 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </thead>
 <tbody>
 <tr>
-<td><a href="epic-0.1-user-authenticates.html">0.1</a></td>
-<td>User authenticates and lands on a role-scoped Home page (incl. JOH eLinks + MRD ingestion)</td>
-<td>7</td>
+<td><a href="epic-0.1-upstream-reference-data-ingested.html">0.1</a></td>
+<td>Upstream JOH/MRD reference data is ingested</td>
+<td>4</td>
 <td>🟡 pending revalidation</td>
 </tr>
 <tr>
-<td><a href="epic-0.2-reference-data-read-only.html">0.2</a></td>
-<td>RAM-owned reference data is maintained and all reference data is served read-only</td>
+<td><a href="epic-0.2-user-authenticates.html">0.2</a></td>
+<td>User authenticates and lands on a role-scoped Home page</td>
+<td>5</td>
+<td>🟡 pending revalidation</td>
+</tr>
+<tr>
+<td><a href="epic-0.3-reference-data-read-only-api.html">0.3</a></td>
+<td>Reference data is served read-only via a versioned, jurisdiction-filtered API</td>
 <td>2</td>
 <td>🟡 pending revalidation</td>
 </tr>
 <tr>
-<td><a href="epic-0.3-user-populations-bootstrapped.html">0.3</a></td>
+<td><a href="epic-0.4-user-populations-bootstrapped.html">0.4</a></td>
 <td>Both user populations are bootstrapped and verifiable against the IdP</td>
 <td>1</td>
 <td>🟡 pending revalidation</td>
 </tr>
 <tr>
-<td><a href="epic-0.4-system-dispatches-emails.html">0.4</a></td>
+<td><a href="epic-0.5-system-dispatches-emails.html">0.5</a></td>
 <td>Notification service is scaffolded and contractually ready</td>
 <td>2</td>
 <td>🟡 pending revalidation</td>
@@ -137,28 +176,32 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><strong>Total</strong></td>
 <td></td>
-<td><strong>12 stories</strong></td>
+<td><strong>14 stories</strong></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 </div></details><details class="section" id="epic-summaries"><summary><span class="section-title">Epic summaries</span></summary><div class="section-body">
-<h3 id="epic-01-user-authenticates-and-lands-on-a-role-scoped-home-page-7-stories">Epic 0.1: User authenticates and lands on a role-scoped Home page (7 stories)</h3>
-<p><strong>User outcome:</strong> A user from <strong>either identity population</strong> — JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance, MI) — signs in via SSO, has their canonical identity resolved (personnel number via the eLinks-synced <code>jo_people</code>; staff UUID via <code>ram_auth_staff_identities</code>), and lands on a role-scoped Home page. The epic includes the <strong>JOH eLinks nightly sync</strong> (0.1.3) and <strong>MRD weekly ingestion</strong> (0.1.4) because <code>jo_people</code> is the JOH identity-lookup target — sign-in depends on it.</p>
-<p><strong>FRs covered:</strong> FR1, FR2, FR3, FR55, FR56 (business stack); FR6/FR7 tier-(a) ingestion portion (NFR24)</p>
-<p>→ <a href="epic-0.1-user-authenticates.html">Full epic with stories</a></p>
-<h3 id="epic-02-ram-owned-reference-data-is-maintained-and-all-reference-data-is-served-read-only-2-stories">Epic 0.2: RAM-owned reference data is maintained and all reference data is served read-only (2 stories)</h3>
-<p><strong>User outcome:</strong> Tier-(b) RAM-owned reference data (regions, offices, calendar, operational vocabularies) is created, seeded, and DBA-maintained per runbook<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>; all reference data — both tiers — is served by the versioned <strong>read-only</strong>, <strong>jurisdiction-filtered</strong> REST API.</p>
-<p><strong>FRs covered (Phase 0 surface):</strong> FR6 (tier-(b) maintenance + read API), FR7, FR58, FR59</p>
-<p>→ <a href="epic-0.2-reference-data-read-only.html">Full epic with stories</a></p>
-<h3 id="epic-03-both-user-populations-are-bootstrapped-and-verifiable-against-the-idp-1-story">Epic 0.3: Both user populations are bootstrapped and verifiable against the IdP (1 story)</h3>
+<h3 id="epic-01-upstream-johmrd-reference-data-is-ingested-4-stories">Epic 0.1: Upstream JOH/MRD reference data is ingested (4 stories)</h3>
+<p><strong>User outcome:</strong> Judicial-holder reference data flows into RAM from its upstream sources of truth — the <strong>JOH eLinks API</strong> (15 <code>jo_*</code> entities, nightly in-process sync, Story 0.1.3) and the <strong>MRD</strong> weekly Excel feed (<code>mrd_*</code>, Story 0.1.4) — so <code>jo_people</code> exists and is current. This is the platform's foundational data layer and the programme's <strong>first external integration</strong>, decoupled from auth. <code>ram-reference-data</code> is scaffolded first (Story 0.1.1) and carries the shared Azure estate (decision #12 / AR53); tier-(a) tables + write protection are Story 0.1.2.</p>
+<p><strong>FRs covered:</strong> FR1 (the <code>jo_people</code> lookup target), FR6 tier-(a), FR7 tier-(a) grants, FR8 (shared config baseline first lands); NFR24, FR59 (structured logs first exercised)</p>
+<p>→ <a href="epic-0.1-upstream-reference-data-ingested.html">Full epic with stories</a></p>
+<h3 id="epic-02-user-authenticates-and-lands-on-a-role-scoped-home-page-5-stories">Epic 0.2: User authenticates and lands on a role-scoped Home page (5 stories)</h3>
+<p><strong>User outcome:</strong> A user from <strong>either identity population</strong> — JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance, MI) — signs in via SSO, has their canonical identity resolved (personnel number via the eLinks-synced <code>jo_people</code>; staff UUID via <code>ram_auth_staff_identities</code>), and lands on a role-scoped Home page. Depends on Epic 0.1 (<code>jo_people</code> populated) and consumes the shared estate provisioned there.</p>
+<p><strong>FRs covered:</strong> FR1, FR2, FR3, FR55, FR56 (business stack); FR57 (activation surface), FR58 (Authorisation read API)</p>
+<p>→ <a href="epic-0.2-user-authenticates.html">Full epic with stories</a></p>
+<h3 id="epic-03-reference-data-is-served-read-only-via-a-versioned-jurisdiction-filtered-api-2-stories">Epic 0.3: Reference data is served read-only via a versioned, jurisdiction-filtered API (2 stories)</h3>
+<p><strong>User outcome:</strong> Tier-(b) RAM-owned reference data (regions, offices, calendar, operational vocabularies) is created, seeded, and DBA-maintained per runbook<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> (Story 0.3.1); all reference data — both tiers — is served by the versioned <strong>read-only</strong>, <strong>jurisdiction-filtered</strong> REST API (Story 0.3.2). This epic sits <em>after</em> the auth epic because the jurisdiction-filtered API depends on <code>JWTFilter</code> + <code>authz/check</code>.</p>
+<p><strong>FRs covered (Phase 0 surface):</strong> FR6 (tier-(b) maintenance + read API over both tiers), FR7, FR58</p>
+<p>→ <a href="epic-0.3-reference-data-read-only-api.html">Full epic with stories</a></p>
+<h3 id="epic-04-both-user-populations-are-bootstrapped-and-verifiable-against-the-idp-1-story">Epic 0.4: Both user populations are bootstrapped and verifiable against the IdP (1 story)</h3>
 <p><strong>User outcome:</strong> Authorisation records for both populations exist (seeded in dev/CI; programme-bootstrapped in production per the runbook) with all-FALSE (jurisdiction, region) activation flags, and a re-runnable <strong>bootstrap-verification job</strong> proves every user maps to an IdP principal — a standing wave-cutover gate artefact (also used at the pre-Phase-9 IdP cutover per G1.3).</p>
 <p><strong>FRs covered (Phase 0 surface):</strong> FR1 (lookup data), FR4 (MVP data-layer criterion), FR57 (initial flag state)</p>
-<p>→ <a href="epic-0.3-user-populations-bootstrapped.html">Full epic with stories</a></p>
-<h3 id="epic-04-notification-service-is-scaffolded-and-contractually-ready-2-stories">Epic 0.4: Notification service is scaffolded and contractually ready (2 stories)</h3>
-<p><strong>User outcome:</strong> <code>ram-notification</code> is deployed with its API contract published, delivery log table created, SMTP integration configured, and <code>POST /v1/notifications/send</code> working. The contract is consumable from Phase 2+ via <strong>user-JWT propagation</strong>. Integration testing in MVP happens via Postman — <strong>no admin UI</strong>.</p>
+<p>→ <a href="epic-0.4-user-populations-bootstrapped.html">Full epic with stories</a></p>
+<h3 id="epic-05-notification-service-is-scaffolded-and-contractually-ready-2-stories">Epic 0.5: Notification service is scaffolded and contractually ready (2 stories)</h3>
+<p><strong>User outcome:</strong> <code>ram-notification</code> is deployed with its API contract published, the <code>ram_notification_dispatches</code> delivery-log table created, SMTP integration configured, and <code>POST /v1/notifications/send</code> working. The contract is consumable from Phase 2+ via <strong>user-JWT propagation</strong>. Integration testing in MVP happens via Postman — <strong>no admin UI</strong>.</p>
 <p><strong>FRs covered:</strong> FR9</p>
-<p>→ <a href="epic-0.4-system-dispatches-emails.html">Full epic with stories</a></p>
+<p>→ <a href="epic-0.5-system-dispatches-emails.html">Full epic with stories</a></p>
 </div></details><details class="section" id="phase-0-epic-stories-summary"><summary><span class="section-title">Phase 0 Epic Stories Summary</span></summary><div class="section-body">
 <table>
 <thead>
@@ -172,40 +215,46 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tbody>
 <tr>
 <td>0.1</td>
-<td>7 stories (0.1.1–0.1.7)</td>
-<td>FR1, FR2, FR3, FR8, FR55, FR56, FR57 (activation surface), FR58, FR59; FR6/FR7 tier (a) + NFR24</td>
-<td>JOH data flows in from eLinks/MRD → user (either population) signs in → role-scoped Home renders</td>
+<td>4 stories (0.1.1–0.1.4)</td>
+<td>FR1 (<code>jo_people</code> target), FR6 tier (a), FR7 tier (a), FR8, FR59; NFR24</td>
+<td>JOH/MRD reference data flows in from eLinks + MRD → <code>jo_people</code> current (verified via <code>ram_sync_status</code> + CI WireMock stub)</td>
 </tr>
 <tr>
 <td>0.2</td>
-<td>2 stories (0.2.1–0.2.2)</td>
-<td>FR6 (tier b + read API), FR7, FR58, FR59</td>
-<td>Jurisdiction-filtered Reference Data API serves both tiers read-only</td>
+<td>5 stories (0.2.1–0.2.5)</td>
+<td>FR1, FR2, FR3, FR55, FR56, FR57 (activation surface), FR58</td>
+<td>User (either population) signs in via mock-auth → <code>ram-authorisation</code> resolves identity/roles/jurisdiction → role-scoped Home renders</td>
 </tr>
 <tr>
 <td>0.3</td>
-<td>1 story (0.3.1)</td>
-<td>FR1 (lookup data), FR4 (data layer), FR57 (flag bootstrap)</td>
-<td>Seeded users across both populations verified against the IdP; Epic 0.1 sign-in works against them</td>
+<td>2 stories (0.3.1–0.3.2)</td>
+<td>FR6 (tier b + read API), FR7, FR58</td>
+<td>Jurisdiction-filtered Reference Data API serves both tiers read-only</td>
 </tr>
 <tr>
 <td>0.4</td>
-<td>2 stories (0.4.1–0.4.2)</td>
+<td>1 story (0.4.1)</td>
+<td>FR1 (lookup data), FR4 (data layer), FR57 (flag bootstrap)</td>
+<td>Seeded users across both populations verified against the IdP; Epic 0.2 sign-in works against them</td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>2 stories (0.5.1–0.5.2)</td>
 <td>FR9</td>
 <td><code>POST /v1/notifications/send</code> works end-to-end via Postman against Mailpit</td>
 </tr>
 <tr>
 <td><strong>Total</strong></td>
-<td><strong>12 stories</strong></td>
+<td><strong>14 stories</strong></td>
 <td></td>
-<td>All four demos chain together for the Phase 0 stakeholder walkthrough</td>
+<td>The five demos chain together for the Phase 0 stakeholder walkthrough</td>
 </tr>
 </tbody>
 </table>
 <p><strong>Cross-cutting NFRs verified across Phase 0 stories:</strong> NFR10 (TLS), NFR11 (data-at-rest), NFR12 (JWT propagation), NFR13 (authz enforcement incl. jurisdiction), NFR14 (no forbidden data), NFR15 (change trails per runbooks + delivery log), NFR16 (Key Vault incl. eLinks credential), NFR17–NFR19 (business UI WCAG — admin UI deferred), NFR20 (HMCTS IdP integration via mock), NFR22 (HMCTS email), NFR24 (JOH eLinks + MRD MVP integrations), NFR25–NFR28 (observability), NFR31 (Azure UK South), NFR39 (API-as-Product), NFR40 (per-service deployable), NFR42 (Postman collections).</p>
 </div></details><details class="section" id="post-mvp-roadmap-items"><summary><span class="section-title">Post-MVP roadmap items</span></summary><div class="section-body">
 <ol type="1">
-<li><strong><code>ram-admin-ui</code> repo</strong> — scaffolding + auth wrapper + GOV.UK Design System admin theme<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></li>
+<li><strong><code>ram-admin-ui</code> repo</strong> — scaffolding + auth wrapper + GOV.UK Design System admin theme<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></li>
 <li><strong>Reference Data maintenance module</strong> (tier (b) only) in <code>ram-admin-ui</code></li>
 <li><strong>Users &amp; Roles admin module</strong> in <code>ram-admin-ui</code> — search, edit roles / jurisdiction / Region-Area scope</li>
 <li><strong>Reference Data API write endpoints</strong> (tier (b) only) — <code>POST/PUT/PATCH/DELETE</code>, admin-gated</li>
@@ -214,29 +263,30 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong>Delivery-log viewer UI</strong></li>
 <li><strong>Activation-flag toggle UI</strong> (per (jurisdiction, region))</li>
 </ol>
-<p>Tier-(a) reference data never gets a write surface in any phase (corrections at source per FR6), and there is no migration-reports surface — there is no migration to report on<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p>
+<p>Tier-(a) reference data never gets a write surface in any phase (corrections at source per FR6), and there is no migration-reports surface — there is no migration to report on<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.</p>
 <p>Not post-MVP (lands in a later MVP phase): <strong>OAuth <code>client_credentials</code> flow</strong> for batch / scheduled callers — Phase 6 alongside <code>ram-payment-batch</code>. <em>(The eLinks sync and MRD pick-up need no service identity — they run in-process inside <code>ram-reference-data</code>.)</em></p>
 </div></details><details class="section" id="validation"><summary><span class="section-title">Validation</span></summary><div class="section-body">
 <ul>
-<li>Phase 0 awaits validation via the <strong>SSCS-cohort implementation-readiness assessment</strong><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>. The prior <a href="validation-report-2026-05-15.html">validation report (2026-05-15)</a> assessed a superseded plan and no longer applies.</li>
+<li>Phase 0 awaits validation via the <strong>SSCS-cohort implementation-readiness assessment</strong><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. The prior <a href="validation-report-2026-05-15.html">validation report (2026-05-15)</a> assessed a superseded plan and no longer applies.</li>
 </ul>
 </div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
 <li id="fn1"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Architecture decision #12 (2026-06-17, SCP 2026-06-17) — integrations-first Phase 0 carve-out; <code>ram-reference-data</code> scaffolded first and carries the shared estate; no <code>ram-integrations</code> repo; read API stays downstream of auth.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/phase-0/index.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-scope-model">Phase 0 scope model</a></li><li><a href="#epics">Epics</a></li><li><a href="#epic-summaries">Epic summaries</a></li><li class="h3"><a href="#epic-01-user-authenticates-and-lands-on-a-role-scoped-home-page-7-stories">Epic 0.1: User authenticates and lands on a role-scoped Home page (7 stories)</a></li><li class="h3"><a href="#epic-02-ram-owned-reference-data-is-maintained-and-all-reference-data-is-served-read-only-2-stories">Epic 0.2: RAM-owned reference data is maintained and all reference data is served read-only (2 stories)</a></li><li class="h3"><a href="#epic-03-both-user-populations-are-bootstrapped-and-verifiable-against-the-idp-1-story">Epic 0.3: Both user populations are bootstrapped and verifiable against the IdP (1 story)</a></li><li class="h3"><a href="#epic-04-notification-service-is-scaffolded-and-contractually-ready-2-stories">Epic 0.4: Notification service is scaffolded and contractually ready (2 stories)</a></li><li><a href="#phase-0-epic-stories-summary">Phase 0 Epic Stories Summary</a></li><li><a href="#post-mvp-roadmap-items">Post-MVP roadmap items</a></li><li><a href="#validation">Validation</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-scope-model">Phase 0 scope model</a></li><li><a href="#epics">Epics</a></li><li><a href="#epic-summaries">Epic summaries</a></li><li class="h3"><a href="#epic-01-upstream-johmrd-reference-data-is-ingested-4-stories">Epic 0.1: Upstream JOH/MRD reference data is ingested (4 stories)</a></li><li class="h3"><a href="#epic-02-user-authenticates-and-lands-on-a-role-scoped-home-page-5-stories">Epic 0.2: User authenticates and lands on a role-scoped Home page (5 stories)</a></li><li class="h3"><a href="#epic-03-reference-data-is-served-read-only-via-a-versioned-jurisdiction-filtered-api-2-stories">Epic 0.3: Reference data is served read-only via a versioned, jurisdiction-filtered API (2 stories)</a></li><li class="h3"><a href="#epic-04-both-user-populations-are-bootstrapped-and-verifiable-against-the-idp-1-story">Epic 0.4: Both user populations are bootstrapped and verifiable against the IdP (1 story)</a></li><li class="h3"><a href="#epic-05-notification-service-is-scaffolded-and-contractually-ready-2-stories">Epic 0.5: Notification service is scaffolded and contractually ready (2 stories)</a></li><li><a href="#phase-0-epic-stories-summary">Phase 0 Epic Stories Summary</a></li><li><a href="#post-mvp-roadmap-items">Post-MVP roadmap items</a></li><li><a href="#validation">Validation</a></li></ul></aside>
 <script>window.__NAV_BASE__="../../";window.__PAGE__="epics/phase-0/index";</script>
 <script src="../../nav.js"></script>
 <script>

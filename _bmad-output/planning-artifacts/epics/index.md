@@ -47,7 +47,7 @@ UX Design document is not present; downstream epics inherit UI requirements dire
 
 | Phase | Folder | Status |
 |---|---|---|
-| **0** — Foundations | [phase-0/](phase-0/index.md) | 🟡 Epics + stories complete (12 stories) — pending SSCS-cohort revalidation |
+| **0** — Foundations | [phase-0/](phase-0/index.md) | 🟡 Integrations-first restructure approved ([SCP 2026-06-17](../sprint-change-proposal-2026-06-17.md)) — 5 epics, 12 stories preserved; per-story re-sequence + SSCS-cohort revalidation pending |
 | **1** — JOH | _to be storied_ | ⚪ Framework only |
 | **2** — Absence | _to be storied_ | ⚪ Framework only |
 | **3** — Vacancy | _to be storied_ | ⚪ Framework only |

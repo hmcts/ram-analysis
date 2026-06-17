@@ -218,11 +218,11 @@ revisionNote: 'AR53 added 2026-06-11 (Terraform, colocated first-consumer rule).
 
 ### Infrastructure / deployment
 
-- AR23 — Kubernetes on Azure AKS, production in UK South, multi-AZ HA. Container images → Azure Container Registry. Each of the 11 services is a containerised Spring Boot app. The AKS/ACR estate is Terraform-provisioned per AR53 (lives in `ram-authorisation` as first consumer).
+- AR23 — Kubernetes on Azure AKS, production in UK South, multi-AZ HA. Container images → Azure Container Registry. Each of the 11 services is a containerised Spring Boot app. The AKS/ACR estate is Terraform-provisioned per AR53 (lives in `ram-reference-data` as first consumer — decision #12 / SCP 2026-06-17).
 - AR24 — Helm chart per service with `values-{env}.yaml` overlay per environment (`dev`, `staging`, `production`). Production values include `topologySpreadConstraints` for AZ spread, min replicas, multi-AZ node pool selection. Helm chart is **not** in HMCTS template baseline — added by `ram-scaffold.sh` per G1.4a.
 - AR25 — Secrets in Azure Key Vault (via Spring Cloud Azure); no secrets in source control or env-baked images. Each service's Key Vault namespace is Terraform-provisioned in that service's repo (AR53).
 - AR26 — Per-environment configuration via Spring profiles + `application-{env}.yml`; cross-service runtime policy values in the shared `ram_configuration_values` table (read-only via direct SQL).
-- AR27 — Azure API Management (APIM) at the edge for rate limits, header injection, deprecation/`Sunset` policies, and ops-restricting `/actuator/*` namespace. APIM instance + base policies Terraform-provisioned in `ram-authorisation` (first consumer); per-API policy additions in each service's `terraform/` (AR53).
+- AR27 — Azure API Management (APIM) at the edge for rate limits, header injection, deprecation/`Sunset` policies, and ops-restricting `/actuator/*` namespace. APIM instance + base policies Terraform-provisioned in `ram-reference-data` (first consumer — decision #12 / SCP 2026-06-17); per-API policy additions in each service's `terraform/` (AR53).
 
 ### CI / CD pipeline (per service)
 
@@ -276,9 +276,9 @@ revisionNote: 'AR53 added 2026-06-11 (Terraform, colocated first-consumer rule).
 ### Infrastructure provisioning (new 2026-06-11 — HMCTS standard)
 
 - AR53 *(new 2026-06-11)* — **All Azure infrastructure is provisioned via Terraform** (HMCTS standard) — no Bicep, no portal click-ops. **Terraform code is colocated with the application: it lives in the first repo that needs the resource** — infra cannot live separate from the application that needs it. Allocation under this rule:
-  - **`ram-authorisation`** (the first scaffolded service, Story 0.1.1) carries the **shared estate**: AKS cluster + node pools, PostgreSQL Flexible Server, Azure Container Registry, APIM instance + base policies, Application Insights / Log Analytics workspace (incl. retention settings).
+  - **`ram-reference-data`** (the first scaffolded service, Epic 0.1 Story 0.1.1, under the integrations-first sequencing — decision #12 / SCP 2026-06-17) carries the **shared estate**: AKS cluster + node pools, PostgreSQL Flexible Server, Azure Container Registry, APIM instance + base policies, Application Insights / Log Analytics workspace (incl. retention settings). *(Relocated from `ram-authorisation` — it was the first scaffolded service before the integrations-first carve-out.)*
   - **Each service repo** carries Terraform for its **own resources**: its Key Vault namespace, service-specific storage, APIM per-API policy additions.
-  - **`ram-reference-data`** carries the MRD feed storage account + blob container (Story 0.1.4 — first consumer).
+  - **`ram-reference-data`** additionally carries the MRD feed storage account + blob container (Epic 0.1 Story 0.1.4 — first consumer).
   - **`ram-ui`** carries its Azure Static Web App.
   - Terraform lives under `terraform/` in each repo with per-environment stacks (`dev` / `staging` / `production`); `ram-scaffold.sh` adds the `terraform/` skeleton alongside the Helm chart (same pattern as G1.4a).
   - **Helm remains the application-deployment mechanism** onto the Terraform-provisioned AKS cluster — Terraform provisions the estate; Helm deploys workloads onto it; Flyway owns DB schema. The three do not overlap.

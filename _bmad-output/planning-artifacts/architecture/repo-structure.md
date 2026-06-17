@@ -73,7 +73,7 @@ ram-{service}/
 │   ├── service/
 │   ├── repository/                              (integration tests, Testcontainers)
 │   └── client/
-├── terraform/                                   (this repo's Azure resources, per-env stacks dev/staging/production — AR53 colocated first-consumer rule; ram-authorisation additionally carries the shared estate: AKS, PostgreSQL, ACR, APIM, App Insights)
+├── terraform/                                   (this repo's Azure resources, per-env stacks dev/staging/production — AR53 colocated first-consumer rule; ram-reference-data additionally carries the shared estate: AKS, PostgreSQL, ACR, APIM, App Insights — it is the first service scaffolded under the integrations-first sequencing, decision #12 / SCP 2026-06-17; relocated from ram-authorisation)
 │   ├── dev/
 │   ├── staging/
 │   └── production/
