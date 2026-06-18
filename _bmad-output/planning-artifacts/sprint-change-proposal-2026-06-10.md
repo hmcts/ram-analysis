@@ -1,4 +1,10 @@
 ---
+type: 'Sprint Change Proposal'
+title: 'Sprint Change Proposal — 2026-06-10'
+description: 'Six product-direction decisions, communicated by the Product Manager during the Correct Course workflow run on 2026-06-10, require structural amendments to the PRD and cascade into multiple…'
+resource: 'sprint-change-proposal-2026-06-10.html'
+tags: [ram-pathfinder, change-control, sscs]
+timestamp: '2026-06-10'
 date: '2026-06-10'
 mode: 'incremental'
 scope_classification: 'major'

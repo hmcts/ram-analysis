@@ -1,4 +1,10 @@
 ---
+type: 'Sprint Change Proposal'
+title: 'Sprint Change Proposal — 2026-05-15'
+description: 'Two product-direction decisions taken on 2026-05-15 require propagation into the PRD, the Phase 0 epics, and supporting reference documents:'
+resource: 'sprint-change-proposal-2026-05-15.html'
+tags: [ram-pathfinder, change-control]
+timestamp: '2026-05-15'
 date: '2026-05-15'
 mode: 'batch'
 scope_classification: 'major'

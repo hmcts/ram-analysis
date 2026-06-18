@@ -1,4 +1,9 @@
 ---
+type: 'Sequence Diagram'
+description: 'Sequence diagram of how aggregate management-information is consumed from ram-mi-feed, by two distinct actors:'
+resource: 'architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-11'
 parent: ../../architecture.md
 title: MI Feed / Reports consumption — internal MI user + post-MVP DA&I external consumer
 last_updated: 2026-05-11

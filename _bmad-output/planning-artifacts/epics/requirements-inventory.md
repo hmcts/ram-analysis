@@ -1,4 +1,10 @@
 ---
+type: 'Requirements Inventory'
+title: 'Requirements Inventory'
+description: '(There is no data-migration FR — the Phase 0 ETL was retracted; FR58–FR61 became FR57–FR60.)'
+resource: 'epics/requirements-inventory.html'
+tags: [ram-pathfinder, epics]
+timestamp: '2026-06-11'
 parent: 'epics/index.md'
 purpose: 'All Functional, Non-Functional, Architecture-derived, and UX Design requirements for RAM Pathfinder'
 sourceDocuments:

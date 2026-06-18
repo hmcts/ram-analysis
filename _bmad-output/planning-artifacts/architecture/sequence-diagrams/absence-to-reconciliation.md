@@ -1,4 +1,9 @@
 ---
+type: 'Sequence Diagram'
+description: 'Sequence diagram of the user-initiated RAM Pathfinder operational cycle: a Court User logs an absence for a salaried JOH; the absence triggers a vacancy; RSU fills the vacancy with a fee-paid…'
+resource: 'architecture/tobe/sequence-diagrams/absence-to-reconciliation.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-07'
 parent: ../../architecture.md
 title: End-to-end sequence — Absence → Vacancy → Booking → Sitting → Reconciliation
 last_updated: 2026-05-07

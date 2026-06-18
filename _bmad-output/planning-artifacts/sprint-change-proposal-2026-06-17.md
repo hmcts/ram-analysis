@@ -1,4 +1,9 @@
 ---
+type: 'Sprint Change Proposal'
+description: 'Trigger. The first phase of delivery should focus on the inbound integrations — ingesting judicial-holder reference data from the JOH eLinks API and supplementary data from the MRD weekly dataset —…'
+resource: 'sprint-change-proposal-2026-06-17.html'
+tags: [ram-pathfinder, change-control]
+timestamp: '2026-06-17'
 title: 'Sprint Change Proposal — Integrations-first Phase 0 carve-out'
 date: '2026-06-17'
 author: 'Ramnish (with BMad Correct Course)'

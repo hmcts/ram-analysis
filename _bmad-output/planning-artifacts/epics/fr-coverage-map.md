@@ -1,4 +1,10 @@
 ---
+type: 'FR Coverage Map'
+title: 'FR Coverage Map'
+description: 'This is the canonical FR-to-Epic mapping. It is updated each time a phase advances from framework to concrete epics + stories.'
+resource: 'epics/fr-coverage-map.html'
+tags: [ram-pathfinder, epics, sscs]
+timestamp: '2026-06-17'
 parent: 'epics/index.md'
 purpose: 'Single source of truth for FR → Epic mapping across all phases'
 revisedAt: '2026-06-17'

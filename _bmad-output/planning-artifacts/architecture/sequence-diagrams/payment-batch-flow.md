@@ -1,4 +1,9 @@
 ---
+type: 'Sequence Diagram'
+description: 'Sequence diagram of the scheduled, non-user-initiated half of the operational cycle. A scheduler triggers the payment-processing batch.'
+resource: 'architecture/tobe/sequence-diagrams/payment-batch-flow.html'
+tags: [ram-pathfinder, architecture, sscs]
+timestamp: '2026-06-11'
 parent: ../../architecture.md
 title: Payment-batch sequence — Scheduler → Batch → JFEPS Excel → Authoriser → Liberata
 last_updated: 2026-06-11

@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'RAM Pathfinder inherits 17 application access types across four groups, plus 1 configuration entry (Payment Authoriser) that is not an application access type.'
+resource: 'architecture/tobe/user-types.html'
+tags: [ram-pathfinder, architecture, sscs]
+timestamp: '2026-05-12'
 parent: ../architecture.md
 title: User Types
 last_updated: 2026-05-12

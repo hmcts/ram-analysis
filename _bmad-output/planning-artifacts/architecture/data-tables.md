@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'This is the inventory of RAM Pathfinder database tables, grouped by owning service. The table list, column shapes, FK relationships, and ownership boundaries are RAM Pathfinder''s design.'
+resource: 'architecture/tobe/data-tables.html'
+tags: [ram-pathfinder, architecture, sscs]
+timestamp: '2026-06-11'
 parent: ../architecture.md
 title: Authoritative Table Ownership Mapping
 last_updated: 2026-06-11

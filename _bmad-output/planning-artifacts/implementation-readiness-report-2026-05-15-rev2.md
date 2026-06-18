@@ -1,4 +1,10 @@
 ---
+type: 'Readiness Report'
+title: 'Implementation Readiness Assessment Report — 2026-05-15 (revision 2, post-D10)'
+description: 'Date: 2026-05-15'
+resource: 'implementation-readiness-report-2026-05-15-rev2.html'
+tags: [ram-pathfinder, change-control]
+timestamp: '2026-06-12'
 stepsCompleted:
   - step-01-document-discovery
   - step-02-prd-analysis

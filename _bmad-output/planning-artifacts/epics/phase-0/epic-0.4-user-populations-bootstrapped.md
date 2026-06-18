@@ -1,4 +1,9 @@
 ---
+type: 'Epic'
+description: 'User outcome: RAM Pathfinder''s two user populations — JOH users (resolved via jo_people → personnel number) and HMCTS admin staff (resolved via ram_auth_staff_identities → RAM-assigned UUID) — have…'
+resource: 'epics/phase-0/epic-0.4-user-populations-bootstrapped.html'
+tags: [ram-pathfinder, epics, phase-0, sscs]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 epic: 0.4
 title: 'Both user populations are bootstrapped and verifiable against the IdP'

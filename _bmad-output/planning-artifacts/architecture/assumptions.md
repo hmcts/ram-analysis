@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'Each assumption is either:'
+resource: 'architecture/tobe/assumptions.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-06'
 parent: ../architecture.md
 title: Assumptions (A1–A37)
 last_updated: 2026-05-06

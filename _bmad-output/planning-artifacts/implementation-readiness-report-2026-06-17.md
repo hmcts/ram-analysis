@@ -1,4 +1,10 @@
 ---
+type: 'Readiness Report'
+title: 'Implementation Readiness Assessment Report'
+description: 'Date: 2026-06-17'
+resource: 'implementation-readiness-report-2026-06-17.html'
+tags: [ram-pathfinder, change-control, sscs]
+timestamp: '2026-06-17'
 assessmentDate: '2026-06-17'
 project: 'ram-analysis (RAM Pathfinder)'
 assessmentScope: 'SSCS-cohort, integrations-first Phase 0 (post SCP 2026-06-17 / architecture decision #12)'

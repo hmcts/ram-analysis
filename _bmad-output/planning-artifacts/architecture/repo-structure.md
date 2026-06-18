@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'There are two UI repos with the same stack and conventions: ram-ui (business-user-facing) and ram-admin-ui (admin-facing).'
+resource: 'architecture/tobe/repo-structure.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-06'
 parent: ../architecture.md
 title: Repository Directory Structures, File Organisation, Local Development Workflow
 last_updated: 2026-05-06

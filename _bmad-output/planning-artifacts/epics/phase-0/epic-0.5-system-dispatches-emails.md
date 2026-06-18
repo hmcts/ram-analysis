@@ -1,4 +1,9 @@
 ---
+type: 'Epic'
+description: 'User outcome: The ram-notification service is deployed with its API contract published, delivery-log table created, SMTP integration to HMCTS email infrastructure configured, and POST…'
+resource: 'epics/phase-0/epic-0.5-system-dispatches-emails.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 epic: 0.5
 title: 'Notification service is scaffolded and contractually ready'

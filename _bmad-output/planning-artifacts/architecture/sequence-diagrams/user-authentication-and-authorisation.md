@@ -1,4 +1,9 @@
 ---
+type: 'Sequence Diagram'
+description: 'Sequence diagram of the cross-cutting authentication and per-request authorisation flow that underpins every user-initiated interaction in RAM Pathfinder.'
+resource: 'architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-06-11'
 parent: ../../architecture.md
 title: User authentication + per-request authorisation — IdP → JWT → JWKS → authz/check
 last_updated: 2026-06-11

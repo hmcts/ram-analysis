@@ -1,4 +1,9 @@
 ---
+type: 'Epic'
+description: 'User outcome: A RAM Pathfinder user from either identity population — a JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance/Payment…'
+resource: 'epics/phase-0/epic-0.2-user-authenticates.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 epic: 0.2
 title: 'User authenticates and lands on a role-scoped Home page'

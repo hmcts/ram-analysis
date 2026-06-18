@@ -1,4 +1,10 @@
 ---
+type: 'Epic'
+title: '(Superseded) Epic 0.3: Both user populations are bootstrapped and verifiable against the IdP'
+description: '(Superseded) Epic 0.3: Both user populations are bootstrapped and verifiable against the IdP'
+resource: 'epics/phase-0/epic-0.3-user-populations-bootstrapped.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 status: 'superseded-2026-06-17'
 supersededBy:

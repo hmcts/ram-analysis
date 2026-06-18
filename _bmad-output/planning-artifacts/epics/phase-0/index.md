@@ -1,4 +1,10 @@
 ---
+type: 'Phase Index'
+title: 'Phase 0 — Foundations'
+description: 'User outcome: Judicial-holder reference data flows into RAM from its upstream sources of truth — the JOH eLinks API (15 jo_ entities, nightly in-process sync, Story 0.1.3) and the MRD weekly Excel…'
+resource: 'epics/phase-0/index.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/index.md'
 phase: 0
 phaseName: 'Foundations'

@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'This document is the consistency contract for the 11 services and the UI. Patterns are enforced by code review, CI lint, contract tests, and ArchUnit fitness functions — not by a shared library.'
+resource: 'architecture/tobe/conventions.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-06'
 parent: ../architecture.md
 title: Implementation Patterns & Consistency Rules (Step 5)
 last_updated: 2026-05-06

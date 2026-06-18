@@ -1,4 +1,10 @@
 ---
+type: 'Epic'
+title: '(Superseded) Epic 0.1: User authenticates and lands on a role-scoped Home page'
+description: '(Superseded) Epic 0.1: User authenticates and lands on a role-scoped Home page'
+resource: 'epics/phase-0/epic-0.1-user-authenticates.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 status: 'superseded-2026-06-17'
 supersededBy:

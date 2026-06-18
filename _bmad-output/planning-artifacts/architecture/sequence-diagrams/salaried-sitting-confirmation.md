@@ -1,4 +1,9 @@
 ---
+type: 'Sequence Diagram'
+description: 'Sequence diagram of the daily salaried-sitting confirmation flow: a Court User confirms that yesterday''s planned sittings actually took place, recording actual work type and splitting AM/PM where…'
+resource: 'architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-11'
 parent: ../../architecture.md
 title: Salaried sitting confirmation + verifier sign-off
 last_updated: 2026-05-11

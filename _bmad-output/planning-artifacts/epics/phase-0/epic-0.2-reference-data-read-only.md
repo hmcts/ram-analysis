@@ -1,4 +1,10 @@
 ---
+type: 'Epic'
+title: '(Superseded) Epic 0.2: RAM-owned reference data is maintained and all reference data is served read-only'
+description: '(Superseded) Epic 0.2: RAM-owned reference data is maintained and all reference data is served read-only'
+resource: 'epics/phase-0/epic-0.2-reference-data-read-only.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 status: 'superseded-2026-06-17'
 supersededBy:

@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'Every gap is named, categorised, owned, and has a mitigation or fallback. Implementation can begin while these are tracked and resolved in parallel.'
+resource: 'architecture/tobe/gaps.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-08'
 parent: ../architecture.md
 title: Documented Gaps (G1–G9)
 last_updated: 2026-05-08

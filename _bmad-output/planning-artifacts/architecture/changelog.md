@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'Architecture Changelog'
+resource: 'architecture/tobe/changelog.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-06-11'
 parent: ../architecture.md
 title: Architecture Changelog
 last_updated: 2026-06-11

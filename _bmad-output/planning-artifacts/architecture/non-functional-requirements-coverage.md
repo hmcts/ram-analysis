@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'The 42 Non-Functional Requirements are organised into 8 categories. Each subsection below lists the NFRs in that category (verbatim from PRD) and the architectural support that satisfies them.'
+resource: 'architecture/tobe/non-functional-requirements-coverage.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-07'
 parent: ../architecture.md
 title: Non-Functional Requirements Coverage (NFR1–NFR42)
 last_updated: 2026-05-07

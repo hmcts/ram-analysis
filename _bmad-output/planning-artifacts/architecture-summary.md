@@ -1,4 +1,8 @@
 ---
+type: 'Architecture Summary'
+resource: 'architecture-summary.html'
+tags: [ram-pathfinder, architecture, sscs]
+timestamp: '2026-06-11'
 title: RAM Pathfinder Architecture Summary
 description: Target-state reference for RAM Pathfinder. What is built and how it runs.
 last_updated: 2026-06-11

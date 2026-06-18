@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'The 60 Functional Requirements are organised into 9 capability areas.'
+resource: 'architecture/tobe/functional-requirements-coverage.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-06-11'
 parent: ../architecture.md
 title: Functional Requirements Coverage (FR1–FR60)
 last_updated: 2026-06-11

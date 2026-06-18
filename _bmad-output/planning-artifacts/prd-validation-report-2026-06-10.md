@@ -1,4 +1,10 @@
 ---
+type: 'Validation Report'
+title: 'PRD Validation Report'
+description: 'PRD Being Validated: _bmad-output/planning-artifacts/prd.md'
+resource: 'prd-validation-report-2026-06-10.html'
+tags: [ram-pathfinder, change-control, sscs]
+timestamp: '2026-06-10'
 validationTarget: '_bmad-output/planning-artifacts/prd.md'
 validationDate: '2026-06-10'
 inputDocuments:

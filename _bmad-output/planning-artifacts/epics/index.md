@@ -1,4 +1,10 @@
 ---
+type: 'Epics Index'
+title: 'ram-analysis (RAM Pathfinder) — Epic Breakdown'
+description: 'This is the sharded entry point for the RAM Pathfinder epic and story breakdown.'
+resource: 'epics/index.html'
+tags: [ram-pathfinder, epics, sscs]
+timestamp: '2026-06-11'
 projectName: 'ram-analysis'
 productCodename: 'RAM Pathfinder'
 sharded: true

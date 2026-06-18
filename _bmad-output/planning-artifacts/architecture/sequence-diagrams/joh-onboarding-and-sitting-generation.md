@@ -1,4 +1,9 @@
 ---
+type: 'Sequence Diagram'
+description: 'Sequence diagram of how a new JOH (Judicial Office Holder) enters RAM Pathfinder and how that JOH''s working pattern automatically populates planned sittings up to the next 31 March.'
+resource: 'architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-06-11'
 parent: ../../architecture.md
 title: JOH onboarding + working-pattern-driven sitting generation
 last_updated: 2026-06-11

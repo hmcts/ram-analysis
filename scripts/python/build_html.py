@@ -166,6 +166,7 @@ ASIS_MARKDOWN: List[Tuple[str, str]] = [
 NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
     ("Overview", [
         ("Index", "index", True),
+        ("Knowledge graph (OKF)", "graph", False),
     ]),
     ("Product", [
         ("PRD (RAM Pathfinder)", "prd", False),

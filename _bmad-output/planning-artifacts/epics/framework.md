@@ -1,4 +1,10 @@
 ---
+type: 'Framework'
+title: 'Phase × Area Framework'
+description: 'RAM Pathfinder is built in 10 sequential phases (0–9+) per the PRD''s Phase-by-Phase Journey Mapping and the architecture''s Repository Strategy:'
+resource: 'epics/framework.html'
+tags: [ram-pathfinder, epics, sscs]
+timestamp: '2026-06-11'
 parent: 'epics/index.md'
 purpose: 'Phase × Area architectural framework — the spine that organises concrete epics across 10 sequential phases'
 revisedAt: '2026-06-11'

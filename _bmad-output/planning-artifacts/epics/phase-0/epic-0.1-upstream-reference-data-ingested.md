@@ -1,4 +1,9 @@
 ---
+type: 'Epic'
+description: 'User outcome: Judicial-holder reference data flows into RAM Pathfinder from its upstream sources of truth — the JOH eLinks API (15 jo_ entities, nightly) and the MRD weekly dataset (supplementary…'
+resource: 'epics/phase-0/epic-0.1-upstream-reference-data-ingested.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 epic: 0.1
 title: 'Upstream JOH/MRD reference data is ingested'

@@ -1,4 +1,9 @@
 ---
+type: 'Epic'
+description: 'User outcome: Tier-(b) RAM-owned reference data (Regions, Offices, calendar / financial-year boundaries, operational vocabularies) exists, is seeded, and is maintainable by DBAs via direct SQL per…'
+resource: 'epics/phase-0/epic-0.3-reference-data-read-only-api.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 epic: 0.3
 title: 'Reference data is served read-only via a versioned, jurisdiction-filtered API'

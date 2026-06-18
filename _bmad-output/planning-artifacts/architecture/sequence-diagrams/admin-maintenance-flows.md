@@ -1,4 +1,9 @@
 ---
+type: 'Sequence Diagram'
+description: 'Sequence diagram of the two admin write paths exposed by ram-admin-ui at MVP.'
+resource: 'architecture/tobe/sequence-diagrams/admin-maintenance-flows.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-11'
 parent: ../../architecture.md
 title: Admin maintenance flows in ram-admin-ui — Reference Data + User & Role admin
 last_updated: 2026-05-11

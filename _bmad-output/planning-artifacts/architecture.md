@@ -1,4 +1,10 @@
 ---
+type: 'Architecture'
+title: 'Architecture Decision Document'
+description: 'architecture.md is the architectural index. Implementation-detail content (code-tree inventories, gap and assumption registers, the per-service convention catalogue, per-table inventory, sequence…'
+resource: 'architecture.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-06-11'
 stepsCompleted: ['step-01-init', 'step-02-context', 'step-03-starter', 'step-04-decisions', 'step-05-patterns', 'step-06-structure', 'step-07-validation', 'step-08-complete']
 lastStep: 8
 status: 'complete'

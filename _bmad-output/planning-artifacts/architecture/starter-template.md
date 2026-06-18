@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'Each new RAM Pathfinder service is scaffolded from the HMCTS starter, then customised. The exact CLI depends on what HMCTS publishes; conceptual flow:'
+resource: 'architecture/tobe/starter-template.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-06'
 parent: ../architecture.md
 title: HMCTS Crime SpringBoot starter — initialisation, build tool, dependency inventory, RAM Pathfinder conventions
 last_updated: 2026-05-06

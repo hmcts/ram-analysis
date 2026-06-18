@@ -1,3 +1,12 @@
+---
+type: 'Analysis'
+title: 'Functional Decomposition — JI Legacy Application (As-Is)'
+description: 'A high-level inventory of what the legacy Judicial Itineraries (JI) application lets a user do — its functions, not its implementation.'
+resource: 'architecture/tobe/analysis/function-decomposition.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-06-16'
+---
+
 # Functional Decomposition — JI Legacy Application (As-Is)
 
 A high-level inventory of *what the legacy Judicial Itineraries (JI) application lets a user do* — its functions, not its implementation. It exists to inform the design of the RAM Pathfinder replacement: it fixes the set of capabilities the new system must cover or consciously drop.

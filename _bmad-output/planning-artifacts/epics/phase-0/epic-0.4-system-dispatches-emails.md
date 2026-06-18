@@ -1,4 +1,10 @@
 ---
+type: 'Epic'
+title: '(Superseded) Epic 0.4: Notification service is scaffolded and contractually ready'
+description: '(Superseded) Epic 0.4: Notification service is scaffolded and contractually ready'
+resource: 'epics/phase-0/epic-0.4-system-dispatches-emails.html'
+tags: [ram-pathfinder, epics, phase-0]
+timestamp: '2026-06-17'
 parent: 'epics/phase-0/index.md'
 status: 'superseded-2026-06-17'
 supersededBy:

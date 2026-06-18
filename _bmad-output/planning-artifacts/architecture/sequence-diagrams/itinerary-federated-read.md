@@ -1,4 +1,9 @@
 ---
+type: 'Sequence Diagram'
+description: 'Sequence diagram of how itinerary views are served by ram-itinerary.'
+resource: 'architecture/tobe/sequence-diagrams/itinerary-federated-read.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-11'
 parent: ../../architecture.md
 title: Itinerary federated read — Court Itinerary, Judge Itinerary, Forward Look
 last_updated: 2026-05-11

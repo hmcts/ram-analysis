@@ -1,4 +1,9 @@
 ---
+type: 'Architecture Shard'
+description: 'Decision: 11 service repos + 1 mock-auth repo + 2 UI repos (business + admin) + 1 architecture/scaffolding repo. No monorepo, no Gradle root project.'
+resource: 'architecture/tobe/repository-strategy.html'
+tags: [ram-pathfinder, architecture]
+timestamp: '2026-05-07'
 parent: ../architecture.md
 title: Repository Strategy & List
 last_updated: 2026-05-07
