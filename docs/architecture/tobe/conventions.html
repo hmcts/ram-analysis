@@ -429,8 +429,8 @@ return &lt;ActualContent data={data} /&gt;;</code></pre></li>
 <li>Implement Authorisation enforcement via per-service custom <code>JWTFilter</code> + <code>AuthDetails</code> request-scoped bean (HMCTS template pattern); the filter calls RAM Pathfinder Authorisation per request to resolve roles + jurisdiction + Region/Area scope and the activation flag (RAM Pathfinder variance from template's claims-only approach — required by FR2/FR57).</li>
 <li>Generate OpenAPI 3.x specs via Swagger Core; publish per-service spec as a Maven artefact (<code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>).</li>
 <li>Emit structured JSON logs (Logstash encoder) with correlation IDs; export traces via OpenTelemetry.</li>
-<li>Use Flyway migrations in <code>src/main/resources/db/migration/</code> (per HMCTS Crime SpringBoot template).</li>
-<li>Use Lombok and MapStruct (per HMCTS Crime SpringBoot template) for boilerplate reduction and DTO/entity mapping.</li>
+<li>Use Flyway migrations in <code>src/main/resources/db/migration/</code> (added by the RAM scaffolding overlay — <code>hmcts/service-hmcts-springboot-demo</code> Database pattern; <strong>not</strong> in the template baseline, see G1.4a).</li>
+<li>Use <strong>Lombok</strong> (base template) and <strong>MapStruct</strong> (scaffolding overlay — not in the baseline) for boilerplate reduction and DTO/entity mapping.</li>
 <li>Use OWASP Java Encoder for XSS-safe output encoding where rendering untrusted input.</li>
 <li>Emit JaCoCo coverage reports and CycloneDX SBOM as part of CI artefacts.</li>
 <li>Provide a Helm chart for AKS deployment.</li>

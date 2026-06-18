@@ -33,8 +33,6 @@ revisionNotePrior: 'SCP 2026-06-10 cascade: the APEX Users/Roles SQL-ETL story (
 - `ram-authorisation` admin write endpoints, admin UI modules, activation toggle UI (post-MVP[^d10])
 - *(There is no APEX Users/Roles ETL, IdP-reconciliation matching, or unmatched-record decisions CSV — revised D3 / restructured D9.)*
 
-**Why one story is OK as an epic:** the user value (users can sign in because their records exist and are verified against the IdP) is distinct from reference data; the owner differs (identity / HMCTS IT lead vs reference-data owners); and the verification job is a standing wave-gate artefact (reused at every cutover and at the pre-Phase-9 IdP switch), not a one-shot load.
-
 ---
 
 ## Story 0.4.1: Identity seed scripts (both populations), bootstrap-verification job, and the production bootstrap runbook

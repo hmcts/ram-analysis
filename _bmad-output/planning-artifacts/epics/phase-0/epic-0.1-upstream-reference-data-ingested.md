@@ -13,11 +13,7 @@ revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): two upstream-ingestion 
 
 **User outcome:** Judicial-holder reference data flows into RAM Pathfinder from its upstream sources of truth — the **JOH eLinks API** (15 `jo_*` entities, nightly) and the **MRD** weekly dataset (supplementary `mrd_*` data) — so that `jo_people` exists and is current, `jo_jurisdictions` is available as the first-class jurisdiction dimension (D8), and judicial-holder reference data is authoritative in RAM **without any legacy migration** (revised D3, NFR24). This is the platform's foundational data layer: every downstream consumer of JOH identity and reference data depends on it, and JOH sign-in (Epic 0.2) is impossible until `jo_people` — the identity-lookup target — is populated.
 
-**Why this is the first epic:** the ingestion is the programme's **first external integration** and the cleanest decoupled vertical slice — it runs in-process inside `ram-reference-data`, reads/writes only its own tables, and needs no caller identity, no JWT, and no other service. It therefore leads the build (integrations-first carve-out, decision #12 / SCP 2026-06-17). It is also where the HMCTS-starter platform pattern and the shared Azure estate are first stood up: **`ram-reference-data` is the first service scaffolded and carries the shared-estate Terraform** (AKS, PostgreSQL, ACR, APIM, App Insights), relocated from `ram-authorisation` per the AR53 first-consumer rule.
-
-**What is NOT here:** the **read-only, jurisdiction-filtered Reference Data API** that exposes this ingested data is **Epic 0.3**, not this epic — it depends on the auth mechanism (`JWTFilter` for token validation and `ram-authorisation`'s `authz/check` for the requester's jurisdiction used in filtering, D8), so it lands immediately after the auth epic (Epic 0.2). Tier-(b) RAM-owned reference tables are also Epic 0.3. Authorisation, `ram-mock-auth`, `ram-ui`, and sign-in are Epic 0.2.
-
-**Hosting decision (reaffirmed, decision #12):** the ingestion orchestration stays **in-process** inside `ram-reference-data` — there is **no `ram-integrations` repo**. Tier-(a) tables are owned solely by the `ram_reference_data` DB role (AR49); a separate deployable would break that single-writer invariant and reopen the service-auth gap (G7) for no resilience gain.
+**Hosting:** the ingestion runs in-process inside `ram-reference-data` — no separate `ram-integrations` repo. `ram-reference-data` is the first service scaffolded and carries the shared-estate Terraform (per architecture decision #12 / SCP 2026-06-17).
 
 **Vertical slice:**
 - **GitHub manual-setup runbook** at `ram-architecture/runbooks/github-setup.md` (the `gh` CLI is **not** available — all GitHub admin operations are manual via the web UI; `ram-scaffold.sh` handles only local scaffolding + `git push` to a pre-created remote)
@@ -50,16 +46,16 @@ So that **subsequent services follow a consistent, version-pinned, supply-chain-
   - Note: the `gh` CLI is **NOT** available in the engineering environment — all GitHub admin config (repo creation, branch protection, team access) happens manually via the web UI per the runbook,
 **And** the engineer has a clean local development environment with Java 25, Gradle Wrapper, and Docker,
 **When** the engineer runs `ram-scaffold.sh ram-reference-data` from `ram-architecture/scaffolding/`,
-**Then** the script scaffolds a Spring Boot 4.0.x project **locally** from `https://github.com/hmcts/spring-boot-template`, then commits and pushes to the pre-created remote on a feature branch via plain `git` (no `gh` CLI invocation),
-**And** the project contents include a Spring Boot 4.0.x scaffold from `https://github.com/hmcts/spring-boot-template`,
-**And** Gradle build uses Groovy DSL with Spring Boot Gradle plugin 4.0.6 and `io.spring.dependency-management:1.1.7` (per AR5),
+**Then** the script scaffolds a Spring Boot 4.0.x project **locally** from `https://github.com/hmcts/service-hmcts-crime-springboot-template`, then commits and pushes to the pre-created remote on a feature branch via plain `git` (no `gh` CLI invocation),
+**And** the project contents include a Spring Boot 4.0.x scaffold from `https://github.com/hmcts/service-hmcts-crime-springboot-template`,
+**And** Gradle build uses Groovy DSL with Spring Boot Gradle plugin 4.1.0 and `io.spring.dependency-management:1.1.7` (per AR5),
 **And** Group ID is `uk.gov.hmcts.ram`, artefact is `ram-reference-data`, base package is `uk.gov.hmcts.ram.referencedata`, default port is 8082 (per AR3),
 **And** initial commit message is exactly *"Scaffold RAM Pathfinder reference-data from HMCTS starter"* (per AR4),
 **And** Lombok 1.18.46 + MapStruct 1.6.3 are configured (per AR6),
 **And** JJWT 0.13.0 + OWASP Encoder 1.4.0 are on the classpath (per AR7),
 **And** springdoc-openapi is configured for OpenAPI 3.x generation (per AR8),
 **And** JaCoCo, CycloneDX SBOM, gradle-git-properties, gradle-versions, and gradle-docker-compose plugins are configured (per AR9–AR13),
-**And** Spring Boot Test with JUnit 5 (`junit-bom:6.0.3`), Testcontainers PostgreSQL 1.21.4, Spring Boot Testcontainers 4.0.6, and spring-boot-starter-webmvc-test are configured (per AR14–AR15),
+**And** Spring Boot Test with JUnit 5 (`junit-bom:6.0.3`), Testcontainers PostgreSQL 1.21.4, Spring Boot Testcontainers 4.1.0, and spring-boot-starter-webmvc-test are configured (per AR14–AR15),
 **And** Spectral, ArchUnit, Spotless, and Checkstyle are configured (per AR17),
 **And** a Helm chart skeleton exists at `charts/ram-reference-data/` with `values-dev.yaml`, `values-staging.yaml`, `values-production.yaml` overlays (per AR24),
 **And** a `terraform/` directory exists with per-environment stacks (`dev` / `staging` / `production`) per AR53 — holding both the **shared estate** (this is the first-scaffolded service per decision #12) and this service's own resources (Key Vault namespace; the MRD storage added in Story 0.1.4),
@@ -120,6 +116,8 @@ So that **subsequent services follow a consistent, version-pinned, supply-chain-
 **And** Azure Application Insights receives the first structured log entries via OpenTelemetry Collector (per AR31, NFR27).
 
 **References:** FR8, FR58, FR59; NFR10, NFR11, NFR15, NFR16, NFR24, NFR25–NFR28, NFR31, NFR40, NFR42; AR2–AR17, AR23–AR32, AR41, AR53; **D10** (`gh` CLI not available — manual GitHub web-UI setup per `ram-architecture/runbooks/github-setup.md`); **decision #12 / SCP 2026-06-17** (`ram-reference-data` is the first service scaffolded; shared-estate Terraform relocated here from `ram-authorisation`).
+
+> **Scaffolding note:** the HMCTS Crime SpringBoot template base is minimal; `ram-scaffold.sh` assembles the remaining dependencies (Flyway, Testcontainers, MapStruct, OWASP encoder, docker-compose plugin, OpenAPI tooling, Helm, Key Vault, the CI quality gates) from `hmcts/service-hmcts-springboot-demo` + RAM conventions — inventory in `architecture/starter-template.md` §B (G1.4).
 
 **Explicitly NOT in scope:**
 - Tier-(a) `jo_*` / `mrd_*` tables and `ram_sync_status` — Story 0.1.2

@@ -2,7 +2,7 @@
 stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-02b-vision', 'step-02c-executive-summary', 'step-03-success', 'step-04-journeys', 'step-05-domain', 'step-06-innovation-skipped', 'step-07-project-type', 'step-08-scoping', 'step-09-functional', 'step-10-nonfunctional', 'step-11-polish', 'step-12-complete']
 workflowCompleted: true
 completedAt: '2026-05-05'
-lastEdited: '2026-06-10'
+lastEdited: '2026-06-17'
 editHistory:
   - date: '2026-05-15'
     workflow: 'bmad-correct-course'
@@ -13,6 +13,9 @@ editHistory:
   - date: '2026-06-10'
     workflow: 'bmad-validate-prd + bmad-edit-prd'
     changes: 'Validation revealed Success Criteria + Product Scope + NFR cohort sections were not threaded into the 21-edit SSCS-pivot cascade. Edit pass applied 10 edit proposals covering: User Success / Business Success / Technical Success / Measurable Outcomes table rewrites for D11 alignment (Section A); MVP / Explicit Exclusions / Growth Features / Vision rewrites for D11 alignment (Section B); NFR section intro + NFR13 + NFR21 + NFR32 + NFR36 + NFR38 + NFR41 cohort sweep (Section C). PRD now internally consistent with D1–D12. Validation rating expected to lift from 4/5 to 5/5.'
+  - date: '2026-06-17'
+    workflow: 'bmad-validate-prd (+ Fix Simpler Items)'
+    changes: 'Re-validation (12 steps; report prd-validation-report-2026-06-17.md) found 0 blocking issues, 4/5. Three residual SSCS-pivot staleness items fixed in-place: (1) Domain §Technical Constraints "User records … migrated from APEX in Phase 0" → bootstrap model (no APEX migration), restoring consistency with revised D3 / restructured D9; (2) API Backend section legacy "JI"/"Judge" naming → "RAM Pathfinder" / "JOH (ram-joh)" and the Reference Data "admin-gated POST/PUT" endpoint → read-only over both tiers (D10/D11); (3) Journey Requirements Summary "five journeys" → "six". The integrations-first restructure (SCP 2026-06-17) did not touch the PRD; these predated it.'
 productCodename: 'RAM Pathfinder'
 releaseMode: 'phased'
 inputDocuments:
@@ -341,7 +344,7 @@ The MVP is the smallest deliverable that supports phased per-jurisdiction-then-p
 
 ### Journey Requirements Summary
 
-The five journeys reveal these capability areas (mapped to the 11-service decomposition):
+The six journeys reveal these capability areas (mapped to the 11-service decomposition):
 
 | Capability area | Services / decisions involved |
 |---|---|
@@ -376,7 +379,7 @@ The five journeys reveal these capability areas (mapped to the 11-service decomp
 - **No bank details exposure** (PAY-NFR-05) — JI never stores bank details; the finance system retains them. This is a hard architectural constraint, carried from APEX.
 - **No case-level data exposure** (REP-BR-NFR-03) — Reports and MI Feed are aggregate-only. Case-level identifiers are not part of the JI data model.
 - **Audit minimum (MVP)** — log-based[^d7]. Structured user-action audit (who did what, when, with before/after values) is a post-MVP roadmap commitment, not an MVP capability.
-- **AuthN delegated to HMCTS IdP via SSO**; **AuthZ owned by JI's Authorisation service** per architectural decision. User records and role/scope mappings migrated from APEX in Phase 0[^d9], keyed to IdP principal. **HMCTS IdP password policy, session policy, and account lifecycle are wholly external to JI** — owned by central HMCTS org; JI inherits whatever the IdP enforces and does not duplicate or constrain it.
+- **AuthN delegated to HMCTS IdP via SSO**; **AuthZ owned by RAM Pathfinder's Authorisation service** per architectural decision. User records and role/scope mappings are **bootstrapped per the restructured D9** (by mechanisms outside this PRD's scope), keyed to the IdP principal — **there is no APEX migration**[^d9][^d3]. **HMCTS IdP password policy, session policy, and account lifecycle are wholly external to RAM Pathfinder** — owned by central HMCTS org; RAM Pathfinder inherits whatever the IdP enforces and does not duplicate or constrain it.
 - **Performance NFRs** carried from APEX page-level baselines (≤ 5 s dashboard, ≤ 10 s list/filter, ≤ 15 s batch/annual, ≤ 30 s reports/Forward Look) — already enumerated in Success Criteria.
 - **No JI involvement in payment processing** — JI generates the JFEPS-shaped Excel and emails it to a Payment Authoriser; the authoriser forwards to Liberata out-of-system. JI is not in the payment chain itself, only the schedule-generation chain.
 
@@ -419,9 +422,9 @@ The five journeys reveal these capability areas (mapped to the 11-service decomp
 
 ### Project-Type Overview
 
-JI is composed of 11 services in three clusters (revised v2.2 — `ram-configuration` dropped; cross-service policy values live in a shared `ram_configuration_values` table):
+RAM Pathfinder is composed of 11 services in three clusters (revised v2.2 — `ram-configuration` dropped; cross-service policy values live in a shared `ram_configuration_values` table):
 
-- **Domain services:** Judge, Absence, Vacancy, Booking, Sitting, Payment.
+- **Domain services:** JOH (`ram-joh`[^d11]), Absence, Vacancy, Booking, Sitting, Payment.
 - **Cross-cutting services:** Reference Data, Authorisation, Notification. (Configuration is not a service — per-service Spring profiles + Key Vault, with a shared `ram_configuration_values` table for cross-service policy values.)
 - **Read-model services (federated):** Itinerary, MI Feed.
 
@@ -442,7 +445,7 @@ Endpoint shape is illustrative — definitive contracts are produced as Phase 0 
 
 | Service | Representative endpoints |
 |---|---|
-| Reference Data | `GET /reference-data/regions`, `/offices`, `/judicial-vocabularies`, `/calendar`; admin-gated `POST/PUT` writes |
+| Reference Data | `GET /reference-data/regions`, `/offices`, `/judicial-vocabularies`, `/calendar` (read-only over both tiers, jurisdiction-filtered[^d8]); **no write endpoints in MVP** — tier (a) is corrected at source[^d11], tier (b) is DBA-via-SQL[^d10] |
 | Authorisation | `POST /authz/check`, `GET /users/{id}/effective-permissions` |
 | Configuration | Per-service: Spring profiles + `application.yml` + Azure Key Vault. Cross-service policy values: shared `ram_configuration_values` table (read-only via direct SQL; no API). |
 | Notification | `POST /notifications/send` (transactional emails: booking ack, absence ack, payment schedule) |
@@ -451,7 +454,7 @@ Endpoint shape is illustrative — definitive contracts are produced as Phase 0 
 
 | Service | Representative endpoints |
 |---|---|
-| Judge | `POST/GET/PUT /judges`, `POST /judges/{id}/working-patterns`, `POST /judges/{id}/tickets` |
+| JOH (`ram-joh`) | `GET /johs`, `GET /johs/{personnelNumber}` *(person record read-only, sourced from `jo_people`)*, `POST /johs/{personnelNumber}/working-patterns`, `POST /johs/{personnelNumber}/tickets` *(RAM-owned overlays)* |
 | Absence | `POST/GET /absences`, `POST /absences/{id}/approve`, `POST /absences/{id}/extend` *(sickness only)* |
 | Vacancy | `POST/GET /vacancies`, `POST /vacancies/{id}/markFilled` *(called by Booking, R5)*, `POST /vacancies/{id}/cancel` |
 | Booking | `POST /bookings` *(accepts optional `vacancyId` and orchestrates `Vacancy.markFilled`)*, `POST /bookings/{id}/confirm`, `POST /bookings/{id}/cancel` |

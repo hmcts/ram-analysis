@@ -254,13 +254,13 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </ul>
 <h3 id="starter-template-story-1-of-every-service-epic">Starter template (Story 1 of every service epic)</h3>
 <ul>
-<li>AR2<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> — Each RAM Pathfinder backend service is scaffolded from the <strong>HMCTS Crime SpringBoot template</strong> (<code>https://github.com/hmcts/spring-boot-template</code>) cloned via the <code>ram-scaffold.sh</code> script in <code>ram-architecture/scaffolding/</code>. The scaffolding script applies RAM Pathfinder conventions on top of the starter and is used at service-creation time only. <strong>The <code>gh</code> CLI is NOT available in the engineering environment</strong> — <code>ram-scaffold.sh</code> handles only local scaffolding + <code>git push</code> to a pre-created remote; all GitHub admin operations are performed manually via the GitHub web UI per AR51.</li>
+<li>AR2<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> — Each RAM Pathfinder backend service is scaffolded from the <strong>HMCTS Crime SpringBoot template</strong> (<code>https://github.com/hmcts/service-hmcts-crime-springboot-template</code>, default branch <code>main</code>) cloned via the <code>ram-scaffold.sh</code> script in <code>ram-architecture/scaffolding/</code>. The scaffolding script applies RAM Pathfinder conventions on top of the starter and is used at service-creation time only. <strong>The <code>gh</code> CLI is NOT available in the engineering environment</strong> — <code>ram-scaffold.sh</code> handles only local scaffolding + <code>git push</code> to a pre-created remote; all GitHub admin operations are performed manually via the GitHub web UI per AR51.</li>
 <li>AR3 — Group ID <code>uk.gov.hmcts.ram</code>; artefact <code>ram-{service-name}</code>; package <code>uk.gov.hmcts.ram.{service-name}</code>. Default port 8082.</li>
 <li>AR4 — Initial commit for every new service is <em>"Scaffold RAM Pathfinder {service-name} from HMCTS starter"</em> — this is the first implementation story per service.</li>
 </ul>
 <h3 id="locked-technology-stack-carried-from-prd-enumerated-here-as-architecture-confirmed-dependency-versions">Locked technology stack (carried from PRD; enumerated here as architecture-confirmed dependency versions)</h3>
 <ul>
-<li>AR5 — Java 25 (LTS), Spring Boot 4.0.x, Gradle Groovy DSL with Gradle Wrapper, Spring Boot Gradle plugin 4.0.6, <code>io.spring.dependency-management:1.1.7</code>.</li>
+<li>AR5 — Java 25 (LTS), Spring Boot 4.1.x, Gradle Groovy DSL with Gradle Wrapper, Spring Boot Gradle plugin 4.1.0, <code>io.spring.dependency-management:1.1.7</code>. <em>(Versions reconciled 2026-06-17 against <code>hmcts/service-hmcts-crime-springboot-template</code>@<code>main</code>: Spring Boot 4.0.6 → 4.1.0.)</em></li>
 <li>AR6 — Lombok 1.18.46, MapStruct 1.6.3 for boilerplate reduction and DTO ↔︎ entity mapping.</li>
 <li>AR7 — <code>io.jsonwebtoken:jjwt:0.13.0</code> for JWT validation in custom <code>JWTFilter</code>; <code>org.owasp.encoder:encoder:1.4.0</code> for XSS-safe output encoding.</li>
 <li>AR8 — <code>springdoc-openapi</code> (Swagger Core) for OpenAPI 3.x generation. Per-service OpenAPI spec published as a Maven artefact <code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>.</li>
@@ -269,13 +269,13 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ul>
 <li>AR9 — JaCoCo for code coverage reports.</li>
 <li>AR10 — <code>org.cyclonedx.bom:3.2.4</code> for SBOM (Software Bill of Materials) — supply-chain security.</li>
-<li>AR11 — <code>com.gorylenko.gradle-git-properties:2.5.7</code> to embed Git metadata in <code>/actuator/info</code>.</li>
+<li>AR11 — <code>com.gorylenko.gradle-git-properties:4.0.1</code> to embed Git metadata in <code>/actuator/info</code>. <em>(Reconciled 2026-06-17 against the template: 2.5.7 → 4.0.1.)</em></li>
 <li>AR12 — <code>com.github.ben-manes.versions:0.54.0</code> for dependency-update reports.</li>
 <li>AR13 — <code>com.avast.gradle.docker-compose:0.17.21</code> for local development with docker-compose-managed dependencies.</li>
 </ul>
 <h3 id="testing-framework-per-hmcts-crime-template">Testing framework (per HMCTS Crime template)</h3>
 <ul>
-<li>AR14 — Spring Boot Test (JUnit 5 via <code>junit-bom:6.0.3</code>), <code>spring-boot-testcontainers:4.0.6</code>, <code>testcontainers-postgresql:1.21.4</code>, <code>testcontainers-junit-jupiter:1.21.4</code> for integration tests with real PostgreSQL. AssertJ for assertions (transitive).</li>
+<li>AR14 — Spring Boot Test (JUnit 5 via <code>junit-bom:6.0.3</code>), <code>spring-boot-testcontainers:4.1.0</code>, <code>testcontainers-postgresql:1.21.4</code>, <code>testcontainers-junit-jupiter:1.21.4</code> for integration tests with real PostgreSQL. AssertJ for assertions (transitive). <em>(Not in the template baseline — added by the scaffolding script; see AR-scaffold note below / G1.4.)</em></li>
 <li>AR15 — <code>spring-boot-starter-webmvc-test</code> for controller-layer testing.</li>
 <li>AR16 — Pact (or equivalent) for consumer-driven contract tests under <code>src/test/java/.../contract/</code> — added per service (not in HMCTS template baseline).</li>
 <li>AR17 — Spectral for OpenAPI lint in CI; ArchUnit for architectural fitness functions (table ownership, layer rules); Spotless + Checkstyle for code style.</li>

@@ -296,8 +296,8 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - Implement Authorisation enforcement via per-service custom `JWTFilter` + `AuthDetails` request-scoped bean (HMCTS template pattern); the filter calls RAM Pathfinder Authorisation per request to resolve roles + jurisdiction + Region/Area scope and the activation flag (RAM Pathfinder variance from template's claims-only approach — required by FR2/FR57).
 - Generate OpenAPI 3.x specs via Swagger Core; publish per-service spec as a Maven artefact (`uk.gov.hmcts.ram:api-ram-{service}:{version}`).
 - Emit structured JSON logs (Logstash encoder) with correlation IDs; export traces via OpenTelemetry.
-- Use Flyway migrations in `src/main/resources/db/migration/` (per HMCTS Crime SpringBoot template).
-- Use Lombok and MapStruct (per HMCTS Crime SpringBoot template) for boilerplate reduction and DTO/entity mapping.
+- Use Flyway migrations in `src/main/resources/db/migration/` (added by the RAM scaffolding overlay — `hmcts/service-hmcts-springboot-demo` Database pattern; **not** in the template baseline, see G1.4a).
+- Use **Lombok** (base template) and **MapStruct** (scaffolding overlay — not in the baseline) for boilerplate reduction and DTO/entity mapping.
 - Use OWASP Java Encoder for XSS-safe output encoding where rendering untrusted input.
 - Emit JaCoCo coverage reports and CycloneDX SBOM as part of CI artefacts.
 - Provide a Helm chart for AKS deployment.

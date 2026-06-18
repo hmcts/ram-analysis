@@ -1133,7 +1133,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <h3 id="coherence-validation-white_check_mark">Coherence Validation ✅</h3>
 <p><strong>Decision compatibility:</strong></p>
 <ul>
-<li><strong>Stack</strong> (Java 25 + Spring Boot 4.0.6 + Gradle Groovy DSL + PostgreSQL 17 + Flyway + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.</li>
+<li><strong>Stack</strong> (Java 25 + Spring Boot 4.1.0 + Gradle Groovy DSL + PostgreSQL 17 + Flyway + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.</li>
 <li><strong>Foundational principles</strong> (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) — consistent with polyrepo, per-service Spring Boot, per-service Helm, one PostgreSQL with per-service roles, per-service OpenAPI specs as Maven artefacts, and per-service boilerplate.</li>
 <li><strong>REST-first synchronous + SQL read-model federation</strong> — workflows go via API; read models query the shared DB directly. No event bus.</li>
 <li><strong>Mock-first authentication + OIDC for humans + two inter-service patterns (JWT propagation, service-principal <code>client_credentials</code> for batch)</strong> — issuer-agnostic OIDC contract; mock-to-real cutover is a configuration change.</li>

@@ -750,7 +750,7 @@ Rollback path: revert the wave's activation flags (FR57, keyed by jurisdiction +
 
 **Decision compatibility:**
 
-- **Stack** (Java 25 + Spring Boot 4.0.6 + Gradle Groovy DSL + PostgreSQL 17 + Flyway + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.
+- **Stack** (Java 25 + Spring Boot 4.1.0 + Gradle Groovy DSL + PostgreSQL 17 + Flyway + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.
 - **Foundational principles** (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) — consistent with polyrepo, per-service Spring Boot, per-service Helm, one PostgreSQL with per-service roles, per-service OpenAPI specs as Maven artefacts, and per-service boilerplate.
 - **REST-first synchronous + SQL read-model federation** — workflows go via API; read models query the shared DB directly. No event bus.
 - **Mock-first authentication + OIDC for humans + two inter-service patterns (JWT propagation, service-principal `client_credentials` for batch)** — issuer-agnostic OIDC contract; mock-to-real cutover is a configuration change.

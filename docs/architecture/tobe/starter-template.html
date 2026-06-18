@@ -93,7 +93,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <details class="section" id="initialisation-flow-per-service"><summary><span class="section-title">Initialisation Flow (per service)</span></summary><div class="section-body">
 <p>Each new RAM Pathfinder service is scaffolded from the HMCTS starter, then customised. The exact CLI depends on what HMCTS publishes; conceptual flow:</p>
 <pre class="bash"><code># Conceptual — actual command per HMCTS published documentation
-git clone https://github.com/hmcts/spring-boot-template.git ram-{service-name}
+git clone https://github.com/hmcts/service-hmcts-crime-springboot-template.git ram-{service-name}
 cd ram-{service-name}
 git remote remove origin
 git remote add origin &lt;new-repo-url&gt;
@@ -118,68 +118,113 @@ git push -u origin main</code></pre>
 <li>Matches the HMCTS starter's typical default.</li>
 <li>Consistent across all services.</li>
 </ul>
-</div></details><details class="section" id="architectural-decisions-provided-by-starter"><summary><span class="section-title">Architectural Decisions Provided by Starter</span></summary><div class="section-body">
-<p>The HMCTS Crime SpringBoot template provides (verified by review on 2026-05-06):</p>
+</div></details><details class="section" id="architectural-decisions-base-template-vs-ram-scaffolding-overlay"><summary><span class="section-title">Architectural Decisions: Base Template vs RAM Scaffolding Overlay</span></summary><div class="section-body">
+<p><strong>Reconciled 2026-06-17 against <code>hmcts/service-hmcts-crime-springboot-template</code>@<code>main</code>.</strong> The base template is <strong>deliberately minimal</strong> — its README states it provides "the core Spring Boot scaffold — actuator, observability, logging — without any domain-specific or infrastructure patterns built in." Feature patterns (database, security, messaging, Azure) live in the <strong>separate <code>hmcts/service-hmcts-springboot-demo</code> repo</strong> across branches. RAM Pathfinder's <code>ram-scaffold.sh</code> therefore overlays those patterns (cherry-picked from the demo repo) plus RAM conventions on top of the minimal base. The two layers:</p>
+<h3 id="a-provided-by-the-base-template-main--verified-in-buildgradle">A. Provided by the base template (<code>main</code>) — verified in <code>build.gradle</code></h3>
 <p><strong>Language &amp; Runtime:</strong></p>
 <ul>
 <li>Java 25 (current LTS).</li>
-<li>Spring Boot 4.0.x (released Q4 2025).</li>
+<li>Spring Boot 4.1.x (template <code>main</code> pins <strong>4.1.0</strong> as of 2026-06-17).</li>
 <li>Gradle build with Gradle Wrapper (<code>gradlew</code>) committed.</li>
 </ul>
-<p><strong>Build Tooling (per HMCTS Crime SpringBoot template):</strong></p>
+<p><strong>Build tooling (plugins):</strong></p>
 <ul>
-<li><strong>Gradle Groovy DSL</strong> with Gradle Wrapper.</li>
-<li><strong>Spring Boot Gradle plugin 4.0.6</strong> for fat-jar packaging.</li>
+<li><strong>Gradle Groovy DSL</strong>; <code>application</code> + <code>java</code> plugins.</li>
+<li><strong>Spring Boot Gradle plugin 4.1.0</strong>.</li>
 <li><strong><code>io.spring.dependency-management:1.1.7</code></strong> for BOM-based dependency management.</li>
-<li><strong>JaCoCo</strong> plugin for code coverage reports.</li>
-<li><strong><code>org.cyclonedx.bom:3.2.4</code></strong> for SBOM (Software Bill of Materials) generation — supply-chain security.</li>
-<li><strong><code>com.gorylenko.gradle-git-properties:2.5.7</code></strong> to embed Git metadata in <code>/actuator/info</code>.</li>
+<li><strong>JaCoCo</strong> for code coverage; <strong><code>maven-publish</code></strong> for artefact publication.</li>
+<li><strong><code>org.cyclonedx.bom:3.2.4</code></strong> for SBOM (supply-chain security).</li>
+<li><strong><code>com.gorylenko.gradle-git-properties:4.0.1</code></strong> to embed Git metadata in <code>/actuator/info</code>.</li>
 <li><strong><code>com.github.ben-manes.versions:0.54.0</code></strong> for dependency-update reports.</li>
-<li><strong><code>com.avast.gradle.docker-compose:0.17.21</code></strong> for local development with docker-compose-managed dependencies.</li>
-<li>Gradle multi-task layout: <code>build</code>, <code>test</code>, <code>bootRun</code>, <code>bootJar</code>, <code>dockerBuild</code>, <code>helmLint</code>.</li>
 </ul>
-<p><strong>Testing Framework (per HMCTS Crime SpringBoot template):</strong></p>
+<p><strong>Dependencies:</strong></p>
 <ul>
-<li><strong>Spring Boot Test</strong> (JUnit 5 via <code>junit-bom:6.0.3</code>).</li>
-<li><strong><code>spring-boot-testcontainers:4.0.6</code></strong> + <strong><code>testcontainers-postgresql:1.21.4</code></strong> + <strong><code>testcontainers-junit-jupiter:1.21.4</code></strong> for integration tests with real PostgreSQL.</li>
-<li><strong>AssertJ</strong> for assertions (transitively via Spring Boot Test).</li>
-<li><strong><code>spring-boot-starter-webmvc-test</code></strong> for controller-layer testing.</li>
-<li>Pact or similar for consumer-driven contract tests — added per service (not in HMCTS Crime template).</li>
+<li><strong><code>net.logstash.logback:logstash-logback-encoder:9.0</code></strong> — structured JSON logs.</li>
+<li><strong><code>org.projectlombok:lombok:1.18.46</code></strong> — boilerplate reduction.</li>
+<li><code>spring-boot-starter-web</code>, <code>spring-boot-starter-actuator</code>, <strong><code>spring-boot-starter-opentelemetry</code></strong> (traces → OTel → App Insights).</li>
+<li><code>spring-boot-starter-webmvc-test</code>, <code>spring-boot-starter-test</code> (JUnit 5; vintage/junit4 excluded).</li>
+<li><code>org.apache.tomcat.embed:tomcat-embed-core:11.0.22</code> (pinned).</li>
 </ul>
-<p><strong>Observability (per HMCTS Crime SpringBoot template):</strong></p>
+<p><strong>Also in base:</strong> Dockerfile (multi-stage), Spring Actuator probes (<code>/actuator/health|info|readiness</code>), Shell init/rename scripts, secure-header / TLS posture.</p>
+<h3 id="b-added-by-ram-scaffoldsh--patterns-from-hmctsservice-hmcts-springboot-demo--ram-conventions-not-in-the-base">B. Added by <code>ram-scaffold.sh</code> — patterns from <code>hmcts/service-hmcts-springboot-demo</code> + RAM conventions (NOT in the base)</h3>
+<blockquote>
+<p>These are the scaffolding script's real scope. Each is <strong>absent from the base <code>build.gradle</code></strong> and must be assembled from the demo repo (branch named) or added as a RAM convention. Versions below are RAM's chosen targets.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Capability</th>
+<th>Source / demo branch</th>
+<th>Version target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Flyway</strong> (<code>flyway-core</code> + <code>flyway-database-postgresql</code> + PostgreSQL driver)</td>
+<td>Database demo</td>
+<td>per Spring Boot 4.1 BOM</td>
+</tr>
+<tr>
+<td><strong>Testcontainers</strong> (<code>spring-boot-testcontainers:4.1.0</code> + <code>testcontainers-postgresql:1.21.4</code> + <code>-junit-jupiter:1.21.4</code>)</td>
+<td>Database demo</td>
+<td>as listed</td>
+</tr>
+<tr>
+<td><strong>MapStruct</strong> (compile-time DTO↔︎entity mapping)</td>
+<td>RAM convention</td>
+<td>1.6.3</td>
+</tr>
+<tr>
+<td><strong>Custom <code>JWTFilter</code></strong> + <code>io.jsonwebtoken:jjwt</code></td>
+<td>Security demo (JWT filters / Entra ID)</td>
+<td>jjwt 0.13.0</td>
+</tr>
+<tr>
+<td><strong><code>org.owasp.encoder:encoder</code></strong> (XSS-safe output)</td>
+<td>RAM convention</td>
+<td>1.4.0</td>
+</tr>
+<tr>
+<td><strong><code>com.avast.gradle.docker-compose</code></strong> plugin (local dev deps)</td>
+<td>RAM convention</td>
+<td>0.17.21</td>
+</tr>
+<tr>
+<td><strong>OpenAPI tooling</strong> (springdoc / Swagger Core; Maven-published spec artefact)</td>
+<td>Controllers &amp; API demo</td>
+<td>per AR8</td>
+</tr>
+<tr>
+<td><strong>Helm chart</strong> for AKS</td>
+<td>RAM convention (G1.4a)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Azure Key Vault</strong> via Spring Cloud Azure</td>
+<td>Azure demo / <code>azure-vault-demo</code> (G1.4b)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Spectral · ArchUnit · Spotless · Checkstyle</strong> (CI quality gates)</td>
+<td>RAM convention (AR17)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Pact</strong> (consumer-driven contract tests)</td>
+<td>per service (AR16)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Code organisation (base layout, RAM package naming):</strong></p>
 <ul>
-<li><strong>Logstash Logback Encoder</strong> (<code>net.logstash.logback:logstash-logback-encoder:9.0</code>) for structured JSON logs; async appender.</li>
-<li><strong>OpenTelemetry</strong> (<code>spring-boot-starter-opentelemetry</code>) for traces; OTel Collector → Azure Application Insights as the export target.</li>
-<li>Correlation ID filter at request entry; correlation ID propagation in service-to-service calls.</li>
-<li>Spring Boot Actuator endpoints (<code>/actuator/health</code>, <code>/actuator/info</code>, <code>/actuator/readiness</code>); <code>/actuator/metrics</code> and Prometheus endpoint not exposed at MVP<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</li>
-<li>Application Insights instrumentation key configured via env vars (<code>APPINSIGHTS_INSTRUMENTATIONKEY</code>).</li>
+<li>Standard Gradle layout: <code>src/main/java</code>, <code>src/main/resources</code>, <code>src/test/java</code>.</li>
+<li>Per-service top-level package <code>uk.gov.hmcts.ram.{service-name}</code> (e.g. <code>uk.gov.hmcts.ram.referencedata</code>, <code>uk.gov.hmcts.ram.booking</code>).</li>
+<li><code>@SpringBootApplication</code> entrypoint; layered controller / service / repository per <a href="conventions.html"><code>./conventions.md</code></a>.</li>
 </ul>
-<p><strong>Security defaults (per HMCTS Crime SpringBoot template):</strong></p>
-<ul>
-<li>TLS-only configuration (no HTTP).</li>
-<li>Secure header defaults.</li>
-<li><strong>Custom <code>JWTFilter</code></strong> (using <code>io.jsonwebtoken:jjwt:0.13.0</code>) for JWT validation; integrates with RAM Pathfinder Authorisation service per Step 4 of <a href="../../architecture.html"><code>../architecture.md</code></a>.</li>
-<li><strong><code>org.owasp.encoder:encoder:1.4.0</code></strong> for XSS-safe output encoding.</li>
-<li>Azure Key Vault integration for secret retrieval (added per service via Spring Cloud Azure — not in template baseline).</li>
-</ul>
-<p><strong>Deployment:</strong></p>
-<ul>
-<li>Dockerfile (multi-stage build, JDK image) — provided by HMCTS template.</li>
-<li>Standard health probe configuration via Spring Actuator — provided by HMCTS template.</li>
-<li><strong>Helm chart for AKS deployment is NOT in the template baseline</strong> (G1.4a in <a href="gaps.html"><code>./gaps.md</code></a>) — RAM Pathfinder scaffolding script adds it.</li>
-</ul>
-<p><strong>Code Organisation:</strong></p>
-<ul>
-<li>Standard Gradle directory layout: <code>src/main/java</code>, <code>src/main/resources</code>, <code>src/test/java</code>.</li>
-<li>Per-service top-level package: <code>uk.gov.hmcts.ram.{service-name}</code> (e.g. <code>uk.gov.hmcts.ram.judge</code>, <code>uk.gov.hmcts.ram.booking</code>).</li>
-<li>Standard Spring Boot application class with <code>@SpringBootApplication</code>.</li>
-<li>Service internals follow a layered approach (controller / service / repository) — the precise pattern is settled in <a href="conventions.html"><code>./conventions.md</code></a>.</li>
-</ul>
-<p><strong>Productivity libraries (per HMCTS Crime SpringBoot template):</strong></p>
-<ul>
-<li><strong>Lombok 1.18.46</strong> for boilerplate reduction (<code>@Data</code>, <code>@Builder</code>, <code>@RequiredArgsConstructor</code>, <code>@Slf4j</code>, etc.).</li>
-<li><strong>MapStruct 1.6.3</strong> for compile-time bean mapping (DTO ↔︎ entity); pairs naturally with the per-service <code>dto/</code> and <code>domain/</code> package layout.</li>
-</ul>
+<blockquote>
+<p><strong>Correlation-ID filter</strong> and the <strong>APPINSIGHTS export wiring</strong> are partly base (logging/OTel) and partly RAM overlay (the request-entry correlation filter + service-to-service propagation); <code>/actuator/metrics</code> + Prometheus remain unexposed at MVP<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+</blockquote>
 </div></details><details class="section" id="per-service-ram-pathfinder-conventions-encoded-in-scaffolding-script-not-in-shared-library"><summary><span class="section-title">Per-service RAM Pathfinder Conventions (encoded in scaffolding script, not in shared library)</span></summary><div class="section-body">
 <p>The scaffolding script applies RAM Pathfinder-specific defaults on top of the HMCTS starter:</p>
 <ul>
@@ -205,7 +250,7 @@ git push -u origin main</code></pre>
 
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture/starter-template.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#initialisation-flow-per-service">Initialisation Flow (per service)</a></li><li><a href="#build-tool-gradle">Build Tool: Gradle</a></li><li><a href="#architectural-decisions-provided-by-starter">Architectural Decisions Provided by Starter</a></li><li><a href="#per-service-ram-pathfinder-conventions-encoded-in-scaffolding-script-not-in-shared-library">Per-service RAM Pathfinder Conventions (encoded in scaffolding script, not in shared library)</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#initialisation-flow-per-service">Initialisation Flow (per service)</a></li><li><a href="#build-tool-gradle">Build Tool: Gradle</a></li><li><a href="#architectural-decisions-base-template-vs-ram-scaffolding-overlay">Architectural Decisions: Base Template vs RAM Scaffolding Overlay</a></li><li class="h3"><a href="#a-provided-by-the-base-template-main--verified-in-buildgradle">A. Provided by the base template (main) — verified in build.gradle</a></li><li class="h3"><a href="#b-added-by-ram-scaffoldsh--patterns-from-hmctsservice-hmcts-springboot-demo--ram-conventions-not-in-the-base">B. Added by ram-scaffold.sh — patterns from hmcts/service-hmcts-springboot-demo + RAM conventions (NOT in the base)</a></li><li><a href="#per-service-ram-pathfinder-conventions-encoded-in-scaffolding-script-not-in-shared-library">Per-service RAM Pathfinder Conventions (encoded in scaffolding script, not in shared library)</a></li></ul></aside>
 <script>window.__NAV_BASE__="../../";window.__PAGE__="architecture/tobe/starter-template";</script>
 <script src="../../nav.js"></script>
 <script>

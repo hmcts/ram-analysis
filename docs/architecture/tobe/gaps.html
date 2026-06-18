@@ -123,15 +123,15 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>Pre-Phase-9 prerequisite — IdP team confirmation</td>
 </tr>
 <tr>
-<td><strong>G1.4</strong></td>
-<td>HMCTS Crime SpringBoot template (<code>hmcts/service-hmcts-crime-springboot-template</code>) is assumed to be the appropriate starter for RAM Pathfinder. <strong>Confirmed via template review (2026-05-06):</strong> Java 25, Spring Boot 4.0.6, Gradle Groovy DSL, Flyway, PostgreSQL, Logstash JSON logging, OpenTelemetry, Testcontainers, Lombok, MapStruct, OWASP encoder, JaCoCo, CycloneDX, Swagger Core, JWTFilter pattern.</td>
-<td>Confirmed. Residual risk: RAM Pathfinder may want to fork or use a closer-fit HMCTS judicial-services template if one exists.</td>
+<td><strong>G1.4</strong> <em>(reconciled 2026-06-17)</em></td>
+<td>HMCTS Crime SpringBoot template (<code>hmcts/service-hmcts-crime-springboot-template</code>@<code>main</code>) is the starter. <strong>Reconciled against <code>main</code>:</strong> the base is <strong>deliberately minimal</strong> — Java 25, Spring Boot <strong>4.1.0</strong>, Gradle Groovy DSL, Logstash JSON logging, OpenTelemetry, Lombok, JaCoCo, CycloneDX, gradle-git-properties, ben-manes-versions, Actuator, Dockerfile, <code>webmvc-test</code>. <strong>NOT in the base</strong> (sourced from the separate <strong><code>hmcts/service-hmcts-springboot-demo</code></strong> repo or added as RAM conventions — see <code>starter-template.md</code> §B): Flyway, Testcontainers, MapStruct, JWTFilter/<code>jjwt</code>, OWASP encoder, docker-compose plugin, OpenAPI tooling. The earlier "all present in baseline (2026-05-06)" review <strong>overstated</strong> the template.</td>
+<td>Scaffolding-script scope is larger than first scoped — it assembles ~9 capabilities onto the minimal base (track per G1.4a). Verify demo-repo branch versions at build time.</td>
 <td>RAM Pathfinder architecture team</td>
 </tr>
 <tr>
-<td><strong>G1.4a</strong> <em>(new)</em></td>
-<td><strong>Helm chart for AKS deployment is not included in the HMCTS Crime template.</strong> The architecture assumes per-service Helm charts.</td>
-<td>RAM Pathfinder scaffolding script must include Helm chart templates (and the per-repo <code>terraform/</code> skeleton per the 2026-06-11 Terraform decision); verify whether HMCTS provides Helm charts via a shared chart library or whether each team provides its own.</td>
+<td><strong>G1.4a</strong> <em>(expanded 2026-06-17)</em></td>
+<td>The base template is minimal; <code>ram-scaffold.sh</code> must add — beyond the Helm chart + per-repo <code>terraform/</code> skeleton (2026-06-11 Terraform decision) — <strong>Flyway, Testcontainers, MapStruct, custom <code>JWTFilter</code> + <code>jjwt</code>, OWASP encoder, the docker-compose plugin, OpenAPI tooling (springdoc/Swagger), and the CI quality gates (Spectral/ArchUnit/Spotless/Checkstyle)</strong>, most cherry-picked from <code>hmcts/service-hmcts-springboot-demo</code>.</td>
+<td>Scope <code>ram-scaffold.sh</code> accordingly; verify demo-repo branch versions at build time; consider splitting Story 0.1.1 (scaffold vs shared-estate vs template overlay) given the expanded scope.</td>
 <td>Phase 0 deliverable — RAM Pathfinder architecture team</td>
 </tr>
 <tr>

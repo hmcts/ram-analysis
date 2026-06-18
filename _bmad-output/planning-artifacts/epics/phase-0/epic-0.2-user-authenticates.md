@@ -13,7 +13,7 @@ revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): two-population identity
 
 **User outcome:** A RAM Pathfinder user from **either identity population** — a JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance/Payment Authoriser, MI/Reporting) — opens RAM Pathfinder, signs in via SSO, has their canonical identity resolved (personnel number via `jo_people` for JOHs; RAM staff UUID via `ram_auth_staff_identities` for admin staff,[^d9]), has their roles + **jurisdiction** + Region/Area scope resolved, and lands on a Home page showing the navigation and tiles they're authorised to see.
 
-**Depends on Epic 0.1:** JOH sign-in is impossible without `jo_people` — the identity-lookup target — being populated. `jo_people` and the rest of the tier-(a) surface are ingested by the **Epic 0.1** eLinks sync (Story 0.1.3). The **shared Azure estate** (AKS, PostgreSQL, ACR, APIM, App Insights) is provisioned by `ram-reference-data` in Epic 0.1 (Story 0.1.1) per the AR53 first-consumer rule (decision #12); the services in this epic **consume** that estate rather than re-provisioning it.
+**Depends on Epic 0.1:** `jo_people` (the JOH identity-lookup target) is populated by the eLinks sync (Story 0.1.3); the shared Azure estate (AKS, PostgreSQL, ACR, APIM, App Insights) is provisioned by `ram-reference-data` (Story 0.1.1) and consumed here.
 
 **Vertical slice:**
 - `ram-authorisation` scaffolded from the HMCTS Crime SpringBoot template via `ram-scaffold.sh`, following the pattern established by the first-scaffolded service (Epic 0.1, Story 0.1.1); **consumes** the shared Azure estate
@@ -47,15 +47,15 @@ So that **the authorisation service follows the same consistent, version-pinned,
   - Note: the `gh` CLI is **NOT** available — all GitHub admin config happens manually via the web UI per the runbook,
 **And** the engineer has a clean local development environment with Java 25, Gradle Wrapper, and Docker,
 **When** the engineer runs `ram-scaffold.sh ram-authorisation` from `ram-architecture/scaffolding/`,
-**Then** the script scaffolds a Spring Boot 4.0.x project **locally** from `https://github.com/hmcts/spring-boot-template`, then commits and pushes to the pre-created remote on a feature branch via plain `git` (no `gh` CLI invocation),
-**And** Gradle build uses Groovy DSL with Spring Boot Gradle plugin 4.0.6 and `io.spring.dependency-management:1.1.7` (per AR5),
+**Then** the script scaffolds a Spring Boot 4.0.x project **locally** from `https://github.com/hmcts/service-hmcts-crime-springboot-template`, then commits and pushes to the pre-created remote on a feature branch via plain `git` (no `gh` CLI invocation),
+**And** Gradle build uses Groovy DSL with Spring Boot Gradle plugin 4.1.0 and `io.spring.dependency-management:1.1.7` (per AR5),
 **And** Group ID is `uk.gov.hmcts.ram`, artefact is `ram-authorisation`, base package is `uk.gov.hmcts.ram.authorisation`, default port is 8082 (per AR3),
 **And** initial commit message is exactly *"Scaffold RAM Pathfinder authorisation from HMCTS starter"* (per AR4),
 **And** Lombok 1.18.46 + MapStruct 1.6.3 are configured (per AR6),
 **And** JJWT 0.13.0 + OWASP Encoder 1.4.0 are on the classpath (per AR7),
 **And** springdoc-openapi is configured for OpenAPI 3.x generation (per AR8),
 **And** JaCoCo, CycloneDX SBOM, gradle-git-properties, gradle-versions, and gradle-docker-compose plugins are configured (per AR9–AR13),
-**And** Spring Boot Test with JUnit 5 (`junit-bom:6.0.3`), Testcontainers PostgreSQL 1.21.4, Spring Boot Testcontainers 4.0.6, and spring-boot-starter-webmvc-test are configured (per AR14–AR15),
+**And** Spring Boot Test with JUnit 5 (`junit-bom:6.0.3`), Testcontainers PostgreSQL 1.21.4, Spring Boot Testcontainers 4.1.0, and spring-boot-starter-webmvc-test are configured (per AR14–AR15),
 **And** Spectral, ArchUnit, Spotless, and Checkstyle are configured (per AR17),
 **And** a Helm chart skeleton exists at `charts/ram-authorisation/` with `values-dev.yaml`, `values-staging.yaml`, `values-production.yaml` overlays (per AR24),
 **And** a `terraform/` directory skeleton exists with per-environment stacks (`dev` / `staging` / `production`) for **this service's own resources only** (e.g. its Key Vault namespace, APIM per-API policy) — the shared estate lives in `ram-reference-data` per AR53 / decision #12,

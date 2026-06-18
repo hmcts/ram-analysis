@@ -182,13 +182,13 @@ revisionNote: 'AR53 added 2026-06-11 (Terraform, colocated first-consumer rule).
 
 ### Starter template (Story 1 of every service epic)
 
-- AR2[^d10] — Each RAM Pathfinder backend service is scaffolded from the **HMCTS Crime SpringBoot template** (`https://github.com/hmcts/spring-boot-template`) cloned via the `ram-scaffold.sh` script in `ram-architecture/scaffolding/`. The scaffolding script applies RAM Pathfinder conventions on top of the starter and is used at service-creation time only. **The `gh` CLI is NOT available in the engineering environment** — `ram-scaffold.sh` handles only local scaffolding + `git push` to a pre-created remote; all GitHub admin operations are performed manually via the GitHub web UI per AR51.
+- AR2[^d10] — Each RAM Pathfinder backend service is scaffolded from the **HMCTS Crime SpringBoot template** (`https://github.com/hmcts/service-hmcts-crime-springboot-template`, default branch `main`) cloned via the `ram-scaffold.sh` script in `ram-architecture/scaffolding/`. The scaffolding script applies RAM Pathfinder conventions on top of the starter and is used at service-creation time only. **The `gh` CLI is NOT available in the engineering environment** — `ram-scaffold.sh` handles only local scaffolding + `git push` to a pre-created remote; all GitHub admin operations are performed manually via the GitHub web UI per AR51.
 - AR3 — Group ID `uk.gov.hmcts.ram`; artefact `ram-{service-name}`; package `uk.gov.hmcts.ram.{service-name}`. Default port 8082.
 - AR4 — Initial commit for every new service is *"Scaffold RAM Pathfinder {service-name} from HMCTS starter"* — this is the first implementation story per service.
 
 ### Locked technology stack (carried from PRD; enumerated here as architecture-confirmed dependency versions)
 
-- AR5 — Java 25 (LTS), Spring Boot 4.0.x, Gradle Groovy DSL with Gradle Wrapper, Spring Boot Gradle plugin 4.0.6, `io.spring.dependency-management:1.1.7`.
+- AR5 — Java 25 (LTS), Spring Boot 4.1.x, Gradle Groovy DSL with Gradle Wrapper, Spring Boot Gradle plugin 4.1.0, `io.spring.dependency-management:1.1.7`. *(Versions reconciled 2026-06-17 against `hmcts/service-hmcts-crime-springboot-template`@`main`: Spring Boot 4.0.6 → 4.1.0.)*
 - AR6 — Lombok 1.18.46, MapStruct 1.6.3 for boilerplate reduction and DTO ↔ entity mapping.
 - AR7 — `io.jsonwebtoken:jjwt:0.13.0` for JWT validation in custom `JWTFilter`; `org.owasp.encoder:encoder:1.4.0` for XSS-safe output encoding.
 - AR8 — `springdoc-openapi` (Swagger Core) for OpenAPI 3.x generation. Per-service OpenAPI spec published as a Maven artefact `uk.gov.hmcts.ram:api-ram-{service}:{version}`.
@@ -197,13 +197,13 @@ revisionNote: 'AR53 added 2026-06-11 (Terraform, colocated first-consumer rule).
 
 - AR9 — JaCoCo for code coverage reports.
 - AR10 — `org.cyclonedx.bom:3.2.4` for SBOM (Software Bill of Materials) — supply-chain security.
-- AR11 — `com.gorylenko.gradle-git-properties:2.5.7` to embed Git metadata in `/actuator/info`.
+- AR11 — `com.gorylenko.gradle-git-properties:4.0.1` to embed Git metadata in `/actuator/info`. *(Reconciled 2026-06-17 against the template: 2.5.7 → 4.0.1.)*
 - AR12 — `com.github.ben-manes.versions:0.54.0` for dependency-update reports.
 - AR13 — `com.avast.gradle.docker-compose:0.17.21` for local development with docker-compose-managed dependencies.
 
 ### Testing framework (per HMCTS Crime template)
 
-- AR14 — Spring Boot Test (JUnit 5 via `junit-bom:6.0.3`), `spring-boot-testcontainers:4.0.6`, `testcontainers-postgresql:1.21.4`, `testcontainers-junit-jupiter:1.21.4` for integration tests with real PostgreSQL. AssertJ for assertions (transitive).
+- AR14 — Spring Boot Test (JUnit 5 via `junit-bom:6.0.3`), `spring-boot-testcontainers:4.1.0`, `testcontainers-postgresql:1.21.4`, `testcontainers-junit-jupiter:1.21.4` for integration tests with real PostgreSQL. AssertJ for assertions (transitive). *(Not in the template baseline — added by the scaffolding script; see AR-scaffold note below / G1.4.)*
 - AR15 — `spring-boot-starter-webmvc-test` for controller-layer testing.
 - AR16 — Pact (or equivalent) for consumer-driven contract tests under `src/test/java/.../contract/` — added per service (not in HMCTS template baseline).
 - AR17 — Spectral for OpenAPI lint in CI; ArchUnit for architectural fitness functions (table ownership, layer rules); Spotless + Checkstyle for code style.

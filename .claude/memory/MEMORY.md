@@ -6,3 +6,4 @@
 - [Ramnish's writing style](user_writing_style.md) — apply to all written output (technical docs, articles, educational content): direct, opinionated, practitioner voice; problem→solution→implementation; fact-based; no decorative or provocative framing; technical docs lean further toward declarative/list form
 - [RAM Pathfinder BMAD state](project_bmad_ram_pathfinder_state.md) — architecture v3.0 + epics restructured for SCP 2026-06-10; next: readiness check → sprint planning
 - [Diagram tooling: D2 + ELK](feedback_diagram_tooling_d2.md) — new boxes-and-lines diagrams in D2 (`.d2` source + PNG via render_diagram.sh); Graphviz only for record/table renders; Mermaid for sequence diagrams
+- [Update memory only when requested](feedback_memory_only_when_requested.md) — don't proactively write memory after each change; persist only on explicit request

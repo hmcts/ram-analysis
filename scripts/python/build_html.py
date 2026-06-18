@@ -169,6 +169,7 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
     ]),
     ("Product", [
         ("PRD (RAM Pathfinder)", "prd", False),
+        ("PRD validation report — 2026-06-17 (5/5)", "prd-validation-report-2026-06-17", False),
         ("PRD validation report — 2026-06-10", "prd-validation-report-2026-06-10", False),
     ]),
     ("As-is — JI Architecture Views", [

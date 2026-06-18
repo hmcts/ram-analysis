@@ -15,7 +15,7 @@ Each new RAM Pathfinder service is scaffolded from the HMCTS starter, then custo
 
 ```bash
 # Conceptual — actual command per HMCTS published documentation
-git clone https://github.com/hmcts/spring-boot-template.git ram-{service-name}
+git clone https://github.com/hmcts/service-hmcts-crime-springboot-template.git ram-{service-name}
 cd ram-{service-name}
 git remote remove origin
 git remote add origin <new-repo-url>
@@ -45,69 +45,63 @@ Reasons:
 - Matches the HMCTS starter's typical default.
 - Consistent across all services.
 
-## Architectural Decisions Provided by Starter
+## Architectural Decisions: Base Template vs RAM Scaffolding Overlay
 
-The HMCTS Crime SpringBoot template provides (verified by review on 2026-05-06):
+**Reconciled 2026-06-17 against `hmcts/service-hmcts-crime-springboot-template`@`main`.** The base template is **deliberately minimal** — its README states it provides "the core Spring Boot scaffold — actuator, observability, logging — without any domain-specific or infrastructure patterns built in." Feature patterns (database, security, messaging, Azure) live in the **separate `hmcts/service-hmcts-springboot-demo` repo** across branches. RAM Pathfinder's `ram-scaffold.sh` therefore overlays those patterns (cherry-picked from the demo repo) plus RAM conventions on top of the minimal base. The two layers:
+
+### A. Provided by the base template (`main`) — verified in `build.gradle`
 
 **Language & Runtime:**
 
 - Java 25 (current LTS).
-- Spring Boot 4.0.x (released Q4 2025).
+- Spring Boot 4.1.x (template `main` pins **4.1.0** as of 2026-06-17).
 - Gradle build with Gradle Wrapper (`gradlew`) committed.
 
-**Build Tooling (per HMCTS Crime SpringBoot template):**
+**Build tooling (plugins):**
 
-- **Gradle Groovy DSL** with Gradle Wrapper.
-- **Spring Boot Gradle plugin 4.0.6** for fat-jar packaging.
+- **Gradle Groovy DSL**; `application` + `java` plugins.
+- **Spring Boot Gradle plugin 4.1.0**.
 - **`io.spring.dependency-management:1.1.7`** for BOM-based dependency management.
-- **JaCoCo** plugin for code coverage reports.
-- **`org.cyclonedx.bom:3.2.4`** for SBOM (Software Bill of Materials) generation — supply-chain security.
-- **`com.gorylenko.gradle-git-properties:2.5.7`** to embed Git metadata in `/actuator/info`.
+- **JaCoCo** for code coverage; **`maven-publish`** for artefact publication.
+- **`org.cyclonedx.bom:3.2.4`** for SBOM (supply-chain security).
+- **`com.gorylenko.gradle-git-properties:4.0.1`** to embed Git metadata in `/actuator/info`.
 - **`com.github.ben-manes.versions:0.54.0`** for dependency-update reports.
-- **`com.avast.gradle.docker-compose:0.17.21`** for local development with docker-compose-managed dependencies.
-- Gradle multi-task layout: `build`, `test`, `bootRun`, `bootJar`, `dockerBuild`, `helmLint`.
 
-**Testing Framework (per HMCTS Crime SpringBoot template):**
+**Dependencies:**
 
-- **Spring Boot Test** (JUnit 5 via `junit-bom:6.0.3`).
-- **`spring-boot-testcontainers:4.0.6`** + **`testcontainers-postgresql:1.21.4`** + **`testcontainers-junit-jupiter:1.21.4`** for integration tests with real PostgreSQL.
-- **AssertJ** for assertions (transitively via Spring Boot Test).
-- **`spring-boot-starter-webmvc-test`** for controller-layer testing.
-- Pact or similar for consumer-driven contract tests — added per service (not in HMCTS Crime template).
+- **`net.logstash.logback:logstash-logback-encoder:9.0`** — structured JSON logs.
+- **`org.projectlombok:lombok:1.18.46`** — boilerplate reduction.
+- `spring-boot-starter-web`, `spring-boot-starter-actuator`, **`spring-boot-starter-opentelemetry`** (traces → OTel → App Insights).
+- `spring-boot-starter-webmvc-test`, `spring-boot-starter-test` (JUnit 5; vintage/junit4 excluded).
+- `org.apache.tomcat.embed:tomcat-embed-core:11.0.22` (pinned).
 
-**Observability (per HMCTS Crime SpringBoot template):**
+**Also in base:** Dockerfile (multi-stage), Spring Actuator probes (`/actuator/health|info|readiness`), Shell init/rename scripts, secure-header / TLS posture.
 
-- **Logstash Logback Encoder** (`net.logstash.logback:logstash-logback-encoder:9.0`) for structured JSON logs; async appender.
-- **OpenTelemetry** (`spring-boot-starter-opentelemetry`) for traces; OTel Collector → Azure Application Insights as the export target.
-- Correlation ID filter at request entry; correlation ID propagation in service-to-service calls.
-- Spring Boot Actuator endpoints (`/actuator/health`, `/actuator/info`, `/actuator/readiness`); `/actuator/metrics` and Prometheus endpoint not exposed at MVP[^d7].
-- Application Insights instrumentation key configured via env vars (`APPINSIGHTS_INSTRUMENTATIONKEY`).
+### B. Added by `ram-scaffold.sh` — patterns from `hmcts/service-hmcts-springboot-demo` + RAM conventions (NOT in the base)
 
-**Security defaults (per HMCTS Crime SpringBoot template):**
+> These are the scaffolding script's real scope. Each is **absent from the base `build.gradle`** and must be assembled from the demo repo (branch named) or added as a RAM convention. Versions below are RAM's chosen targets.
 
-- TLS-only configuration (no HTTP).
-- Secure header defaults.
-- **Custom `JWTFilter`** (using `io.jsonwebtoken:jjwt:0.13.0`) for JWT validation; integrates with RAM Pathfinder Authorisation service per Step 4 of [`../architecture.md`](../architecture.md).
-- **`org.owasp.encoder:encoder:1.4.0`** for XSS-safe output encoding.
-- Azure Key Vault integration for secret retrieval (added per service via Spring Cloud Azure — not in template baseline).
+| Capability | Source / demo branch | Version target |
+|---|---|---|
+| **Flyway** (`flyway-core` + `flyway-database-postgresql` + PostgreSQL driver) | Database demo | per Spring Boot 4.1 BOM |
+| **Testcontainers** (`spring-boot-testcontainers:4.1.0` + `testcontainers-postgresql:1.21.4` + `-junit-jupiter:1.21.4`) | Database demo | as listed |
+| **MapStruct** (compile-time DTO↔entity mapping) | RAM convention | 1.6.3 |
+| **Custom `JWTFilter`** + `io.jsonwebtoken:jjwt` | Security demo (JWT filters / Entra ID) | jjwt 0.13.0 |
+| **`org.owasp.encoder:encoder`** (XSS-safe output) | RAM convention | 1.4.0 |
+| **`com.avast.gradle.docker-compose`** plugin (local dev deps) | RAM convention | 0.17.21 |
+| **OpenAPI tooling** (springdoc / Swagger Core; Maven-published spec artefact) | Controllers & API demo | per AR8 |
+| **Helm chart** for AKS | RAM convention (G1.4a) | — |
+| **Azure Key Vault** via Spring Cloud Azure | Azure demo / `azure-vault-demo` (G1.4b) | — |
+| **Spectral · ArchUnit · Spotless · Checkstyle** (CI quality gates) | RAM convention (AR17) | — |
+| **Pact** (consumer-driven contract tests) | per service (AR16) | — |
 
-**Deployment:**
+**Code organisation (base layout, RAM package naming):**
 
-- Dockerfile (multi-stage build, JDK image) — provided by HMCTS template.
-- Standard health probe configuration via Spring Actuator — provided by HMCTS template.
-- **Helm chart for AKS deployment is NOT in the template baseline** (G1.4a in [`./gaps.md`](./gaps.md)) — RAM Pathfinder scaffolding script adds it.
+- Standard Gradle layout: `src/main/java`, `src/main/resources`, `src/test/java`.
+- Per-service top-level package `uk.gov.hmcts.ram.{service-name}` (e.g. `uk.gov.hmcts.ram.referencedata`, `uk.gov.hmcts.ram.booking`).
+- `@SpringBootApplication` entrypoint; layered controller / service / repository per [`./conventions.md`](./conventions.md).
 
-**Code Organisation:**
-
-- Standard Gradle directory layout: `src/main/java`, `src/main/resources`, `src/test/java`.
-- Per-service top-level package: `uk.gov.hmcts.ram.{service-name}` (e.g. `uk.gov.hmcts.ram.judge`, `uk.gov.hmcts.ram.booking`).
-- Standard Spring Boot application class with `@SpringBootApplication`.
-- Service internals follow a layered approach (controller / service / repository) — the precise pattern is settled in [`./conventions.md`](./conventions.md).
-
-**Productivity libraries (per HMCTS Crime SpringBoot template):**
-
-- **Lombok 1.18.46** for boilerplate reduction (`@Data`, `@Builder`, `@RequiredArgsConstructor`, `@Slf4j`, etc.).
-- **MapStruct 1.6.3** for compile-time bean mapping (DTO ↔ entity); pairs naturally with the per-service `dto/` and `domain/` package layout.
+> **Correlation-ID filter** and the **APPINSIGHTS export wiring** are partly base (logging/OTel) and partly RAM overlay (the request-entry correlation filter + service-to-service propagation); `/actuator/metrics` + Prometheus remain unexposed at MVP[^d7].
 
 ## Per-service RAM Pathfinder Conventions (encoded in scaffolding script, not in shared library)
 
