@@ -17,14 +17,14 @@ This document is the consistency contract for the 11 services and the UI. Patter
 
 **Database (PostgreSQL):**
 
-- **Schema:** single shared schema (e.g. `ram` or default `public`). All RAM Pathfinder tables live in this schema. Per-service DB roles enforce write boundaries; the team that writes the Flyway migration owns the table.
+- **Schema:** single shared schema (e.g. `ram` or default `public`). All RAM Pathfinder tables live in this schema. Per-service DB roles enforce write boundaries; the team that writes the Liquibase changelog owns the table.
 - **Tables:** `snake_case`. **Ownership is in the prefix** *(revised 2026-06-11)*:
   - **`ram_` — every RAM-owned table**, entity-plural: `ram_bookings`, `ram_absences`, `ram_regions`, `ram_auth_users`, `ram_payment_reconciliations`, `ram_configuration_values`. JOH operational state over upstream entities is named directly — `ram_joh_ticket`, `ram_joh_location` — **no `_overlays` suffix pattern**.
   - **`jo_` / `mrd_` — upstream-sourced tier-(a) tables** (source-system prefix): `jo_people`, `jo_jurisdictions`, `mrd_specialisms`. Read-only in RAM; written only by the ingestion mechanisms.
   - **`mock_` — dev-only mock-auth tables** (`mock_oauth_clients`, `mock_user_roster`): never deployed to production, exempt from the `ram_` rule — the `mock_` prefix already marks them as not-production.
   - Full inventory in [`./data-tables.md`](./data-tables.md).
-- **Authoritative ownership mapping** is documented in [`./data-tables.md`](./data-tables.md) (table-ownership table maps every RAM Pathfinder table → owning service-role). The team that authors the Flyway migration is the owning team.
-- **Fitness function in CI** verifies: (a) no two services' Flyway migrations create overlapping table names; (b) DB role grants align with the documented ownership; (c) tables not in the ownership mapping are flagged.
+- **Authoritative ownership mapping** is documented in [`./data-tables.md`](./data-tables.md) (table-ownership table maps every RAM Pathfinder table → owning service-role). The team that authors the Liquibase changelog is the owning team.
+- **Fitness function in CI** verifies: (a) no two services' Liquibase changesets create overlapping table names; (b) DB role grants align with the documented ownership; (c) tables not in the ownership mapping are flagged.
 - **Columns:** `snake_case` — `id`, `created_at`, `updated_at`, `payroll_number`, `is_active`.
 - **Primary keys:** `id`, type `uuid`. UUIDs avoid integer-range coupling and "guess the next ID" patterns. Cost over bigint is negligible at this scale. PK generation detail in [`../architecture.md`](../architecture.md) → *Data Architecture*.
 - **Foreign keys:** `{referenced_entity_singular}_id` — `booking_id`, `vacancy_id`, `absence_id`. JOH references use **`personnel_number`** → `jo_people` (the canonical JOH identifier), not a surrogate id. FKs reference tables in the shared schema; no cross-schema FK overhead.
@@ -81,7 +81,7 @@ ram-{service}/
 ├── src/main/resources/
 │   ├── application.yml                 (defaults)
 │   ├── application-{profile}.yml       (dev/staging/production overrides)
-│   └── db/migration/                   (Flyway V1__init.sql, V2__add_x.sql, ...)
+│   └── db/changelog/                   (Liquibase: db.changelog-master.yaml, 001-init.sql, 002-add-x.sql, ...)
 ├── src/test/java/uk/gov/hmcts/ram/{service}/
 │   └── {layer}/                        (mirrors src/main package layout — unit + integration tests)
 ├── docs/
@@ -296,7 +296,7 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - Implement Authorisation enforcement via per-service custom `JWTFilter` + `AuthDetails` request-scoped bean (HMCTS template pattern); the filter calls RAM Pathfinder Authorisation per request to resolve roles + jurisdiction + Region/Area scope and the activation flag (RAM Pathfinder variance from template's claims-only approach — required by FR2/FR57).
 - Generate OpenAPI 3.x specs via Swagger Core; publish per-service spec as a Maven artefact (`uk.gov.hmcts.ram:api-ram-{service}:{version}`).
 - Emit structured JSON logs (Logstash encoder) with correlation IDs; export traces via OpenTelemetry.
-- Use Flyway migrations in `src/main/resources/db/migration/` (added by the RAM scaffolding overlay — `hmcts/service-hmcts-springboot-demo` Database pattern; **not** in the template baseline, see G1.4a).
+- Use Liquibase changelogs in `src/main/resources/db/changelog/` (added by the RAM scaffolding overlay — RAM convention; the HMCTS demo repo uses Flyway, RAM standardises on Liquibase; **not** in the template baseline, see G1.4a).
 - Use **Lombok** (base template) and **MapStruct** (scaffolding overlay — not in the baseline) for boilerplate reduction and DTO/entity mapping.
 - Use OWASP Java Encoder for XSS-safe output encoding where rendering untrusted input.
 - Emit JaCoCo coverage reports and CycloneDX SBOM as part of CI artefacts.

@@ -16,7 +16,7 @@ amendment2026_06_11: 'FR renumber only (FR59/FR60 → FR58/FR59 per SCP 2026-06-
 
 **Vertical slice:**
 - `ram-notification` backend service scaffolded (per AR2–AR4)
-- `ram_notification_dispatches` table with service-owned Flyway migration (per AR18)
+- `ram_notification_dispatches` table with service-owned Liquibase changelog (per AR18)
 - SMTP integration with HMCTS email infrastructure (Mailpit in non-prod)
 - Retry-on-transient-failure pattern (DB row locking / optimistic locking per AR21 — no custom idempotency tables)
 - `POST /v1/notifications/send` endpoint accepting structured request (`{templateId, recipient, payload}`)
@@ -39,7 +39,7 @@ amendment2026_06_11: 'FR renumber only (FR59/FR60 → FR58/FR59 per SCP 2026-06-
 ## Story 0.5.1: Scaffold `ram-notification` service + delivery log table + SMTP integration
 
 As a **platform engineer**,
-I want to scaffold `ram-notification` following the established pattern, create the delivery log table via Flyway, and configure SMTP integration with HMCTS email infrastructure,
+I want to scaffold `ram-notification` following the established pattern, create the delivery log table via Liquibase, and configure SMTP integration with HMCTS email infrastructure,
 So that **downstream phases** (Phase 2 absence ack, Phase 4 booking ack, Phase 6 payment schedule) **can dispatch transactional emails** via a consistent contract from day one of consuming them.
 
 **Acceptance Criteria:**
@@ -51,8 +51,8 @@ So that **downstream phases** (Phase 2 absence ack, Phase 4 booking ack, Phase 6
 **And** Group ID is `uk.gov.hmcts.ram`, artefact is `ram-notification`, package is `uk.gov.hmcts.ram.notification`, default port is 8082,
 **And** initial commit is *"Scaffold RAM Pathfinder notification from HMCTS starter"* (per AR4).
 
-**Given** the engineer adds Flyway migration `V1__init_notification_schema.sql`,
-**When** the migration runs,
+**Given** the engineer adds the Liquibase changeset `db/changelog/001-init-notification-schema.sql`,
+**When** Liquibase applies it,
 **Then** a `ram_notification_dispatches` table exists with columns: `id` (UUID PK), `template_id`, `recipient`, `payload` (JSONB), `status` (queued / sending / sent / failed / dead-lettered), `attempt_count`, `last_attempt_at`, `last_error`, `created_at`, `sent_at`, `created_by_principal` (the IdP principal that initiated the send — for audit), `version` (for `@Version` optimistic locking per AR21),
 **And** `ram_notification` DB role owns the table,
 **And** the schema is documented in `architecture/data-tables.md`.

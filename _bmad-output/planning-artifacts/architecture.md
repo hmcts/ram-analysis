@@ -217,7 +217,7 @@ What is shared:
 - **API spec Maven artefacts** — `uk.gov.hmcts.ram:api-ram-{service}:{version}`. Contract, not runtime code.
 - **Runtime infrastructure services** (Authorisation, Reference Data, Notification) — by API call (workflows) or direct DB read (simple lookups).
 - **Scaffolding templates** (HMCTS Crime SpringBoot template) — at scaffold time, then forked.
-- **CI/CD and operational conventions** (Gradle idioms, OpenTelemetry → Application Insights ingestion contract, Flyway baseline) — by convention and tooling, not library.
+- **CI/CD and operational conventions** (Gradle idioms, OpenTelemetry → Application Insights ingestion contract, Liquibase baseline) — by convention and tooling, not library.
 
 Duplicated per service: custom `JWTFilter`; `@ControllerAdvice` ([RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) + retry-safety status mapping); structured-logging config. ~300–500 lines per service × 11 services. The HMCTS starter encodes most of it.
 
@@ -280,7 +280,7 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 - **Service-internal or ambiguous tables** — service-prefixed: `ram_payment_reconciliations`, `ram_notification_dispatches`, `ram_auth_user_roles`.
 - **JOH operational-state tables** — owned by `ram-joh`, keyed by `personnel_number` (the canonical JOH identifier from `jo_people`): `ram_working_patterns`, `ram_joh_ticket`, `ram_joh_location`, `ram_jurisdictional_splits`.
 - **Ownership table** in [`./architecture/data-tables.md`](./architecture/data-tables.md).
-- **The team that writes the Flyway migration creating the table owns it.** The `V*__*.sql` lives in the owning service's repo.
+- **The team that writes the Liquibase changeset creating the table owns it.** The `db/changelog/NNN-*.sql` lives in the owning service's repo.
 
 **ArchUnit fitness functions in CI:**
 
@@ -301,13 +301,13 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 
 **Foreign keys within the shared schema** are allowed and encouraged (e.g. `bookings.personnel_number REFERENCES jo_people(personnel_number)`). Domain tables reference JOHs by `personnel_number` — the canonical JOH identifier[^d9]. The eLinks sync **never hard-deletes** `jo_people` rows (departures are marked inactive), so FK targets are stable.
 
-**Per-service DB roles with explicit grants** — `ram_joh`, `ram_booking`, etc. (one per service; `ram_mock_auth` for dev/integration). `ALL` privileges on owned tables. Cross-table access granted explicitly: `GRANT SELECT ON ram_vacancies TO ram_booking; GRANT UPDATE (filled, filled_at) ON ram_vacancies TO ram_booking;`. Grants live in Flyway migrations owned by the table-owning service. **Day 1: grants start broad, tighten as patterns become visible.** Tier-(a) tables (`jo_*`, `mrd_*`) are INSERT/UPDATE-able by `ram_reference_data` only (the ingestion writer); every other role gets at most SELECT — the DB enforces "read-only in RAM".
+**Per-service DB roles with explicit grants** — `ram_joh`, `ram_booking`, etc. (one per service; `ram_mock_auth` for dev/integration). `ALL` privileges on owned tables. Cross-table access granted explicitly: `GRANT SELECT ON ram_vacancies TO ram_booking; GRANT UPDATE (filled, filled_at) ON ram_vacancies TO ram_booking;`. Grants live in Liquibase changelogs owned by the table-owning service. **Day 1: grants start broad, tighten as patterns become visible.** Tier-(a) tables (`jo_*`, `mrd_*`) are INSERT/UPDATE-able by `ram_reference_data` only (the ingestion writer); every other role gets at most SELECT — the DB enforces "read-only in RAM".
 
 **Forward compatibility:** per-service DB roles are the seam for future schema-per-service or service-extraction without connection-layer code changes.
 
 **Data modelling:** Spring Data JPA + Hibernate. Per-service entities, repositories, and queries. No shared entity classes. Another service's whitelisted tables are `@Immutable` JPA entities in the consuming service.
 
-**Schema evolution: Flyway** (`spring-boot-starter-flyway`, `flyway-core`, `flyway-database-postgresql`). Per-service `src/main/resources/db/migration/V*__*.sql`. Migrations run on application startup. **Flyway is for RAM Pathfinder's DDL only — not for loading upstream data** (see *Upstream reference-data ingestion* below).
+**Schema evolution: Liquibase** (`liquibase-core` + the Spring Boot Liquibase starter). Per-service `src/main/resources/db/changelog/` with a `db.changelog-master.yaml` master file referencing formatted-SQL changesets (`NNN-name.sql`). Changesets apply on application startup. **Liquibase is for RAM Pathfinder's DDL only — not for loading upstream data** (see *Upstream reference-data ingestion* below).
 
 **Two-tier reference-data ownership (revised D3 + FR6/FR7, 2026-06-10):**
 
@@ -336,7 +336,7 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 
 | Problem | Mechanism | Failure response |
 |---|---|---|
-| **Retry of a successful create** ("duplicate create") | Natural-key + unique-constraint dedup at the DB layer. Every domain entity's logical unique key is encoded as a `uq_{table}_{columns}` constraint in Flyway DDL. A retry's `INSERT` violates the constraint; PostgreSQL raises a unique violation; the `@ControllerAdvice` translates `DataIntegrityViolationException` (unique-violation kind) to `409 Conflict` with [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) `business-rule`. | `409 Conflict` |
+| **Retry of a successful create** ("duplicate create") | Natural-key + unique-constraint dedup at the DB layer. Every domain entity's logical unique key is encoded as a `uq_{table}_{columns}` constraint in Liquibase DDL. A retry's `INSERT` violates the constraint; PostgreSQL raises a unique violation; the `@ControllerAdvice` translates `DataIntegrityViolationException` (unique-violation kind) to `409 Conflict` with [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) `business-rule`. | `409 Conflict` |
 | **Two clients editing the same record concurrently** ("lost update") | Optimistic concurrency control via JPA `@Version` (an `integer NOT NULL DEFAULT 0` column on every domain entity that supports update). Update endpoints accept the `If-Match: "v{n}"` header; mismatch → JPA throws `OptimisticLockingFailureException`; `@ControllerAdvice` translates to `412 Precondition Failed`. | `412 Precondition Failed` |
 | **Cross-row workflow that must see consistent state on a related record** (e.g. Booking creation that flips the linked vacancy's `filled` flag per R5) | Pessimistic row locking via Spring Data JPA `@Lock(LockModeType.PESSIMISTIC_WRITE)` on the relevant repository method (translates to `SELECT ... FOR UPDATE`). The transaction holds the lock on the related row from read-time through commit. A retry sees the now-updated row and is rejected by the unique-constraint dedup above. | `409 Conflict` (via the unique-constraint path) |
 
@@ -352,7 +352,7 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 
 ### Authoritative Table Ownership Mapping
 
-See [`./architecture/data-tables.md`](./architecture/data-tables.md). The fitness function checks that every Flyway-created table appears there with the correct owning service.
+See [`./architecture/data-tables.md`](./architecture/data-tables.md). The fitness function checks that every Liquibase-created table appears there with the correct owning service.
 
 ### Authentication & Security
 
@@ -478,7 +478,7 @@ The split prevents admin workflows from leaking into business users' nav, gives 
 
 ### Infrastructure & Deployment
 
-**Infrastructure provisioning: Terraform** (HMCTS standard; decision 2026-06-11 — no Bicep, no portal click-ops). **Terraform code is colocated with the application: it lives in the first repo that needs the resource** — infra does not live separate from the application that needs it. Under this rule: the shared estate (AKS, PostgreSQL Flexible Server, ACR, APIM instance + base policies, Application Insights / Log Analytics) lives in `ram-authorisation`'s `terraform/` (the first scaffolded service); each service repo carries Terraform for its own Key Vault namespace and service-specific resources (e.g. the MRD blob storage in `ram-reference-data`; the Static Web App in `ram-ui`). Per-environment stacks (`dev` / `staging` / `production`); `ram-scaffold.sh` adds the `terraform/` skeleton per repo. Division of labour: **Terraform provisions the estate; Helm deploys workloads onto it; Flyway owns DB schema** — no overlap. State backend + plan/apply pipeline arrangement: [`./architecture/gaps.md` G9](./architecture/gaps.md).
+**Infrastructure provisioning: Terraform** (HMCTS standard; decision 2026-06-11 — no Bicep, no portal click-ops). **Terraform code is colocated with the application: it lives in the first repo that needs the resource** — infra does not live separate from the application that needs it. Under this rule: the shared estate (AKS, PostgreSQL Flexible Server, ACR, APIM instance + base policies, Application Insights / Log Analytics) lives in `ram-authorisation`'s `terraform/` (the first scaffolded service); each service repo carries Terraform for its own Key Vault namespace and service-specific resources (e.g. the MRD blob storage in `ram-reference-data`; the Static Web App in `ram-ui`). Per-environment stacks (`dev` / `staging` / `production`); `ram-scaffold.sh` adds the `terraform/` skeleton per repo. Division of labour: **Terraform provisions the estate; Helm deploys workloads onto it; Liquibase owns DB schema** — no overlap. State backend + plan/apply pipeline arrangement: [`./architecture/gaps.md` G9](./architecture/gaps.md).
 
 **Hosting:** Azure Kubernetes Service (AKS), single cluster in UK South, multi-AZ node pools. Pod anti-affinity (`topology.kubernetes.io/zone`) distributes replicas across AZs. Min 2 replicas/service; HPA tunes upward. Rollout isolation (jurisdiction-first, then per-region) is enforced at the app tier via per-(jurisdiction, region) activation flags (FR57), not infrastructure. DR is an open gap — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 
@@ -550,7 +550,7 @@ Single-AZ failure within UK South is tolerated transparently: AKS reschedules po
 
 1. **Phase 0 prerequisites** — Azure subscription + UK regions; the shared Azure estate **Terraform-provisioned from `ram-reference-data`'s `terraform/`** (AKS, shared global PostgreSQL Flexible Server with single shared schema + per-service DB roles, ACR, APIM, App Insights — per the colocated first-consumer rule above; `ram-reference-data` is the first service scaffolded under the integrations-first sequencing, decision #12 / SCP 2026-06-17, so it carries the shared estate); HMCTS Crime SpringBoot template forked into RAM Pathfinder scaffolding script (incl. per-repo `terraform/` skeleton). *(HMCTS IdP feature confirmation deferred to pre-Phase-9; see point 8.)*
 2. **Phase 0 mock authentication** — `ram-mock-auth` deployed as Spring Authorization Server-based service. Issues OIDC tokens for human user roster; **issues service tokens via `client_credentials` for `ram-payment-batch`**.
-3. **Phase 0 services** — built per HMCTS starter pattern, each with own DB role + table set, OpenAPI spec, Postman collection, Helm chart, in this order (integrations-first carve-out, decision #12 / SCP 2026-06-17): **(a) `ram-reference-data` first** — scaffold + the two ingestion mechanisms: the in-process scheduled JOH eLinks sync (nightly, `jo_*` tables + `ram_sync_status`) and the MRD blob-drop pick-up (weekly, `mrd_*` tables); this is the programme's first deliverable and first external integration. **(b) `ram-authorisation`** — consumes the shared estate (no longer provisions it). **(c) the Reference Data read API** — depends on (b) for `JWTFilter` + jurisdiction resolution. **(d) `ram-notification`**. *(A shared `ram_configuration_values` table is created by the `ram-architecture` Flyway baseline ahead of `ram-reference-data`; SELECT-granted to every RAM Pathfinder service role.)*
+3. **Phase 0 services** — built per HMCTS starter pattern, each with own DB role + table set, OpenAPI spec, Postman collection, Helm chart, in this order (integrations-first carve-out, decision #12 / SCP 2026-06-17): **(a) `ram-reference-data` first** — scaffold + the two ingestion mechanisms: the in-process scheduled JOH eLinks sync (nightly, `jo_*` tables + `ram_sync_status`) and the MRD blob-drop pick-up (weekly, `mrd_*` tables); this is the programme's first deliverable and first external integration. **(b) `ram-authorisation`** — consumes the shared estate (no longer provisions it). **(c) the Reference Data read API** — depends on (b) for `JWTFilter` + jurisdiction resolution. **(d) `ram-notification`**. *(A shared `ram_configuration_values` table is created by the `ram-architecture` Liquibase baseline changelog ahead of `ram-reference-data`; SELECT-granted to every RAM Pathfinder service role.)*
 4. **Dev/CI environments seeded by one-off scripts** — representative `jo_*`/`mrd_*` fixtures + tier-(b) reference data + a representative user roster spanning both identity populations. *(Production reference data arrives via the ingestion mechanisms; production user/authorisation records are bootstrapped by mechanisms outside the PRD's scope[^d9] — the Phase 0 Data Migration ETL is retracted.)*
 5. **Phase 0 API gateway** — Azure API Management with default rate-limit policies (TBD #1 resolution).
 6. **Phase 0 UI shell** — one Vite + React + GOV.UK Design System scaffold deployed to Azure Static Web Apps: `ram-ui` (business), carrying the role-scoped Home shell. *(`ram-admin-ui` is post-MVP[^d10]; MVP admin operations are DBA-via-SQL per runbook.)*
@@ -618,7 +618,7 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 | Capability area (FR group) | Lives in |
 |---|---|
 | Identity & Authorisation (FR1–FR5) | `ram-authorisation` repo (incl. `ram_auth_staff_identities` + the `jo_people` identity lookup) + per-service `config/JWTFilter.java`, `config/AuthDetails.java`, `client/AuthorisationClient.java`. **FR4 (User & Role admin)** surface is post-MVP `ram-admin-ui`[^d10]; DBA-via-SQL per runbook in MVP. |
-| Foundational Data Management (FR6–FR9) | `ram-reference-data` (incl. the JOH eLinks sync + MRD ingestion tasks and the two-tier table set), `ram-notification` repos + per-service direct JPA reads from the Reference Data tables. **FR6 tier-(b) maintenance** surface is post-MVP `ram-admin-ui`[^d10]; DBA-via-SQL per runbook in MVP. Tier (a) has no RAM write surface in any phase. **Configuration**: per-service Spring profiles + Key Vault; shared `ram_configuration_values` table (no API) for cross-service policy values, schema-managed by `ram-architecture` Flyway baseline. |
+| Foundational Data Management (FR6–FR9) | `ram-reference-data` (incl. the JOH eLinks sync + MRD ingestion tasks and the two-tier table set), `ram-notification` repos + per-service direct JPA reads from the Reference Data tables. **FR6 tier-(b) maintenance** surface is post-MVP `ram-admin-ui`[^d10]; DBA-via-SQL per runbook in MVP. Tier (a) has no RAM write surface in any phase. **Configuration**: per-service Spring profiles + Key Vault; shared `ram_configuration_values` table (no API) for cross-service policy values, schema-managed by `ram-architecture` Liquibase baseline changelog. |
 | JOH Records & Working Patterns (FR10–FR18) | `ram-joh` repo (JOH operational-state overlays keyed by `personnel_number`); profile *views* compose tier-(a) `jo_*` data with the overlays via `ram-reference-data`'s read API (FR11, FR15) |
 | Absence Workflow (FR19–FR22) | `ram-absence` repo |
 | Vacancy & Cover (FR23–FR28) | `ram-vacancy` repo. Booking marks the linked vacancy as filled within Booking's transaction (per Principle 1; see *Data Architecture*). |
@@ -750,7 +750,7 @@ Rollback path: revert the wave's activation flags (FR57, keyed by jurisdiction +
 
 **Decision compatibility:**
 
-- **Stack** (Java 25 + Spring Boot 4.1.0 + Gradle Groovy DSL + PostgreSQL 17 + Flyway + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.
+- **Stack** (Java 25 + Spring Boot 4.1.0 + Gradle Groovy DSL + PostgreSQL 17 + Liquibase + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.
 - **Foundational principles** (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) — consistent with polyrepo, per-service Spring Boot, per-service Helm, one PostgreSQL with per-service roles, per-service OpenAPI specs as Maven artefacts, and per-service boilerplate.
 - **REST-first synchronous + SQL read-model federation** — workflows go via API; read models query the shared DB directly. No event bus.
 - **Mock-first authentication + OIDC for humans + two inter-service patterns (JWT propagation, service-principal `client_credentials` for batch)** — issuer-agnostic OIDC contract; mock-to-real cutover is a configuration change.
@@ -829,7 +829,7 @@ All checklist items pass. No critical gaps block implementation. Mock-first auth
 1. Confirm Phase 0 prerequisites: Azure subscription + UK regions; Terraform state backend + plan/apply pipeline arrangement (G9); HMCTS Java/Spring Boot starter; HMCTS Email transport.
 2. Build the RAM Pathfinder scaffolding script at `ram-architecture/scaffolding/ram-scaffold.sh`, layered on the HMCTS starter, with RAM Pathfinder conventions baked in.
 3. Ship `ram-mock-auth` (Spring Authorization Server; refuses to start with `production` profile; supports `authorization_code` and `client_credentials`).
-4. Ship the three Phase 0 cross-cutting services: Reference Data (including the JOH eLinks scheduled sync, the MRD blob pick-up, and the two-tier `jo_*`/`mrd_*`/RAM-owned table set), Authorisation (including `ram_auth_staff_identities` and the two-population identity lookup), Notification. The shared `ram_configuration_values` table is created by `ram-architecture`'s Flyway baseline. Confirm the JOH eLinks API contract and the MRD blob-drop arrangement early — both are Phase 0 external dependencies (G8).
+4. Ship the three Phase 0 cross-cutting services: Reference Data (including the JOH eLinks scheduled sync, the MRD blob pick-up, and the two-tier `jo_*`/`mrd_*`/RAM-owned table set), Authorisation (including `ram_auth_staff_identities` and the two-population identity lookup), Notification. The shared `ram_configuration_values` table is created by `ram-architecture`'s Liquibase baseline changelog. Confirm the JOH eLinks API contract and the MRD blob-drop arrangement early — both are Phase 0 external dependencies (G8).
 5. Deploy Phase 0 to dev. Exercise API-as-Product standards (versioning, OpenAPI, RFC 9457 problem-details, deprecation signalling). Validate Postman collections. Run automated tests. Manual UAT starts in Phase 1.
 6. Resolve programme-management dependencies before Phase 9.
 7. Begin Phase 1 (JOH service — `ram-joh`). Expand across Phases 2–8 in dependency order.

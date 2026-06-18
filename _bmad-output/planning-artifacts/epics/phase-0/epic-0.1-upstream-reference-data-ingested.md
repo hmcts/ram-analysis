@@ -19,8 +19,8 @@ revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): two upstream-ingestion 
 - **GitHub manual-setup runbook** at `ram-architecture/runbooks/github-setup.md` (the `gh` CLI is **not** available — all GitHub admin operations are manual via the web UI; `ram-scaffold.sh` handles only local scaffolding + `git push` to a pre-created remote)
 - **First scaffolded backend service: `ram-reference-data`** (HMCTS Crime SpringBoot template + `ram-scaffold.sh` conventions per AR2–AR4)
 - **Shared Azure estate Terraform-provisioned from `ram-reference-data`'s `terraform/`** (AKS, shared global PostgreSQL Flexible Server + per-service DB roles, ACR, APIM, App Insights) per AR53 + decision #12
-- Shared `ram_configuration_values` Flyway baseline established by `ram-architecture` ahead of `ram-reference-data` (FR8); SELECT-granted to every service role
-- Tier-(a) upstream-sourced tables: 15 `jo_*` + `mrd_specialisms` + `ram_sync_status` (RAM-internal ingestion run log), service-owned Flyway migrations (AR18–AR20), tier-(a) write-protection (only `ram_reference_data` holds INSERT/UPDATE — AR49, FR6)
+- Shared `ram_configuration_values` Liquibase baseline changelog established by `ram-architecture` ahead of `ram-reference-data` (FR8); SELECT-granted to every service role
+- Tier-(a) upstream-sourced tables: 15 `jo_*` + `mrd_specialisms` + `ram_sync_status` (RAM-internal ingestion run log), service-owned Liquibase changelogs (AR18–AR20), tier-(a) write-protection (only `ram_reference_data` holds INSERT/UPDATE — AR49, FR6)
 - **JOH eLinks nightly in-process `@Scheduled` sync** (AR46, AR48)
 - **MRD weekly Excel blob ingestion** via Azure Blob drop + scheduled pick-up (AR47)
 
@@ -77,11 +77,11 @@ So that **subsequent services follow a consistent, version-pinned, supply-chain-
 **Then** every shared-estate resource above exists in UK South with the documented SKUs (multi-AZ node pools; zone-redundant PostgreSQL HA; APIM and ACR zone-redundant SKUs per A34),
 **And** the Terraform state backend + plan/apply pipeline arrangement follows the HMCTS-confirmed pattern (gaps.md G9).
 
-**Given** the `ram-architecture` Flyway baseline migration runs **before** `ram-reference-data` (it owns the shared infrastructure table),
+**Given** the `ram-architecture` Liquibase baseline changelog runs **before** `ram-reference-data` (it owns the shared infrastructure table),
 **When** the baseline is applied to the dev PostgreSQL instance,
 **Then** the shared `ram_configuration_values` infrastructure table exists (per FR8, AR19),
 **And** `ram-reference-data`'s DB role has `SELECT` on `ram_configuration_values` (per AR22),
-**And** `ram-reference-data`'s own service-owned Flyway migrations directory exists but is empty (tier-(a) tables created in Story 0.1.2).
+**And** `ram-reference-data`'s own service-owned Liquibase changelog directory (`src/main/resources/db/changelog/`, master `db.changelog-master.yaml`) exists but is empty (tier-(a) tables created in Story 0.1.2).
 
 **Given** the deployed service is publicly reachable through APIM (Terraform-provisioned above),
 **When** an HTTP request reaches APIM,
@@ -117,7 +117,7 @@ So that **subsequent services follow a consistent, version-pinned, supply-chain-
 
 **References:** FR8, FR58, FR59; NFR10, NFR11, NFR15, NFR16, NFR24, NFR25–NFR28, NFR31, NFR40, NFR42; AR2–AR17, AR23–AR32, AR41, AR53; **D10** (`gh` CLI not available — manual GitHub web-UI setup per `ram-architecture/runbooks/github-setup.md`); **decision #12 / SCP 2026-06-17** (`ram-reference-data` is the first service scaffolded; shared-estate Terraform relocated here from `ram-authorisation`).
 
-> **Scaffolding note:** the HMCTS Crime SpringBoot template base is minimal; `ram-scaffold.sh` assembles the remaining dependencies (Flyway, Testcontainers, MapStruct, OWASP encoder, docker-compose plugin, OpenAPI tooling, Helm, Key Vault, the CI quality gates) from `hmcts/service-hmcts-springboot-demo` + RAM conventions — inventory in `architecture/starter-template.md` §B (G1.4).
+> **Scaffolding note:** the HMCTS Crime SpringBoot template base is minimal; `ram-scaffold.sh` assembles the remaining dependencies (Liquibase, Testcontainers, MapStruct, OWASP encoder, docker-compose plugin, OpenAPI tooling, Helm, Key Vault, the CI quality gates) from `hmcts/service-hmcts-springboot-demo` + RAM conventions — inventory in `architecture/starter-template.md` §B (G1.4).
 
 **Explicitly NOT in scope:**
 - Tier-(a) `jo_*` / `mrd_*` tables and `ram_sync_status` — Story 0.1.2
@@ -129,13 +129,13 @@ So that **subsequent services follow a consistent, version-pinned, supply-chain-
 ## Story 0.1.2: Tier-(a) upstream `jo_*` tables, `ram_sync_status`, and tier-(a) write protection
 
 As a **RAM Pathfinder platform** (and every downstream consumer of JOH identity and reference data),
-I want the 15 `jo_*` upstream-sourced tables and the `ram_sync_status` run-log created with service-owned Flyway migrations and enforced single-writer ownership,
+I want the 15 `jo_*` upstream-sourced tables and the `ram_sync_status` run-log created with service-owned Liquibase changelogs and enforced single-writer ownership,
 So that **`jo_people` and the rest of the tier-(a) surface exist with the correct schema and write protection before the eLinks sync populates them** (FR6 tier (a), AR49).
 
 **Acceptance Criteria:**
 
 **Given** `ram-reference-data` is scaffolded per Story 0.1.1,
-**When** the engineer adds Flyway migration `V1__init_tier_a_upstream_tables.sql`,
+**When** the engineer adds the Liquibase changeset `db/changelog/001-init-tier-a-upstream-tables.sql` (formatted-SQL, included from `db.changelog-master.yaml`),
 **Then** the 15 `jo_*` tables exist with schemas per `architecture/data-tables.md` (`jo_people`, `jo_appointments`, `jo_judiciary_role_assignments`, `jo_authorisations_with_dates`, `jo_appointment_titles`, `jo_base_locations`, `jo_contract_types`, `jo_genders`, `jo_judiciary_roles`, `jo_jurisdictions`, `jo_locations`, `jo_location_types`, `jo_tickets`, `jo_ticket_categories`, `jo_ticket_category_types`),
 **And** `ram_sync_status` exists (RAM-internal ingestion run log),
 **And** `jo_people.personnel_number` is the primary key — the canonical JOH identifier referenced by every downstream domain table (per AR22),
@@ -203,7 +203,7 @@ So that **supplementary judicial reference data not present in JOH eLinks (notab
 **Acceptance Criteria:**
 
 **Given** a dedicated Azure storage account + Blob container exists for the MRD feed — provisioned via **Terraform in this repo's `terraform/` directory** (per AR53: `ram-reference-data` is the first repo to need this resource; access for the MRD team or ops to drop the weekly workbook),
-**And** Flyway migration `V2__init_mrd_tables.sql` creates `mrd_specialisms` (further `mrd_*` tables added as MRD entities enter scope) owned by `ram_reference_data` with the same tier-(a) write protection as the `jo_*` tables (per AR49),
+**And** the Liquibase changeset `db/changelog/002-init-mrd-tables.sql` creates `mrd_specialisms` (further `mrd_*` tables added as MRD entities enter scope) owned by `ram_reference_data` with the same tier-(a) write protection as the `jo_*` tables (per AR49),
 **When** the weekly workbook lands in the container,
 **Then** a `@Scheduled` task in `ram-reference-data` detects it on its polling cycle (per AR47).
 

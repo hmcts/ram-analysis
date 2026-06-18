@@ -18,7 +18,7 @@ revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): two-population identity
 **Vertical slice:**
 - `ram-authorisation` scaffolded from the HMCTS Crime SpringBoot template via `ram-scaffold.sh`, following the pattern established by the first-scaffolded service (Epic 0.1, Story 0.1.1); **consumes** the shared Azure estate
 - `ram-mock-auth` OIDC issuer for non-prod, with a test-user roster spanning **both identity populations** (per AR35)
-- 6-table `ram-authorisation` schema (`ram_auth_users`, `ram_auth_staff_identities`, `ram_auth_roles`, `ram_auth_user_roles`, `ram_auth_user_region_scopes`, `ram_auth_user_activation_flags` with the (jurisdiction, region) tuple) via service-owned Flyway migration (per AR18–AR20)
+- 6-table `ram-authorisation` schema (`ram_auth_users`, `ram_auth_staff_identities`, `ram_auth_roles`, `ram_auth_user_roles`, `ram_auth_user_region_scopes`, `ram_auth_user_activation_flags` with the (jurisdiction, region) tuple) via service-owned Liquibase changelog (per AR18–AR20)
 - Custom `JWTFilter` validating tokens against IdP JWKS + `POST /authz/check` performing **two-population identity resolution** and populating request-scoped `AuthDetails` (per AR34)
 - `ram-ui` repo scaffolded (React + TypeScript + Vite + Vitest + Playwright; per AR42–AR43)
 - `HmctsIdpProvider`, `ProtectedRoute`, `useAuth`, HTTP client with RFC 9457 error handling (per AR44)
@@ -77,10 +77,10 @@ So that **the authorisation service follows the same consistent, version-pinned,
 **And** `ram-authorisation`'s `terraform/` contains only its own resources (Key Vault namespace, APIM per-API policy),
 **And** its `values-dev.yaml` connection string references the shared encrypted PostgreSQL instance (per NFR11).
 
-**Given** the `ram-architecture` Flyway baseline already created the shared `ram_configuration_values` table ahead of `ram-reference-data` (Epic 0.1, Story 0.1.1),
+**Given** the `ram-architecture` Liquibase baseline changelog already created the shared `ram_configuration_values` table ahead of `ram-reference-data` (Epic 0.1, Story 0.1.1),
 **When** `ram-authorisation` is granted access,
 **Then** `ram-authorisation`'s DB role has `SELECT` on `ram_configuration_values` (per FR8, AR19, AR22),
-**And** `ram-authorisation`'s own service-owned Flyway migrations directory exists but is empty (auth tables created in Story 0.2.3).
+**And** `ram-authorisation`'s own service-owned Liquibase changelog directory (`src/main/resources/db/changelog/`, master `db.changelog-master.yaml`) exists but is empty (auth tables created in Story 0.2.3).
 
 **Given** the deployed service is publicly reachable through the shared APIM (provisioned in Epic 0.1),
 **When** an HTTP request reaches APIM,
@@ -161,7 +161,7 @@ So that **every domain operation is authorised against bootstrapped user data ac
 **Acceptance Criteria:**
 
 **Given** `ram-authorisation` is scaffolded per Story 0.2.1,
-**When** the engineer adds the authorisation tables via service-owned Flyway migration `V1__init_auth_schema.sql`,
+**When** the engineer adds the authorisation tables via the service-owned Liquibase changeset `db/changelog/001-init-auth-schema.sql`,
 **Then** the **6 tables** `ram_auth_users`, `ram_auth_staff_identities`, `ram_auth_roles`, `ram_auth_user_roles`, `ram_auth_user_region_scopes`, `ram_auth_user_activation_flags` exist with the schema specified in `architecture/data-tables.md` (per AR18, AR20),
 **And** `ram_auth_users` carries `principal_kind` (JOH / staff / service) and links to `jo_people.personnel_number` (JOH users) or `ram_auth_staff_identities.id` (admin-staff users — RAM-assigned UUID[^d9]),
 **And** `ram_auth_users` carries the user's jurisdiction (FK → `jo_jurisdictions`,[^d8]),

@@ -62,7 +62,7 @@ This file describes what is built and how it runs. For rationale, alternatives, 
 | Language & runtime | Java 25 (LTS) + Spring Boot 4.0.6 |
 | Build | Gradle (Groovy DSL); HMCTS Crime SpringBoot template as scaffold |
 | Database | PostgreSQL 17 on Azure Database for PostgreSQL Flexible Server (single global instance; single shared schema; zone-redundant HA in UK South) |
-| Schema evolution | Flyway (RAM Pathfinder DDL only) |
+| Schema evolution | Liquibase (RAM Pathfinder DDL only) |
 | Container orchestration | Azure Kubernetes Service — single production cluster in UK South with multi-AZ node pools |
 | Ingress | Azure API Management — Premium SKU, zone-redundant |
 | Identity provider | HMCTS IdP via OIDC `authorization_code` (production, human users only); `ram-mock-auth` in dev / CI / integration; JWKS endpoint provides JWT-signature public keys to every RAM Pathfinder service |
@@ -150,7 +150,7 @@ Details:
 
 ## Deployment topology
 
-- **Infrastructure provisioning** — **Terraform** (HMCTS standard), colocated with the first repo that needs each resource: shared estate (AKS, PostgreSQL, ACR, APIM, App Insights) in `ram-authorisation`'s `terraform/`; per-service resources (Key Vault namespaces, MRD blob storage, Static Web App) in their own repos. Terraform provisions; Helm deploys; Flyway owns schema.
+- **Infrastructure provisioning** — **Terraform** (HMCTS standard), colocated with the first repo that needs each resource: shared estate (AKS, PostgreSQL, ACR, APIM, App Insights) in `ram-authorisation`'s `terraform/`; per-service resources (Key Vault namespaces, MRD blob storage, Static Web App) in their own repos. Terraform provisions; Helm deploys; Liquibase owns schema.
 - **Production region** — Azure UK South.
 - **HA** — multi-AZ within UK South for every component:
   - AKS node pools span all three UK South AZs with pod anti-affinity (zone topology spread).

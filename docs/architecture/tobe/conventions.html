@@ -95,7 +95,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </div></details><details class="section" id="naming-patterns"><summary><span class="section-title">Naming Patterns</span></summary><div class="section-body">
 <p><strong>Database (PostgreSQL):</strong></p>
 <ul>
-<li><strong>Schema:</strong> single shared schema (e.g. <code>ram</code> or default <code>public</code>). All RAM Pathfinder tables live in this schema. Per-service DB roles enforce write boundaries; the team that writes the Flyway migration owns the table.</li>
+<li><strong>Schema:</strong> single shared schema (e.g. <code>ram</code> or default <code>public</code>). All RAM Pathfinder tables live in this schema. Per-service DB roles enforce write boundaries; the team that writes the Liquibase changelog owns the table.</li>
 <li><strong>Tables:</strong> <code>snake_case</code>. <strong>Ownership is in the prefix</strong> <em>(revised 2026-06-11)</em>:
 <ul>
 <li><strong><code>ram_</code> — every RAM-owned table</strong>, entity-plural: <code>ram_bookings</code>, <code>ram_absences</code>, <code>ram_regions</code>, <code>ram_auth_users</code>, <code>ram_payment_reconciliations</code>, <code>ram_configuration_values</code>. JOH operational state over upstream entities is named directly — <code>ram_joh_ticket</code>, <code>ram_joh_location</code> — <strong>no <code>_overlays</code> suffix pattern</strong>.</li>
@@ -103,8 +103,8 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong><code>mock_</code> — dev-only mock-auth tables</strong> (<code>mock_oauth_clients</code>, <code>mock_user_roster</code>): never deployed to production, exempt from the <code>ram_</code> rule — the <code>mock_</code> prefix already marks them as not-production.</li>
 <li>Full inventory in <a href="data-tables.html"><code>./data-tables.md</code></a>.</li>
 </ul></li>
-<li><strong>Authoritative ownership mapping</strong> is documented in <a href="data-tables.html"><code>./data-tables.md</code></a> (table-ownership table maps every RAM Pathfinder table → owning service-role). The team that authors the Flyway migration is the owning team.</li>
-<li><strong>Fitness function in CI</strong> verifies: (a) no two services' Flyway migrations create overlapping table names; (b) DB role grants align with the documented ownership; (c) tables not in the ownership mapping are flagged.</li>
+<li><strong>Authoritative ownership mapping</strong> is documented in <a href="data-tables.html"><code>./data-tables.md</code></a> (table-ownership table maps every RAM Pathfinder table → owning service-role). The team that authors the Liquibase changelog is the owning team.</li>
+<li><strong>Fitness function in CI</strong> verifies: (a) no two services' Liquibase changesets create overlapping table names; (b) DB role grants align with the documented ownership; (c) tables not in the ownership mapping are flagged.</li>
 <li><strong>Columns:</strong> <code>snake_case</code> — <code>id</code>, <code>created_at</code>, <code>updated_at</code>, <code>payroll_number</code>, <code>is_active</code>.</li>
 <li><strong>Primary keys:</strong> <code>id</code>, type <code>uuid</code>. UUIDs avoid integer-range coupling and "guess the next ID" patterns. Cost over bigint is negligible at this scale. PK generation detail in <a href="../../architecture.html"><code>../architecture.md</code></a> → <em>Data Architecture</em>.</li>
 <li><strong>Foreign keys:</strong> <code>{referenced_entity_singular}_id</code> — <code>booking_id</code>, <code>vacancy_id</code>, <code>absence_id</code>. JOH references use <strong><code>personnel_number</code></strong> → <code>jo_people</code> (the canonical JOH identifier), not a surrogate id. FKs reference tables in the shared schema; no cross-schema FK overhead.</li>
@@ -158,7 +158,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 ├── src/main/resources/
 │   ├── application.yml                 (defaults)
 │   ├── application-{profile}.yml       (dev/staging/production overrides)
-│   └── db/migration/                   (Flyway V1__init.sql, V2__add_x.sql, ...)
+│   └── db/changelog/                   (Liquibase: db.changelog-master.yaml, 001-init.sql, 002-add-x.sql, ...)
 ├── src/test/java/uk/gov/hmcts/ram/{service}/
 │   └── {layer}/                        (mirrors src/main package layout — unit + integration tests)
 ├── docs/
@@ -429,7 +429,7 @@ return &lt;ActualContent data={data} /&gt;;</code></pre></li>
 <li>Implement Authorisation enforcement via per-service custom <code>JWTFilter</code> + <code>AuthDetails</code> request-scoped bean (HMCTS template pattern); the filter calls RAM Pathfinder Authorisation per request to resolve roles + jurisdiction + Region/Area scope and the activation flag (RAM Pathfinder variance from template's claims-only approach — required by FR2/FR57).</li>
 <li>Generate OpenAPI 3.x specs via Swagger Core; publish per-service spec as a Maven artefact (<code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>).</li>
 <li>Emit structured JSON logs (Logstash encoder) with correlation IDs; export traces via OpenTelemetry.</li>
-<li>Use Flyway migrations in <code>src/main/resources/db/migration/</code> (added by the RAM scaffolding overlay — <code>hmcts/service-hmcts-springboot-demo</code> Database pattern; <strong>not</strong> in the template baseline, see G1.4a).</li>
+<li>Use Liquibase changelogs in <code>src/main/resources/db/changelog/</code> (added by the RAM scaffolding overlay — RAM convention; the HMCTS demo repo uses Flyway, RAM standardises on Liquibase; <strong>not</strong> in the template baseline, see G1.4a).</li>
 <li>Use <strong>Lombok</strong> (base template) and <strong>MapStruct</strong> (scaffolding overlay — not in the baseline) for boilerplate reduction and DTO/entity mapping.</li>
 <li>Use OWASP Java Encoder for XSS-safe output encoding where rendering untrusted input.</li>
 <li>Emit JaCoCo coverage reports and CycloneDX SBOM as part of CI artefacts.</li>

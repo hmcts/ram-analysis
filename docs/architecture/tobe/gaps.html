@@ -124,13 +124,13 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td><strong>G1.4</strong> <em>(reconciled 2026-06-17)</em></td>
-<td>HMCTS Crime SpringBoot template (<code>hmcts/service-hmcts-crime-springboot-template</code>@<code>main</code>) is the starter. <strong>Reconciled against <code>main</code>:</strong> the base is <strong>deliberately minimal</strong> — Java 25, Spring Boot <strong>4.1.0</strong>, Gradle Groovy DSL, Logstash JSON logging, OpenTelemetry, Lombok, JaCoCo, CycloneDX, gradle-git-properties, ben-manes-versions, Actuator, Dockerfile, <code>webmvc-test</code>. <strong>NOT in the base</strong> (sourced from the separate <strong><code>hmcts/service-hmcts-springboot-demo</code></strong> repo or added as RAM conventions — see <code>starter-template.md</code> §B): Flyway, Testcontainers, MapStruct, JWTFilter/<code>jjwt</code>, OWASP encoder, docker-compose plugin, OpenAPI tooling. The earlier "all present in baseline (2026-05-06)" review <strong>overstated</strong> the template.</td>
+<td>HMCTS Crime SpringBoot template (<code>hmcts/service-hmcts-crime-springboot-template</code>@<code>main</code>) is the starter. <strong>Reconciled against <code>main</code>:</strong> the base is <strong>deliberately minimal</strong> — Java 25, Spring Boot <strong>4.1.0</strong>, Gradle Groovy DSL, Logstash JSON logging, OpenTelemetry, Lombok, JaCoCo, CycloneDX, gradle-git-properties, ben-manes-versions, Actuator, Dockerfile, <code>webmvc-test</code>. <strong>NOT in the base</strong> (sourced from the separate <strong><code>hmcts/service-hmcts-springboot-demo</code></strong> repo or added as RAM conventions — see <code>starter-template.md</code> §B): Liquibase, Testcontainers, MapStruct, JWTFilter/<code>jjwt</code>, OWASP encoder, docker-compose plugin, OpenAPI tooling. The earlier "all present in baseline (2026-05-06)" review <strong>overstated</strong> the template.</td>
 <td>Scaffolding-script scope is larger than first scoped — it assembles ~9 capabilities onto the minimal base (track per G1.4a). Verify demo-repo branch versions at build time.</td>
 <td>RAM Pathfinder architecture team</td>
 </tr>
 <tr>
 <td><strong>G1.4a</strong> <em>(expanded 2026-06-17)</em></td>
-<td>The base template is minimal; <code>ram-scaffold.sh</code> must add — beyond the Helm chart + per-repo <code>terraform/</code> skeleton (2026-06-11 Terraform decision) — <strong>Flyway, Testcontainers, MapStruct, custom <code>JWTFilter</code> + <code>jjwt</code>, OWASP encoder, the docker-compose plugin, OpenAPI tooling (springdoc/Swagger), and the CI quality gates (Spectral/ArchUnit/Spotless/Checkstyle)</strong>, most cherry-picked from <code>hmcts/service-hmcts-springboot-demo</code>.</td>
+<td>The base template is minimal; <code>ram-scaffold.sh</code> must add — beyond the Helm chart + per-repo <code>terraform/</code> skeleton (2026-06-11 Terraform decision) — <strong>Liquibase, Testcontainers, MapStruct, custom <code>JWTFilter</code> + <code>jjwt</code>, OWASP encoder, the docker-compose plugin, OpenAPI tooling (springdoc/Swagger), and the CI quality gates (Spectral/ArchUnit/Spotless/Checkstyle)</strong>, most cherry-picked from <code>hmcts/service-hmcts-springboot-demo</code>. <strong>Liquibase is a RAM convention</strong> — the demo repo's Database branch uses Flyway; RAM standardises on Liquibase.</td>
 <td>Scope <code>ram-scaffold.sh</code> accordingly; verify demo-repo branch versions at build time; consider splitting Story 0.1.1 (scaffold vs shared-estate vs template overlay) given the expanded scope.</td>
 <td>Phase 0 deliverable — RAM Pathfinder architecture team</td>
 </tr>
@@ -340,18 +340,18 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td><strong>G6.4</strong></td>
-<td><strong>DB role grant maintenance.</strong> Each cross-service grant is a piece of operational state (<code>GRANT SELECT ON ram_vacancies TO ram_booking;</code>) that must be applied via Flyway migrations owned by the granting service. Adding/removing grants requires PR coordination between services.</td>
-<td>Mitigation: grants codified in the table-owning service's Flyway migrations; PR template includes "grants checklist"; ArchUnit-style fitness function in CI verifies declared grants match actual code-level cross-service table access.</td>
+<td><strong>DB role grant maintenance.</strong> Each cross-service grant is a piece of operational state (<code>GRANT SELECT ON ram_vacancies TO ram_booking;</code>) that must be applied via Liquibase changelogs owned by the granting service. Adding/removing grants requires PR coordination between services.</td>
+<td>Mitigation: grants codified in the table-owning service's Liquibase changelogs; PR template includes "grants checklist"; ArchUnit-style fitness function in CI verifies declared grants match actual code-level cross-service table access.</td>
 </tr>
 <tr>
 <td><strong>G6.5</strong></td>
-<td><strong>Flyway migration versioning across services.</strong> When Service A's table has consumers, A's migration that drops or renames a column must coordinate with consumer updates.</td>
-<td>Mitigation: deprecation-then-remove pattern — A first adds the new column in <code>V*__add_*.sql</code>, both A and consumers transition, then A removes the old column in a later <code>V*__remove_*.sql</code>. Same pattern as API versioning.</td>
+<td><strong>Liquibase changeset versioning across services.</strong> When Service A's table has consumers, A's changeset that drops or renames a column must coordinate with consumer updates.</td>
+<td>Mitigation: deprecation-then-remove pattern — A first adds the new column in <code>db/changelog/NNN-add-*.sql</code>, both A and consumers transition, then A removes the old column in a later <code>NNN-remove-*.sql</code>. Same pattern as API versioning.</td>
 </tr>
 <tr>
 <td><strong>G6.6</strong> <em>(new)</em></td>
 <td><strong>Table-name collision risk.</strong> Without schema isolation, two services could create tables with the same name in the shared schema.</td>
-<td>Mitigation: ArchUnit-style fitness function in CI verifies no two services' Flyway migrations create overlapping table names. Authoritative table-ownership mapping documented in <a href="data-tables.html"><code>./data-tables.md</code></a>. Code review backs the fitness function.</td>
+<td>Mitigation: ArchUnit-style fitness function in CI verifies no two services' Liquibase changelogs create overlapping table names. Authoritative table-ownership mapping documented in <a href="data-tables.html"><code>./data-tables.md</code></a>. Code review backs the fitness function.</td>
 </tr>
 </tbody>
 </table>
@@ -395,7 +395,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><strong>G8.2</strong></td>
 <td><strong>Upstream-overlap vocabulary candidates.</strong> Three RAM-owned vocabularies plausibly duplicate upstream entities: <code>ram_joh_types</code> (vs <code>jo_appointment_titles</code> / <code>jo_judiciary_roles</code>), <code>ram_court_types</code> (vs <code>jo_location_types</code>), <code>ram_ticket_types</code> (vs <code>jo_tickets</code> / <code>jo_ticket_categories</code> / <code>jo_ticket_category_types</code>). Kept as tier-(b) tables pending G8.1; retire each where the upstream entity covers it.</td>
-<td>Resolved alongside G8.1 when the eLinks contract is confirmed. Each retirement is a Flyway migration + data-tables.md update.</td>
+<td>Resolved alongside G8.1 when the eLinks contract is confirmed. Each retirement is a Liquibase changeset + data-tables.md update.</td>
 </tr>
 <tr>
 <td><strong>G8.3</strong></td>

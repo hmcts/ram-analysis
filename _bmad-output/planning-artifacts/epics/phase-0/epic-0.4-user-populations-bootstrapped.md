@@ -43,7 +43,7 @@ So that **Epic 0.2's two-population sign-in works end-to-end in every environmen
 
 **Acceptance Criteria:**
 
-**Given** the engineer creates the dev/CI seed scripts (one-off scripts per AR52; not a runtime API, not Flyway),
+**Given** the engineer creates the dev/CI seed scripts (one-off scripts per AR52; not a runtime API, not Liquibase changesets),
 **When** the scripts run against a fresh dev/CI database,
 **Then** they populate: representative `jo_*` fixtures (incl. `jo_people` rows whose emails match `ram-mock-auth`'s JOH test users, with stable personnel numbers, and `jo_jurisdictions` covering Tribunals/SSCS + Courts examples) where no live eLinks connection exists,
 **And** `ram_auth_staff_identities` rows (RAM-assigned UUIDs) whose emails match the mock-auth admin-staff test users,

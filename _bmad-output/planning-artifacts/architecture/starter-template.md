@@ -83,7 +83,7 @@ Reasons:
 
 | Capability | Source / demo branch | Version target |
 |---|---|---|
-| **Flyway** (`flyway-core` + `flyway-database-postgresql` + PostgreSQL driver) | Database demo | per Spring Boot 4.1 BOM |
+| **Liquibase** (`liquibase-core` + PostgreSQL driver) | RAM convention (HMCTS demo repo uses Flyway; RAM standardises on Liquibase) | per Spring Boot 4.1 BOM |
 | **Testcontainers** (`spring-boot-testcontainers:4.1.0` + `testcontainers-postgresql:1.21.4` + `-junit-jupiter:1.21.4`) | Database demo | as listed |
 | **MapStruct** (compile-time DTO↔entity mapping) | RAM convention | 1.6.3 |
 | **Custom `JWTFilter`** + `io.jsonwebtoken:jjwt` | Security demo (JWT filters / Entra ID) | jjwt 0.13.0 |

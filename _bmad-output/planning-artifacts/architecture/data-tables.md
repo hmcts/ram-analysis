@@ -8,7 +8,7 @@ amended_in: architecture.md v3.0 — Sprint Change Proposal 2026-06-10 cascade (
 
 # Authoritative Table Ownership Mapping
 
-> Sibling of [`../architecture.md`](../architecture.md). The parent's *Data Architecture* section holds the strategy (shared schema, per-service DB roles, table-name convention, Flyway, the two-tier reference-data ownership model, upstream ingestion). This file holds the per-table inventory.
+> Sibling of [`../architecture.md`](../architecture.md). The parent's *Data Architecture* section holds the strategy (shared schema, per-service DB roles, table-name convention, Liquibase, the two-tier reference-data ownership model, upstream ingestion). This file holds the per-table inventory.
 
 ## RAM Pathfinder tables, not legacy tables
 
@@ -109,7 +109,7 @@ Strictly RAM-internal[^d9] — populated by programme-management / operational m
 
 ## Shared infrastructure tables (no owning service) — 1 table
 
-Schema-managed by `ram-architecture`'s Flyway baseline migration; SELECT-granted to every RAM Pathfinder service DB role; writes are admin / Flyway-only (no API). *(Introduced in v2.2, 2026-05-07 — replaces the dedicated `ram-configuration` service.)*
+Schema-managed by `ram-architecture`'s Liquibase baseline changelog; SELECT-granted to every RAM Pathfinder service DB role; writes are admin-or-Liquibase-only (no API). *(Introduced in v2.2, 2026-05-07 — replaces the dedicated `ram-configuration` service.)*
 
 | Table | Type | Purpose |
 |---|---|---|
@@ -204,7 +204,7 @@ Per `ram_mock_auth` DB role. **Never deployed to production**; production deploy
 
 **On upstream contract validation:** when the JOH eLinks API contract and the first MRD workbook land in Phase 0 (G8.1 in [`./gaps.md`](./gaps.md)), the validation focus is the **ingestion mapping** — does each `jo_*`/`mrd_*` table have a slot for every upstream field RAM needs, and does the upstream natural-key scheme hold? The tier-(b) and domain-table design is fixed by RAM Pathfinder. Upstream-overlap candidates (`ram_joh_types`, `ram_court_types`, `ram_ticket_types` — G8.2) are resolved at that point: retire the RAM-owned vocabulary where the upstream entity covers it. If a fundamental mismatch surfaces, it lands via PR against the architecture document set, exactly as any other architectural change would.
 
-**Fitness function** (Step 4 *ArchUnit-style fitness functions* in [`../architecture.md`](../architecture.md)) operates against this inventory: every table created by Flyway DDL must appear here with the matching owning service (or under "Shared infrastructure"); DB role grants must align — including the tier-(a) rule that only `ram_reference_data` holds INSERT/UPDATE on `jo_*`/`mrd_*` tables.
+**Fitness function** (Step 4 *ArchUnit-style fitness functions* in [`../architecture.md`](../architecture.md)) operates against this inventory: every table created by Liquibase DDL must appear here with the matching owning service (or under "Shared infrastructure"); DB role grants must align — including the tier-(a) rule that only `ram_reference_data` holds INSERT/UPDATE on `jo_*`/`mrd_*` tables.
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.

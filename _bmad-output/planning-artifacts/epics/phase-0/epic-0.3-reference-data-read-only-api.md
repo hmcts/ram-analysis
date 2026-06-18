@@ -14,8 +14,8 @@ revisionNote2: 'SCP 2026-06-10 cascade: the APEX SQL-ETL story (old 0.2.3) is re
 **User outcome:** Tier-(b) RAM-owned reference data (Regions, Offices, calendar / financial-year boundaries, operational vocabularies) exists, is seeded, and is maintainable by DBAs via direct SQL per operational runbook[^d10]. All reference data — both the upstream-sourced tier-(a) tables ingested in Epic 0.1 and the tier-(b) tables created here — is queryable read-only via `ram-reference-data`'s versioned REST API, **jurisdiction-filtered**[^d8]. **No admin UI is in scope for MVP**; tier-(a) data is never hand-edited in RAM in any phase (corrections at source per FR6).
 
 **Vertical slice:**
-- Tier-(b) RAM-owned tables (15: `ram_regions`, `ram_offices`, `ram_calendar_periods` + 12 operational vocabularies incl. `ram_joh_types`, `ram_joh_fee_entitlements`) with service-owned Flyway migrations (per AR18–AR20) — the `ram-reference-data` service itself was scaffolded in Story 0.1.1
-- Tier-(b) seed data via Flyway seed migration + the DBA maintenance runbook (D10 operating model)
+- Tier-(b) RAM-owned tables (15: `ram_regions`, `ram_offices`, `ram_calendar_periods` + 12 operational vocabularies incl. `ram_joh_types`, `ram_joh_fee_entitlements`) with service-owned Liquibase changelogs (per AR18–AR20) — the `ram-reference-data` service itself was scaffolded in Story 0.1.1
+- Tier-(b) seed data via a Liquibase seed changeset + the DBA maintenance runbook (D10 operating model)
 - Per-service `SELECT` grants pattern completed for direct-SQL reads across both tiers (per FR7 / Principle 2)
 - Reference Data **read-only** REST API: `GET` endpoints over both tiers, **jurisdiction-filtered responses**[^d8], for consumption by `ram-ui`, downstream services, and OpenAPI clients. **No `POST`/`PUT`/`DELETE` endpoints** — tier (a) is written only by the Epic 0.1 ingestion mechanisms; tier (b) by DBAs via SQL per runbook
 - First end-to-end exercise of API-as-Product **read-side** standards: URL versioning (`/v1/reference-data/...`), OpenAPI 3.x spec published as Maven artefact, RFC 9457 problem-details errors, RFC 9745 `Deprecation` + RFC 8594 `Sunset` deprecation signalling (FR58)
@@ -45,18 +45,18 @@ So that **RAM-owned reference data that does not exist upstream (Regions, Office
 **Acceptance Criteria:**
 
 **Given** `ram-reference-data` is scaffolded and carries the tier-(a) tables per Story 0.1.3,
-**When** the engineer adds Flyway migration `V3__init_tier_b_ram_owned_tables.sql`,
+**When** the engineer adds the Liquibase changeset `db/changelog/003-init-tier-b-ram-owned-tables.sql`,
 **Then** the 15 tier-(b) tables exist with schemas per `architecture/data-tables.md`: `ram_regions`, `ram_offices`, `ram_calendar_periods`, plus the 12 operational vocabularies (`ram_joh_types`, `ram_work_types`, `ram_court_types`, `ram_ticket_types`, `ram_session_types`, `ram_absence_types`, `ram_working_pattern_types`, `ram_booking_statuses`, `ram_sitting_outcomes`, `ram_joh_fee_entitlements`, `ram_payment_lifecycle_statuses`, `ram_reconciliation_statuses`),
 **And** the `ram_reference_data` DB role owns the tables (per AR19),
 **And** SELECT grants exist for every current and placeholder service DB role (per FR7, AR22),
 **And** the ArchUnit/grants fitness function verifies ownership and that the upstream sync code paths **cannot write tier-(b) tables** (tier separation per FR6 — RAM-owned data is never overwritten by sync),
 **And** the three upstream-overlap candidates (`ram_joh_types`, `ram_court_types`, `ram_ticket_types`) carry a schema comment referencing gaps.md G8.2 (each may retire in favour of its `jo_*` counterpart once the eLinks contract is confirmed).
 
-**Given** the engineer adds the seed migration for tier-(b) data,
-**When** Flyway applies it,
+**Given** the engineer adds the Liquibase seed changeset for tier-(b) data,
+**When** Liquibase applies it,
 **Then** `ram_regions`, `ram_offices`, `ram_calendar_periods`, and all 12 vocabularies are populated with the documented controlled-list values (cross-referenced to the architecture's data-tables inventory),
 **And** the seed values include the SSCS wave-1-relevant entries (e.g. session and work types applicable to tribunal sittings) flagged for confirmation against the SSCS as-is pack[^d11],
-**And** dev/CI environments get the same seed via the standard Flyway path (no separate seeding mechanism for tier (b)).
+**And** dev/CI environments get the same seed via the standard Liquibase changelog path (no separate seeding mechanism for tier (b)).
 
 **Given** the DBA maintenance runbook is written at `ram-architecture/runbooks/reference-data-maintenance.md`,
 **When** a tier-(b) change is needed in MVP (e.g. a new office, a vocabulary value),

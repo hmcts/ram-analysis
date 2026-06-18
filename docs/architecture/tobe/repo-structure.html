@@ -143,9 +143,10 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 │   ├── application-staging.yml
 │   ├── application-production.yml
 │   ├── logback-spring.xml                       (JSON logging + correlation-ID MDC)
-│   └── db/migration/                            (Flyway)
-│       ├── V1__init.sql
-│       ├── V2__add_judges_table.sql
+│   └── db/changelog/                            (Liquibase)
+│       ├── db.changelog-master.yaml
+│       ├── 001-init.sql
+│       ├── 002-add-judges-table.sql
 │       └── ...
 ├── src/test/java/uk/gov/hmcts/ram/{service}/
 │   ├── controller/                              (unit tests, mocked deps)
@@ -366,12 +367,12 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 └── runbooks/
     ├── incident-response.md
     └── per-region-rollout-playbook.md</code></pre>
-<p><strong>Why <code>migration/</code> lives here, not as a separate service or as Flyway files:</strong></p>
+<p><strong>Why <code>migration/</code> lives here, not as a separate service or as Liquibase changesets:</strong></p>
 <ul>
 <li>The migration is a <strong>one-shot programme deliverable</strong> (Phase 0; re-run per wave for incremental user activation). It is not a runtime service, so it has no <code>controller/</code> / <code>service/</code> / <code>repository/</code> shape.</li>
 <li>It is <strong>owned by the architecture team</strong> (and the named Phase 0 owners per Risk #13), not by any single domain service. Living under <code>ram-architecture/</code> keeps that ownership visible.</li>
 <li>It <strong>calls RAM Pathfinder APIs</strong> (Reference Data API, Authorisation API) — it does not write directly to RAM Pathfinder tables. Per the v1.6 decision, writes go via the API so validation, idempotency, and any audit-logging hooks fire.</li>
-<li>It is <strong>separate from Flyway</strong>. Flyway in RAM Pathfinder is for RAM Pathfinder's DDL (creating tables, adding columns, granting permissions). The ETL is for moving APEX data into RAM Pathfinder tables that Flyway has already created.</li>
+<li>It is <strong>separate from Liquibase</strong>. Liquibase in RAM Pathfinder is for RAM Pathfinder's DDL (creating tables, adding columns, granting permissions). The ETL is for moving APEX data into RAM Pathfinder tables that Liquibase has already created.</li>
 </ul>
 </div></details><details class="section" id="file-organisation-patterns"><summary><span class="section-title">File Organisation Patterns</span></summary><div class="section-body">
 <p><strong>Configuration files:</strong></p>

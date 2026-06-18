@@ -88,7 +88,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="authoritative-table-ownership-mapping">Authoritative Table Ownership Mapping</h1>
 <blockquote>
-<p>Sibling of <a href="../../architecture.html"><code>../architecture.md</code></a>. The parent's <em>Data Architecture</em> section holds the strategy (shared schema, per-service DB roles, table-name convention, Flyway, the two-tier reference-data ownership model, upstream ingestion). This file holds the per-table inventory.</p>
+<p>Sibling of <a href="../../architecture.html"><code>../architecture.md</code></a>. The parent's <em>Data Architecture</em> section holds the strategy (shared schema, per-service DB roles, table-name convention, Liquibase, the two-tier reference-data ownership model, upstream ingestion). This file holds the per-table inventory.</p>
 </blockquote>
 <details class="section" id="ram-pathfinder-tables-not-legacy-tables"><summary><span class="section-title">RAM Pathfinder tables, not legacy tables</span></summary><div class="section-body">
 <p>This is the inventory of RAM Pathfinder database tables, grouped by owning service. The table list, column shapes, FK relationships, and ownership boundaries are RAM Pathfinder's design.</p>
@@ -396,7 +396,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tbody>
 </table>
 </div></details><details class="section" id="shared-infrastructure-tables-no-owning-service--1-table"><summary><span class="section-title">Shared infrastructure tables (no owning service) — 1 table</span></summary><div class="section-body">
-<p>Schema-managed by <code>ram-architecture</code>'s Flyway baseline migration; SELECT-granted to every RAM Pathfinder service DB role; writes are admin / Flyway-only (no API). <em>(Introduced in v2.2, 2026-05-07 — replaces the dedicated <code>ram-configuration</code> service.)</em></p>
+<p>Schema-managed by <code>ram-architecture</code>'s Liquibase baseline changelog; SELECT-granted to every RAM Pathfinder service DB role; writes are admin-or-Liquibase-only (no API). <em>(Introduced in v2.2, 2026-05-07 — replaces the dedicated <code>ram-configuration</code> service.)</em></p>
 <table>
 <thead>
 <tr>
@@ -613,7 +613,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p><strong>Total: 55 tables</strong> across the shared schema (52 service-owned production + 1 shared infrastructure + 2 dev-only).</p>
 <p><strong>Retry safety convention:</strong> every RAM Pathfinder domain table that supports create has a <code>uq_{table}_{columns}</code> unique constraint on its natural key, and every entity that supports update has a <code>version</code> column for JPA <code>@Version</code> optimistic locking. There are <em>no</em> per-service <code>*_idempotency_keys</code> tables — those were dropped in v2.1 in favour of these PostgreSQL-native primitives. Tier-(a) tables are exempt (single writer: the ingestion mechanism; upserts key on the upstream natural key). See <a href="conventions.html"><code>./conventions.md</code> → "Retry safety and concurrency control"</a> for the pattern.</p>
 <p><strong>On upstream contract validation:</strong> when the JOH eLinks API contract and the first MRD workbook land in Phase 0 (G8.1 in <a href="gaps.html"><code>./gaps.md</code></a>), the validation focus is the <strong>ingestion mapping</strong> — does each <code>jo_*</code>/<code>mrd_*</code> table have a slot for every upstream field RAM needs, and does the upstream natural-key scheme hold? The tier-(b) and domain-table design is fixed by RAM Pathfinder. Upstream-overlap candidates (<code>ram_joh_types</code>, <code>ram_court_types</code>, <code>ram_ticket_types</code> — G8.2) are resolved at that point: retire the RAM-owned vocabulary where the upstream entity covers it. If a fundamental mismatch surfaces, it lands via PR against the architecture document set, exactly as any other architectural change would.</p>
-<p><strong>Fitness function</strong> (Step 4 <em>ArchUnit-style fitness functions</em> in <a href="../../architecture.html"><code>../architecture.md</code></a>) operates against this inventory: every table created by Flyway DDL must appear here with the matching owning service (or under "Shared infrastructure"); DB role grants must align — including the tier-(a) rule that only <code>ram_reference_data</code> holds INSERT/UPDATE on <code>jo_*</code>/<code>mrd_*</code> tables.</p>
+<p><strong>Fitness function</strong> (Step 4 <em>ArchUnit-style fitness functions</em> in <a href="../../architecture.html"><code>../architecture.md</code></a>) operates against this inventory: every table created by Liquibase DDL must appear here with the matching owning service (or under "Shared infrastructure"); DB role grants must align — including the tier-(a) rule that only <code>ram_reference_data</code> holds INSERT/UPDATE on <code>jo_*</code>/<code>mrd_*</code> tables.</p>
 </div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>

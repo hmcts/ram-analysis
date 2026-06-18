@@ -222,7 +222,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td>Schema evolution</td>
-<td>Flyway (RAM Pathfinder DDL only)</td>
+<td>Liquibase (RAM Pathfinder DDL only)</td>
 </tr>
 <tr>
 <td>Container orchestration</td>
@@ -411,7 +411,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </table>
 </div></details><details class="section" id="deployment-topology"><summary><span class="section-title">Deployment topology</span></summary><div class="section-body">
 <ul>
-<li><strong>Infrastructure provisioning</strong> — <strong>Terraform</strong> (HMCTS standard), colocated with the first repo that needs each resource: shared estate (AKS, PostgreSQL, ACR, APIM, App Insights) in <code>ram-authorisation</code>'s <code>terraform/</code>; per-service resources (Key Vault namespaces, MRD blob storage, Static Web App) in their own repos. Terraform provisions; Helm deploys; Flyway owns schema.</li>
+<li><strong>Infrastructure provisioning</strong> — <strong>Terraform</strong> (HMCTS standard), colocated with the first repo that needs each resource: shared estate (AKS, PostgreSQL, ACR, APIM, App Insights) in <code>ram-authorisation</code>'s <code>terraform/</code>; per-service resources (Key Vault namespaces, MRD blob storage, Static Web App) in their own repos. Terraform provisions; Helm deploys; Liquibase owns schema.</li>
 <li><strong>Production region</strong> — Azure UK South.</li>
 <li><strong>HA</strong> — multi-AZ within UK South for every component:
 <ul>
