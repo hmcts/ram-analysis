@@ -397,7 +397,7 @@ return &lt;ActualContent data={data} /&gt;;</code></pre></li>
 <li>Integration tests: <code>*IT.java</code>, Testcontainers for PostgreSQL, run on every commit.</li>
 <li>Contract tests (Pact or equivalent): per-consumer / per-provider, run on every commit.</li>
 <li>E2E tests (UI): Playwright, one suite per phase, run as a phase gate.</li>
-<li><strong>Manual UAT — incumbent-vs-RAM Pathfinder behavioural parity (FR60 / NFR41, reframed 2026-06-10<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>):</strong> scripted walkthroughs maintained under <code>docs/uat/</code> per service. Performed by jurisdiction-incumbent-experienced users — GAPS-experienced (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for SSCS wave 1; APEX-experienced (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) for Courts waves 2+ — opening the incumbent side-by-side with RAM Pathfinder, comparing behaviour for the workflows + edge cases the script enumerates, and signing off per role per wave. Sign-off is the wave-cutover gate; there is no automated incumbent-comparison harness in CI.</li>
+<li><strong>Manual UAT — incumbent-vs-RAM Pathfinder behavioural parity (FR60 / NFR41, reframed 2026-06-10<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>):</strong> scripted walkthroughs maintained under <code>docs/uat/</code> per service. Performed by jurisdiction-incumbent-experienced users — ListAssist-experienced (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for SSCS wave 1; APEX-experienced (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) for Courts waves 2+ — opening the incumbent side-by-side with RAM Pathfinder, comparing behaviour for the workflows + edge cases the script enumerates, and signing off per role per wave. Sign-off is the wave-cutover gate; there is no automated incumbent-comparison harness in CI.</li>
 <li><strong>Coverage target:</strong> behaviour coverage, not line coverage. PRs include behaviour-test rationale, not coverage stats.</li>
 </ul>
 <p><strong>Logging conventions (per HMCTS Crime template):</strong></p>
@@ -502,7 +502,7 @@ return &lt;ActualContent data={data} /&gt;;</code></pre></li>
 </div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>D5 — the jurisdiction's incumbent system is the behavioural reference, verified by manual UAT.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>

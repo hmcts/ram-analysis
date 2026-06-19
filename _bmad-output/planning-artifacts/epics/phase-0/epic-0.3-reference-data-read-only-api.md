@@ -8,10 +8,6 @@ parent: 'epics/phase-0/index.md'
 epic: 0.3
 title: 'Reference data is served read-only via a versioned, jurisdiction-filtered API'
 storyCount: 2
-status: 'integrations-first-restructure-2026-06-17'
-revisedAt: '2026-06-17'
-revisionNote: 'Integrations-first restructure (SCP 2026-06-17 / architecture decision #12): this epic renumbered 0.2 → 0.3. It now sits AFTER the auth epic (0.2) because the jurisdiction-filtered read API depends on JWTFilter (token validation) + ram-authorisation''s authz/check (the jurisdiction it filters on). Tier-(a) jo_* tables and ram-reference-data scaffolding are owned by the new Epic 0.1; tier-(b) tables + the read API remain here. File renamed from epic-0.2-reference-data-read-only.md.'
-revisionNote2: 'SCP 2026-06-10 cascade: the APEX SQL-ETL story (old 0.2.3) is retracted with the ETL itself (revised D3). The ram-reference-data scaffold + tier-(a) tables + upstream ingestion moved to Epic 0.1 (Stories 0.1.3/0.1.4) — they are part of the sign-in vertical slice. This epic now covers tier-(b) RAM-owned data + the read-only API with jurisdiction filtering. File renamed from epic-0.2-admin-manages-ref-data.md.'
 ---
 
 # Epic 0.3: Reference data is served read-only via a versioned, jurisdiction-filtered API
@@ -125,5 +121,5 @@ So that **Phase 1+ services can query controlled lists and JOH reference data at
 
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
-[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
+[^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.
 [^d12]: D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.

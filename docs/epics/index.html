@@ -87,9 +87,9 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <main class="content">
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="ram-analysis-ram-pathfinder--epic-breakdown">ram-analysis (RAM Pathfinder) — Epic Breakdown</h1>
-<p>This is the <strong>sharded entry point</strong> for the RAM Pathfinder epic and story breakdown. Each section below lives in its own file for maintainability — the prior single-file <code>epics.md</code> reached ~1,500 lines covering Phase 0 alone, and Phases 1–9+ would push it past 4,000 lines.</p>
+<p>This is the <strong>entry point</strong> for the RAM Pathfinder epic and story breakdown. Each section below lives in its own file for maintainability.</p>
 <details class="section" id="overview"><summary><span class="section-title">Overview</span></summary><div class="section-body">
-<p>RAM Pathfinder is HMCTS's greenfield JOH availability-and-scheduling platform — replacing the combined ListAssist/GAPS usage in the SSCS Tribunals jurisdiction in wave 1 and the as-is JI application (Oracle APEX) in the Courts jurisdictions in waves 2+<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Scope boundary<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: availability/scheduling only; case and hearing management live in external systems that consume RAM's APIs. This document decomposes the requirements from the PRD as amended 2026-06-10 (60 FRs, 42 NFRs, D1–D12 — SSCS-first wave 1<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>) and the Architecture v3.0 (HMCTS Crime SpringBoot starter, polyrepo, shared-DB + per-service DB roles, two-tier reference data ingested from JOH eLinks + MRD, two-population identity, Kubernetes on Azure AKS) into implementable stories.</p>
+<p>RAM Pathfinder is HMCTS's greenfield JOH availability-and-scheduling platform — replacing <strong>ListAssist</strong> (the SSCS judicial-scheduling tool) in the SSCS Tribunals jurisdiction in wave 1 (GAPS, the SSCS case-management system, is retained) and the as-is JI application (Oracle APEX) in the Courts jurisdictions in waves 2+<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Scope boundary<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: availability/scheduling only; case and hearing management live in external systems that consume RAM's APIs. This document decomposes the requirements from the PRD (60 FRs, 42 NFRs, D1–D12 — SSCS-first wave 1<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>) and the Architecture (HMCTS Crime SpringBoot starter, polyrepo, shared-DB + per-service DB roles, two-tier reference data ingested from JOH eLinks + MRD, two-population identity, Kubernetes on Azure AKS) into implementable stories.</p>
 <p>UX Design document is not present; downstream epics inherit UI requirements directly from PRD FRs (FR55, FR56) and architecture conventions (GOV.UK Design System base, WCAG 2.2 AA per NFR17). This gap is documented in the 2026-05-06 readiness report.</p>
 </div></details><details class="section" id="document-map"><summary><span class="section-title">Document Map</span></summary><div class="section-body">
 <h3 id="foundations-project-wide-context">Foundations (project-wide context)</h3>
@@ -103,7 +103,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tbody>
 <tr>
 <td><a href="requirements-inventory.html">requirements-inventory.md</a></td>
-<td>All FRs (FR1–FR60, renumbered 2026-06-10), NFRs (NFR1–NFR42), Architecture-derived ARs (AR1–AR52), and UX Design Requirements (none — accepted gap)</td>
+<td>All FRs (FR1–FR60), NFRs (NFR1–NFR42), Architecture-derived ARs (AR1–AR52), and UX Design Requirements (none — accepted gap)</td>
 </tr>
 <tr>
 <td><a href="framework.html">framework.md</a></td>
@@ -128,7 +128,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><strong>0</strong> — Foundations</td>
 <td><a href="phase-0/index.html">phase-0/</a></td>
-<td>🟡 Integrations-first restructure approved (<a href="../sprint-change-proposal-2026-06-17.html">SCP 2026-06-17</a>) — 5 epics, 12 stories preserved; per-story re-sequence + SSCS-cohort revalidation pending</td>
+<td>🟡 Planned — 5 epics, 14 stories</td>
 </tr>
 <tr>
 <td><strong>1</strong> — JOH</td>
@@ -189,7 +189,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </div></details><details class="section" id="how-to-find-your-way"><summary><span class="section-title">How to find your way</span></summary><div class="section-body">
 <ul>
 <li><strong>Looking for what to build next?</strong> Start at the phase index (e.g. <a href="phase-0/index.html">phase-0/index.md</a>) and pick an epic.</li>
-<li><strong>Looking for a specific story?</strong> Stories are named <code>Story {phase}.{epic}.{n}</code> (e.g. Story 0.1.5). They live under <code>phase-{n}/epic-{n}.{m}-{slug}.md</code>. They live under <code>phase-{n}/epic-{n}.{m}-{slug}.md</code>.</li>
+<li><strong>Looking for a specific story?</strong> Stories are named <code>Story {phase}.{epic}.{n}</code> (e.g. Story 0.1.5). They live under <code>phase-{n}/epic-{n}.{m}-{slug}.md</code>.</li>
 <li><strong>Looking for an FR?</strong> Use <a href="fr-coverage-map.html">fr-coverage-map.md</a>.</li>
 <li><strong>Looking for an architecture rule?</strong> Use <a href="requirements-inventory.html">requirements-inventory.md</a> — ARs are in the Additional Requirements section.</li>
 <li><strong>Verifying readiness?</strong> Run <code>bmad-check-implementation-readiness</code> from the repo root; it understands this sharded shape.</li>
@@ -197,9 +197,9 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

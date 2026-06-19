@@ -8,11 +8,6 @@ parent: 'epics/phase-0/index.md'
 epic: 0.5
 title: 'Notification service is scaffolded and contractually ready'
 storyCount: 2
-status: 'integrations-first-restructure-2026-06-17'
-revisedAt: '2026-06-17'
-revisionNote: 'Integrations-first restructure (SCP 2026-06-17 / architecture decision #12): renumbered Epic 0.4 → 0.5; stories 0.4.1/0.4.2 → 0.5.1/0.5.2. DRIFT FIX: the delivery-log table is renamed to its architecture-canonical name `ram_notification_dispatches` (data-tables.md, naming v3.2) — was `notification_delivery_log`. Cross-reference to the scaffold-baseline stories updated to 0.1.1 / 0.2.1. File renamed from epic-0.4-system-dispatches-emails.md.'
-revisionNote_2026_06_11: 'Admin Send-Test-Email UI removed (was Story 0.4.4); OAuth client_credentials flow deferred to Phase 6 when ram-payment-batch needs it (was Story 0.4.3). Phase 0 delivers the backend contract; Phase 2+ exercises it via user-JWT-propagated calls.'
-amendment2026_06_11: 'FR renumber only (FR59/FR60 → FR58/FR59 per SCP 2026-06-10); story content unchanged.'
 ---
 
 # Epic 0.5: Notification service is scaffolded and contractually ready
@@ -129,7 +124,7 @@ So that **transactional email dispatch is a single, observable, retry-safe contr
 **Given** a Postman collection is published,
 **When** `postman/ram-notification-phase0.postman_collection.json` runs in CI,
 **Then** it covers happy path + 400 + 401 + 403 (admin-only) + 403 (service-principal rejected pre-Phase-6) + retry behaviour (via a fault-injection test endpoint, removable post-Phase-0),
-**And** Phase 0 manual integration test consists of: open Postman → authenticate as test user → POST send → poll delivery-log until `sent` → open Mailpit → verify rendered email. (No admin UI for this flow in MVP per the 2026-05-15 scope decision.)
+**And** Phase 0 manual integration test consists of: open Postman → authenticate as test user → POST send → poll delivery-log until `sent` → open Mailpit → verify rendered email. (No admin UI for this flow in MVP.)
 
 **References:** FR9, FR58, FR59; NFR12, NFR13, NFR15, NFR22, NFR25, NFR28, NFR39, NFR42; AR17, AR21, AR34, AR37, AR38, AR41.
 

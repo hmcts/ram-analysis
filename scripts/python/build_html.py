@@ -250,7 +250,6 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
         ("Epic 0.3 — Reference data read-only API (2 stories)", "epics/phase-0/epic-0.3-reference-data-read-only-api", False),
         ("Epic 0.4 — User populations bootstrapped (1 story)", "epics/phase-0/epic-0.4-user-populations-bootstrapped", False),
         ("Epic 0.5 — Notification scaffolded (2 stories)", "epics/phase-0/epic-0.5-system-dispatches-emails", False),
-        ("Phase 0 Validation Report (2026-05-15 — superseded)", "epics/phase-0/validation-report-2026-05-15", False),
     ]),
 ]
 
@@ -574,6 +573,13 @@ def build_nav_js() -> str:
         "    }\n"
         "    d.addEventListener('toggle', function(){ localStorage.setItem(key, d.open ? 'open' : 'closed'); });\n"
         "  });\n"
+        "  // Preserve the sidebar's scroll position across page navigations.\n"
+        "  // The site is multi-page, so each click reloads the page and re-renders\n"
+        "  // this nav; without this it would reset to the top every time.\n"
+        "  try { var s = sessionStorage.getItem('nav-scroll'); if (s !== null) root.scrollTop = parseInt(s, 10) || 0; } catch (e) {}\n"
+        "  function saveNavScroll(){ try { sessionStorage.setItem('nav-scroll', String(root.scrollTop)); } catch (e) {} }\n"
+        "  root.addEventListener('click', function(e){ if (e.target.closest && e.target.closest('a')) saveNavScroll(); });\n"
+        "  window.addEventListener('pagehide', saveNavScroll);\n"
         "  // Expand all / Collapse all (sidebar).\n"
         "  root.querySelectorAll('button[data-nav-action]').forEach(function(b){\n"
         "    b.addEventListener('click', function(){\n"

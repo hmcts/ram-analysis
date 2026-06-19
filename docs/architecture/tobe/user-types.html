@@ -381,7 +381,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong>Verifier separation of duties:</strong> confirmation and verification of sittings/bookings must be performed by different principals — enforced at the application tier on the sitting/booking row's <code>confirmed_by</code> field. Re-open enforces a similar constraint (FR40).</li>
 </ul>
 </div></details><details class="section" id="manual-uat-mapping-fr60"><summary><span class="section-title">Manual UAT mapping (FR60)</span></summary><div class="section-body">
-<p>Each domain service has a manual UAT script walked by jurisdiction-incumbent-experienced users from the in-wave applicable access types before that wave's rollout (GAPS-experienced users for SSCS wave 1; APEX-experienced users for Courts waves 2+).</p>
+<p>Each domain service has a manual UAT script walked by jurisdiction-incumbent-experienced users from the in-wave applicable access types before that wave's rollout (ListAssist-experienced users for SSCS wave 1; APEX-experienced users for Courts waves 2+).</p>
 <table>
 <thead>
 <tr>
@@ -436,11 +436,11 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

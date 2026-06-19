@@ -19,7 +19,7 @@ amended_in: architecture.md v3.0 — Sprint Change Proposal 2026-06-10 cascade (
 
 This is the inventory of RAM Pathfinder database tables, grouped by owning service. The table list, column shapes, FK relationships, and ownership boundaries are RAM Pathfinder's design.
 
-GAPS and APEX have their own (different) schemas; neither is in this inventory and neither is owned by any RAM Pathfinder service. **No legacy data is migrated from either system**[^d3] — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from the upstream sources of truth:
+ListAssist and APEX have their own (different) schemas; neither is in this inventory and neither is owned by any RAM Pathfinder service. **No legacy data is migrated from either system**[^d3] — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from the upstream sources of truth:
 
 - **JOH eLinks API** → the 15 `jo_*` tables (nightly in-process scheduled sync inside `ram-reference-data`).
 - **MRD (Master Reference Data)** → the `mrd_*` tables (weekly Excel feed via blob drop + scheduled pick-up, until MRD's public APIs ship).
@@ -215,4 +215,4 @@ Per `ram_mock_auth` DB role. **Never deployed to production**; production deploy
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
 [^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
-[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
+[^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.

@@ -295,7 +295,7 @@ These are not user-facing access types in the as-is catalogue; they are RAM Path
 
 ## Manual UAT mapping (FR60)
 
-Each domain service has a manual UAT script walked by jurisdiction-incumbent-experienced users from the in-wave applicable access types before that wave's rollout (GAPS-experienced users for SSCS wave 1; APEX-experienced users for Courts waves 2+).
+Each domain service has a manual UAT script walked by jurisdiction-incumbent-experienced users from the in-wave applicable access types before that wave's rollout (ListAssist-experienced users for SSCS wave 1; APEX-experienced users for Courts waves 2+).
 
 | Service / phase | UAT access types |
 |---|---|
@@ -320,4 +320,4 @@ Each domain service has a manual UAT script walked by jurisdiction-incumbent-exp
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
 [^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
-[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
+[^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.

@@ -7,8 +7,6 @@ tags: [ram-pathfinder, epics, sscs]
 timestamp: '2026-06-11'
 parent: 'epics/index.md'
 purpose: 'Phase × Area architectural framework — the spine that organises concrete epics across 10 sequential phases'
-revisedAt: '2026-06-11'
-revisionNote: 'SCP 2026-06-10 cascade: ETL area replaced by Upstream Reference-Data Ingestion (in Epic 0.1); Admin UI Foundation area marked post-MVP (D10 — never previously carried into this file); two-population identity + jurisdiction in the Identity area; Judge → JOH (ram-joh) in Phase 1; FR renumber FR58–FR61 → FR57–FR60; Phase 9+ reframed jurisdiction-first (SSCS wave 1 replacing GAPS).'
 ---
 
 # Phase × Area Framework
@@ -17,7 +15,7 @@ RAM Pathfinder is built in **10 sequential phases (0–9+)** per the PRD's Phase
 
 - **Phase 0** is cross-cutting foundations (multiple parallel areas).
 - **Phases 1–8** each deliver one service end-to-end (backend + UI module).
-- **Phase 9+** is the jurisdiction-first wave rollout[^d8][^d11]: wave 1 = the **SSCS jurisdiction** (replacing GAPS); waves 2+ = Courts jurisdictions per-region (replacing APEX/JI).
+- **Phase 9+** is the jurisdiction-first wave rollout[^d8][^d11]: wave 1 = the **SSCS jurisdiction** (replacing ListAssist; GAPS case management retained); waves 2+ = Courts jurisdictions per-region (replacing APEX/JI).
 
 The first level of grouping below is **Phase** (delivery sequence); the second level is **Area** (the capability or cross-cutting concern that anchors the epic). Within each Area, concrete epics with stories and Gherkin acceptance criteria live in the per-phase folders (e.g. [phase-0/](phase-0/index.md)).
 
@@ -28,7 +26,7 @@ The first level of grouping below is **Phase** (delivery sequence); the second l
 | **0** | Platform & DevEx | `ram-architecture` (scaffolding), GitHub Actions, APIM, AKS, Application Insights, shared `ram_configuration_values` | FR8, FR58, FR59, NFR25–NFR28, NFR40, NFR42 |
 | **0** | Identity & Authorisation | `ram-mock-auth`, `ram-authorisation` (two-population identity resolution; jurisdiction-aware) | FR1–FR4, FR57 *(flag surface)*, NFR12, NFR13 |
 | **0** | Upstream Reference-Data Ingestion | `ram-reference-data` in-process eLinks sync + MRD blob ingestion (tier (a): `jo_*`, `mrd_*`, `ram_sync_status`) | FR6 *(tier a)*, FR7, NFR24 |
-| **0** | Reference Data (tier (b) + read API) | `ram-reference-data` (backend); maintenance UI post-MVP in `ram-admin-ui`[^d10] | FR6, FR7 *(reframed)* |
+| **0** | Reference Data (tier (b) + read API) | `ram-reference-data` (backend); maintenance UI post-MVP in `ram-admin-ui`[^d10] | FR6, FR7 |
 | **0** | Notification | `ram-notification` | FR9, NFR22 |
 | **0** | Identity Bootstrap & Verification | seed scripts + bootstrap-verification job + runbook (`ram-architecture`) | FR1 *(data)*, FR4 *(data layer)*, FR57 *(initial flags)* |
 | **0** | Business UI Foundation | `ram-ui` (shell, auth, design system) | FR55 *(shell)*, FR56 *(stack)*, NFR17 |
@@ -66,17 +64,17 @@ Cross-cutting NFRs (performance NFR1–NFR9, security/data NFR10–NFR16, NFR30�
 
 **Component(s)**: `ram-mock-auth`, `ram-authorisation`.
 
-**Primary FR/NFR coverage**: FR1, FR2, FR3, FR4, FR57 *(flags wired here; wave activation orchestrated in Phase 9+)*; NFR12 *(revised v2.6)*, NFR13, NFR16, NFR20. *(FR5 is reframed as post-MVP per v2.5; out of scope here.)*
+**Primary FR/NFR coverage**: FR1, FR2, FR3, FR4, FR57 *(flags wired here; wave activation orchestrated in Phase 9+)*; NFR12, NFR13, NFR16, NFR20. *(FR5 is post-MVP; out of scope here.)*
 
 ### Phase 0 · Area: Reference Data
 
-**Scope**: `ram-reference-data` service owning **all 32 reference-data tables across two ownership tiers** (FR6/FR7 reframed 2026-06-10): **tier (a) upstream-sourced** — 15 `jo_*` JOH eLinks entities + `mrd_*` MRD entities + `ram_sync_status`, written only by the ingestion mechanisms, read-only in RAM, corrections at source; **tier (b) RAM-owned** — `ram_regions`, `ram_offices`, `ram_calendar_periods` + 12 operational vocabularies, DBA-maintained per runbook in MVP[^d10]. **Read-only, jurisdiction-filtered** versioned REST API over both tiers[^d8]. Per-service DB SELECT grants for direct-SQL reads (per FR7 / Principle 2). API-as-Product standards exercised here first (versioning, OpenAPI, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457), deprecation signalling).
+**Scope**: `ram-reference-data` service owning **all 32 reference-data tables across two ownership tiers** (FR6/FR7): **tier (a) upstream-sourced** — 15 `jo_*` JOH eLinks entities + `mrd_*` MRD entities + `ram_sync_status`, written only by the ingestion mechanisms, read-only in RAM, corrections at source; **tier (b) RAM-owned** — `ram_regions`, `ram_offices`, `ram_calendar_periods` + 12 operational vocabularies, DBA-maintained per runbook in MVP[^d10]. **Read-only, jurisdiction-filtered** versioned REST API over both tiers[^d8]. Per-service DB SELECT grants for direct-SQL reads (per FR7 / Principle 2). API-as-Product standards exercised here first (versioning, OpenAPI, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457), deprecation signalling).
 
 **Ingestion (in Epic 0.1's vertical slice — sign-in depends on `jo_people`)**: nightly in-process `@Scheduled` eLinks sync (full-refresh upsert on upstream natural keys; soft-deactivation, never hard-delete; run log in `ram_sync_status`) + weekly MRD Excel via Azure Blob drop (validate / upsert / archive; idempotent per file; reader swaps for the MRD API post-MVP). Per AR46–AR49.
 
 **Component(s)**: `ram-reference-data` (backend incl. ingestion tasks). The tier-(b) maintenance UI (FR6) is post-MVP `ram-admin-ui`[^d10].
 
-**Primary FR/NFR coverage**: FR6, FR7 *(reframed 2026-06-10)*, NFR24 *(reframed — JOH eLinks + MRD are MVP integrations)*; cross-references NFR39 (API-as-Product), AR18, AR20, AR22, AR46–AR49; gaps.md G8.
+**Primary FR/NFR coverage**: FR6, FR7, NFR24 *(JOH eLinks + MRD are MVP integrations)*; cross-references NFR39 (API-as-Product), AR18, AR20, AR22, AR46–AR49; gaps.md G8.
 
 ### Phase 0 · Area: Notification
 
@@ -136,11 +134,11 @@ Cross-cutting NFRs (performance NFR1–NFR9, security/data NFR10–NFR16, NFR30�
 
 ### Phase 1 · Area: JOH Records & Working Patterns
 
-**Scope**: `ram-joh` backend service + `joh/` UI module in `ram-ui`. JOH profile **views** composing tier-(a) `jo_*` data with `ram-joh`'s RAM-owned overlays keyed by `personnel_number` (FR10 search/filter; FR11 view — the canonical person record is `jo_people`, no profile CRUD in RAM). Working Patterns (None / Daily / Weekly) with target sit %, jurisdictional split (100% sum constraint), per-day work-type pattern — RAM-owned operational state. Forward-sitting generation up to next 31st March from working pattern, preserving prior absences. Ticket overlays layered over upstream `jo_tickets` (FR15). Full-time / part-time status **displayed from upstream** `jo_contract_types` — conversions happen upstream and arrive at the next sync (FR14 reframed; the in-RAM conversion capability is retracted). Same-Region base-location switching as RAM-owned overlay (cross-Region is out-of-system). Off-circuit / cross-Region JOH linking for booking purposes (e.g. tribunal panels with members from other regions). Demo: Journey *(stakeholder per-module demo of JOH management)*.
+**Scope**: `ram-joh` backend service + `joh/` UI module in `ram-ui`. JOH profile **views** composing tier-(a) `jo_*` data with `ram-joh`'s RAM-owned overlays keyed by `personnel_number` (FR10 search/filter; FR11 view — the canonical person record is `jo_people`, no profile CRUD in RAM). Working Patterns (None / Daily / Weekly) with target sit %, jurisdictional split (100% sum constraint), per-day work-type pattern — RAM-owned operational state. Forward-sitting generation up to next 31st March from working pattern, preserving prior absences. Ticket overlays layered over upstream `jo_tickets` (FR15). Full-time / part-time status **displayed from upstream** `jo_contract_types` — conversions happen upstream and arrive at the next sync (FR14). Same-Region base-location switching as RAM-owned overlay (cross-Region is out-of-system). Off-circuit / cross-Region JOH linking for booking purposes (e.g. tribunal panels with members from other regions). Demo: Journey *(stakeholder per-module demo of JOH management)*.
 
 **Component(s)**: `ram-joh`, `ram-ui/src/modules/joh/`.
 
-**Primary FR/NFR coverage**: FR10, FR11, FR12, FR13, FR14 *(reframed)*, FR15, FR16, FR17, FR18.
+**Primary FR/NFR coverage**: FR10, FR11, FR12, FR13, FR14, FR15, FR16, FR17, FR18.
 
 ## Phase 2 — Absence
 
@@ -182,7 +180,7 @@ Cross-cutting NFRs (performance NFR1–NFR9, security/data NFR10–NFR16, NFR30�
 
 **Primary FR/NFR coverage**: FR35, FR36, FR37, FR38, FR39, FR40.
 
-> **End-of-Phase-5 demo gate**: Journey 3 (Court daily sitting confirmation — renumbered 2026-06-10) becomes demoable.
+> **End-of-Phase-5 demo gate**: Journey 3 (Court daily sitting confirmation) becomes demoable.
 
 ## Phase 6 — Payment
 
@@ -200,9 +198,9 @@ Cross-cutting NFRs (performance NFR1–NFR9, security/data NFR10–NFR16, NFR30�
 
 **Component(s)**: `ram-payment-batch` (deployed alongside `ram-payment`).
 
-**Primary FR/NFR coverage**: FR42 *(revised v2.6)*, FR43 *(revised v2.6)*, FR45.
+**Primary FR/NFR coverage**: FR42, FR43, FR45.
 
-> **End-of-Phase-6 demo gate**: Journey 2 (RSU cover-creation through payment — the canonical Courts operational cycle; renumbered 2026-06-10) and Journey 1 (SSCS Tribunal Caseworker panel coverage — same service chain with SSCS roles) become demoable.
+> **End-of-Phase-6 demo gate**: Journey 2 (RSU cover-creation through payment — the canonical Courts operational cycle) and Journey 1 (SSCS Tribunal Caseworker panel coverage — same service chain with SSCS roles) become demoable.
 
 ## Phase 7 — Itineraries
 
@@ -214,7 +212,7 @@ Cross-cutting NFRs (performance NFR1–NFR9, security/data NFR10–NFR16, NFR30�
 
 **Primary FR/NFR coverage**: FR48, FR49, FR50, FR51, FR52, NFR8, NFR37.
 
-> **End-of-Phase-7 demo gate**: Journey 4 (Judge views itinerary — renumbered 2026-06-10) becomes demoable.
+> **End-of-Phase-7 demo gate**: Journey 4 (Judge views itinerary) becomes demoable.
 
 ## Phase 8 — MI Feed & Reporting
 
@@ -226,15 +224,15 @@ Cross-cutting NFRs (performance NFR1–NFR9, security/data NFR10–NFR16, NFR30�
 
 **Primary FR/NFR coverage**: FR53, FR54, NFR23.
 
-> **End-of-Phase-8 demo gate**: Journey 5 (DA&I MI Feed API consumer — renumbered 2026-06-10) becomes demoable post-MVP onboarding.
+> **End-of-Phase-8 demo gate**: Journey 5 (DA&I MI Feed API consumer) becomes demoable post-MVP onboarding.
 
 ## Phase 9+ — Wave Rollout (jurisdiction-first)
 
 ### Phase 9+ · Area: Wave Rollout
 
-**Scope**: Jurisdiction-first phased activation — **wave 1 = the SSCS jurisdiction** (replacing GAPS, all in-jurisdiction applicable roles in one wave); **waves 2+ = Courts jurisdictions per-region** (replacing APEX/JI). Activation flips `ram_auth_user_activation_flags` per (jurisdiction, region) tuple (FR57) via DBA SQL per the rollout runbook once that wave's feature-parity gate is passed. Manual UAT execution per role per wave (FR60): **jurisdiction-incumbent-experienced users** — GAPS-experienced (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) for waves 2+ — walk per-service UAT scripts (under `docs/uat/` in each domain service repo) side-by-side against the incumbent; sign-off per role per wave is the wave-cutover gate. **Wave-1 additional gates**[^d11]: the SSCS-cohort implementation-readiness assessment signed off; the SSCS as-is analysis pack complete. Data-readiness gate per wave: reference data current per `ram_sync_status` + the bootstrap-verification job passing for the wave's users (Epic 0.4). Per-wave rollback playbook (NFR36): documented path returning the wave to its incumbent within one operational cycle if the gate is breached post-cutover. Cross-region manual coordination during partial rollout (Risk #1 mitigation; operational, not application-level). Wave 1 is the Pilot; subsequent waves run until all jurisdictions are on RAM Pathfinder and the incumbents are retired[^d8][^d11].
+**Scope**: Jurisdiction-first phased activation — **wave 1 = the SSCS jurisdiction** (replacing ListAssist; GAPS case management retained; all in-jurisdiction applicable roles in one wave); **waves 2+ = Courts jurisdictions per-region** (replacing APEX/JI). Activation flips `ram_auth_user_activation_flags` per (jurisdiction, region) tuple (FR57) via DBA SQL per the rollout runbook once that wave's feature-parity gate is passed. Manual UAT execution per role per wave (FR60): **jurisdiction-incumbent-experienced users** — ListAssist-experienced (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) for waves 2+ — walk per-service UAT scripts (under `docs/uat/` in each domain service repo) side-by-side against the incumbent; sign-off per role per wave is the wave-cutover gate. **Wave-1 additional gates**[^d11]: the SSCS-cohort implementation-readiness assessment signed off; the SSCS as-is analysis pack complete. Data-readiness gate per wave: reference data current per `ram_sync_status` + the bootstrap-verification job passing for the wave's users (Epic 0.4). Per-wave rollback playbook (NFR36): documented path returning the wave to its incumbent within one operational cycle if the gate is breached post-cutover. Cross-region manual coordination during partial rollout (Risk #1 mitigation; operational, not application-level). Wave 1 is the Pilot; subsequent waves run until all jurisdictions are on RAM Pathfinder and the incumbents are retired[^d8][^d11].
 
-**Component(s)**: Programme-level (manual UAT scripts, runbooks, activation orchestration). Cross-region edge case (Journey 6, renumbered 2026-06-10) handled out-of-system per Risk #1 — no application capability built.
+**Component(s)**: Programme-level (manual UAT scripts, runbooks, activation orchestration). Cross-region edge case (Journey 6) handled out-of-system per Risk #1 — no application capability built.
 
 **Primary FR/NFR coverage**: FR57 *(activation orchestration)*, FR60, NFR36, NFR38, NFR41. Closes the MVP.
 
@@ -242,5 +240,5 @@ Cross-cutting NFRs (performance NFR1–NFR9, security/data NFR10–NFR16, NFR30�
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
 [^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
-[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
+[^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.
 [^d12]: D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.

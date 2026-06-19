@@ -92,7 +92,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </blockquote>
 <details class="section" id="ram-pathfinder-tables-not-legacy-tables"><summary><span class="section-title">RAM Pathfinder tables, not legacy tables</span></summary><div class="section-body">
 <p>This is the inventory of RAM Pathfinder database tables, grouped by owning service. The table list, column shapes, FK relationships, and ownership boundaries are RAM Pathfinder's design.</p>
-<p>GAPS and APEX have their own (different) schemas; neither is in this inventory and neither is owned by any RAM Pathfinder service. <strong>No legacy data is migrated from either system</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from the upstream sources of truth:</p>
+<p>ListAssist and APEX have their own (different) schemas; neither is in this inventory and neither is owned by any RAM Pathfinder service. <strong>No legacy data is migrated from either system</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from the upstream sources of truth:</p>
 <ul>
 <li><strong>JOH eLinks API</strong> → the 15 <code>jo_*</code> tables (nightly in-process scheduled sync inside <code>ram-reference-data</code>).</li>
 <li><strong>MRD (Master Reference Data)</strong> → the <code>mrd_*</code> tables (weekly Excel feed via blob drop + scheduled pick-up, until MRD's public APIs ship).</li>
@@ -626,7 +626,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li id="fn7"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn9"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

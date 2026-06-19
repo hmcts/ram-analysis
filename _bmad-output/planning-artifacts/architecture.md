@@ -131,7 +131,7 @@ Architectural implications:
 - **Reliability** — available during HMCTS hours; per-wave rollback; single Azure region (UK South) with multi-AZ HA; rollout isolation at the app tier via per-(jurisdiction, region) activation flags (FR57). DR is an **open gap** — see [`./architecture/gaps.md` G3.6](./architecture/gaps.md).
 - **Maintainability** — API-as-Product (versioned, OpenAPI, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details); per-service deployment; manual UAT scripts per domain service (FR60 / NFR41); Postman collections per phase.
 
-**Scale & complexity:** 11-service API backend + UI. Complexity drivers: JFEPS/Liberata payment integration, JOH eLinks + MRD upstream ingestion, cross-cutting jurisdiction-aware authorisation, jurisdiction-first phased rollout, judicial regulatory environment, manual UAT against the jurisdiction's incumbent system (GAPS for SSCS wave 1; APEX for Courts waves 2+).
+**Scale & complexity:** 11-service API backend + UI. Complexity drivers: JFEPS/Liberata payment integration, JOH eLinks + MRD upstream ingestion, cross-cutting jurisdiction-aware authorisation, jurisdiction-first phased rollout, judicial regulatory environment, manual UAT against the jurisdiction's incumbent system (ListAssist for SSCS wave 1; APEX for Courts waves 2+).
 
 ### Technical Constraints & Dependencies
 
@@ -155,9 +155,9 @@ Architectural implications:
 - **HMCTS email infrastructure** for transactional notifications.
 - **DA&I MI Feed consumers** (post-MVP) — they call RAM Pathfinder APIs.
 - **External case-management systems** (SSCS case management; Courts Listing systems) — consume RAM's APIs from Phase 9 onward[^d12]; never write into RAM.
-- **GAPS / APEX (incumbents)** — used by UAT users to compare behaviour per wave (GAPS for SSCS wave 1; APEX for Courts waves 2+). No programmatic linkage to RAM Pathfinder's CI or runtime.
+- **ListAssist / APEX (scheduling incumbents)** — used by UAT users to compare behaviour per wave (ListAssist for SSCS wave 1; APEX for Courts waves 2+). No programmatic linkage to RAM Pathfinder's CI or runtime.
 
-**Data bootstrap (no legacy migration — revised D3 + D9):** RAM Pathfinder migrates nothing from GAPS or APEX. Judicial-holder reference data is ingested from JOH eLinks + MRD (source-of-truth integration, not migration); historical data stays in the cohort's incumbent system. User and authorisation records (`auth_*` tables) are bootstrapped by programme-management / operational mechanisms outside the PRD's scope; every bootstrapped user must resolve to an IdP principal before that user's wave cutover. The Phase 0 Data Migration ETL is **retracted**; `ram-architecture/migration/` is no longer a deliverable.
+**Data bootstrap (no legacy migration — revised D3 + D9):** RAM Pathfinder migrates nothing from ListAssist or APEX. Judicial-holder reference data is ingested from JOH eLinks + MRD (source-of-truth integration, not migration); historical data stays in the cohort's incumbent system. User and authorisation records (`auth_*` tables) are bootstrapped by programme-management / operational mechanisms outside the PRD's scope; every bootstrapped user must resolve to an IdP principal before that user's wave cutover. The Phase 0 Data Migration ETL is **retracted**; `ram-architecture/migration/` is no longer a deliverable.
 
 ### Cross-Cutting Concerns Identified
 
@@ -169,7 +169,7 @@ Concerns that recur across most services and are addressed at the platform layer
 - **Per-(jurisdiction, region) phased activation**[^d8][^d11] — RAM Pathfinder access is gated by `ram_auth_user_activation_flags` (FR57); the flag rows carry the (jurisdiction, region) tuple so cutover flips include both in the `WHERE` clause. Authorisation distinguishes "active in RAM Pathfinder" from "exists in RAM Pathfinder".
 - **Retry safety via native DB primitives** — natural-key uniqueness, optimistic locking, pessimistic row locking. No custom idempotency-key tables. Detail in *Data Architecture* and [`./architecture/data-tables.md`](./architecture/data-tables.md).
 - **API-as-Product compliance** — versioned contract, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details, OpenAPI per service (FR58).
-- **Manual UAT** (FR60 / NFR41) — jurisdiction-incumbent-experienced users compare RAM Pathfinder vs the incumbent per service per wave (GAPS-experienced users for SSCS wave 1; APEX-experienced users for Courts waves 2+); sign-off is the wave-cutover gate. No automated incumbent-comparison in CI.
+- **Manual UAT** (FR60 / NFR41) — jurisdiction-incumbent-experienced users compare RAM Pathfinder vs the incumbent per service per wave (ListAssist-experienced users for SSCS wave 1; APEX-experienced users for Courts waves 2+); sign-off is the wave-cutover gate. No automated incumbent-comparison in CI.
 - **Forbidden data** — no bank details (FR47); no case-level data (FR54). Enforced at the schema and API boundary.
 
 ### Architecture-phase decisions still open
@@ -508,7 +508,7 @@ The split prevents admin workflows from leaking into business users' nav, gives 
 
 **Log retention:** 30 days hot in App Insights; 90 days cold in Log Analytics archive. (Resolves PRD TBD #4.) Pre-GA review against HMCTS retention policy may extend it.
 
-**Historical-data access:** historical data stays in the cohort's incumbent system and is accessed there as needed (revised D3 — no migration of any kind). For Courts waves (2+): read-only APEX bridge for 12 months after each region's cutover, then a one-shot extract; APEX retires fully when every region has passed its window (resolves PRD TBD #6, partial; the 12-month length is pending programme confirmation). For SSCS wave 1: GAPS is expected to be decommissioned — the historical-access window and decommission timing for GAPS are programme-managed and should be settled as part of the SSCS-cohort readiness assessment required before Phase 9[^d11].
+**Historical-data access:** historical data stays in the cohort's incumbent system and is accessed there as needed (revised D3 — no migration of any kind). For Courts waves (2+): read-only APEX bridge for 12 months after each region's cutover, then a one-shot extract; APEX retires fully when every region has passed its window (resolves PRD TBD #6, partial; the 12-month length is pending programme confirmation). For SSCS wave 1: ListAssist (the SSCS scheduling tool) is replaced — the historical-access window for ListAssist scheduling data is programme-managed and should be settled as part of the SSCS-cohort readiness assessment required before Phase 9[^d11]. (GAPS, the SSCS case-management system, is retained, not decommissioned.)
 
 **Scaling:** Kubernetes HPA per service. CPU/memory triggers; min 2 replicas; max replicas tuned per service after capacity stabilises.
 
@@ -562,7 +562,7 @@ Single-AZ failure within UK South is tolerated transparently: AKS reschedules po
 6. **Phase 0 UI shell** — one Vite + React + GOV.UK Design System scaffold deployed to Azure Static Web Apps: `ram-ui` (business), carrying the role-scoped Home shell. *(`ram-admin-ui` is post-MVP[^d10]; MVP admin operations are DBA-via-SQL per runbook.)*
 7. **Phases 1–8** — domain services per the brainstorming sequence (JOH → Absence → Vacancy → Booking → Sitting → Payment → Itinerary → MI Feed); each adds its own tables, OpenAPI spec, Postman collection, and a `ram-ui` module. **No legacy-data migration in any phase** — revised D3: reference data is ingested from JOH eLinks + MRD; historical data stays in the incumbents.
 8. **Pre-Phase-9 — Real HMCTS IdP integration cutover** — confirm G1.1, G1.2 (client_credentials for batch — re-opened v2.6), G1.3. Switch staging `issuer-url` from mock auth to HMCTS IdP via Spring profile. Run the bootstrap-verification pass (every user in both populations maps to a real IdP principal). Re-execute full automated test suite + per-service manual UAT scripts before opening wave 1. **The SSCS-cohort readiness assessment[^d11] must be signed off before the wave-1 cutover plan is finalised.**
-9. **Phase 9+** — jurisdiction-first rollout waves on production with real HMCTS IdP: wave 1 = SSCS (replacing GAPS); waves 2+ = Courts jurisdictions per-region (replacing APEX/JI). App Insights retention and the incumbent historical-access arrangement activated per wave.
+9. **Phase 9+** — jurisdiction-first rollout waves on production with real HMCTS IdP: wave 1 = SSCS (replacing ListAssist; GAPS case management retained); waves 2+ = Courts jurisdictions per-region (replacing APEX/JI). App Insights retention and the incumbent historical-access arrangement activated per wave.
 
 **Cross-Component Dependencies:**
 
@@ -582,7 +582,7 @@ Single-AZ failure within UK South is tolerated transparently: AKS reschedules po
 | 3 | Service-to-service auth | **Two patterns at MVP**: JWT propagation (forward inbound user JWT) for user-initiated calls; OAuth `client_credentials` (via `ram-mock-auth` in non-prod; production issuer per G7.1) for the payment-processing batch service principal |
 | 4 | Log retention | 30 days hot in App Insights; 90 days cold in Log Analytics archive |
 | 5 | API versioning | URI prefix major versioning (`/v1/`); 6-month internal / 12-month external deprecation; `Deprecation` header per [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745); `Sunset` header per [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) |
-| 6 | Historical-data access | Historical data stays in the incumbent[^d3]. Courts waves: read-only APEX bridge for 12 months post-region-cutover; one-shot extract thereafter. SSCS wave 1: GAPS historical-access window settled in the SSCS-cohort readiness assessment. |
+| 6 | Historical-data access | Historical data stays in the incumbent[^d3]. Courts waves: read-only APEX bridge for 12 months post-region-cutover; one-shot extract thereafter. SSCS wave 1: ListAssist scheduling-data historical-access window settled in the SSCS-cohort readiness assessment (GAPS case management retained). |
 | 7 | Identity-key scheme *(reframed 2026-06-11)* | Runtime identity resolution at sign-in: IdP email → `jo_people` → personnel number (JOHs); IdP email → `ram_auth_staff_identities` → RAM-assigned UUID (admin staff). The APEX ⇄ IdP ETL matching scheme is retired with the ETL. |
 
 ## Implementation Patterns & Consistency Rules
@@ -617,7 +617,7 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 
 **UI Boundaries:** **two SPAs** (v2.10) — `ram-ui` (business, **MVP**) and `ram-admin-ui` (admin, **post-MVP[^d10]**). Each SPA contains multiple modules; each module imports its generated API client; cross-module communication via TanStack Query cache + React Context. No code-sharing between the two SPAs — same stack and conventions, but independent repos, pipelines, and deployments. Admin workflows (tier-(b) Reference Data maintenance per FR6, User & Role admin per FR4) live exclusively in `ram-admin-ui` and never appear in `ram-ui`'s nav; in MVP those operations are DBA-via-SQL per runbook.
 
-**External Systems:** HMCTS IdP (every authentication); JOH eLinks API (inbound reference-data pull, scheduled); MRD (inbound weekly Excel via blob drop); JFEPS/Liberata (outbound only via Notification → email — preserved for SSCS wave 1); HMCTS Email (outbound only); incumbents during build (manual UAT only — GAPS for wave 1, APEX for waves 2+); APEX during Courts rollout (read-only for migrated users for 12 months, served separately); external case-management systems (outbound — they consume RAM's APIs from Phase 9, never write in,[^d12]); DA&I (inbound only, post-MVP).
+**External Systems:** HMCTS IdP (every authentication); JOH eLinks API (inbound reference-data pull, scheduled); MRD (inbound weekly Excel via blob drop); JFEPS/Liberata (outbound only via Notification → email — preserved for SSCS wave 1); HMCTS Email (outbound only); incumbents during build (manual UAT only — ListAssist for wave 1, APEX for waves 2+); APEX during Courts rollout (read-only for migrated users for 12 months, served separately); external case-management systems (outbound — they consume RAM's APIs from Phase 9, never write in,[^d12]; SSCS: **GAPS** — retained case management; Courts: Listing systems); DA&I (inbound only, post-MVP).
 
 ### Requirements to Structure Mapping
 
@@ -704,7 +704,7 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 | HMCTS email | outbound | Notification | SMTP / Microsoft Graph (HMCTS standard) |
 | Azure Application Insights | outbound (logs + traces) | All services | OpenTelemetry → OTel Collector → App Insights as export target |
 | Azure Key Vault | inbound (secrets) | All services | Spring Cloud Azure Key Vault at startup |
-| Incumbents — GAPS / APEX (manual UAT only) | n/a | UAT users from domain services' user roles | Jurisdiction-incumbent-experienced users compare side-by-side per FR60 / NFR41 (GAPS for wave 1; APEX for waves 2+). No HTTP scraping, DB read, or CI hook. |
+| Scheduling incumbents — ListAssist / APEX (manual UAT only) | n/a | UAT users from domain services' user roles | Jurisdiction-incumbent-experienced users compare side-by-side per FR60 / NFR41 (ListAssist for wave 1; APEX for waves 2+). No HTTP scraping, DB read, or CI hook. |
 | APEX (during Courts rollout window) | inbound (read-only for migrated users) | None — APEX served separately | Out-of-band; not a RAM Pathfinder integration |
 | External case-management systems (SSCS case management; Courts Listing) | outbound (from Phase 9,[^d12]) | Domain services' / read models' public APIs | They consume RAM's JOH availability + booking APIs; **no external system writes into RAM**. Contract design lands with wave onboarding. |
 | DA&I | inbound (post-MVP) | MI Feed | REST API calls; service-token authenticated |
@@ -743,12 +743,12 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 Per-wave production cutover[^d8][^d11] — wave 1 = the SSCS jurisdiction; waves 2+ = Courts jurisdictions per-region — is gated on:
 
 1. All automated FR/NFR tests (unit, integration, contract, E2E) passing for the in-scope user roles.
-2. **Manual UAT signed off** — jurisdiction-incumbent-experienced users for every applicable in-wave role have walked the per-service UAT scripts (FR60 / NFR41 revised): GAPS-experienced users (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced users (RSU, Court, Judge, Clerks, Finance, MI) for waves 2+.
+2. **Manual UAT signed off** — jurisdiction-incumbent-experienced users for every applicable in-wave role have walked the per-service UAT scripts (FR60 / NFR41 revised): ListAssist-experienced users (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced users (RSU, Court, Judge, Clerks, Finance, MI) for waves 2+.
 3. Data readiness verified for the wave: reference data current per `ram_sync_status` + MRD feed; user/authorisation records bootstrapped and verified against IdP principals for the wave's (jurisdiction, region) scope.
 4. **For wave 1 only:** the SSCS-cohort readiness assessment[^d11] signed off.
 5. Programme sign-off (operational readiness, communication to migrating users).
 
-Rollback path: revert the wave's activation flags (FR57, keyed by jurisdiction + region) → users return to the incumbent (GAPS for wave 1; APEX for waves 2+).
+Rollback path: revert the wave's activation flags (FR57, keyed by jurisdiction + region) → users return to the incumbent (ListAssist for wave 1; APEX for waves 2+).
 
 ## Architecture Validation Results
 
@@ -795,7 +795,7 @@ See [`./architecture/assumptions.md`](./architecture/assumptions.md).
 
 **Status: READY WITH DOCUMENTED GAPS. Confidence: High.**
 
-*(Scope note: this assessment covers the build architecture (Phases 0–8). The **wave-1 cutover** additionally requires the SSCS-cohort readiness assessment[^d11] — covering JOH eLinks API integration readiness, MRD feed ingestion readiness, the two-population identity model, jurisdiction-aware authorisation, and GAPS-experienced UAT panel coverage — plus the SSCS as-is analysis pack under `docs/architecture/asis/`. Prior readiness reports assessed the Courts cohort + the now-retracted ETL.)*
+*(Scope note: this assessment covers the build architecture (Phases 0–8). The **wave-1 cutover** additionally requires the SSCS-cohort readiness assessment[^d11] — covering JOH eLinks API integration readiness, MRD feed ingestion readiness, the two-population identity model, jurisdiction-aware authorisation, and ListAssist-experienced UAT panel coverage — plus the SSCS as-is analysis pack under `docs/architecture/asis/`. Prior readiness reports assessed the Courts cohort + the now-retracted ETL.)*
 
 All checklist items pass. No critical gaps block implementation. Mock-first authentication reclassifies G1.1, G1.2, G1.3 from Phase 0 blockers to pre-Phase-9 prerequisites. Phase 0 HMCTS dependencies reduce from 5 to 2 (G1.4 starter, G1.5 email); the JOH eLinks API contract and MRD feed arrangements are new Phase 0 external dependencies introduced by the revised D3 (tracked in [`./architecture/gaps.md` G8](./architecture/gaps.md)). Risk #6 (HMCTS IdP integration timing) is mitigated.
 
@@ -867,5 +867,5 @@ See [`./architecture/changelog.md`](./architecture/changelog.md). **Latest:** v3
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
 [^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
-[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
+[^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.
 [^d12]: D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.

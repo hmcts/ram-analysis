@@ -8,22 +8,18 @@ parent: 'epics/phase-0/index.md'
 epic: 0.1
 title: 'Upstream JOH/MRD reference data is ingested'
 storyCount: 4
-status: 'integrations-first-restructure-2026-06-17'
-revisedAt: '2026-06-17'
-revisionNote: 'Integrations-first restructure (SCP 2026-06-17 / architecture decision #12): NEW first epic. The JOH eLinks + MRD ingestion is carved out of the old Epic 0.1 (auth vertical slice) as the programme''s first deliverable and first external integration, decoupled from auth/UI. `ram-reference-data` is now the first service scaffolded and — per the AR53 first-consumer rule — carries the shared Azure estate Terraform (relocated from `ram-authorisation`). The old combined scaffold-and-sync Story 0.1.3 is split into 0.1.1 (scaffold + shared estate, absorbing the estate ACs from old Story 0.1.1) + 0.1.2 (tier-(a) tables) + 0.1.3 (eLinks sync); old 0.1.4 (MRD) renumbers in place. The jurisdiction-filtered read API that exposes this data is Epic 0.3 — it stays downstream of auth (needs `JWTFilter` + `authz/check`).'
-revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): two upstream-ingestion stories (JOH eLinks sync, MRD ingestion) inserted into the then-Epic-0.1 ahead of authorisation. Superseded by the 2026-06-17 carve-out above.'
 ---
 
 # Epic 0.1: Upstream JOH/MRD reference data is ingested
 
 **User outcome:** Judicial-holder reference data flows into RAM Pathfinder from its upstream sources of truth — the **JOH eLinks API** (15 `jo_*` entities, nightly) and the **MRD** weekly dataset (supplementary `mrd_*` data) — so that `jo_people` exists and is current, `jo_jurisdictions` is available as the first-class jurisdiction dimension (D8), and judicial-holder reference data is authoritative in RAM **without any legacy migration** (revised D3, NFR24). This is the platform's foundational data layer: every downstream consumer of JOH identity and reference data depends on it, and JOH sign-in (Epic 0.2) is impossible until `jo_people` — the identity-lookup target — is populated.
 
-**Hosting:** the ingestion runs in-process inside `ram-reference-data` — no separate `ram-integrations` repo. `ram-reference-data` is the first service scaffolded and carries the shared-estate Terraform (per architecture decision #12 / SCP 2026-06-17).
+**Hosting:** the ingestion runs in-process inside `ram-reference-data` — no separate `ram-integrations` repo. `ram-reference-data` is the first service scaffolded and carries the shared-estate Terraform.
 
 **Vertical slice:**
 - **GitHub manual-setup runbook** at `ram-architecture/runbooks/github-setup.md` (the `gh` CLI is **not** available — all GitHub admin operations are manual via the web UI; `ram-scaffold.sh` handles only local scaffolding + `git push` to a pre-created remote)
 - **First scaffolded backend service: `ram-reference-data`** (HMCTS Crime SpringBoot template + `ram-scaffold.sh` conventions per AR2–AR4)
-- **Shared Azure estate Terraform-provisioned from `ram-reference-data`'s `terraform/`** (AKS, shared global PostgreSQL Flexible Server + per-service DB roles, ACR, APIM, App Insights) per AR53 + decision #12
+- **Shared Azure estate Terraform-provisioned from `ram-reference-data`'s `terraform/`** (AKS, shared global PostgreSQL Flexible Server + per-service DB roles, ACR, APIM, App Insights) per AR53
 - Shared `ram_configuration_values` Liquibase baseline changelog established by `ram-architecture` ahead of `ram-reference-data` (FR8); SELECT-granted to every service role
 - Tier-(a) upstream-sourced tables: 15 `jo_*` + `mrd_specialisms` + `ram_sync_status` (RAM-internal ingestion run log), service-owned Liquibase changelogs (AR18–AR20), tier-(a) write-protection (only `ram_reference_data` holds INSERT/UPDATE — AR49, FR6)
 - **JOH eLinks nightly in-process `@Scheduled` sync** (AR46, AR48)
@@ -63,7 +59,7 @@ So that **subsequent services follow a consistent, version-pinned, supply-chain-
 **And** Spring Boot Test with JUnit 5 (`junit-bom:6.0.3`), Testcontainers PostgreSQL 1.21.4, Spring Boot Testcontainers 4.1.0, and spring-boot-starter-webmvc-test are configured (per AR14–AR15),
 **And** Spectral, ArchUnit, Spotless, and Checkstyle are configured (per AR17),
 **And** a Helm chart skeleton exists at `charts/ram-reference-data/` with `values-dev.yaml`, `values-staging.yaml`, `values-production.yaml` overlays (per AR24),
-**And** a `terraform/` directory exists with per-environment stacks (`dev` / `staging` / `production`) per AR53 — holding both the **shared estate** (this is the first-scaffolded service per decision #12) and this service's own resources (Key Vault namespace; the MRD storage added in Story 0.1.4),
+**And** a `terraform/` directory exists with per-environment stacks (`dev` / `staging` / `production`) per AR53 — holding both the **shared estate** (this is the first-scaffolded service) and this service's own resources (Key Vault namespace; the MRD storage added in Story 0.1.4),
 **And** GitHub Actions workflows exist at `.github/workflows/ci.yml`, `deploy-dev.yml`, `deploy-staging.yml`, `deploy-production.yml` (per AR28),
 **And** `CODEOWNERS` and `PULL_REQUEST_TEMPLATE.md` exist (per AR29),
 **And** a Postman collection skeleton exists at `postman/ram-reference-data-phase0.postman_collection.json` (per AR41).
@@ -76,7 +72,7 @@ So that **subsequent services follow a consistent, version-pinned, supply-chain-
 **And** structured JSON logs via Logstash Logback Encoder 9.0 appear on stdout (per AR30, NFR25),
 **And** logs include a `correlationId` populated by `CorrelationIdFilter` for each request (per AR32) — FR59 structured logging is first exercised here.
 
-**Given** this is the **first service scaffolded** and therefore the **first consumer** of the shared Azure estate (AR53 colocated first-consumer rule, decision #12 — the shared estate Terraform is relocated here from `ram-authorisation`),
+**Given** this is the **first service scaffolded** and therefore the **first consumer** of the shared Azure estate (AR53 colocated first-consumer rule),
 **When** the shared Azure estate — AKS cluster + node pools, PostgreSQL Flexible Server, Azure Container Registry, APIM instance + base policies, Application Insights / Log Analytics workspace — is provisioned via **Terraform in this repo's `terraform/` directory** (no Bicep, no portal click-ops),
 **And** `terraform apply` has run for the dev stack,
 **Then** every shared-estate resource above exists in UK South with the documented SKUs (multi-AZ node pools; zone-redundant PostgreSQL HA; APIM and ACR zone-redundant SKUs per A34),
@@ -120,7 +116,7 @@ So that **subsequent services follow a consistent, version-pinned, supply-chain-
 **And** the deployed pod passes liveness + readiness probes (per NFR28),
 **And** Azure Application Insights receives the first structured log entries via OpenTelemetry Collector (per AR31, NFR27).
 
-**References:** FR8, FR58, FR59; NFR10, NFR11, NFR15, NFR16, NFR24, NFR25–NFR28, NFR31, NFR40, NFR42; AR2–AR17, AR23–AR32, AR41, AR53; **D10** (`gh` CLI not available — manual GitHub web-UI setup per `ram-architecture/runbooks/github-setup.md`); **decision #12 / SCP 2026-06-17** (`ram-reference-data` is the first service scaffolded; shared-estate Terraform relocated here from `ram-authorisation`).
+**References:** FR8, FR58, FR59; NFR10, NFR11, NFR15, NFR16, NFR24, NFR25–NFR28, NFR31, NFR40, NFR42; AR2–AR17, AR23–AR32, AR41, AR53; **D10** (`gh` CLI not available — manual GitHub web-UI setup per `ram-architecture/runbooks/github-setup.md`).
 
 > **Scaffolding note:** the HMCTS Crime SpringBoot template base is minimal; `ram-scaffold.sh` assembles the remaining dependencies (Liquibase, Testcontainers, MapStruct, OWASP encoder, docker-compose plugin, OpenAPI tooling, Helm, Key Vault, the CI quality gates) from `hmcts/service-hmcts-springboot-demo` + RAM conventions — inventory in `architecture/starter-template.md` §B (G1.4).
 

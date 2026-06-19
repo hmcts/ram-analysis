@@ -11,7 +11,7 @@ amended_in: architecture.md v3.0 — Sprint Change Proposal 2026-06-10 cascade
 
 # RAM Pathfinder Architecture Summary
 
-RAM Pathfinder — HMCTS's API-driven greenfield platform for judicial (JOH) availability and scheduling. It replaces the combined **ListAssist/GAPS** usage in the SSCS Tribunals jurisdiction in wave 1 and the as-is **JI application (Oracle APEX)** in the Courts jurisdictions in waves 2+[^d11]. Scope boundary[^d12]: RAM is the **system of record for JOH availability and scheduling** — case management, panel composition, and hearing types live in external systems that consume RAM's APIs; no external system writes into RAM.
+RAM Pathfinder — HMCTS's API-driven greenfield platform for judicial (JOH) availability and scheduling. It replaces **ListAssist** (the SSCS judicial-scheduling tool) in the SSCS Tribunals jurisdiction in wave 1 (GAPS, the SSCS case-management system, is retained) and the as-is **JI application (Oracle APEX)** in the Courts jurisdictions in waves 2+[^d11]. Scope boundary[^d12]: RAM is the **system of record for JOH availability and scheduling** — case management, panel composition, and hearing types live in external systems that consume RAM's APIs; no external system writes into RAM.
 
 This file describes what is built and how it runs. For rationale, alternatives, gap and assumption registers, data-table inventory, conventions, repo structure, changelog, and build sequence, see [`./architecture.md`](./architecture.md) and the siblings under [`./architecture/`](./architecture/).
 
@@ -167,14 +167,14 @@ Details:
 
 ## Phased rollout (jurisdiction-first)
 
-- **Boundary** — jurisdiction first, then per-region within jurisdiction. Wave 1 = the **SSCS** jurisdiction (replacing GAPS), all in-jurisdiction applicable roles in one wave. Waves 2+ = Courts jurisdictions (Civil, Crime, Family, Crown) per HMCTS judicial region (replacing APEX/JI).[^d8][^d11]
+- **Boundary** — jurisdiction first, then per-region within jurisdiction. Wave 1 = the **SSCS** jurisdiction (replacing ListAssist; GAPS case management retained), all in-jurisdiction applicable roles in one wave. Waves 2+ = Courts jurisdictions (Civil, Crime, Family, Crown) per HMCTS judicial region (replacing APEX/JI).[^d8][^d11]
 - **Mechanism** — per-user activation flag in `ram_auth_user_activation_flags` carrying the (jurisdiction, region) tuple (FR57). Migrated-wave users authenticate; non-migrated users are rejected at the `JWTFilter` boundary. Cutover flip: `UPDATE ram_auth_user_activation_flags SET activated = TRUE WHERE jurisdiction = '…' AND region = '…'` per the rollout runbook; flip-off rolls back to the incumbent.
-- **Wave gates** — automated tests passing (unit, integration with Testcontainers PostgreSQL, contract); manual UAT signed off by jurisdiction-incumbent-experienced users (GAPS users for wave 1; APEX users for waves 2+); data readiness verified (reference data current per `ram_sync_status`; bootstrapped users verified against IdP principals); for wave 1, the SSCS-cohort readiness assessment[^d11]; programme sign-off.
+- **Wave gates** — automated tests passing (unit, integration with Testcontainers PostgreSQL, contract); manual UAT signed off by jurisdiction-incumbent-experienced users (ListAssist users for wave 1; APEX users for waves 2+); data readiness verified (reference data current per `ram_sync_status`; bootstrapped users verified against IdP principals); for wave 1, the SSCS-cohort readiness assessment[^d11]; programme sign-off.
 - **Build sequence** — Phase 0 cross-cutting services (incl. upstream ingestion) + UI shell; Phases 1–6 domain services in dependency order (JOH → Absence → Vacancy → Booking → Sitting → Payment); Phases 7–8 read-models (Itinerary, MI Feed); Pre-Phase-9 real-IdP cutover; Phase 9+ jurisdiction-first rollout waves.
 
 ## Upstream reference-data ingestion (no legacy migration)
 
-Per the revised D3 (2026-06-10), **RAM Pathfinder migrates nothing from GAPS or APEX** — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from upstream sources of truth, in-process within `ram-reference-data`:
+Per the revised D3 (2026-06-10), **RAM Pathfinder migrates nothing from ListAssist or APEX** — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from upstream sources of truth, in-process within `ram-reference-data`:
 
 - **JOH eLinks API** → 15 `jo_*` tables. Nightly `@Scheduled` pull; full-refresh upsert on the upstream natural key; rows absent upstream are marked inactive, never hard-deleted. Sync state in `ram_sync_status`.
 - **MRD (Master Reference Data)** → `mrd_*` tables. Weekly Excel feed dropped into an Azure Blob container; a `@Scheduled` task validates, upserts, and archives. Transitional until MRD's public APIs ship.
@@ -191,9 +191,9 @@ Per the revised D3 (2026-06-10), **RAM Pathfinder migrates nothing from GAPS or 
 | MRD | inbound (reference data — MVP per NFR24) | Supplementary judicial reference data (notably JOH Specialisations); weekly Excel via blob drop until MRD public APIs ship. |
 | HMCTS Email | outbound | Booking / absence acknowledgements; JFEPS payment schedules |
 | JFEPS / Liberata | outbound (via authoriser email upload) | Payment processing — preserved unchanged for SSCS wave 1[^d11] |
-| External case-management systems (SSCS case management; Courts Listing) | outbound (from Phase 9,[^d12]) | Consume RAM's JOH availability + booking APIs; never write into RAM |
+| External case-management systems (SSCS: **GAPS** — retained case management; Courts: Listing systems) | outbound (from Phase 9,[^d12]) | Consume RAM's JOH availability + booking APIs; never write into RAM |
 | DA&I | inbound (post-MVP REST) | MI consumer for aggregate reports |
-| APEX (legacy, Courts waves) | inbound (read-only) | 12-month historical-data bridge for migrated Courts users post-cutover. (GAPS historical access for wave 1: settled in the SSCS-cohort readiness assessment.) |
+| APEX (legacy, Courts waves) | inbound (read-only) | 12-month historical-data bridge for migrated Courts users post-cutover. (ListAssist historical scheduling-data access for wave 1: settled in the SSCS-cohort readiness assessment.) |
 
 ## Foundational principles
 
@@ -217,5 +217,5 @@ Per the revised D3 (2026-06-10), **RAM Pathfinder migrates nothing from GAPS or 
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
 [^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
-[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
+[^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.
 [^d12]: D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.

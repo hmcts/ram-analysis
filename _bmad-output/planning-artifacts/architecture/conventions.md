@@ -270,7 +270,7 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - Integration tests: `*IT.java`, Testcontainers for PostgreSQL, run on every commit.
 - Contract tests (Pact or equivalent): per-consumer / per-provider, run on every commit.
 - E2E tests (UI): Playwright, one suite per phase, run as a phase gate.
-- **Manual UAT — incumbent-vs-RAM Pathfinder behavioural parity (FR60 / NFR41, reframed 2026-06-10[^d11][^d5]):** scripted walkthroughs maintained under `docs/uat/` per service. Performed by jurisdiction-incumbent-experienced users — GAPS-experienced (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for SSCS wave 1; APEX-experienced (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) for Courts waves 2+ — opening the incumbent side-by-side with RAM Pathfinder, comparing behaviour for the workflows + edge cases the script enumerates, and signing off per role per wave. Sign-off is the wave-cutover gate; there is no automated incumbent-comparison harness in CI.
+- **Manual UAT — incumbent-vs-RAM Pathfinder behavioural parity (FR60 / NFR41, reframed 2026-06-10[^d11][^d5]):** scripted walkthroughs maintained under `docs/uat/` per service. Performed by jurisdiction-incumbent-experienced users — ListAssist-experienced (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for SSCS wave 1; APEX-experienced (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) for Courts waves 2+ — opening the incumbent side-by-side with RAM Pathfinder, comparing behaviour for the workflows + edge cases the script enumerates, and signing off per role per wave. Sign-off is the wave-cutover gate; there is no automated incumbent-comparison harness in CI.
 - **Coverage target:** behaviour coverage, not line coverage. PRs include behaviour-test rationale, not coverage stats.
 
 **Logging conventions (per HMCTS Crime template):**
@@ -349,4 +349,4 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - ❌ Logging PII or bank details at any level.
 
 [^d5]: D5 — the jurisdiction's incumbent system is the behavioural reference, verified by manual UAT.
-[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
+[^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.

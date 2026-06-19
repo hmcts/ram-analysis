@@ -88,7 +88,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="fr-coverage-map">FR Coverage Map</h1>
 <p>This is the canonical FR-to-Epic mapping. It is updated each time a phase advances from framework to concrete epics + stories. The Phase × Area framework in <a href="framework.html">framework.md</a> is the architectural spine; this map is the implementation index.</p>
-<details class="section" id="phase-0-concrete-epics-0105--integrations-first-restructure-2026-06-17--decision-12-pending-sscs-cohort-revalidation"><summary><span class="section-title">Phase 0 (concrete epics 0.1–0.5 — integrations-first restructure 2026-06-17 / decision #12; pending SSCS-cohort revalidation)</span></summary><div class="section-body">
+<details class="section" id="phase-0-concrete-epics-0105"><summary><span class="section-title">Phase 0 (concrete epics 0.1–0.5)</span></summary><div class="section-body">
 <table>
 <thead>
 <tr>
@@ -166,19 +166,19 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td><code>ram-ui</code> delivered in Phase 0; <code>ram-admin-ui</code> post-MVP</td>
 </tr>
 <tr>
-<td><strong>FR57</strong> <em>(was FR58)</em></td>
+<td><strong>FR57</strong></td>
 <td><a href="phase-0/epic-0.4-user-populations-bootstrapped.html">Epic 0.4</a> (initial all-FALSE flag state keyed by (jurisdiction, region)) — cutover orchestration in Phase 9+ (per-wave flip via direct SQL by DBA)</td>
 <td><strong>Partial — activation toggle UI</strong> is post-MVP</td>
 <td>Cutover: <code>UPDATE ram_auth_user_activation_flags SET activated = TRUE WHERE jurisdiction = '…' AND region = '…'</code> per rollout runbook</td>
 </tr>
 <tr>
-<td><strong>FR58</strong> <em>(was FR59)</em></td>
+<td><strong>FR58</strong></td>
 <td><a href="phase-0/epic-0.2-user-authenticates.html">Epic 0.2</a> Story 0.2.3 (Authorisation read API — first exercise) + <a href="phase-0/epic-0.3-reference-data-read-only-api.html">Epic 0.3</a> Story 0.3.2 (Reference Data read API) + every service story</td>
 <td>—</td>
 <td>API-as-Product read-side standards</td>
 </tr>
 <tr>
-<td><strong>FR59</strong> <em>(was FR60)</em></td>
+<td><strong>FR59</strong></td>
 <td><a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> Story 0.1.1 (first exercise — first scaffolded service) + every service story</td>
 <td>—</td>
 <td>Structured logs + correlation IDs</td>
@@ -187,12 +187,12 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td><em>(NFR24)</em></td>
 <td><a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> Stories 0.1.3/0.1.4</td>
 <td>MRD reader swaps to API post-MVP (when MRD APIs ship)</td>
-<td>JOH eLinks + MRD are MVP integrations<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> — the programme's first deliverable under the integrations-first carve-out (decision #12)</td>
+<td>JOH eLinks + MRD are MVP integrations<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> — the programme's first deliverable</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<p>There is no data-migration FR: the former Phase 0 ETL was retracted<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a> and FR58–FR61 became FR57–FR60. Reference data arrives via upstream ingestion (Epic 0.1, now the first epic under the integrations-first carve-out / decision #12); user records are bootstrapped outside the PRD's scope<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>; tier-(a) corrections happen at source and tier-(b) changes follow the DBA runbook change-trail.</p>
+<p>There is no data-migration FR<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>. Reference data arrives via upstream ingestion (Epic 0.1); user records are bootstrapped outside the PRD's scope<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>; tier-(a) corrections happen at source and tier-(b) changes follow the DBA runbook change-trail.</p>
 </blockquote>
 </div></details><details class="section" id="phases-19-fr10fr54-fr60--pending"><summary><span class="section-title">Phases 1–9+ (FR10–FR54, FR60) — pending</span></summary><div class="section-body">
 <p>To be populated by subsequent runs of <code>bmad-create-epics-and-stories</code> step 2 against the corresponding Phase × Area entries in <a href="framework.html">framework.md</a>. Phase 0 sets the pattern; later phases follow the same vertical-slice user-value framing.</p>
@@ -267,14 +267,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>⚪</td>
 </tr>
 <tr>
-<td>FR60 <em>(was FR61)</em></td>
+<td>FR60</td>
 <td>9+</td>
-<td>Wave Rollout (jurisdiction-first: SSCS/GAPS-experienced UAT wave 1; Courts/APEX-experienced waves 2+)</td>
+<td>Wave Rollout (jurisdiction-first: SSCS/ListAssist-experienced UAT wave 1; Courts/APEX-experienced waves 2+)</td>
 <td>⚪</td>
 </tr>
 </tbody>
 </table>
-</div></details><details class="section" id="post-mvp-roadmap-consolidated-revised-2026-06-11"><summary><span class="section-title">Post-MVP roadmap (consolidated, revised 2026-06-11)</span></summary><div class="section-body">
+</div></details><details class="section" id="post-mvp-roadmap-consolidated"><summary><span class="section-title">Post-MVP roadmap (consolidated)</span></summary><div class="section-body">
 <table>
 <thead>
 <tr>
@@ -329,17 +329,17 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li id="fn3"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn6"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn8"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn10"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/fr-coverage-map.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-concrete-epics-0105--integrations-first-restructure-2026-06-17--decision-12-pending-sscs-cohort-revalidation">Phase 0 (concrete epics 0.1–0.5 — integrations-first restructure 2026-06-17 / decision #12; pending SSCS-cohort revalidation)</a></li><li><a href="#phases-19-fr10fr54-fr60--pending">Phases 1–9+ (FR10–FR54, FR60) — pending</a></li><li><a href="#post-mvp-roadmap-consolidated-revised-2026-06-11">Post-MVP roadmap (consolidated, revised 2026-06-11)</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-concrete-epics-0105">Phase 0 (concrete epics 0.1–0.5)</a></li><li><a href="#phases-19-fr10fr54-fr60--pending">Phases 1–9+ (FR10–FR54, FR60) — pending</a></li><li><a href="#post-mvp-roadmap-consolidated">Post-MVP roadmap (consolidated)</a></li></ul></aside>
 <script>window.__NAV_BASE__="../";window.__PAGE__="epics/fr-coverage-map";</script>
 <script src="../nav.js"></script>
 <script>

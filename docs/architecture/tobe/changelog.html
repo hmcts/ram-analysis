@@ -154,6 +154,12 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </thead>
 <tbody>
 <tr>
+<td><strong>v3.7 — SSCS wave 1 replaces ListAssist, not GAPS (GAPS retained)</strong></td>
+<td>2026-06-18</td>
+<td>Correction: in the SSCS pilot (wave 1) RAM Pathfinder replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS, the SSCS case-management system, is retained</strong> (not decommissioned) — analogous to the D12 external case-management systems that consume RAM's APIs. All SSCS-wave-1 scheduling-incumbent references (replacement target, manual-UAT parity reference, per-wave rollback target, historical-scheduling-data location, "incumbent-experienced users") change GAPS → ListAssist; GAPS is reframed as the retained SSCS case-management system in the glossary and the external-systems lists. Amends D11 and the [^d11] footnote.</td>
+<td>PRD (D11, glossary, Exec Summary, Success Criteria, Scope, Journey 1, FR60, NFR32/36/41); architecture.md + summary; conventions; FR/NFR coverage; user-types; epics (framework + [^d11] footnote across files)</td>
+</tr>
+<tr>
 <td><strong>v3.6 — DB migration tool: Flyway → Liquibase</strong></td>
 <td>2026-06-18</td>
 <td><strong>Liquibase replaces Flyway</strong> as the schema-migration tool across the architecture pack, epics/stories, and PRD FR8. Per-service changelogs under <code>src/main/resources/db/changelog/</code> (master <code>db.changelog-master.yaml</code>; formatted-SQL changesets <code>NNN-name.sql</code>); <code>ram-architecture</code> owns the shared <code>ram_configuration_values</code> baseline changelog. Liquibase is a <strong>RAM convention</strong> — the HMCTS demo repo's Database branch uses Flyway; RAM standardises on Liquibase (AR19). Reverses the v1.4 "Liquibase → Flyway" alignment.</td>
@@ -166,10 +172,10 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td><a href="starter-template.html"><code>./starter-template.md</code></a>; <a href="../../architecture.html"><code>../architecture.md</code> stack line</a>; <a href="../../epics/requirements-inventory.html"><code>../epics/requirements-inventory.md</code> AR2/AR5/AR11/AR14</a>; epic Stories 0.1.1 / 0.2.1; <strong>pending:</strong> G1.4/A4/A29 reframe</td>
 </tr>
 <tr>
-<td><strong>v3.4 — integrations-first Phase 0; shared-estate Terraform moved to <code>ram-reference-data</code>; <code>ram-integrations</code> declined</strong></td>
+<td><strong>v3.4 — integrations-first Phase 0</strong></td>
 <td>2026-06-17</td>
-<td>Phase 0 re-sequenced integrations-first: JOH eLinks + MRD ingestion is the first epic, decoupled from the auth/UI slice. Ingestion stays in-process inside <code>ram-reference-data</code> — no <code>ram-integrations</code> repo (tier-(a) tables are single-writer-owned by <code>ram_reference_data</code> per AR49; a second writer would break that and reopen G7). <code>ram-reference-data</code> is scaffolded first and carries the shared Azure estate Terraform (AKS, PostgreSQL Flexible Server, ACR, APIM, App Insights/Log Analytics), relocated from <code>ram-authorisation</code> per AR53; the <code>ram_configuration_values</code> baseline runs ahead of it. The jurisdiction-filtered Reference Data read API stays after the auth epic (needs <code>JWTFilter</code> + <code>authz/check</code>). Phase 0: 4 → 5 epics, 12 → 14 stories. Decision #12.</td>
-<td><a href="../../architecture.html"><code>../architecture.md</code> — decision #12; Implementation Sequence items 1 + 3</a>; <a href="repo-structure.html"><code>./repo-structure.md</code></a>; <a href="repository-strategy.html"><code>./repository-strategy.md</code></a>; SCP: <a href="../../sprint-change-proposal-2026-06-17.html"><code>../sprint-change-proposal-2026-06-17.md</code></a></td>
+<td>Phase 0 re-sequenced so ingestion (JOH eLinks + MRD) is the first epic. <code>ram-reference-data</code> is scaffolded first and carries the shared-estate Terraform (relocated from <code>ram-authorisation</code>, AR53). Ingestion stays in-process — no <code>ram-integrations</code> repo. Reference Data read API follows the auth epic. Phase 0: 4 → 5 epics, 12 → 14 stories. Decision #12.</td>
+<td><a href="../../architecture.html"><code>../architecture.md</code></a>; <a href="../../sprint-change-proposal-2026-06-17.html">SCP</a></td>
 </tr>
 <tr>
 <td><strong>v3.3 — system-context diagram re-authored in D2 + ELK</strong></td>

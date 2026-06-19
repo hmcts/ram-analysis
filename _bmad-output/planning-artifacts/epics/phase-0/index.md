@@ -8,25 +8,11 @@ timestamp: '2026-06-17'
 parent: 'epics/index.md'
 phase: 0
 phaseName: 'Foundations'
-status: 'integrations-first-restructure-executed-2026-06-17-pending-revalidation'
-storiedAt: '2026-05-15'
-validatedAt: '2026-05-15 (SUPERSEDED — see revisionNote)'
-revisedAt: '2026-06-17'
-revisionNote: 'Integrations-first restructure EXECUTED (SCP 2026-06-17 / architecture decision #12): Phase 0 re-sequenced from 4 epics into 5, ingestion-first. New: Epic 0.1 (Upstream JOH/MRD ingestion — the first deliverable; ram-reference-data scaffolded first, carrying the relocated shared-estate Terraform), Epic 0.2 (auth + UI), Epic 0.3 (Reference Data read-only API + tier-(b) tables — sits after auth because the jurisdiction-filtered API needs JWTFilter + authz/check), Epic 0.4 (user bootstrap), Epic 0.5 (notification). Story count 12 → 14 (+2 from splitting the old combined ram-reference-data scaffold/tables/sync story 0.1.3 into 0.1.1/0.1.2/0.1.3 — no scope added, no stories removed). No ram-integrations repo: ingestion stays in-process in ram-reference-data. Revalidation via the SSCS-cohort implementation-readiness check.'
-revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): Phase 0 Data Migration ETL retracted (revised D3); reference data ingested from JOH eLinks + MRD; user records bootstrapped outside the PRD scope (restructured D9); two-population identity; jurisdiction dimension; FR58–FR61 → FR57–FR60; story count 11 → 12.'
 ---
 
 # Phase 0 — Foundations
 
-> **✅ Integrations-first restructure executed — [SCP 2026-06-17](../../sprint-change-proposal-2026-06-17.md) (architecture decision #12).** Phase 0 is sequenced **integrations-first**: Epic 0.1 ingestion → Epic 0.2 auth + UI → Epic 0.3 read API → Epic 0.4 bootstrap → Epic 0.5 notification. Story count 12 → 14. Rationale and the in-process / no-`ram-integrations` decision are recorded in the SCP and architecture decision #12. The OLD→NEW mapping:
->
-> | OLD (≤2026-06-11) | NEW (2026-06-17) |
-> |---|---|
-> | Epic 0.1 *User authenticates* (incl. ingestion), 7 stories | **Epic 0.1 *Upstream JOH/MRD ingestion*** (0.1.1 scaffold+estate, 0.1.2 tier-(a) tables, 0.1.3 eLinks sync, 0.1.4 MRD) — 4 stories |
-> | Epic 0.2 *Reference data read-only*, 2 stories | **Epic 0.2 *User authenticates*** (0.2.1 auth scaffold, 0.2.2 mock-auth, 0.2.3 authz, 0.2.4 ram-ui, 0.2.5 sign-in) — 5 stories |
-> | Epic 0.3 *User populations bootstrapped*, 1 story | **Epic 0.3 *Reference data read-only API*** (0.3.1 tier-(b) tables, 0.3.2 read API) — 2 stories |
-> | Epic 0.4 *Notification scaffolded*, 2 stories | **Epic 0.4 *User populations bootstrapped*** — 1 story |
-> | — | **Epic 0.5 *Notification scaffolded*** — 2 stories |
+> Phase 0 is sequenced **integrations-first**: Epic 0.1 ingestion → Epic 0.2 auth + UI → Epic 0.3 read API → Epic 0.4 bootstrap → Epic 0.5 notification. The ingestion runs in-process inside `ram-reference-data` — there is no `ram-integrations` repo.
 
 > Phase 0 is the platform smoke-test (per PRD Key Characteristic 4). All API-as-Product standards (versioning, OpenAPI, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457), `Deprecation`/`Sunset`) are exercised on Authorisation lookups and Reference Data **reads** before any domain service is built.
 >
@@ -34,8 +20,8 @@ revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): Phase 0 Data Migration 
 
 ## Phase 0 scope model
 
-- **No legacy data migration**[^d3] — no data migrates from APEX or GAPS, ever. Judicial-holder reference data is **ingested from upstream sources of truth**: the JOH eLinks API (nightly in-process sync) and MRD (weekly Excel via blob drop). Historical data stays in each jurisdiction's incumbent system.
-- **Upstream ingestion is Epic 0.1 — the first deliverable**[^decision12]: eLinks sync (Story 0.1.3) + MRD ingestion (Story 0.1.4). `ram-reference-data` is scaffolded first and carries the shared Azure estate Terraform (AR53). In-process — **no `ram-integrations` repo** (architecture decision #12).
+- **No legacy data migration**[^d3] — no data migrates from APEX or ListAssist, ever. Judicial-holder reference data is **ingested from upstream sources of truth**: the JOH eLinks API (nightly in-process sync) and MRD (weekly Excel via blob drop). Historical data stays in each jurisdiction's incumbent system.
+- **Upstream ingestion is Epic 0.1 — the first deliverable**: eLinks sync (Story 0.1.3) + MRD ingestion (Story 0.1.4). `ram-reference-data` is scaffolded first and carries the shared Azure estate Terraform (AR53). In-process — **no `ram-integrations` repo**.
 - **Two user populations**[^d9]: JOH users resolve IdP email → `jo_people` → personnel number; HMCTS admin staff resolve via `ram_auth_staff_identities` → RAM-assigned UUID. Both share one authorisation model.
 - **Jurisdiction is first-class**[^d8]: authz responses carry roles + jurisdiction + Region/Area scope; reference-data API responses are jurisdiction-filtered; activation flags key on the (jurisdiction, region) tuple (FR57).
 - **Admin UI is post-MVP**[^d10]: tier-(b) reference data and user/role/scope maintenance are DBA-via-SQL per runbook.
@@ -44,18 +30,18 @@ revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): Phase 0 Data Migration 
 
 | Epic | Title | Stories | Status |
 |---|---|---|---|
-| [0.1](epic-0.1-upstream-reference-data-ingested.md) | Upstream JOH/MRD reference data is ingested | 4 | 🟡 pending revalidation |
-| [0.2](epic-0.2-user-authenticates.md) | User authenticates and lands on a role-scoped Home page | 5 | 🟡 pending revalidation |
-| [0.3](epic-0.3-reference-data-read-only-api.md) | Reference data is served read-only via a versioned, jurisdiction-filtered API | 2 | 🟡 pending revalidation |
-| [0.4](epic-0.4-user-populations-bootstrapped.md) | Both user populations are bootstrapped and verifiable against the IdP | 1 | 🟡 pending revalidation |
-| [0.5](epic-0.5-system-dispatches-emails.md) | Notification service is scaffolded and contractually ready | 2 | 🟡 pending revalidation |
+| [0.1](epic-0.1-upstream-reference-data-ingested.md) | Upstream JOH/MRD reference data is ingested | 4 | 🟡 Planned |
+| [0.2](epic-0.2-user-authenticates.md) | User authenticates and lands on a role-scoped Home page | 5 | 🟡 Planned |
+| [0.3](epic-0.3-reference-data-read-only-api.md) | Reference data is served read-only via a versioned, jurisdiction-filtered API | 2 | 🟡 Planned |
+| [0.4](epic-0.4-user-populations-bootstrapped.md) | Both user populations are bootstrapped and verifiable against the IdP | 1 | 🟡 Planned |
+| [0.5](epic-0.5-system-dispatches-emails.md) | Notification service is scaffolded and contractually ready | 2 | 🟡 Planned |
 | **Total** | | **14 stories** | |
 
 ## Epic summaries
 
 ### Epic 0.1: Upstream JOH/MRD reference data is ingested (4 stories)
 
-**User outcome:** Judicial-holder reference data flows into RAM from its upstream sources of truth — the **JOH eLinks API** (15 `jo_*` entities, nightly in-process sync, Story 0.1.3) and the **MRD** weekly Excel feed (`mrd_*`, Story 0.1.4) — so `jo_people` exists and is current. This is the platform's foundational data layer. `ram-reference-data` is scaffolded first (Story 0.1.1) and carries the shared Azure estate (decision #12 / AR53); tier-(a) tables + write protection are Story 0.1.2.
+**User outcome:** Judicial-holder reference data flows into RAM from its upstream sources of truth — the **JOH eLinks API** (15 `jo_*` entities, nightly in-process sync, Story 0.1.3) and the **MRD** weekly Excel feed (`mrd_*`, Story 0.1.4) — so `jo_people` exists and is current. This is the platform's foundational data layer. `ram-reference-data` is scaffolded first (Story 0.1.1) and carries the shared Azure estate (AR53); tier-(a) tables + write protection are Story 0.1.2.
 
 **FRs covered:** FR1 (the `jo_people` lookup target), FR6 tier-(a), FR7 tier-(a) grants, FR8 (shared config baseline first lands); NFR24, FR59 (structured logs first exercised)
 
@@ -123,11 +109,10 @@ Not post-MVP (lands in a later MVP phase): **OAuth `client_credentials` flow** f
 
 ## Validation
 
-- Phase 0 awaits validation via the **SSCS-cohort implementation-readiness assessment**[^d11]. The prior [validation report (2026-05-15)](validation-report-2026-05-15.md) assessed a superseded plan and no longer applies.
+- Phase 0 awaits validation via the **SSCS-cohort implementation-readiness assessment**[^d11].
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
 [^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
-[^d11]: D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.
-[^decision12]: Architecture decision #12 (2026-06-17, SCP 2026-06-17) — integrations-first Phase 0 carve-out; `ram-reference-data` scaffolded first and carries the shared estate; no `ram-integrations` repo; read API stays downstream of auth.
+[^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.

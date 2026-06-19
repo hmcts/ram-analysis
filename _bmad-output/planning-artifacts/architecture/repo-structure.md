@@ -331,7 +331,7 @@ ram-architecture/
 - Unit tests: `src/test/java/.../{layer}/...` mirroring main package layout.
 - Integration tests: same location, `*IT.java` suffix, Testcontainers PostgreSQL.
 - Contract tests (Pact or equivalent): `src/test/java/.../contract/`.
-- Manual UAT scripts (FR60 / NFR41 revised): `docs/uat/` per domain service — markdown walkthroughs for jurisdiction-incumbent-experienced users to follow side-by-side against the incumbent (GAPS wave 1; APEX waves 2+). Not part of automated CI.
+- Manual UAT scripts (FR60 / NFR41 revised): `docs/uat/` per domain service — markdown walkthroughs for jurisdiction-incumbent-experienced users to follow side-by-side against the incumbent (ListAssist wave 1; APEX waves 2+). Not part of automated CI.
 - E2E tests: separate `tests/e2e/` directory in `ram-ui` repo, Playwright per phase.
 
 **Asset organisation (UI):**

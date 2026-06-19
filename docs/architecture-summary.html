@@ -87,7 +87,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <main class="content">
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="ram-pathfinder-architecture-summary">RAM Pathfinder Architecture Summary</h1>
-<p>RAM Pathfinder — HMCTS's API-driven greenfield platform for judicial (JOH) availability and scheduling. It replaces the combined <strong>ListAssist/GAPS</strong> usage in the SSCS Tribunals jurisdiction in wave 1 and the as-is <strong>JI application (Oracle APEX)</strong> in the Courts jurisdictions in waves 2+<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Scope boundary<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: RAM is the <strong>system of record for JOH availability and scheduling</strong> — case management, panel composition, and hearing types live in external systems that consume RAM's APIs; no external system writes into RAM.</p>
+<p>RAM Pathfinder — HMCTS's API-driven greenfield platform for judicial (JOH) availability and scheduling. It replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool) in the SSCS Tribunals jurisdiction in wave 1 (GAPS, the SSCS case-management system, is retained) and the as-is <strong>JI application (Oracle APEX)</strong> in the Courts jurisdictions in waves 2+<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Scope boundary<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: RAM is the <strong>system of record for JOH availability and scheduling</strong> — case management, panel composition, and hearing types live in external systems that consume RAM's APIs; no external system writes into RAM.</p>
 <p>This file describes what is built and how it runs. For rationale, alternatives, gap and assumption registers, data-table inventory, conventions, repo structure, changelog, and build sequence, see <a href="architecture.html"><code>./architecture.md</code></a> and the siblings under <a href="architecture"><code>./architecture/</code></a>.</p>
 <details class="section" id="system-context"><summary><span class="section-title">System context</span></summary><div class="section-body">
 <p><img src="architecture/tobe/diagrams/system-context.png" alt="RAM Pathfinder System Context — high-level service map and key interactions" /></p>
@@ -426,13 +426,13 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </ul>
 </div></details><details class="section" id="phased-rollout-jurisdiction-first"><summary><span class="section-title">Phased rollout (jurisdiction-first)</span></summary><div class="section-body">
 <ul>
-<li><strong>Boundary</strong> — jurisdiction first, then per-region within jurisdiction. Wave 1 = the <strong>SSCS</strong> jurisdiction (replacing GAPS), all in-jurisdiction applicable roles in one wave. Waves 2+ = Courts jurisdictions (Civil, Crime, Family, Crown) per HMCTS judicial region (replacing APEX/JI).<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></li>
+<li><strong>Boundary</strong> — jurisdiction first, then per-region within jurisdiction. Wave 1 = the <strong>SSCS</strong> jurisdiction (replacing ListAssist; GAPS case management retained), all in-jurisdiction applicable roles in one wave. Waves 2+ = Courts jurisdictions (Civil, Crime, Family, Crown) per HMCTS judicial region (replacing APEX/JI).<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a><a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></li>
 <li><strong>Mechanism</strong> — per-user activation flag in <code>ram_auth_user_activation_flags</code> carrying the (jurisdiction, region) tuple (FR57). Migrated-wave users authenticate; non-migrated users are rejected at the <code>JWTFilter</code> boundary. Cutover flip: <code>UPDATE ram_auth_user_activation_flags SET activated = TRUE WHERE jurisdiction = '…' AND region = '…'</code> per the rollout runbook; flip-off rolls back to the incumbent.</li>
-<li><strong>Wave gates</strong> — automated tests passing (unit, integration with Testcontainers PostgreSQL, contract); manual UAT signed off by jurisdiction-incumbent-experienced users (GAPS users for wave 1; APEX users for waves 2+); data readiness verified (reference data current per <code>ram_sync_status</code>; bootstrapped users verified against IdP principals); for wave 1, the SSCS-cohort readiness assessment<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>; programme sign-off.</li>
+<li><strong>Wave gates</strong> — automated tests passing (unit, integration with Testcontainers PostgreSQL, contract); manual UAT signed off by jurisdiction-incumbent-experienced users (ListAssist users for wave 1; APEX users for waves 2+); data readiness verified (reference data current per <code>ram_sync_status</code>; bootstrapped users verified against IdP principals); for wave 1, the SSCS-cohort readiness assessment<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>; programme sign-off.</li>
 <li><strong>Build sequence</strong> — Phase 0 cross-cutting services (incl. upstream ingestion) + UI shell; Phases 1–6 domain services in dependency order (JOH → Absence → Vacancy → Booking → Sitting → Payment); Phases 7–8 read-models (Itinerary, MI Feed); Pre-Phase-9 real-IdP cutover; Phase 9+ jurisdiction-first rollout waves.</li>
 </ul>
 </div></details><details class="section" id="upstream-reference-data-ingestion-no-legacy-migration"><summary><span class="section-title">Upstream reference-data ingestion (no legacy migration)</span></summary><div class="section-body">
-<p>Per the revised D3 (2026-06-10), <strong>RAM Pathfinder migrates nothing from GAPS or APEX</strong> — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from upstream sources of truth, in-process within <code>ram-reference-data</code>:</p>
+<p>Per the revised D3 (2026-06-10), <strong>RAM Pathfinder migrates nothing from ListAssist or APEX</strong> — the Phase 0 Data Migration ETL is retracted. Judicial-holder reference data is ingested from upstream sources of truth, in-process within <code>ram-reference-data</code>:</p>
 <ul>
 <li><strong>JOH eLinks API</strong> → 15 <code>jo_*</code> tables. Nightly <code>@Scheduled</code> pull; full-refresh upsert on the upstream natural key; rows absent upstream are marked inactive, never hard-deleted. Sync state in <code>ram_sync_status</code>.</li>
 <li><strong>MRD (Master Reference Data)</strong> → <code>mrd_*</code> tables. Weekly Excel feed dropped into an Azure Blob container; a <code>@Scheduled</code> task validates, upserts, and archives. Transitional until MRD's public APIs ship.</li>
@@ -476,7 +476,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>Payment processing — preserved unchanged for SSCS wave 1<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a></td>
 </tr>
 <tr>
-<td>External case-management systems (SSCS case management; Courts Listing)</td>
+<td>External case-management systems (SSCS: <strong>GAPS</strong> — retained case management; Courts: Listing systems)</td>
 <td>outbound (from Phase 9,<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>)</td>
 <td>Consume RAM's JOH availability + booking APIs; never write into RAM</td>
 </tr>
@@ -488,7 +488,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td>APEX (legacy, Courts waves)</td>
 <td>inbound (read-only)</td>
-<td>12-month historical-data bridge for migrated Courts users post-cutover. (GAPS historical access for wave 1: settled in the SSCS-cohort readiness assessment.)</td>
+<td>12-month historical-data bridge for migrated Courts users post-cutover. (ListAssist historical scheduling-data access for wave 1: settled in the SSCS-cohort readiness assessment.)</td>
 </tr>
 </tbody>
 </table>
@@ -547,16 +547,16 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn7"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn9"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn10"><p>D11 (2026-06-10) — SSCS-first pilot: wave 1 replaces the combined ListAssist/GAPS usage for SSCS; waves 2+ replace JI/APEX per Courts region.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn11"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>

@@ -8,10 +8,6 @@ parent: 'epics/phase-0/index.md'
 epic: 0.2
 title: 'User authenticates and lands on a role-scoped Home page'
 storyCount: 5
-status: 'integrations-first-restructure-2026-06-17'
-revisedAt: '2026-06-17'
-revisionNote: 'Integrations-first restructure (SCP 2026-06-17 / architecture decision #12): this epic renumbered 0.1 → 0.2. The two upstream-ingestion stories (eLinks sync, MRD) and the `ram-reference-data` scaffold are carved out into the new Epic 0.1; the shared Azure estate is now provisioned by `ram-reference-data` (Epic 0.1, AR53 first-consumer rule) and `ram-authorisation` **consumes** it. Story renumber: old 0.1.1 → 0.2.1 (minus the shared-estate ACs, which moved to Epic 0.1 Story 0.1.1); old 0.1.2 → 0.2.2; old 0.1.5 → 0.2.3; old 0.1.6 → 0.2.4; old 0.1.7 → 0.2.5. This epic now depends on Epic 0.1 (JOH identity resolution reads `jo_people`, populated by the eLinks sync).'
-revisionNotePrior: 'SCP 2026-06-10 cascade (2026-06-11): two-population identity resolution + jurisdiction added to the authz story; FR renumber FR58–FR61 → FR57–FR60. Superseded by the 2026-06-17 carve-out above.'
 ---
 
 # Epic 0.2: User authenticates and lands on a role-scoped Home page
@@ -63,7 +59,7 @@ So that **the authorisation service follows the same consistent, version-pinned,
 **And** Spring Boot Test with JUnit 5 (`junit-bom:6.0.3`), Testcontainers PostgreSQL 1.21.4, Spring Boot Testcontainers 4.1.0, and spring-boot-starter-webmvc-test are configured (per AR14–AR15),
 **And** Spectral, ArchUnit, Spotless, and Checkstyle are configured (per AR17),
 **And** a Helm chart skeleton exists at `charts/ram-authorisation/` with `values-dev.yaml`, `values-staging.yaml`, `values-production.yaml` overlays (per AR24),
-**And** a `terraform/` directory skeleton exists with per-environment stacks (`dev` / `staging` / `production`) for **this service's own resources only** (e.g. its Key Vault namespace, APIM per-API policy) — the shared estate lives in `ram-reference-data` per AR53 / decision #12,
+**And** a `terraform/` directory skeleton exists with per-environment stacks (`dev` / `staging` / `production`) for **this service's own resources only** (e.g. its Key Vault namespace, APIM per-API policy) — the shared estate lives in `ram-reference-data` per AR53,
 **And** GitHub Actions workflows exist at `.github/workflows/ci.yml`, `deploy-dev.yml`, `deploy-staging.yml`, `deploy-production.yml` (per AR28),
 **And** `CODEOWNERS` and `PULL_REQUEST_TEMPLATE.md` exist (per AR29),
 **And** a Postman collection skeleton exists at `postman/ram-authorisation-phase0.postman_collection.json` (per AR41).
@@ -76,7 +72,7 @@ So that **the authorisation service follows the same consistent, version-pinned,
 **And** structured JSON logs via Logstash Logback Encoder 9.0 appear on stdout (per AR30, NFR25),
 **And** logs include a `correlationId` populated by `CorrelationIdFilter` for each request (per AR32).
 
-**Given** the shared Azure estate (AKS, encrypted-at-rest PostgreSQL Flexible Server, ACR, APIM, Application Insights / Log Analytics) was provisioned by `ram-reference-data`'s `terraform/` in Epic 0.1 (Story 0.1.1, AR53 first-consumer rule / decision #12),
+**Given** the shared Azure estate (AKS, encrypted-at-rest PostgreSQL Flexible Server, ACR, APIM, Application Insights / Log Analytics) was provisioned by `ram-reference-data`'s `terraform/` in Epic 0.1 (Story 0.1.1, AR53 first-consumer rule),
 **When** `ram-authorisation` deploys,
 **Then** it **consumes** the shared cluster, database, registry, gateway, and observability workspace without re-provisioning them,
 **And** `ram-authorisation`'s `terraform/` contains only its own resources (Key Vault namespace, APIM per-API policy),
@@ -107,7 +103,7 @@ So that **the authorisation service follows the same consistent, version-pinned,
 **And** the deployed pod passes liveness + readiness probes (per NFR28),
 **And** Azure Application Insights receives structured log entries via OpenTelemetry Collector (per AR31, NFR27).
 
-**References:** FR8, FR58, FR59; NFR10, NFR11, NFR15, NFR16, NFR25–NFR28, NFR31, NFR40, NFR42; AR2–AR17, AR23–AR32, AR41, AR53; **D10** (`gh` CLI not available — manual GitHub web-UI setup); **decision #12 / SCP 2026-06-17** (`ram-authorisation` consumes the shared estate provisioned by `ram-reference-data` in Epic 0.1).
+**References:** FR8, FR58, FR59; NFR10, NFR11, NFR15, NFR16, NFR25–NFR28, NFR31, NFR40, NFR42; AR2–AR17, AR23–AR32, AR41, AR53; **D10** (`gh` CLI not available — manual GitHub web-UI setup).
 
 ---
 
@@ -308,7 +304,7 @@ So that **I can begin using RAM Pathfinder's workflows** — and at end of Phase
 
 **Given** the user has an `ram_auth_user_activation_flags` entry indicating their (jurisdiction, region) wave is NOT activated for RAM Pathfinder yet,
 **When** they land on Home,
-**Then** they see a banner *"Your jurisdiction/region has not yet moved to RAM Pathfinder. Please continue using your current system."* and the workflow nav is disabled (per FR57 surface — full wave activation orchestration is Phase 9+; the incumbent is GAPS for SSCS wave 1, APEX for Courts waves 2+).
+**Then** they see a banner *"Your jurisdiction/region has not yet moved to RAM Pathfinder. Please continue using your current system."* and the workflow nav is disabled (per FR57 surface — full wave activation orchestration is Phase 9+; the incumbent is ListAssist for SSCS wave 1, APEX for Courts waves 2+).
 
 **Given** axe-core checks run on the rendered Home page,
 **When** the page is in a steady state,

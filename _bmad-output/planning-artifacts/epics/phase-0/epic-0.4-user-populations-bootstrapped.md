@@ -8,10 +8,6 @@ parent: 'epics/phase-0/index.md'
 epic: 0.4
 title: 'Both user populations are bootstrapped and verifiable against the IdP'
 storyCount: 1
-status: 'integrations-first-restructure-2026-06-17'
-revisedAt: '2026-06-17'
-revisionNote: 'Integrations-first restructure (SCP 2026-06-17 / architecture decision #12): renumbered Epic 0.3 → 0.4; story 0.3.1 → 0.4.1. Sign-in (which this epic''s seeded data serves) is now Epic 0.2 Story 0.2.5 (was Epic 0.1 / 0.1.7). No content change. File renamed from epic-0.3-user-populations-bootstrapped.md.'
-revisionNotePrior: 'SCP 2026-06-10 cascade: the APEX Users/Roles SQL-ETL story (old 0.3.1) is retracted with the ETL (revised D3 + restructured D9 — no legacy user migration; auth data is strictly RAM-internal, bootstrapped outside the PRD''s scope). The epic now delivers what RAM itself owns: dev/CI seeds spanning both identity populations, the bootstrap-verification job, and the production bootstrap runbook. File renamed from epic-0.3-admin-manages-users-roles.md.'
 ---
 
 # Epic 0.4: Both user populations are bootstrapped and verifiable against the IdP
