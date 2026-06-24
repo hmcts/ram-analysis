@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Functional Requirements Coverage (FR1–FR60) — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="functional-requirements-coverage-fr1fr60">Functional Requirements Coverage (FR1–FR60)</h1>
+<blockquote>
+<p>Sibling of <a href="../../architecture.html"><code>../architecture.md</code></a>. The parent links here from its <em>Architecture Validation Results / Requirements Coverage Validation</em> section.</p>
+</blockquote>
+<p>The 60 Functional Requirements are organised into 9 capability areas. Each subsection below lists the FRs in that area (summarised from the PRD as amended 2026-06-10) and the architectural support that satisfies them.</p>
+<p><strong>All 60 FRs have explicit architectural support.</strong> None unaddressed. <em>(The Phase 0 Data Migration ETL FR was retracted 2026-06-10<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>; FR58–FR61 were renumbered FR57–FR60.)</em></p>
+<details class="section" id="identity--authorisation-fr1fr5"><summary><span class="section-title">Identity &amp; Authorisation (FR1–FR5)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR1</strong> <em>(amended 2026-06-10)</em> — Authenticated users access RAM Pathfinder via HMCTS IdP single sign-on; password, session, and account lifecycle are owned by the IdP. At authentication time, the IdP email is resolved to RAM Pathfinder's canonical identifier — the <strong>personnel number</strong> (JOH users, via <code>jo_people</code>) or the RAM-internal staff identifier (admin-staff users, via <code>ram_auth_staff_identities</code>)<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</li>
+<li><strong>FR2</strong> <em>(amended 2026-06-10)</em> — RAM Pathfinder's Authorisation service maps each authenticated principal to one or more roles, a <strong>jurisdiction</strong>, and a Region/Area scope, and authorises every system call against that mapping.</li>
+<li><strong>FR3</strong> — Authorised users can retrieve their effective permissions for their authenticated session.</li>
+<li><strong>FR4</strong><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> — System administrators can update role, jurisdiction, and Region/Area assignments for any user. In MVP the data layer is editable by DBAs via direct SQL per runbook; the admin UI surface (<code>ram-admin-ui</code> Users &amp; Roles module) is post-MVP.</li>
+<li><strong>FR5</strong> <em>(reframed v2.5 as post-MVP)</em> — External machine-to-machine consumers require an authentication mechanism. At MVP, no machine-to-machine consumers are in scope. The mechanism for genuine service-principal authentication is a post-MVP open question (see <a href="gaps.html"><code>./gaps.md</code> G7</a>).</li>
+</ul>
+<p><strong>Architectural support:</strong> Authorisation service (incl. <code>ram_auth_staff_identities</code> + the two-population identity lookup) + per-service custom <code>JWTFilter</code> (HMCTS template pattern) + OIDC for human users (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9) + JWT propagation interceptor (Pattern 1) + OAuth <code>client_credentials</code> for the payment-batch service principal (Pattern 2). <strong>FR4</strong> UI surface is post-MVP <code>ram-admin-ui</code><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. FR5 (full programmatic service-account directory) remains post-MVP.</p>
+</div></details><details class="section" id="foundational-data-management-fr6fr9"><summary><span class="section-title">Foundational Data Management (FR6–FR9)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR6</strong><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> — RSU users can <strong>view</strong> Reference Data through <code>ram-reference-data</code>'s versioned read API. Two ownership tiers in <strong>separate tables</strong> (lineage preserved): <strong>(a) upstream-sourced</strong> (<code>jo_*</code> JOH eLinks entities + <code>mrd_*</code> MRD entities) — read-only in RAM, refreshed from source, corrections at source, no RAM write surface; <strong>(b) RAM-owned</strong> — data not existing upstream plus operational state over upstream entities; DBAs via SQL in MVP, RSU-facing maintenance UI post-MVP.</li>
+<li><strong>FR7</strong> <em>(reframed 2026-06-10)</em> — Every RAM Pathfinder service reads Reference Data via <strong>direct SQL</strong> on the shared schema's Reference Data tables (SELECT-granted per service role) — no client class, no API fan-out, no cache (Principle 2). <strong>Writes follow the tier</strong>: tier-(a) tables written exclusively by the ingestion mechanisms (JOH eLinks sync + MRD weekly feed); tier-(b) tables by DBAs via SQL in MVP. <code>ram-reference-data</code> is the <strong>single owner</strong> of all reference-data tables; no service holds duplicate or cached copies.</li>
+<li><strong>FR8</strong> <em>(revised v2.2)</em> — Cross-service runtime policy values are stored in a shared <code>ram_configuration_values</code> infrastructure table, schema-managed by <code>ram-architecture</code>'s Liquibase baseline changelog and SELECT-granted to every RAM Pathfinder service DB role. Updates via Liquibase changesets or admin SQL — no API service. Per-service config that's scoped to one service uses Spring profiles + <code>application.yml</code> + Azure Key Vault.</li>
+<li><strong>FR9</strong> — RAM Pathfinder dispatches transactional emails (booking acks, absence acks, payment schedules) via HMCTS email infrastructure, with a delivery log retained.</li>
+</ul>
+<p><strong>Architectural support:</strong> Reference Data + Notification services; in-process JOH eLinks scheduled sync + MRD blob pick-up (see <a href="../../architecture.html"><code>../architecture.md</code></a> → <em>Upstream reference-data ingestion</em>); direct SQL access to the Reference Data tables (no caching at MVP per Principle 2); shared <code>ram_configuration_values</code> table. <strong>FR6</strong> tier-(b) maintenance UI is post-MVP <code>ram-admin-ui</code><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>; tier (a) has no RAM write surface in any phase.</p>
+</div></details><details class="section" id="joh-records--working-patterns-fr10fr18"><summary><span class="section-title">JOH Records &amp; Working Patterns (FR10–FR18)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR10</strong> — RSU users can search and filter <strong>JOHs</strong> by name, base location, location type, and JOH type.</li>
+<li><strong>FR11</strong> — RSU users can <strong>view</strong> JOH profiles through <code>ram-reference-data</code>'s read API. Upstream-sourced fields (<code>jo_people</code>, <code>jo_appointments</code>, …, MRD Specialisations) are tier (a) — read-only, corrections at source. RAM-owned operational state and overlays (location per FR17, working patterns per FR12, ticket overlays per FR15) are tier (b) — separate tables <strong>keyed by personnel_number</strong>.</li>
+<li><strong>FR12</strong> — Authorised users can define and update Working Patterns (None / Daily / Weekly) for JOHs, with target sit %, jurisdictional split, and per-day work-type pattern. RAM-owned operational state (tier (b)).</li>
+<li><strong>FR13</strong> — RAM Pathfinder auto-populates JOH itineraries up to the next 31st March from the working pattern, preserving any prior absences.</li>
+<li><strong>FR14</strong> <em>(reframed 2026-06-10)</em> — Salaried full-time / part-time status is sourced from JOH eLinks (<code>jo_contract_types</code>); RAM displays the current status; conversions happen upstream and are reflected at the next sync. The previous in-RAM conversion capability is retracted.</li>
+<li><strong>FR15</strong> — Ticket information per JOH role is exposed through <code>ram-reference-data</code>'s read API, combining (a) upstream <code>jo_tickets</code> (read-only) and (b) RAM-overlay tickets/authorisations in <code>ram_joh_ticket</code>, keyed by personnel_number; overlay rows editable by admin staff (DBAs via SQL in MVP).</li>
+<li><strong>FR16</strong> — RAM Pathfinder validates that jurisdictional split percentages total 100% before saving.</li>
+<li><strong>FR17</strong> — RSU users can switch a JOH's base location to another office within the same Region; cross-Region changes require OPT Advice Point and are out-of-system. Location changes are RAM-owned operational state (<code>ram_joh_location</code>) — not propagated back to JOH eLinks.</li>
+<li><strong>FR18</strong> — Authorised users can link to JOHs managed by other offices (off-circuit / cross-Region) for booking purposes (e.g. composing tribunal panels with members from other regions).</li>
+</ul>
+<p><strong>Architectural support:</strong> <code>ram-joh</code> repo (Phase 1) — owns the RAM-owned operational overlays keyed by <code>personnel_number</code>; the canonical JOH person record is <code>jo_people</code> (owned by Reference Data, refreshed by the eLinks sync). Profile views compose tier (a) + tier (b) via <code>ram-reference-data</code>'s read API. Working-pattern engine owned by JOH.</p>
+</div></details><details class="section" id="absence-workflow-fr19fr22"><summary><span class="section-title">Absence Workflow (FR19–FR22)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR19</strong> — Authorised users can record absence requests with start/end date, partial-day option (full / AM / PM), type from a controlled list, and an NTBF flag.</li>
+<li><strong>FR20</strong> — RAM Pathfinder distinguishes auto-confirmed absences (from judicial teams) from those requiring confirmation (from Courts or judges); confirmation can trigger an acknowledgement email.</li>
+<li><strong>FR21</strong> — Sickness absences can be extended without creating a new record; non-sickness extensions require a new absence record.</li>
+<li><strong>FR22</strong> — Authorised users can mark absences as <em>Not To Be Filled</em> (NTBF) or as <em>needs fee-paid cover</em>.</li>
+</ul>
+<p><strong>Architectural support:</strong> <code>ram-absence</code> repo (Phase 2); approval workflow with auto-vacancy creation per R4.</p>
+</div></details><details class="section" id="vacancy--cover-fr23fr28"><summary><span class="section-title">Vacancy &amp; Cover (FR23–FR28)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR23</strong> — RAM Pathfinder auto-creates a vacancy when an approved absence requires fee-paid cover, pre-populated with JOH type, work type, ticket, and dates.</li>
+<li><strong>FR24</strong> — Authorised users can create standalone vacancies independent of any absence.</li>
+<li><strong>FR25</strong> — Authorised users can edit a vacancy's daily breakdown — cancel individual days with a captured reason; extend or shorten the period.</li>
+<li><strong>FR26</strong> — RAM Pathfinder marks a vacancy as filled when a booking is created against it; vacancy days cannot be cancelled once a booking is recorded.</li>
+<li><strong>FR27</strong> — RAM Pathfinder surfaces fee-paid JOHs matching a vacancy's filter as a hint for advertising; advertising itself is performed out-of-system by judicial teams. <em>(Allocation decisions are recorded in RAM via the UI by admin staff — not pushed in from external systems,<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.)</em></li>
+<li><strong>FR28</strong> — Authorised users can cancel or close vacancies (e.g. when a parent absence becomes NTBF).</li>
+</ul>
+<p><strong>Architectural support:</strong> <code>ram-vacancy</code> repo (Phase 3); Booking marks the linked vacancy as filled in the same transaction per Principle 1 (no <code>markFilled</code> API endpoint at MVP — Booking has the necessary DB-role grant; per-column detail in <a href="../../architecture.html"><code>../architecture.md</code></a> → <em>Data Architecture</em>).</p>
+</div></details><details class="section" id="booking-management-fr29fr34"><summary><span class="section-title">Booking Management (FR29–FR34)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR29</strong> — Authorised users can create fee-paid bookings (linked to a vacancy or standalone), capturing <strong>JOH</strong>, <strong>court / tribunal</strong>, date, session type (full / AM / PM / evening / reserved-matter), booking type, and work type.</li>
+<li><strong>FR30</strong> — Booking creation marks the linked vacancy as filled within the same transaction when a <code>vacancyId</code> is supplied. <em>(In-process direct DB UPDATE on the <code>ram_vacancies</code> row using a per-service DB role grant; see Principle 1.)</em></li>
+<li><strong>FR31</strong> — RAM Pathfinder tracks booking status (planned, provisional, confirmed, cancelled, rejected) with reason capture for cancellation.</li>
+<li><strong>FR32</strong> — RAM Pathfinder sends booking acknowledgement emails to fee-paid <strong>JOHs</strong>, batched overnight or sent immediately via <em>Create and Email Now</em>.</li>
+<li><strong>FR33</strong> — RAM Pathfinder requires a Y/N answer at booking time when a <strong>JOH's</strong> fee entitlement is <em>Ask when booking</em>.</li>
+<li><strong>FR34</strong> — RAM Pathfinder prevents double-booking of fee-paid <strong>JOHs</strong> for overlapping sessions.</li>
+</ul>
+<p><strong>Architectural support:</strong> <code>ram-booking</code> repo (Phase 4); bookings reference the JOH by <code>personnel_number</code> → <code>jo_people</code>; retry safety via native DB primitives — natural-key uniqueness, optimistic locking, and pessimistic row locking on the target vacancy. No custom idempotency table. Detail in <a href="../../architecture.html"><code>../architecture.md</code></a> → <em>Data Architecture</em> and <a href="data-tables.html"><code>./data-tables.md</code></a>.</p>
+</div></details><details class="section" id="sitting-management-fr35fr40"><summary><span class="section-title">Sitting Management (FR35–FR40)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR35</strong> — RAM Pathfinder generates planned sittings for <strong>salaried JOHs</strong> from their working patterns, <strong>court / tribunal</strong>, date, and work type.</li>
+<li><strong>FR36</strong> — Authorised users can filter sitting records by Region/Office, <strong>JOH type</strong>, <strong>JOH</strong>, and date range.</li>
+<li><strong>FR37</strong> — Authorised users can confirm that a sitting actually took place, updating outcome (confirmed, cancelled, rejected) and actual work type.</li>
+<li><strong>FR38</strong> — Authorised users can split a sitting into AM/PM with different work types within a single day.</li>
+<li><strong>FR39</strong> — Authorised users can create ad-hoc sittings for <strong>salaried JOHs</strong>, including DJ(MC)s and Legal Advisers in County Courts (Courts-cohort-specific examples).</li>
+<li><strong>FR40</strong> <em>(revised 2026-05-11)</em> — Verifiers can verify confirmed sittings; once verified, the data is read-only. Post-verification amendments require <strong>re-opening</strong> via a UI re-open action gated by a distinct authorised role (RSU Admin only at MVP — different from the original confirmer and from a standard Verifier). Mandatory justification captured; fully audited. No external Request-for-Change ticketing.</li>
+</ul>
+<p><strong>Architectural support:</strong> <code>ram-sitting</code> repo (Phase 5); generated from JOH working patterns; verification gates downstream edits.</p>
+</div></details><details class="section" id="payment--reconciliation-fr41fr47"><summary><span class="section-title">Payment &amp; Reconciliation (FR41–FR47)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR41</strong> <em>(revised v2.6)</em> — Authorised users can list confirmed bookings and salaried sittings, filterable by Region/Office, judge, date range, and payment lifecycle status (pending, requested, paid, reconciled). The <strong>payment-eligible</strong> subset is the read-only union of confirmed bookings + sittings whose payment record does not yet exist; this is the input the scheduled batch consumes.</li>
+<li><strong>FR42</strong> <em>(revised v2.6)</em> — RAM Pathfinder's <strong>payment-processing batch</strong> (<code>ram-payment-batch</code>, scheduled on a configurable cron) automatically marks eligible bookings as <em>payment requested</em> and creates the corresponding <code>ram_payments</code> + <code>ram_payment_schedules</code> records. <strong>No user click is required.</strong> Authorised users can also list and review the generated schedule before/after dispatch.</li>
+<li><strong>FR43</strong> <em>(revised v2.6)</em> — The <strong>payment batch</strong> generates JFEPS-compatible payment schedules and dispatches them as Excel attachments to a configured Payment Authoriser via email (using its service-principal identity to call the Notification API); the Payment Authoriser forwards to Liberata out-of-system. Schedule generation and dispatch are batch-driven, not user-initiated.</li>
+<li><strong>FR44</strong> — RAM Pathfinder exposes the payment schedule via API with content-type negotiation (<code>application/vnd.hmcts.jfeps+json</code> or <code>+xlsx</code>); the JFEPS shape evolves independently of Payment internals. Preserved for SSCS wave 1<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.</li>
+<li><strong>FR45</strong> — RAM Pathfinder prevents double submission of the same booking for payment. The batch's natural-key uniqueness rejects duplicate creates; re-runs of the same cycle are idempotent. (Column-level detail in <em>Data Architecture</em> and <a href="data-tables.html"><code>./data-tables.md</code></a>.)</li>
+<li><strong>FR46</strong> — Authorised users (Finance, RSU) can flag payments as reconciled, capturing notes for mismatches; once fully reconciled, a payment cannot be re-requested for the same booking.</li>
+<li><strong>FR47</strong> — RAM Pathfinder does not store or expose bank details for any JOH — those remain in the finance system.</li>
+</ul>
+<p><strong>Architectural support:</strong> <code>ram-payment</code> repo (Phase 6) — scheduled batch (<code>ram-payment-batch</code>) authenticates as a service principal, picks up confirmed-but-unpaid bookings/sittings, generates the JFEPS-shaped Excel, dispatches via Notification → HMCTS Email; reconciliation marked manually by RSU at MVP. See <a href="sequence-diagrams/payment-batch-flow.html"><code>./sequence-diagrams/payment-batch-flow.md</code></a>.</p>
+</div></details><details class="section" id="itineraries--reporting-fr48fr54"><summary><span class="section-title">Itineraries &amp; Reporting (FR48–FR54)</span></summary><div class="section-body">
+<ul>
+<li><strong>FR48</strong> — Authorised users can render the Court Itinerary (monthly or annual) for a given Office, Financial Year, and Month, showing sittings, bookings, vacancies, and NTBF absences for each day.</li>
+<li><strong>FR49</strong> — Authorised users can render the Judge Itinerary for one or more judges over a date range, scoped by Authorisation (judges see only their own; courts see their office; RSU sees their region).</li>
+<li><strong>FR50</strong> — Authorised users can use the Forward Look view across a Region with paged or filtered access for performance.</li>
+<li><strong>FR51</strong> — Itinerary cells are clickable and drill into the underlying record (Sitting, Absence, Vacancy, or Booking).</li>
+<li><strong>FR52</strong> — Authorised users can copy/export Itinerary and Report contents to Excel and PDF.</li>
+<li><strong>FR53</strong> — RAM Pathfinder provides a fixed catalogue of standard Reports (weekly sitting projections, weekly vacancies, absence analysis, vacancy by court, confirmed sittings/bookings by judge or judge type, judge utilisation, jurisdictional split, summary by court / work type) with parameter filters per report.</li>
+<li><strong>FR54</strong> — RAM Pathfinder exposes aggregated MI Feed APIs for external consumers (DA&amp;I, future programmes); MI Feed responses contain no case-level data and are aggregate-only by contract.</li>
+</ul>
+<p><strong>Architectural support:</strong> <code>ram-itinerary</code> and <code>ram-mi-feed</code> repos (Phases 7–8); SQL-based read models via JOINs over the shared schema (incl. <code>jo_people</code> + <code>ram-joh</code> overlays) in the global database — no parallel API fan-out, no Strategy A latency stacking. External case-management systems consume these APIs from Phase 9<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>; they never write into RAM.</p>
+</div></details><details class="section" id="platform-operations-fr55fr60"><summary><span class="section-title">Platform Operations (FR55–FR60)</span></summary><div class="section-body">
+<p><em>(There is no data-migration FR — the Phase 0 ETL was retracted<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>; FR58–FR61 became FR57–FR60.)</em></p>
+<ul>
+<li><strong>FR55</strong> — Authenticated users land on a Home page showing role-scoped navigation, Region/Area selector, summary tiles for the selected scope, and contextual help.</li>
+<li><strong>FR56</strong><a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a> — RAM Pathfinder's <strong>business-user UI</strong> (<code>ram-ui</code>) replicates the functional surface of the as-is APEX UI on a modern UI stack and meets WCAG 2.2 Level AA. MVP: <code>ram-ui</code> only; <code>ram-admin-ui</code> post-MVP.</li>
+<li><strong>FR57</strong> <em>(was FR58; reframed 2026-06-10)</em> — RAM Pathfinder supports <strong>per-jurisdiction, per-region phased activation</strong> — activation is a flag flip on <code>ram_auth_user_activation_flags</code> keyed by the (jurisdiction, region) tuple, not a data migration. Initial flag state FALSE at bootstrap; cutover flips per wave by a DBA per the rollout runbook (no UI in MVP).</li>
+<li><strong>FR58</strong> <em>(was FR59)</em> — Every RAM Pathfinder service exposes a versioned API contract, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details for errors, and a published OpenAPI specification. Deprecation signalling uses the <code>Deprecation</code> header per <a href="https://datatracker.ietf.org/doc/html/rfc9745">RFC 9745</a> and the <code>Sunset</code> header per <a href="https://datatracker.ietf.org/doc/html/rfc8594">RFC 8594</a>.</li>
+<li><strong>FR59</strong> <em>(was FR60)</em> — Every RAM Pathfinder service emits structured logs with correlation IDs and consistent error categorisation, retained for pilot incident triage.</li>
+<li><strong>FR60</strong> <em>(was FR61; reframed 2026-06-10<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a><a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>)</em> — Every RAM Pathfinder domain service has a <strong>manual UAT script</strong> verified by <strong>jurisdiction-incumbent-experienced users</strong> against that incumbent before the wave's rollout: ListAssist-experienced users (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced users (RSU, Court, Judge, Judges' Clerks, Finance, MI) for waves 2+. Explicit per-role sign-off; no automated incumbent-comparison harness.</li>
+</ul>
+<p><strong>Architectural support:</strong> Per-service implementations bootstrapped from the HMCTS Crime SpringBoot template scaffolding; per-(jurisdiction, region) activation flags in <code>ram-authorisation</code>; per-service <code>docs/uat/</code> for manual UAT scripts. <em>(The Phase 0 ETL at <code>ram-architecture/migration/</code> is retracted — reference data arrives via the upstream ingestion mechanisms; user records are bootstrapped outside the PRD's scope.)</em></p>
+</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>D5 — the jurisdiction's incumbent system is the behavioural reference, verified by manual UAT.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture/functional-requirements-coverage.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#identity--authorisation-fr1fr5">Identity &amp; Authorisation (FR1–FR5)</a></li><li><a href="#foundational-data-management-fr6fr9">Foundational Data Management (FR6–FR9)</a></li><li><a href="#joh-records--working-patterns-fr10fr18">JOH Records &amp; Working Patterns (FR10–FR18)</a></li><li><a href="#absence-workflow-fr19fr22">Absence Workflow (FR19–FR22)</a></li><li><a href="#vacancy--cover-fr23fr28">Vacancy &amp; Cover (FR23–FR28)</a></li><li><a href="#booking-management-fr29fr34">Booking Management (FR29–FR34)</a></li><li><a href="#sitting-management-fr35fr40">Sitting Management (FR35–FR40)</a></li><li><a href="#payment--reconciliation-fr41fr47">Payment &amp; Reconciliation (FR41–FR47)</a></li><li><a href="#itineraries--reporting-fr48fr54">Itineraries &amp; Reporting (FR48–FR54)</a></li><li><a href="#platform-operations-fr55fr60">Platform Operations (FR55–FR60)</a></li></ul></aside>
+<script>window.__NAV_BASE__="../../";window.__PAGE__="architecture/tobe/functional-requirements-coverage";</script>
+<script src="../../nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

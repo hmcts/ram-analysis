@@ -1,0 +1,171 @@
+vars: { d2-config: { layout-engine: elk } }
+direction: right
+
+title: |md
+  ## JI as-is schema — Judges Profile & Reference
+  PK / FK (in-area) / UNQ markers · trigger badges `[B/A × I/U/D]` · intra-area FK edges only · cross-area & external refs shown in the type cell
+| { near: top-center; style.font-size: 22 }
+
+TBL_JUDGES: "TBL_JUDGES [BI BU]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGE_CODE: "NUMBER" {constraint: [primary_key]}
+  JUDGE_NAME: "VARCHAR2(255)"
+  STATUS: "VARCHAR2(3)"
+  JUDGE_TYPE_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  REGION_ID: "NUMBER(2,0) → REGIONS"
+  COMMENTS: "VARCHAR2(4000)"
+  JUDGE_CIRCUIT_CODE: "VARCHAR2(2)" {constraint: [foreign_key]}
+  SEARCH: "VARCHAR2(4000)"
+  LAST_MODIFIED_BY: "VARCHAR2(100)"
+  LAST_MODIFIED_DATE: "DATE"
+  HMCS_LEGAL_TIER_CODE: "VARCHAR2(2) → HMCS Legal Tier codes"
+  JUDGES_MASTER_ID: "NUMBER" {constraint: [foreign_key]}
+  ROLE_START_DATE: "DATE"
+  ROLE_END_DATE: "DATE"
+  ROLE_TITLE_PREFIX: "VARCHAR2(255)"
+  ROLE_TITLE_SUFFIX: "VARCHAR2(255)"
+  ITIN_NAME: "VARCHAR2(100)"
+  BASE_LOC_TYPE_ID: "NUMBER(2,0) → LOCATION TYPES"
+  BASE_LOC_ID: "NUMBER(6,0) → LOCATIONS"
+  NEXT_STATUS: "VARCHAR2(3)"
+  MIN_ANN_SITTING_DAYS: "NUMBER(4,1)"
+  MAX_ANN_SITTING_DAYS: "NUMBER(4,1)"
+  ITIN_SORT_NAME: "VARCHAR2(30)"
+  PAYROLL_NO: "NUMBER(8,0)"
+  FP_STATUS_ID: "NUMBER(1,0) → FP Status lookup"
+  RETIREMENT_DATE: "DATE"
+  LONDON_WT_STATUS_ID: "NUMBER(1,0) → London Weighting Status lookup"
+  ALT_JUDGE_CODE: "NUMBER(8,0)"
+  RENEWAL_DATE: "DATE"
+  ROLE_SALUTATION: "VARCHAR2(4000)"
+  IS_SITTING_IN_RETIREMENT: "CHAR(1)"
+}
+
+TBL_JUDGES_MASTER: "TBL_JUDGES_MASTER [BI BU]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGES_MASTER_ID: "NUMBER" {constraint: [primary_key]}
+  TITLE_PREFIX: "VARCHAR2(255)"
+  FORENAME: "VARCHAR2(255)"
+  INITIALS: "VARCHAR2(255)"
+  SURNAME: "VARCHAR2(255)"
+  TITLE_SUFFIX: "VARCHAR2(255)"
+  SALUTATION: "VARCHAR2(4000)"
+  EMAIL: "VARCHAR2(255)"
+  PHONE1: "VARCHAR2(30)"
+  PHONE2: "VARCHAR2(30)"
+  PAYROLL_NO: "NUMBER(8,0)"
+  CURRENT_JUDGE_TYPE_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  CURRENT_STATUS: "VARCHAR2(3)"
+  CURRENT_LOC_TYPE_ID: "NUMBER(2,0)"
+  CURRENT_LOC_ID: "NUMBER(6,0)"
+  OTHER_CONTACT_TYPE: "VARCHAR2(100)"
+  OTHER_CONTACT_NAME: "VARCHAR2(255)"
+  OTHER_CONTACT_EMAIL: "VARCHAR2(255)"
+  OTHER_CONTACT_PHONE1: "VARCHAR2(30)"
+  OTHER_CONTACT_PHONE2: "VARCHAR2(30)"
+  RETIREMENT_DATE: "DATE"
+  COMMENTS: "VARCHAR2(4000)"
+  SEARCH: "VARCHAR2(4000)"
+  CREATED_BY: "VARCHAR2(255)"
+  CREATED_DATE: "DATE"
+  LAST_MODIFIED_BY: "VARCHAR2(255)"
+  LAST_MODIFIED_DATE: "DATE"
+  CURRENT_MAIN_JUDGE_CODE: "NUMBER(6,0)" {constraint: [foreign_key]}
+  CURRENT_REGION_ID: "NUMBER(2,0)"
+  MASTER_JUDGE_NAME: "VARCHAR2(4000)"
+  LEAVE_CF: "NUMBER(4,1)"
+  LEAVE_BAL: "NUMBER(5,2)"
+  CURRENT_SITTING_COMMITMENT: "NUMBER(5,2)"
+  CURRENT_MAIN_ITIN_NAME: "VARCHAR2(100)"
+}
+
+TBL_JUDGES_USER_LINKS: "TBL_JUDGES_USER_LINKS [BI BU]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGES_USER_LINKS_ID: "NUMBER" {constraint: [primary_key]}
+  JUDGES_MASTER_ID: "NUMBER" {constraint: [foreign_key]}
+  USER_ID: "VARCHAR2(255)"
+  CREATED_BY: "VARCHAR2(255)"
+  CREATED_DATE: "DATE"
+  LAST_MODIFIED_BY: "VARCHAR2(255)"
+  LAST_MODIFIED_DATE: "DATE"
+}
+
+TBL_JUDGE_TYPES: "TBL_JUDGE_TYPES" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGE_TYPE_ID: "NUMBER(2,0)" {constraint: [primary_key]}
+  JUDGE_TYPE_NAME: "VARCHAR2(100)" {constraint: [unique]}
+  IN_USE: "CHAR(1)"
+  COUNTY: "CHAR(1)"
+  CROWN: "CHAR(1)"
+  RCJ: "CHAR(1)"
+  PROFILE_JUDGE_TYPE_ID: "NUMBER(2,0)"
+  MINIMUM: "NUMBER"
+  MAGS: "CHAR(1)"
+  FWR: "CHAR(1)"
+  SHORT_TYPE_NAME: "VARCHAR2(30)"
+  SALARIED: "CHAR(1)"
+  FP_TYPE_ID: "NUMBER(1,0)"
+  LOCALLY_MANAGED: "CHAR(1)"
+  TRIBS: "CHAR(1)"
+  DAILY_FEE_AMT: "NUMBER(7,2)"
+  DAILY_FEE_AMT_LW: "NUMBER(7,2)"
+  ANN_SITTING_COMM: "NUMBER(5,2)"
+  SORT: "NUMBER(3,0)"
+  ROUNDING_FACTOR: "NUMBER(3,2)"
+  JUDGE_LEVEL: "NUMBER(2,0)"
+  GENERIC_FWR_TEXT: "VARCHAR2(100)"
+  CAN_SIT_IN_RETIREMENT: "CHAR(1)"
+}
+
+TBL_JUDGE_STATUSES: "TBL_JUDGE_STATUSES" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGE_STATUS_CODE: "VARCHAR2(5)" {constraint: [primary_key]}
+  JUDGE_STATUS_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+}
+
+TBL_JUDGE_CIRCUITS: "TBL_JUDGE_CIRCUITS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JUDGE_CIRCUIT_CODE: "VARCHAR2(2)" {constraint: [primary_key]}
+  CIRCUIT_ID: "NUMBER(2,0)"
+  CIRCUIT_NAME: "VARCHAR2(100)"
+  JUDGE_CIRCUIT_NAME: "VARCHAR2(100)" {constraint: [unique]}
+  IN_USE: "CHAR(1)"
+}
+
+TBL_LEADERSHIP_JUDGE_TYPES: "TBL_LEADERSHIP_JUDGE_TYPES" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  LEADERSHIP_JUDGE_TYPE_ID: "NUMBER(2,0)" {constraint: [primary_key]}
+  LEADERSHIP_JUDGE_TYPE_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+}
+
+TBL_JUDGE_TYPE_PROMOTION: "TBL_JUDGE_TYPE_PROMOTION" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  CURRENT_JUDGE_TYPE_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  PROMOTED_JUDGE_TYPE_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  LAST_MODIFIED_BY: "VARCHAR2(100)"
+  LAST_MODIFIED_DATE: "DATE"
+}
+
+TBL_JUDGE_TYPE_PROMOTION.CURRENT_JUDGE_TYPE_ID -> TBL_JUDGE_TYPES.JUDGE_TYPE_ID: { style.stroke: "#6c757d"; style.stroke-width: 1; style.stroke-dash: 4 }
+TBL_JUDGE_TYPE_PROMOTION.PROMOTED_JUDGE_TYPE_ID -> TBL_JUDGE_TYPES.JUDGE_TYPE_ID: { style.stroke: "#6c757d"; style.stroke-width: 1; style.stroke-dash: 4 }
+TBL_JUDGES.JUDGE_TYPE_ID -> TBL_JUDGE_TYPES.JUDGE_TYPE_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JUDGES.JUDGE_CIRCUIT_CODE -> TBL_JUDGE_CIRCUITS.JUDGE_CIRCUIT_CODE: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JUDGES.JUDGES_MASTER_ID -> TBL_JUDGES_MASTER.JUDGES_MASTER_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+TBL_JUDGES_MASTER.CURRENT_JUDGE_TYPE_ID -> TBL_JUDGE_TYPES.JUDGE_TYPE_ID: { style.stroke: "#6c757d"; style.stroke-width: 1; style.stroke-dash: 4 }
+TBL_JUDGES_MASTER.CURRENT_MAIN_JUDGE_CODE -> TBL_JUDGES.JUDGE_CODE: { style.stroke: "#6c757d"; style.stroke-width: 1; style.stroke-dash: 4 }
+TBL_JUDGES_USER_LINKS.JUDGES_MASTER_ID -> TBL_JUDGES_MASTER.JUDGES_MASTER_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+
+legend: |md
+  **Legend** — `PK` primary · `FK` in-area (line) · `UNQ` unique · `→ TBL_X` cross-area ref (no line) · `→ hint` external (not in PDF)  
+  ━━ blue solid = HIGH-confidence FK · - - grey dashed = MEDIUM-confidence FK
+| { near: bottom-center; style.font-size: 13 }

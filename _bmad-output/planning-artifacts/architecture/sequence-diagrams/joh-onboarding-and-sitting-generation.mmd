@@ -1,0 +1,43 @@
+%%{init: {'theme': 'default', 'sequence': {'actorFontSize': 22, 'actorFontWeight': 'bold', 'messageFontSize': 20, 'noteFontSize': 18, 'mirrorActors': false, 'actorMargin': 60, 'boxMargin': 12, 'messageMargin': 40, 'wrap': true}}}%%
+sequenceDiagram
+    autonumber
+
+    actor RSU
+
+    participant eLinks as JOH eLinks API (upstream)
+    participant RefData as ram-reference-data
+    participant UI as ram-ui JOH module
+    participant JOH as ram-joh
+    participant Itin as ram-itinerary
+
+    rect rgb(232, 240, 250)
+        Note over eLinks,RefData: Phase 1 — JOH record arrives via the nightly eLinks sync (revised D3 — no manual profile creation in RAM)
+        RefData->>eLinks: scheduled pull (nightly, in-process)
+        eLinks-->>RefData: jo_* entity payloads
+        RefData->>RefData: full-refresh upsert on personnel_number (soft-deactivate, never hard-delete)
+        RefData->>RefData: record run in ram_sync_status
+        Note right of RefData: The new JOH is now in jo_people. Corrections happen at source (Judicial Office) — tier (a) is read-only in RAM per FR6.
+    end
+
+    rect rgb(232, 250, 232)
+        Note over RSU,JOH: Phase 2 — Define working pattern and jurisdictional split (RAM-owned operational state, tier (b))
+        RSU->>UI: find the JOH (search composes jo_people + overlays per FR10/FR11)
+        RSU->>UI: open Working Pattern tab, choose None / Daily / Weekly
+        RSU->>UI: set target sit %, per-day work types, jurisdictional split
+        UI->>JOH: POST /v1/johs/{personnelNumber}/working-patterns
+        JOH->>JOH: validate jurisdictional split sums to 100% per FR16
+        JOH->>JOH: persist working pattern (keyed by personnel_number)
+    end
+
+    rect rgb(250, 240, 230)
+        Note over RSU,Itin: Phase 3 — Forward-sitting generation up to next 31 March per FR13
+        Note right of JOH: Generation is in the same transaction as the pattern save. Prior absences on affected dates are preserved.
+        JOH->>JOH: compute target dates up to next 31 March
+        JOH->>JOH: skip dates with existing absences
+        JOH->>JOH: persist planned sittings
+        JOH->>JOH: commit transaction
+        JOH-->>UI: 201 working pattern with generated sittings count
+        UI-->>RSU: confirmation toast
+    end
+
+    Note over RSU,Itin: Downstream — ram-itinerary now sees the planned sittings via SQL JOIN, and ram-sitting picks them up for daily confirmation. See itinerary-federated-read.md and salaried-sitting-confirmation.md.

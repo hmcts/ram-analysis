@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phase × Area Framework — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="phase--area-framework">Phase × Area Framework</h1>
+<p>RAM Pathfinder is built in <strong>10 sequential phases (0–9+)</strong> per the PRD's Phase-by-Phase Journey Mapping and the architecture's Repository Strategy:</p>
+<ul>
+<li><strong>Phase 0</strong> is cross-cutting foundations (multiple parallel areas).</li>
+<li><strong>Phases 1–8</strong> each deliver one service end-to-end (backend + UI module).</li>
+<li><strong>Phase 9+</strong> is the jurisdiction-first wave rollout<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: wave 1 = the <strong>SSCS jurisdiction</strong> (replacing ListAssist; GAPS case management retained); waves 2+ = Courts jurisdictions per-region (replacing APEX/JI).</li>
+</ul>
+<p>The first level of grouping below is <strong>Phase</strong> (delivery sequence); the second level is <strong>Area</strong> (the capability or cross-cutting concern that anchors the epic). Within each Area, concrete epics with stories and Gherkin acceptance criteria live in the per-phase folders (e.g. <a href="phase-0/index.html">phase-0/</a>).</p>
+<details class="section" id="epic-phase--area-summary"><summary><span class="section-title">Epic Phase × Area Summary</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Phase</th>
+<th>Area</th>
+<th>Component(s)</th>
+<th>Primary FR/NFR coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0</strong></td>
+<td>Platform &amp; DevEx</td>
+<td><code>ram-architecture</code> (scaffolding), GitHub Actions, APIM, AKS, Application Insights, shared <code>ram_configuration_values</code></td>
+<td>FR8, FR58, FR59, NFR25–NFR28, NFR40, NFR42</td>
+</tr>
+<tr>
+<td><strong>0</strong></td>
+<td>Identity &amp; Authorisation</td>
+<td><code>ram-mock-auth</code>, <code>ram-authorisation</code> (two-population identity resolution; jurisdiction-aware)</td>
+<td>FR1–FR4, FR57 <em>(flag surface)</em>, NFR12, NFR13</td>
+</tr>
+<tr>
+<td><strong>0</strong></td>
+<td>Upstream Reference-Data Ingestion</td>
+<td><code>ram-reference-data</code> in-process eLinks sync + MRD blob ingestion (tier (a): <code>jo_*</code>, <code>mrd_*</code>, <code>ram_sync_status</code>)</td>
+<td>FR6 <em>(tier a)</em>, FR7, NFR24</td>
+</tr>
+<tr>
+<td><strong>0</strong></td>
+<td>Reference Data (tier (b) + read API)</td>
+<td><code>ram-reference-data</code> (backend); maintenance UI post-MVP in <code>ram-admin-ui</code><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></td>
+<td>FR6, FR7</td>
+</tr>
+<tr>
+<td><strong>0</strong></td>
+<td>Notification</td>
+<td><code>ram-notification</code></td>
+<td>FR9, NFR22</td>
+</tr>
+<tr>
+<td><strong>0</strong></td>
+<td>Identity Bootstrap &amp; Verification</td>
+<td>seed scripts + bootstrap-verification job + runbook (<code>ram-architecture</code>)</td>
+<td>FR1 <em>(data)</em>, FR4 <em>(data layer)</em>, FR57 <em>(initial flags)</em></td>
+</tr>
+<tr>
+<td><strong>0</strong></td>
+<td>Business UI Foundation</td>
+<td><code>ram-ui</code> (shell, auth, design system)</td>
+<td>FR55 <em>(shell)</em>, FR56 <em>(stack)</em>, NFR17</td>
+</tr>
+<tr>
+<td><strong>0 → post-MVP</strong></td>
+<td>Admin UI Foundation <em>(post-MVP<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>)</em></td>
+<td><code>ram-admin-ui</code> (shell, auth, design system, tier-(b) Reference Data maintenance, User &amp; Role admin)</td>
+<td>FR4 <em>(UI surface)</em>, FR6 <em>(tier-(b) UI surface)</em>, FR56 <em>(stack)</em>, NFR17</td>
+</tr>
+<tr>
+<td><strong>1</strong></td>
+<td>JOH Records &amp; Working Patterns</td>
+<td><code>ram-joh</code> + UI module</td>
+<td>FR10–FR18</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>Absence Workflow</td>
+<td><code>ram-absence</code> + UI module</td>
+<td>FR19–FR22</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>Vacancy &amp; Cover</td>
+<td><code>ram-vacancy</code> + UI module</td>
+<td>FR23–FR28</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>Booking Management</td>
+<td><code>ram-booking</code> + UI module</td>
+<td>FR29–FR34</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>Sitting Management</td>
+<td><code>ram-sitting</code> + UI module</td>
+<td>FR35–FR40</td>
+</tr>
+<tr>
+<td><strong>6</strong></td>
+<td>Payment Processing &amp; Reconciliation</td>
+<td><code>ram-payment</code> + UI module</td>
+<td>FR41 <em>(part)</em>, FR44, FR46, FR47, NFR21, NFR35</td>
+</tr>
+<tr>
+<td><strong>6</strong></td>
+<td>Payment Batch</td>
+<td><code>ram-payment-batch</code> (scheduled)</td>
+<td>FR42, FR43, FR45</td>
+</tr>
+<tr>
+<td><strong>7</strong></td>
+<td>Itineraries Read Model</td>
+<td><code>ram-itinerary</code> <em>(no own tables)</em> + UI views</td>
+<td>FR48–FR52, NFR8, NFR37</td>
+</tr>
+<tr>
+<td><strong>8</strong></td>
+<td>MI Feed &amp; Reporting</td>
+<td><code>ram-mi-feed</code> <em>(no own tables)</em> + Reports UI module</td>
+<td>FR53, FR54, NFR23</td>
+</tr>
+<tr>
+<td><strong>9+</strong></td>
+<td>Wave Rollout (jurisdiction-first)</td>
+<td>per-(jurisdiction, region) activation, incumbent-experienced manual UAT, rollback playbook, SSCS-cohort readiness gate</td>
+<td>FR57 <em>(activation)</em>, FR60, NFR36, NFR38, NFR41</td>
+</tr>
+</tbody>
+</table>
+<p>Cross-cutting NFRs (performance NFR1–NFR9, security/data NFR10–NFR16, NFR30–NFR33, accessibility NFR17–NFR19, maintainability NFR39) are inherited by every phase; their architectural support lives in Phase 0 (Platform &amp; DevEx) and is exercised in every domain phase.</p>
+</div></details><details class="section" id="phase-0--foundations"><summary><span class="section-title">Phase 0 — Foundations</span></summary><div class="section-body">
+<blockquote>
+<p>Phase 0 is the platform smoke-test (per PRD Key Characteristic 4). All API-as-Product standards (versioning, OpenAPI, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a>, <code>Deprecation</code>/<code>Sunset</code>) are exercised on Reference Data reads and Authorisation lookups before any domain service is built.</p>
+<p>The Areas below are the <strong>architectural map</strong>. The <strong>implementation plan</strong> is the four concrete user-value epics in <a href="phase-0/index.html">phase-0/</a>.</p>
+</blockquote>
+<h3 id="phase-0--area-platform--devex">Phase 0 · Area: Platform &amp; DevEx</h3>
+<p><strong>Scope</strong>: <strong>Terraform provisioning of the Azure estate</strong> (HMCTS standard, per AR53 — colocated with the first repo that needs each resource: shared estate in <code>ram-authorisation</code>; per-service resources in each service's <code>terraform/</code>). Service scaffolding (<code>ram-scaffold.sh</code> over HMCTS Crime SpringBoot template, incl. the per-repo <code>terraform/</code> skeleton), per-service GitHub Actions pipeline (<code>ci.yml</code> + <code>deploy-{env}.yml</code> + per-region per-wave gated production deploy), OpenAPI/Spectral/ArchUnit/Spotless/Checkstyle tooling, structured Logback JSON logging conventions, OpenTelemetry → Application Insights wiring, shared <code>ram_configuration_values</code> infrastructure table managed by <code>ram-architecture</code> Liquibase baseline changelog, Azure API Management at the edge (rate limits, deprecation headers, <code>/actuator/*</code> restriction), AKS UK South multi-AZ HA, Helm chart conventions, Azure Key Vault integration.</p>
+<p><strong>Component(s)</strong>: <code>ram-architecture</code> (scaffolding script + ADRs), GitHub Actions workflows, shared Liquibase baseline changelog, APIM policies, Helm chart conventions.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR8, FR58, FR59, NFR25–NFR28, NFR40, NFR42; underpins every AR1–AR52.</p>
+<h3 id="phase-0--area-identity--authorisation">Phase 0 · Area: Identity &amp; Authorisation</h3>
+<p><strong>Scope</strong>: <code>ram-mock-auth</code> OIDC issuer for non-prod (human users via <code>authorization_code</code> across <strong>both identity populations</strong>; batch components via <code>client_credentials</code>; refuses production profile). <code>ram-authorisation</code> service owning the <strong>6 auth tables</strong> (<code>ram_auth_users</code>, <code>ram_auth_staff_identities</code>, <code>ram_auth_roles</code>, <code>ram_auth_user_roles</code>, <code>ram_auth_user_region_scopes</code>, <code>ram_auth_user_activation_flags</code> keyed by (jurisdiction, region)). <strong>Two-population identity resolution</strong><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>: IdP email → <code>jo_people</code> → personnel number (JOH users); IdP email → <code>ram_auth_staff_identities</code> → RAM-assigned UUID (admin staff). Custom <code>JWTFilter</code> pattern in every service that validates JWT against JWKS and calls <code>POST /authz/check</code> to populate request-scoped <code>AuthDetails</code> with canonical id + roles + <strong>jurisdiction</strong> + Region/Area scope + activation flag. Per-user activation flags (FR57) wired to enable jurisdiction-first phased cutover.</p>
+<p><strong>Component(s)</strong>: <code>ram-mock-auth</code>, <code>ram-authorisation</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR1, FR2, FR3, FR4, FR57 <em>(flags wired here; wave activation orchestrated in Phase 9+)</em>; NFR12, NFR13, NFR16, NFR20. <em>(FR5 is post-MVP; out of scope here.)</em></p>
+<h3 id="phase-0--area-reference-data">Phase 0 · Area: Reference Data</h3>
+<p><strong>Scope</strong>: <code>ram-reference-data</code> service owning <strong>all 32 reference-data tables across two ownership tiers</strong> (FR6/FR7): <strong>tier (a) upstream-sourced</strong> — 15 <code>jo_*</code> JOH eLinks entities + <code>mrd_*</code> MRD entities + <code>ram_sync_status</code>, written only by the ingestion mechanisms, read-only in RAM, corrections at source; <strong>tier (b) RAM-owned</strong> — <code>ram_regions</code>, <code>ram_offices</code>, <code>ram_calendar_periods</code> + 12 operational vocabularies, DBA-maintained per runbook in MVP<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. <strong>Read-only, jurisdiction-filtered</strong> versioned REST API over both tiers<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>. Per-service DB SELECT grants for direct-SQL reads (per FR7 / Principle 2). API-as-Product standards exercised here first (versioning, OpenAPI, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a>, deprecation signalling).</p>
+<p><strong>Ingestion (in Epic 0.1's vertical slice — sign-in depends on <code>jo_people</code>)</strong>: nightly in-process <code>@Scheduled</code> eLinks sync (full-refresh upsert on upstream natural keys; soft-deactivation, never hard-delete; run log in <code>ram_sync_status</code>) + weekly MRD Excel via Azure Blob drop (validate / upsert / archive; idempotent per file; reader swaps for the MRD API post-MVP). Per AR46–AR49.</p>
+<p><strong>Component(s)</strong>: <code>ram-reference-data</code> (backend incl. ingestion tasks). The tier-(b) maintenance UI (FR6) is post-MVP <code>ram-admin-ui</code><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR6, FR7, NFR24 <em>(JOH eLinks + MRD are MVP integrations)</em>; cross-references NFR39 (API-as-Product), AR18, AR20, AR22, AR46–AR49; gaps.md G8.</p>
+<h3 id="phase-0--area-notification">Phase 0 · Area: Notification</h3>
+<p><strong>Scope</strong>: <code>ram-notification</code> service. Outbound transactional email dispatch to HMCTS email infrastructure (SMTP). Delivery log with retry on transient failure. Consumed in Phase 1+ for booking acks (FR32), absence acks (FR20), and the Phase 6 payment-schedule dispatch (FR43).</p>
+<p><strong>Component(s)</strong>: <code>ram-notification</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR9, NFR22.</p>
+<h3 id="phase-0--area-identity-bootstrap--verification">Phase 0 · Area: Identity Bootstrap &amp; Verification</h3>
+<p><strong>Scope</strong>: No legacy data migration of any kind exists<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>. Reference data arrives via the Upstream Reference-Data Ingestion area (Epic 0.1). User/authorisation data is strictly RAM-internal, bootstrapped by programme-management mechanisms outside the PRD's scope. RAM owns: dev/CI <strong>seed scripts</strong> spanning both identity populations; the re-runnable <strong>bootstrap-verification job</strong> confirming every <code>ram_auth_users</code> row (both populations) maps to a real IdP principal (the standing wave-cutover gate artefact, also used at the pre-Phase-9 IdP cutover per G1.3); and the <strong>production bootstrap runbook</strong> (<code>ram-architecture/runbooks/identity-bootstrap.md</code>), which also carries the FR4 DBA-maintenance pattern.</p>
+<p><strong>Component(s)</strong>: <code>ram-architecture</code> (seed scripts, verification job, runbook). Not a runtime service.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR1 <em>(lookup data)</em>, FR4 <em>(MVP data-layer criterion)</em>, FR57 <em>(initial all-FALSE flags keyed by (jurisdiction, region))</em>; AR52.</p>
+<h3 id="phase-0--area-business-ui-foundation">Phase 0 · Area: Business UI Foundation</h3>
+<p><strong>Scope</strong>: <code>ram-ui</code> repo scaffolded (React + TypeScript + Vite + Vitest + Playwright). GOV.UK Design System base + HMCTS/RAM Pathfinder extensions. OIDC client wrapper (<code>HmctsIdpProvider</code>, <code>ProtectedRoute</code>, <code>useAuth</code>). HTTP client with auth header attachment and RFC 9457 error handling. Business-user Home shell with role-scoped navigation and Region/Area selector (FR55). axe-core CI for WCAG 2.2 AA gate. Per-phase E2E test suite scaffolding under <code>tests/e2e/</code>. <strong>Excludes admin workflows</strong> — tier-(b) Reference Data maintenance (FR6) and User &amp; Role admin (FR4) live in <code>ram-admin-ui</code> (itself post-MVP<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>), never here.</p>
+<p><strong>Component(s)</strong>: <code>ram-ui</code> (shared + business Home shell only — per-domain modules land in their respective phases).</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR55 <em>(business Home shell)</em>, FR56 <em>(modern UI stack)</em>, NFR17, NFR18, NFR19.</p>
+<h3 id="post-mvp--area-admin-ui-foundation-post-mvp">Post-MVP · Area: Admin UI Foundation <em>(post-MVP)</em></h3>
+<p><strong>Scope</strong> <em>(post-MVP<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>)</em>: <code>ram-admin-ui</code> repo scaffolded with the <strong>same stack as <code>ram-ui</code></strong> (React + TypeScript + Vite + Vitest + Playwright; GOV.UK Design System base; OIDC client wrapper; RFC 9457 error handling) but <strong>deployed independently</strong> to its own Static Web App / CDN on a distinct hostname (e.g. <code>admin.ram.hmcts.gov.uk</code>). Distinct accent in the header/nav to make the admin surface visually unambiguous.<a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a></p>
+<p><strong>Post-MVP admin modules (none built in MVP — in MVP these operations are DBA-via-SQL per runbook):</strong></p>
+<ul>
+<li><strong>Reference Data maintenance</strong> (FR6, <strong>tier (b) only</strong> — tier (a) never gets a RAM write surface) — list/edit/create flows for Regions, Offices, operational vocabularies, calendar / financial-year boundaries. Calls <code>ram-reference-data</code> API (write endpoints also post-MVP).</li>
+<li><strong>User &amp; Role admin</strong> (FR4) — list and search users across both populations, edit role / jurisdiction / Region-Area scope assignments, view per-user effective permissions. Calls <code>ram-authorisation</code> API (write endpoints also post-MVP).</li>
+</ul>
+<p><strong>Further surfaces reserved as module placeholders only:</strong></p>
+<ul>
+<li><code>modules/activation/</code> — per-(jurisdiction, region) activation flag dashboard (FR57 admin side)</li>
+<li><code>modules/audit/</code> — post-MVP user-action audit viewer (D7 roadmap)</li>
+</ul>
+<p><em>(The previously-reserved <code>modules/migration-reports/</code> placeholder is retired — there is no migration to report on<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a>.)</em></p>
+<p><strong>Why a separate repo, not just a separate route inside <code>ram-ui</code>:</strong></p>
+<ol type="1">
+<li><strong>Audience separation</strong> — admin role is a system administrator, not RSU/Court/Judge/Finance/MI. Different mental model, different training, different way of managing change.</li>
+<li><strong>Independent rollout</strong> — admin surface changes (e.g. adding a new vocabulary table) can deploy without touching the business surface or vice versa.</li>
+<li><strong>CODEOWNERS</strong> — distinct review teams.</li>
+<li><strong>No accidental nav-leakage</strong> — admin-only screens cannot accidentally appear in a business user's navigation via misconfiguration. Authorisation gating is enforced server-side too, but the repo-level boundary is defence-in-depth.</li>
+<li><strong>Consistency with backend polyrepo discipline</strong> — same logic as the per-service backend repos: minimise shared code, accept duplication, gain independence.</li>
+</ol>
+<p><strong>Component(s)</strong>: <code>ram-admin-ui</code> (post-MVP repo: shared + Reference Data tier-(b) module + User &amp; Role module).</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR4 <em>(UI surface)</em>, FR6 <em>(tier-(b) UI surface)</em>, FR56 <em>(stack)</em>, NFR17, NFR18, NFR19. Also AR42–AR45b. All post-MVP<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a>.</p>
+<p>→ <strong>Phase 0 concrete epics + stories:</strong> <a href="phase-0/index.html">phase-0/</a></p>
+</div></details><details class="section" id="phase-1--joh"><summary><span class="section-title">Phase 1 — JOH</span></summary><div class="section-body">
+<h3 id="phase-1--area-joh-records--working-patterns">Phase 1 · Area: JOH Records &amp; Working Patterns</h3>
+<p><strong>Scope</strong>: <code>ram-joh</code> backend service + <code>joh/</code> UI module in <code>ram-ui</code>. JOH profile <strong>views</strong> composing tier-(a) <code>jo_*</code> data with <code>ram-joh</code>'s RAM-owned overlays keyed by <code>personnel_number</code> (FR10 search/filter; FR11 view — the canonical person record is <code>jo_people</code>, no profile CRUD in RAM). Working Patterns (None / Daily / Weekly) with target sit %, jurisdictional split (100% sum constraint), per-day work-type pattern — RAM-owned operational state. Forward-sitting generation up to next 31st March from working pattern, preserving prior absences. Ticket overlays layered over upstream <code>jo_tickets</code> (FR15). Full-time / part-time status <strong>displayed from upstream</strong> <code>jo_contract_types</code> — conversions happen upstream and arrive at the next sync (FR14). Same-Region base-location switching as RAM-owned overlay (cross-Region is out-of-system). Off-circuit / cross-Region JOH linking for booking purposes (e.g. tribunal panels with members from other regions). Demo: Journey <em>(stakeholder per-module demo of JOH management)</em>.</p>
+<p><strong>Component(s)</strong>: <code>ram-joh</code>, <code>ram-ui/src/modules/joh/</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR10, FR11, FR12, FR13, FR14, FR15, FR16, FR17, FR18.</p>
+</div></details><details class="section" id="phase-2--absence"><summary><span class="section-title">Phase 2 — Absence</span></summary><div class="section-body">
+<h3 id="phase-2--area-absence-workflow">Phase 2 · Area: Absence Workflow</h3>
+<p><strong>Scope</strong>: <code>ram-absence</code> backend + <code>absence/</code> UI module. Absence recording (start/end date, partial-day, type from controlled list, NTBF flag). Auto-confirmed (judicial team) vs confirmation-required (Court / judge) distinction; confirmation can trigger acknowledgement email via Notification. Sickness extension (no new record) vs non-sickness (new record required). NTBF and <em>needs fee-paid cover</em> flags. Hook to Vacancy auto-creation (Vacancy itself lives in Phase 3 — Phase 2 stubs the call; Phase 3 wires it).</p>
+<p><strong>Component(s)</strong>: <code>ram-absence</code>, <code>ram-ui/src/modules/absence/</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR19, FR20, FR21, FR22.</p>
+</div></details><details class="section" id="phase-3--vacancy"><summary><span class="section-title">Phase 3 — Vacancy</span></summary><div class="section-body">
+<h3 id="phase-3--area-vacancy--cover">Phase 3 · Area: Vacancy &amp; Cover</h3>
+<p><strong>Scope</strong>: <code>ram-vacancy</code> backend + <code>vacancy/</code> UI module. Auto-creation from approved absence with cover (R4, pre-populated with JOH type, work type, ticket, dates). Standalone vacancies. Per-day breakdown editing (cancel individual days with captured reason; extend / shorten period). <code>markFilled</code> endpoint called by Booking (Phase 4) — implemented as a direct DB UPDATE per architecture Principle 1 with explicit cross-service grants. Vacancy days locked once a booking is recorded. Fee-paid JOH filter as advertising hint (advertising itself is out-of-system; allocation decisions are recorded in RAM by admin staff<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>). Cancel / close.</p>
+<p><strong>Component(s)</strong>: <code>ram-vacancy</code>, <code>ram-ui/src/modules/vacancy/</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR23, FR24, FR25, FR26, FR27, FR28.</p>
+</div></details><details class="section" id="phase-4--booking"><summary><span class="section-title">Phase 4 — Booking</span></summary><div class="section-body">
+<h3 id="phase-4--area-booking-management">Phase 4 · Area: Booking Management</h3>
+<p><strong>Scope</strong>: <code>ram-booking</code> backend + <code>booking/</code> UI module. Fee-paid booking creation (linked to vacancy or standalone), capturing JOH (by <code>personnel_number</code>), court / tribunal, date, session type, booking type, work type. Same-transaction <code>Vacancy.markFilled</code> orchestration (R5, Principle 1 — in-process direct DB UPDATE via per-service grant). Status tracking (planned / provisional / confirmed / cancelled / rejected) with cancellation reason. Booking acknowledgement emails to fee-paid JOHs (batched overnight or <em>Create and Email Now</em>). Y/N answer at booking time when a JOH's fee entitlement is <em>Ask when booking</em>. Double-booking prevention via DB unique constraints over overlapping sessions (FR34).</p>
+<p><strong>Component(s)</strong>: <code>ram-booking</code>, <code>ram-ui/src/modules/booking/</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR29, FR30, FR31, FR32, FR33, FR34.</p>
+</div></details><details class="section" id="phase-5--sitting"><summary><span class="section-title">Phase 5 — Sitting</span></summary><div class="section-body">
+<h3 id="phase-5--area-sitting-management">Phase 5 · Area: Sitting Management</h3>
+<p><strong>Scope</strong>: <code>ram-sitting</code> backend + <code>sitting/</code> UI module. Planned-sitting generation from working patterns (court, date, work type). Region/Office/JOH-type/JOH/date-range filtering. Confirmation (took-place / cancelled / rejected) with actual work-type recording. AM/PM session split within a single day (different work types). Ad-hoc sittings for salaried JOHs (including DJ(MC)s and Legal Advisers in County Courts — Courts-cohort-specific examples). Verifier sign-off; once verified, data is read-only. Post-verification amendment via a UI <strong>re-open</strong> action gated by RBAC (RSU Admin only at MVP, distinct from confirmer and from standard Verifier) with mandatory justification and full audit — no external RFC ticketing.</p>
+<p><strong>Component(s)</strong>: <code>ram-sitting</code>, <code>ram-ui/src/modules/sitting/</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR35, FR36, FR37, FR38, FR39, FR40.</p>
+<blockquote>
+<p><strong>End-of-Phase-5 demo gate</strong>: Journey 3 (Court daily sitting confirmation) becomes demoable.</p>
+</blockquote>
+</div></details><details class="section" id="phase-6--payment"><summary><span class="section-title">Phase 6 — Payment</span></summary><div class="section-body">
+<h3 id="phase-6--area-payment-processing--reconciliation">Phase 6 · Area: Payment Processing &amp; Reconciliation</h3>
+<p><strong>Scope</strong>: <code>ram-payment</code> synchronous backend + <code>payment/</code> UI module. Authorised users list confirmed bookings and salaried sittings filterable by Region/Office/judge/date range/lifecycle status. Generated schedule review (pre/post dispatch). Reconciliation marking (Finance / RSU) with notes for mismatches; once fully reconciled, payment cannot be re-requested. Versioned content-type API for the payment schedule (<code>application/vnd.hmcts.jfeps+json</code> vs <code>+xlsx</code>). Hard architectural constraints: <strong>no bank details</strong> (FR47), <strong>no case-level data</strong>.</p>
+<p><strong>Component(s)</strong>: <code>ram-payment</code> (sync API), <code>ram-ui/src/modules/payment/</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR41 <em>(list/review surface)</em>, FR44, FR46, FR47, NFR21, NFR35.</p>
+<h3 id="phase-6--area-payment-batch">Phase 6 · Area: Payment Batch</h3>
+<p><strong>Scope</strong>: <code>ram-payment-batch</code> scheduled component (configurable cron; typically end-of-week). Authenticates via OAuth <code>client_credentials</code> against <code>ram-mock-auth</code> (non-prod) — production service-principal issuer deferred per gaps.md G7.1 (default recommendation: Azure Workload Identity). SQL JOIN over confirmed bookings + sittings without an existing payment record. Generates JFEPS-compatible Excel and dispatches to Payment Authoriser via <code>ram-notification</code> (using its service-principal token). Natural-key uniqueness on <code>(payment_cycle_id, booking_id)</code> for idempotent re-runs. No user interaction. Operational contingency to fall back to manual handling within a payment cycle if RAM Pathfinder is unavailable.</p>
+<p><strong>Component(s)</strong>: <code>ram-payment-batch</code> (deployed alongside <code>ram-payment</code>).</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR42, FR43, FR45.</p>
+<blockquote>
+<p><strong>End-of-Phase-6 demo gate</strong>: Journey 2 (RSU cover-creation through payment — the canonical Courts operational cycle) and Journey 1 (SSCS Tribunal Caseworker panel coverage — same service chain with SSCS roles) become demoable.</p>
+</blockquote>
+</div></details><details class="section" id="phase-7--itineraries"><summary><span class="section-title">Phase 7 — Itineraries</span></summary><div class="section-body">
+<h3 id="phase-7--area-itineraries-read-model">Phase 7 · Area: Itineraries Read Model</h3>
+<p><strong>Scope</strong>: <code>ram-itinerary</code> backend + Itinerary UI views in <code>ram-ui</code>. <strong>No own tables</strong> — SQL JOINs across <code>jo_people</code> (+ <code>ram-joh</code> operational-state tables), <code>ram_absences</code>, <code>ram_vacancies</code>, <code>ram_bookings</code>, <code>ram_sittings</code>. Court Itinerary (monthly / annual for Office + Financial Year + Month). Judge Itinerary scoped by Authorisation per R2 (judges see only their own; courts see their office; RSU sees their region). Forward Look across Region with paged / filtered access. Clickable drill into underlying record (Sitting, Absence, Vacancy, Booking). Copy / export to Excel and PDF. Strategy A degraded-mode contract: if NFR8 (≤ 30 s p95) is breached, fall back to Strategy C cached projection (designed but not built unless Phase 7 measurement shows the breach).</p>
+<p><strong>Component(s)</strong>: <code>ram-itinerary</code>, <code>ram-ui/src/modules/itinerary/</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR48, FR49, FR50, FR51, FR52, NFR8, NFR37.</p>
+<blockquote>
+<p><strong>End-of-Phase-7 demo gate</strong>: Journey 4 (Judge views itinerary) becomes demoable.</p>
+</blockquote>
+</div></details><details class="section" id="phase-8--mi-feed--reporting"><summary><span class="section-title">Phase 8 — MI Feed &amp; Reporting</span></summary><div class="section-body">
+<h3 id="phase-8--area-mi-feed--reporting">Phase 8 · Area: MI Feed &amp; Reporting</h3>
+<p><strong>Scope</strong>: <code>ram-mi-feed</code> backend + Reports UI module in <code>ram-ui</code>. <strong>No own tables</strong> — SQL JOINs over the shared schema. Fixed catalogue of standard Reports (weekly sitting projections, weekly vacancies, absence analysis, vacancy by court, confirmed sittings/bookings by judge or judge type, judge utilisation, jurisdictional split, summary by court / work type) with parameter filters per report and same parameter shape as APEX. MI Feed REST API for external consumers (DA&amp;I post-MVP, future programmes; external case-management systems consume RAM's APIs from Phase 9<a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a> — read-only, no reverse write). <strong>Aggregate-only by contract</strong> (FR54, NFR23) — no case-level data in any read model or report under any consumer authorisation.</p>
+<p><strong>Component(s)</strong>: <code>ram-mi-feed</code>, <code>ram-ui/src/modules/reports/</code>.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR53, FR54, NFR23.</p>
+<blockquote>
+<p><strong>End-of-Phase-8 demo gate</strong>: Journey 5 (DA&amp;I MI Feed API consumer) becomes demoable post-MVP onboarding.</p>
+</blockquote>
+</div></details><details class="section" id="phase-9--wave-rollout-jurisdiction-first"><summary><span class="section-title">Phase 9+ — Wave Rollout (jurisdiction-first)</span></summary><div class="section-body">
+<h3 id="phase-9--area-wave-rollout">Phase 9+ · Area: Wave Rollout</h3>
+<p><strong>Scope</strong>: Jurisdiction-first phased activation — <strong>wave 1 = the SSCS jurisdiction</strong> (replacing ListAssist; GAPS case management retained; all in-jurisdiction applicable roles in one wave); <strong>waves 2+ = Courts jurisdictions per-region</strong> (replacing APEX/JI). Activation flips <code>ram_auth_user_activation_flags</code> per (jurisdiction, region) tuple (FR57) via DBA SQL per the rollout runbook once that wave's feature-parity gate is passed. Manual UAT execution per role per wave (FR60): <strong>jurisdiction-incumbent-experienced users</strong> — ListAssist-experienced (RTJ, Tribunal Judges, Tribunal Members, Caseworkers, Finance, MI) for wave 1; APEX-experienced (RSU, Court, Judge, Judges' Clerks, Finance/Payment Authoriser, MI) for waves 2+ — walk per-service UAT scripts (under <code>docs/uat/</code> in each domain service repo) side-by-side against the incumbent; sign-off per role per wave is the wave-cutover gate. <strong>Wave-1 additional gates</strong><a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a>: the SSCS-cohort implementation-readiness assessment signed off; the SSCS as-is analysis pack complete. Data-readiness gate per wave: reference data current per <code>ram_sync_status</code> + the bootstrap-verification job passing for the wave's users (Epic 0.4). Per-wave rollback playbook (NFR36): documented path returning the wave to its incumbent within one operational cycle if the gate is breached post-cutover. Cross-region manual coordination during partial rollout (Risk #1 mitigation; operational, not application-level). Wave 1 is the Pilot; subsequent waves run until all jurisdictions are on RAM Pathfinder and the incumbents are retired<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a><a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a>.</p>
+<p><strong>Component(s)</strong>: Programme-level (manual UAT scripts, runbooks, activation orchestration). Cross-region edge case (Journey 6) handled out-of-system per Risk #1 — no application capability built.</p>
+<p><strong>Primary FR/NFR coverage</strong>: FR57 <em>(activation orchestration)</em>, FR60, NFR36, NFR38, NFR41. Closes the MVP.</p>
+</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn11"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref11" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn12"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref12" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn13"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref13" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn14"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref14" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn15"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref15" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn16"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref16" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn17"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref17" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn18"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref18" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn19"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref19" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/framework.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#epic-phase--area-summary">Epic Phase × Area Summary</a></li><li><a href="#phase-0--foundations">Phase 0 — Foundations</a></li><li class="h3"><a href="#phase-0--area-platform--devex">Phase 0 · Area: Platform &amp; DevEx</a></li><li class="h3"><a href="#phase-0--area-identity--authorisation">Phase 0 · Area: Identity &amp; Authorisation</a></li><li class="h3"><a href="#phase-0--area-reference-data">Phase 0 · Area: Reference Data</a></li><li class="h3"><a href="#phase-0--area-notification">Phase 0 · Area: Notification</a></li><li class="h3"><a href="#phase-0--area-identity-bootstrap--verification">Phase 0 · Area: Identity Bootstrap &amp; Verification</a></li><li class="h3"><a href="#phase-0--area-business-ui-foundation">Phase 0 · Area: Business UI Foundation</a></li><li class="h3"><a href="#post-mvp--area-admin-ui-foundation-post-mvp">Post-MVP · Area: Admin UI Foundation (post-MVP)</a></li><li><a href="#phase-1--joh">Phase 1 — JOH</a></li><li class="h3"><a href="#phase-1--area-joh-records--working-patterns">Phase 1 · Area: JOH Records &amp; Working Patterns</a></li><li><a href="#phase-2--absence">Phase 2 — Absence</a></li><li class="h3"><a href="#phase-2--area-absence-workflow">Phase 2 · Area: Absence Workflow</a></li><li><a href="#phase-3--vacancy">Phase 3 — Vacancy</a></li><li class="h3"><a href="#phase-3--area-vacancy--cover">Phase 3 · Area: Vacancy &amp; Cover</a></li><li><a href="#phase-4--booking">Phase 4 — Booking</a></li><li class="h3"><a href="#phase-4--area-booking-management">Phase 4 · Area: Booking Management</a></li><li><a href="#phase-5--sitting">Phase 5 — Sitting</a></li><li class="h3"><a href="#phase-5--area-sitting-management">Phase 5 · Area: Sitting Management</a></li><li><a href="#phase-6--payment">Phase 6 — Payment</a></li><li class="h3"><a href="#phase-6--area-payment-processing--reconciliation">Phase 6 · Area: Payment Processing &amp; Reconciliation</a></li><li class="h3"><a href="#phase-6--area-payment-batch">Phase 6 · Area: Payment Batch</a></li><li><a href="#phase-7--itineraries">Phase 7 — Itineraries</a></li><li class="h3"><a href="#phase-7--area-itineraries-read-model">Phase 7 · Area: Itineraries Read Model</a></li><li><a href="#phase-8--mi-feed--reporting">Phase 8 — MI Feed &amp; Reporting</a></li><li class="h3"><a href="#phase-8--area-mi-feed--reporting">Phase 8 · Area: MI Feed &amp; Reporting</a></li><li><a href="#phase-9--wave-rollout-jurisdiction-first">Phase 9+ — Wave Rollout (jurisdiction-first)</a></li><li class="h3"><a href="#phase-9--area-wave-rollout">Phase 9+ · Area: Wave Rollout</a></li></ul></aside>
+<script>window.__NAV_BASE__="../";window.__PAGE__="epics/framework";</script>
+<script src="../nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

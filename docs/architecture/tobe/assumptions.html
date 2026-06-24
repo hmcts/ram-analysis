@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assumptions (A1–A37) — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+
+<h1 id="assumptions-a1a37">Assumptions (A1–A37)</h1>
+<blockquote>
+<p>Sibling of <a href="../../architecture.html"><code>../architecture.md</code></a>. Linked from <em>Architecture Validation Results</em>.</p>
+</blockquote>
+<p>Each assumption is either:</p>
+<ul>
+<li>An external precondition (verifiable with the named owner before Phase 0 or pre-Phase-9), or</li>
+<li>A simplifying choice that can be revisited if wrong.</li>
+</ul>
+<p>Assumptions that affect implementation correctness (not just convenience) are flagged <strong>load-bearing</strong>.</p>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Assumption</th>
+<th>Type</th>
+<th>Verification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A1</strong></td>
+<td>HMCTS IdP supports OIDC for human-user authentication</td>
+<td>Load-bearing <strong>for Phase 9+ only</strong></td>
+<td>Pre-Phase-9 prerequisite (G1.1)</td>
+</tr>
+<tr>
+<td><strong>A2</strong> <em>(reopened v2.6, 2026-05-07)</em></td>
+<td>HMCTS IdP supports OAuth 2.0 <code>client_credentials</code> grant for service principals — needed in production for the <strong>payment-processing batch</strong> (introduced in v2.6). At MVP this is satisfied by <code>ram-mock-auth</code> (non-prod only); production issuer is a deferred decision (G7.1, with Azure Workload Identity as the default recommendation).</td>
+<td>Pre-Phase-9 decision per G7.1; mock covers Phase 0–8</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>A3</strong></td>
+<td>HMCTS IdP supports principal export / query API for pre-Phase-9 reconciliation</td>
+<td>Load-bearing <strong>for Phase 9+ only</strong></td>
+<td>Pre-Phase-9 prerequisite (G1.3); manual fallback documented</td>
+</tr>
+<tr>
+<td><strong>A4</strong> <em>(reconciled 2026-06-17)</em></td>
+<td>HMCTS Crime SpringBoot template (<code>hmcts/service-hmcts-crime-springboot-template</code>@<code>main</code>) is the scaffold for RAM Pathfinder. <strong>Base is minimal</strong> — provides Java 25, Spring Boot <strong>4.1.0</strong>, Gradle Groovy DSL, OpenTelemetry, Logstash JSON logging, Lombok, JaCoCo, CycloneDX, gradle-git-properties, ben-manes-versions, Actuator, <code>webmvc-test</code>, Dockerfile. <strong>NOT in the baseline</strong> (added by <code>ram-scaffold.sh</code> from the separate <code>hmcts/service-hmcts-springboot-demo</code> repo or as RAM conventions): Liquibase, Testcontainers, MapStruct, custom JWTFilter/<code>jjwt</code>, OWASP encoder, docker-compose plugin, OpenAPI tooling, Helm chart, Spring Cloud Azure Key Vault.</td>
+<td>Load-bearing</td>
+<td>Reconciled against <code>main</code> 2026-06-17 (G1.4); the prior "all present" note overstated the baseline; scaffolding scope tracked in G1.4a</td>
+</tr>
+<tr>
+<td><strong>A5</strong></td>
+<td>HMCTS Email infrastructure is reachable from AKS-hosted Notification service via documented transport</td>
+<td>Load-bearing</td>
+<td>Phase 0 prerequisite (G1.5)</td>
+</tr>
+<tr>
+<td><strong>A6</strong></td>
+<td>HMCTS / MoJ approves Microsoft Azure as cloud platform with UK regions for personal data</td>
+<td>Load-bearing</td>
+<td>Programme assumption (G3.1)</td>
+</tr>
+<tr>
+<td><strong>A7</strong></td>
+<td>HMCTS / MoJ approves PostgreSQL on Azure Database for PostgreSQL Flexible Server</td>
+<td>Reversible</td>
+<td>G3.2</td>
+</tr>
+<tr>
+<td><strong>A8</strong></td>
+<td>HMCTS / MoJ approves Azure API Management for ingress and rate limiting</td>
+<td>Reversible</td>
+<td>G3.3</td>
+</tr>
+<tr>
+<td><strong>A9</strong></td>
+<td>HMCTS / MoJ approves React + TypeScript with GOV.UK Design System</td>
+<td>Reversible</td>
+<td>G3.4</td>
+</tr>
+<tr>
+<td><strong>A10</strong></td>
+<td>Azure-managed encryption keys are sufficient for HMCTS data residency</td>
+<td>Load-bearing</td>
+<td>HMCTS security review</td>
+</tr>
+<tr>
+<td><strong>A11</strong></td>
+<td>The 12 user roles documented in <code>functional-modules.md</code> line 497 are the authoritative role set for RAM Pathfinder Authorisation</td>
+<td>Load-bearing</td>
+<td>Verified against PRD</td>
+</tr>
+<tr>
+<td><strong>A12</strong> <em>(revised 2026-05-06)</em></td>
+<td>APEX is accessible to the APEX-experienced UAT panel for the duration of build and per-wave UAT cycles, via existing logins. (Earlier assumption that APEX must be reachable from build-time CI for an automated parity harness was retracted with FR61 / NFR41.)</td>
+<td>Load-bearing for UAT scheduling, not for CI</td>
+<td>D5 + D6; verify APEX user-account availability per wave</td>
+</tr>
+<tr>
+<td><strong>A13</strong> <em>(revised 2026-05-06)</em></td>
+<td>APEX behaviour is stable for the duration of the build, as observed by UAT users. If APEX changes, UAT scripts and RAM Pathfinder behaviour are updated in lockstep.</td>
+<td>Reversible</td>
+<td>Risk</td>
+</tr>
+<tr>
+<td><strong>A14</strong></td>
+<td>APEX continues to be operable during the phased rollout window (12 months read-only post-cutover per region)</td>
+<td>Load-bearing</td>
+<td>Per Step 4; programme to confirm</td>
+</tr>
+<tr>
+<td><strong>A15</strong></td>
+<td>HMCTS retention policy is satisfied by 30-day hot + 90-day cold log retention</td>
+<td>Reversible</td>
+<td>Pre-GA review</td>
+</tr>
+<tr>
+<td><strong>A16</strong></td>
+<td>Order-of-magnitude capacity (~50–100 per region, ~200–500 national) is broadly correct</td>
+<td>Reversible</td>
+<td>Programme to confirm</td>
+</tr>
+<tr>
+<td><strong>A17</strong></td>
+<td>DA&amp;I and future programmes adopt API-based integration post-MVP</td>
+<td>Aspirational</td>
+<td>Programme dependency</td>
+</tr>
+<tr>
+<td><strong>A18</strong></td>
+<td>UK GDPR + DPA 2018 are the binding privacy regimes; no EU GDPR cross-border concerns</td>
+<td>Load-bearing</td>
+<td>UK-only deployment</td>
+</tr>
+<tr>
+<td><strong>A19</strong></td>
+<td>No bank details, no case-level data invariants from APEX continue to apply to RAM Pathfinder</td>
+<td>Load-bearing</td>
+<td>Per PRD</td>
+</tr>
+<tr>
+<td><strong>A20</strong></td>
+<td>Azure subscription is provisioned per HMCTS / MoJ standard with appropriate RBAC; all resources within it are Terraform-provisioned per the 2026-06-11 decision (colocated first-consumer rule)</td>
+<td>Reversible</td>
+<td>Phase 0 prerequisite; Terraform conventions per G9.1</td>
+</tr>
+<tr>
+<td><strong>A21</strong></td>
+<td>CI/CD platform is Azure DevOps Pipelines or GitHub Actions per HMCTS standard</td>
+<td>Reversible</td>
+<td>HMCTS standard</td>
+</tr>
+<tr>
+<td><strong>A22</strong></td>
+<td>HMCTS-approved security tooling is available and integrated at platform level</td>
+<td>Reversible</td>
+<td>HMCTS infrastructure</td>
+</tr>
+<tr>
+<td><strong>A23</strong></td>
+<td>The locked decisions D1–D9 from the PRD are programme-approved and binding</td>
+<td>Load-bearing</td>
+<td>Per PRD</td>
+</tr>
+<tr>
+<td><strong>A24</strong></td>
+<td>The 11-service decomposition (revised v2.2, 2026-05-07 — <code>ram-configuration</code> dropped in favour of Spring profiles + Key Vault and a shared <code>ram_configuration_values</code> infrastructure table) is programme-approved and binding</td>
+<td>Load-bearing</td>
+<td>Per PRD</td>
+</tr>
+<tr>
+<td><strong>A25</strong></td>
+<td>The team has Java + Spring Boot + Kubernetes + React + TypeScript skills available, or budget for upskilling</td>
+<td>Reversible</td>
+<td>Programme staffing</td>
+</tr>
+<tr>
+<td><strong>A26</strong> <em>(widened v2.6, 2026-05-07)</em></td>
+<td>Mock auth (Spring Authorization Server) provides full OIDC contract parity with the production issuer for (a) human <code>authorization_code</code> and (b) <code>client_credentials</code> for batch service principals (initially <code>ram-payment-batch</code>).</td>
+<td>Load-bearing</td>
+<td>Phase 0 deliverable; integration tests verify human + service-principal contract parity</td>
+</tr>
+<tr>
+<td><strong>A27</strong></td>
+<td>Mock auth never runs in production; CI lint and Spring profile validation prevent this</td>
+<td>Load-bearing — critical for production security</td>
+<td>Phase 0 deliverable; enforced by CI rules</td>
+</tr>
+<tr>
+<td><strong>A28</strong></td>
+<td>One global PostgreSQL Flexible Server instance is sufficient for the full bounded RAM Pathfinder workload (~hundreds of concurrent users, read-mostly patterns, indexed joins)</td>
+<td>Load-bearing</td>
+<td>Phase 0 sizing decision; reversible — can introduce read replicas post-MVP per Principle 2</td>
+</tr>
+<tr>
+<td><strong>A29</strong> <em>(reconciled 2026-06-17; Flyway → Liquibase 2026-06-18)</em></td>
+<td>Schema evolution: <strong>Liquibase</strong> (<code>liquibase-core</code>). <strong>Liquibase is NOT in the template baseline</strong> — it is a RAM convention added by <code>ram-scaffold.sh</code> (the HMCTS demo repo's Database branch uses Flyway; RAM standardises on Liquibase, per AR19/G1.4a). Liquibase owns RAM Pathfinder's own DDL — table creation, column add/drop, grants. <strong>Not</strong> upstream data movement; the JOH eLinks sync and MRD ingestion (see <a href="../../architecture.html"><code>../architecture.md</code></a> → <em>Upstream reference-data ingestion</em>; replaced the retracted Phase 0 ETL<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>) load tier-(a) data into tables Liquibase has already created.</td>
+<td>Tool sourcing corrected 2026-06-17 (was wrongly attributed to the template baseline); ingestion reframing 2026-06-11; Flyway → Liquibase 2026-06-18</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>A30</strong></td>
+<td>"No premature optimization" principle holds for MVP — no caching, no distributed cache, no service mesh, no read replicas, no async messaging unless measurement post-MVP justifies the complexity</td>
+<td>Load-bearing principle</td>
+<td>Self-enforced by architecture; review post-MVP per measured performance</td>
+</tr>
+<tr>
+<td><strong>A31</strong></td>
+<td>The shared-schema cross-service access model (table-name convention + per-service DB roles + explicit grants + fitness functions) is operationally maintainable with PR-coordination between services.</td>
+<td>Reversible</td>
+<td>If maintenance burden grows: retreat to API-only writes (reads-via-direct-SQL stays). If isolation needs grow: introduce schema-per-service — per-service DB roles already make this a grants-and-tables refactor, not a connection-layer change.</td>
+</tr>
+<tr>
+<td><strong>A32</strong> <em>(SUPERSEDED 2026-06-11)</em></td>
+<td><del>Phase 0 Reference Data + Users/Roles migration is an ETL.</del> Superseded by the revised D3 (2026-06-10): no legacy migration of any kind; reference data is ingested from JOH eLinks + MRD (see A36); user/authorisation records are bootstrapped by mechanisms outside the PRD's scope<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</td>
+<td>Superseded</td>
+<td>Closed — see A36/A37 and G8.1.</td>
+</tr>
+<tr>
+<td><strong>A33</strong> <em>(SUPERSEDED 2026-06-11)</em></td>
+<td><del>Migration tool's APEX-side input mapping revalidated against the APEX SQL dump.</del> Superseded with the ETL. The successor concern — validating the ingestion mapping against the JOH eLinks contract and the first MRD workbook — is G8.1; the table inventory remains RAM Pathfinder's design (now 55 tables in <a href="data-tables.html"><code>./data-tables.md</code></a>).</td>
+<td>Superseded</td>
+<td>Closed — see G8.1.</td>
+</tr>
+<tr>
+<td><strong>A34</strong></td>
+<td>Azure UK South provides three availability zones with zone-redundant managed services (AKS multi-zone node pools, PostgreSQL Flexible Server zone-redundant HA, Key Vault Premium, APIM Premium, ACR Premium).</td>
+<td>Load-bearing</td>
+<td>Phase 0 infra-provisioning verification (via the Story 0.1.1 Terraform apply); if any zone-redundant SKU is unavailable, the component degrades to single-zone HA + accepted-risk note.</td>
+</tr>
+<tr>
+<td><strong>A35</strong> <em>(softened v2.6, 2026-05-07)</em></td>
+<td>Most MVP runtime requests are user-initiated. One exception: the payment-processing batch (<code>ram-payment-batch</code>), which runs on a schedule and authenticates as a service principal. User-initiated inter-service auth: JWT propagation. Batch inter-service auth: OAuth <code>client_credentials</code> against <code>ram-mock-auth</code> in non-prod; production issuer per G7.1. Other non-user-initiated flows (DA&amp;I service-consumer calls, scheduled aggregations, async messaging) are out of MVP scope and would reuse the service-principal pattern. Phase 0 production migration runs operator-initiated (G4.7); dev/CI seeding via one-off scripts.</td>
+<td>Load-bearing</td>
+<td>The payment batch is the only non-user-initiated runtime flow at MVP. Adding more reopens the production service-auth choice (G7.1).</td>
+</tr>
+<tr>
+<td><strong>A36</strong> <em>(new 2026-06-11)</em></td>
+<td>The JOH eLinks API exposes all 15 <code>jo_*</code> entities with stable natural keys (<code>personnel_number</code> for <code>jo_people</code>) at a cadence compatible with a nightly pull, and the jurisdiction hierarchy's parent-child shape is available natively or derivable on ingest<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>.</td>
+<td>Load-bearing for the reference-data tier and the JOH identity lookup</td>
+<td>Verify against the eLinks API contract in Phase 0 (G8.1).</td>
+</tr>
+<tr>
+<td><strong>A37</strong> <em>(new 2026-06-11)</em></td>
+<td>The MRD team can deliver the weekly Excel workbook to an agreed Azure Blob container in a stable shape, and the workbook's entities carry jurisdiction-aware reference data as stated in the revised D3.</td>
+<td>Load-bearing for tier-(a) MRD data (JOH Specialisations)</td>
+<td>Verify with the MRD team in Phase 0 (G8.1); transitional until MRD public APIs ship.</td>
+</tr>
+</tbody>
+</table>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture/assumptions.md</code></p>
+</main>
+
+<script>window.__NAV_BASE__="../../";window.__PAGE__="architecture/tobe/assumptions";</script>
+<script src="../../nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

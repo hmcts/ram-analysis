@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprint Change Proposal — Integrations-first Phase 0 carve-out — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="sprint-change-proposal--integrations-first-phase-0-carve-out">Sprint Change Proposal — Integrations-first Phase 0 carve-out</h1>
+<details class="section" id="1-issue-summary"><summary><span class="section-title">1. Issue Summary</span></summary><div class="section-body">
+<p><strong>Trigger.</strong> The first phase of delivery should focus on the <strong>inbound integrations</strong> — ingesting judicial-holder reference data from the <strong>JOH eLinks API</strong> and supplementary data from the <strong>MRD</strong> weekly dataset — and <strong>their associated read APIs</strong>. Two questions were raised:</p>
+<ol type="1">
+<li>Which service should host the components that orchestrate the JOH and MRD data?</li>
+<li>Do we need a new <strong><code>ram-integrations</code></strong> repository to host those components?</li>
+</ol>
+<p><strong>Context.</strong> The integration components are already designed and storied (architecture v3.0, 2026-06-11; Stories 0.1.3 eLinks, 0.1.4 MRD, 0.2.2 read API). What this change asks is <strong>not new capability</strong> — it is a <strong>re-prioritisation and re-sequencing</strong> of Phase 0 so the integration slice is the first thing built and demoed, decoupled from the authentication/UI vertical slice it is currently bundled into.</p>
+<p><strong>Decisions taken at intake (2026-06-17):</strong></p>
+<ul>
+<li><strong>Integration scope</strong> = JO eLinks + MRD inbound only (the two upstream feeds; no outbound, no additional systems).</li>
+<li><strong>Organisation</strong> = carve out an integrations-first deliverable as the new first epic.</li>
+<li><strong>Mode</strong> = batch.</li>
+</ul>
+</div></details><details class="section" id="2-the-repository-question--resolved"><summary><span class="section-title">2. The repository question — resolved</span></summary><div class="section-body">
+<p><strong>Decision: No <code>ram-integrations</code> repo. The orchestration components stay in-process inside <code>ram-reference-data</code>.</strong></p>
+<p>This reaffirms architecture v3.0 decisions #9 / #10 (AR46, AR47). Three facts make a separate repo actively harmful at the current scope:</p>
+<ol type="1">
+<li><strong>Single-writer ownership invariant.</strong> Tier-(a) tables (<code>jo_*</code>, <code>mrd_*</code>) are owned exclusively by the <code>ram_reference_data</code> DB role. <strong>AR49</strong> plus a CI ArchUnit/grants fitness function forbid any other role from holding <code>INSERT</code>/<code>UPDATE</code>. A separate <code>ram-integrations</code> deployable would have to either (a) be granted write access — breaking the invariant and the fitness test — or (b) write through a Reference Data write API that <strong>deliberately does not exist</strong> (the service is read-only by design, Story 0.2.2). Both break current contracts.</li>
+<li><strong>No new deployable, no new service principal.</strong> The in-process decision was chosen specifically to avoid both, sidestepping the still-open service-auth gap <strong>G7</strong>. A new repo reopens both.</li>
+<li><strong>No resilience gain.</strong> Sign-in already reads RAM's own <code>jo_people</code>, so identity resolution is decoupled from eLinks uptime. A separate service writing the same tables buys nothing.</li>
+</ol>
+<p><strong>Host:</strong> <code>ram-reference-data</code>, via the already-specified in-process <code>@Scheduled</code> tasks: <code>src/main/java/.../ingestion/JohElinksSyncTask.java</code> (nightly eLinks pull) and <code>ingestion/MrdExcelIngestionTask.java</code> (weekly MRD blob pick-up), with run state in <code>ram_sync_status</code>.</p>
+<p><strong>When to revisit:</strong> only if integration scope later grows beyond these two inbound feeds — outbound flows to external case/hearing systems (D12 external consumers), additional upstream sources, or transformation orchestration spanning multiple domain schemas. That would be a fresh architecture decision (service-auth, cross-schema writes), not a Phase 0 concern.</p>
+</div></details><details class="section" id="3-key-finding--ingestion-decouples-cleanly-the-read-api-does-not"><summary><span class="section-title">3. Key finding — ingestion decouples cleanly, the read API does not</span></summary><div class="section-body">
+<p>Mapping the carve-out exposed a dependency split that drives the recommended structure:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Auth dependency</th>
+<th>Can lead the programme?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eLinks sync (0.1.3), MRD ingestion (0.1.4)</td>
+<td><strong>None</strong> — in-process <code>@Scheduled</code>, reads/writes its own tables, no JWT, no caller identity</td>
+<td><strong>Yes</strong> — genuinely first</td>
+</tr>
+<tr>
+<td>Reference Data <strong>read API</strong> (0.2.2)</td>
+<td><strong><code>JWTFilter</code></strong> (token validation against JWKS) <strong>+ <code>authz/check</code></strong> for the requester's jurisdiction used in jurisdiction-filtered responses (D8)</td>
+<td><strong>No</strong> — needs <code>ram-mock-auth</code> + the authz mechanism to exist</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Implication.</strong> "Integrations and their APIs as the literal first thing" cannot be taken at face value: the <em>secured, jurisdiction-filtered</em> API is downstream of auth. The honest carve-out delivers <strong>ingestion first</strong> (the true integration win), then the <strong>read API as soon as its auth dependencies are satisfied</strong> — immediately after the auth slice.</p>
+</div></details><details class="section" id="4-impact-analysis"><summary><span class="section-title">4. Impact Analysis</span></summary><div class="section-body">
+<h3 id="41-prd--no-change">4.1 PRD — no change</h3>
+<p>This is a build-order change, not a requirements change. MVP scope, the 60 FRs, and the 11-service decomposition are <strong>unchanged</strong>. No PRD edit required.</p>
+<h3 id="42-epics--restructure-the-substance-of-this-proposal">4.2 Epics — restructure (the substance of this proposal)</h3>
+<p>Phase 0 is re-organised from four epics into five, re-sequenced so ingestion leads. <strong>No stories are added or removed</strong> — they are moved and renumbered. Content is preserved; only sequencing, epic membership, and the relocations in §4.3 change.</p>
+<table>
+<thead>
+<tr>
+<th>New epic</th>
+<th>Title</th>
+<th>Stories (source)</th>
+<th>Auth dep</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>0.1</strong></td>
+<td>Upstream JOH/MRD reference data is ingested</td>
+<td>0.1.1 scaffold <code>ram-reference-data</code> <strong>+ shared-estate Terraform</strong> (from old 0.1.1/0.1.3); 0.1.2 tier-(a) <code>jo_*</code> tables + <code>ram_sync_status</code> (from old 0.1.3); 0.1.3 eLinks sync (old 0.1.3); 0.1.4 MRD ingestion (old 0.1.4)</td>
+<td>none</td>
+</tr>
+<tr>
+<td><strong>0.2</strong></td>
+<td>User authenticates and lands on a role-scoped Home page</td>
+<td>scaffold <code>ram-authorisation</code> (old 0.1.1, <strong>minus</strong> shared estate); <code>ram-mock-auth</code> (old 0.1.2); authz + <code>JWTFilter</code> (old 0.1.5); <code>ram-ui</code> scaffold (old 0.1.6); sign-in + Home (old 0.1.7)</td>
+<td>provides auth</td>
+</tr>
+<tr>
+<td><strong>0.3</strong></td>
+<td>Reference data is served read-only via a versioned, jurisdiction-filtered API</td>
+<td>tier-(b) tables + seed + runbook (old 0.2.1); read-only API (old 0.2.2)</td>
+<td><strong>consumes</strong> 0.2</td>
+</tr>
+<tr>
+<td><strong>0.4</strong></td>
+<td>Both user populations are bootstrapped and verifiable against the IdP</td>
+<td>old 0.3.1</td>
+<td>consumes 0.2</td>
+</tr>
+<tr>
+<td><strong>0.5</strong></td>
+<td>Notification service is scaffolded and contractually ready</td>
+<td>old 0.4.1, 0.4.2</td>
+<td>none</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Story-count check:</strong> 4 + 5 + 2 + 1 + 2 = <strong>14 entries</strong>, mapping 1:1 from the existing 12 stories plus the explicit split of the old 0.1.1 (scaffold) and old 0.1.3 (which both scaffolded <code>ram-reference-data</code> <em>and</em> set up tier-(a) + sync) into discrete scaffold / tables / sync stories. No scope added.</p>
+<p><strong>Recommended build sequence:</strong> <code>0.1 (ingestion)</code> → <code>0.2 (auth + UI)</code> → <code>0.3 (read API)</code> → <code>0.4 (bootstrap)</code> → <code>0.5 (notification)</code>.</p>
+<h3 id="43-architecture--amend-rule-driven-ripples">4.3 Architecture — amend (rule-driven ripples)</h3>
+<ol type="1">
+<li><strong>Shared Azure estate Terraform relocates <code>ram-authorisation</code> → <code>ram-reference-data</code>.</strong> Per <strong>AR53</strong> ("Terraform lives in the first repo that needs the resource; the first-consumer carries the shared estate"), <code>ram-reference-data</code> becomes the first service scaffolded and therefore the first consumer of AKS, PostgreSQL Flexible Server, ACR, APIM, App Insights / Log Analytics. The shared-estate provisioning ACs currently in old Story 0.1.1 move to new Story 0.1.1; <code>ram-authorisation</code> becomes a <strong>consumer</strong> of the shared estate, retaining only its own resources.</li>
+<li><strong><code>ram_configuration_values</code> Flyway baseline</strong> (owned by <code>ram-architecture</code>) must run before <code>ram-reference-data</code>; the SELECT-grant for <code>ram_reference_data</code> is added at the baseline. (Was sequenced before <code>ram-authorisation</code>.)</li>
+<li><strong>Implementation Sequence</strong> section reordered: <code>ram-reference-data</code> + ingestion first; <code>ram-authorisation</code> second.</li>
+<li><strong>New architecture-phase decision recorded</strong> (#12, 2026-06-17): integrations-first Phase 0 sequencing; in-process ingestion reaffirmed; <strong><code>ram-integrations</code> repo explicitly declined</strong> with rationale (§2) so it is not re-litigated.</li>
+<li><strong>Changelog entry</strong> (e.g. v3.3) capturing this SCP.</li>
+<li><strong>Repository strategy / repo list:</strong> phase tags unchanged (both remain Phase 0); "first scaffolded service" note flips to <code>ram-reference-data</code>; shared-estate ownership note flips on the two repos.</li>
+</ol>
+<p>Files touched: <code>architecture.md</code> (Implementation Sequence, architecture-phase decisions table, Integration Points), <code>architecture/repo-structure.md</code> (shared-estate ownership line), <code>architecture/repository-strategy.md</code> (first-service note), <code>architecture/changelog.md</code>, <code>architecture-summary.md</code> (sweep).</p>
+<h3 id="44-ux--no-change">4.4 UX — no change</h3>
+<p>No UX artefact exists (accepted gap); unaffected.</p>
+<h3 id="45-secondary-artefacts">4.5 Secondary artefacts</h3>
+<ul>
+<li><code>epics/index.md</code>, <code>epics/phase-0/index.md</code>, <code>epics/fr-coverage-map.md</code>, <code>epics/requirements-inventory.md</code> (AR53 wording on which repo carries the shared estate) — updated for the renumber + Terraform relocation.</li>
+<li>The four superseded readiness reports are unaffected (already superseded).</li>
+<li>Terraform stacks: shared-estate stack moves repos; no infra is provisioned yet (greenfield), so this is a documentation/ownership move, not a live-resource migration.</li>
+</ul>
+</div></details><details class="section" id="5-recommended-approach"><summary><span class="section-title">5. Recommended Approach</span></summary><div class="section-body">
+<p><strong>Path: Direct Adjustment + backlog reorganisation (no rollback, no MVP scope change).</strong></p>
+<ul>
+<li>Re-sequence Phase 0 into the five-epic structure in §4.2; ingestion leads as the genuine first deliverable.</li>
+<li>Reaffirm in-process hosting; decline <code>ram-integrations</code> (§2).</li>
+<li>Apply the AR53 Terraform relocation and the baseline re-sequence (§4.3).</li>
+<li>Deliver the read API in Epic 0.3, immediately after auth, honouring the dependency in §3.</li>
+</ul>
+<p><strong>Effort:</strong> Medium (documentation/restructure; no code exists yet). <strong>Risk:</strong> Low — nothing is built; this is the cheapest possible moment to re-sequence. <strong>Timeline:</strong> neutral-to-positive — ingestion can start without waiting on the auth slice.</p>
+<p><strong>Open decision for sign-off (one):</strong> the read API's auth dependency (§3). Recommended: deliver it in Epic 0.3 after auth. <em>Alternative:</em> pull a minimal auth subset (<code>ram-mock-auth</code> + <code>JWTFilter</code> + a jurisdiction-only <code>authz/check</code>) forward into the first phase to ship the API earlier — at the cost of dragging ~half the auth slice forward and partially defeating the decoupling. <strong>Recommendation: do not pull forward; keep the read API in 0.3.</strong></p>
+</div></details><details class="section" id="6-implementation-handoff"><summary><span class="section-title">6. Implementation Handoff</span></summary><div class="section-body">
+<p><strong>Scope classification: Moderate</strong> (backlog reorganisation + architecture amendment; no fundamental replan).</p>
+<table>
+<thead>
+<tr>
+<th>Recipient</th>
+<th>Responsibility</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Architect (Winston)</strong></td>
+<td>Apply §4.3 architecture amendments — AR53 Terraform relocation, Implementation Sequence reorder, decision #11 + changelog, repo-strategy/repo-structure notes.</td>
+</tr>
+<tr>
+<td><strong>Epics update</strong> (<code>bmad-create-epics-and-stories</code> re-run, Phase 0)</td>
+<td>Apply the §4.2 restructure — move/renumber stories, split old 0.1.1/0.1.3 scaffold-vs-tables-vs-sync, update epic indexes + fr-coverage-map.</td>
+</tr>
+<tr>
+<td><strong>Readiness gate (IR)</strong></td>
+<td>Fold into the already-outstanding <strong>SSCS-cohort <code>bmad-check-implementation-readiness</code></strong> run — it now also validates the integrations-first sequencing and the Terraform relocation. Phase 0 was already <code>pending-revalidation</code>; this change feeds that gate rather than adding a new one.</td>
+</tr>
+<tr>
+<td><strong>Sprint Planning (SP)</strong></td>
+<td>Runs after IR passes; <code>implementation-artifacts/</code> is still empty. Epic 0.1 (ingestion) becomes the first sprint.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Success criteria:</strong></p>
+<ul>
+<li>Phase 0 epics reflect the five-epic, ingestion-first structure; story count reconciles (12 → 14 entries, no scope added).</li>
+<li>Architecture pack reflects the Terraform relocation and records decision #12 (incl. the <code>ram-integrations</code> decline).</li>
+<li>IR (SSCS-cohort) passes against the restructured Phase 0; SP produces a sprint plan leading with Epic 0.1.</li>
+</ul>
+<p><strong>Note:</strong> <code>sprint-status.yaml</code> does not yet exist (SP not run), so checklist item 6.4 is N/A — the epic changes land in the epics pack and are picked up at first SP.</p>
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/sprint-change-proposal-2026-06-17.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#1-issue-summary">1. Issue Summary</a></li><li><a href="#2-the-repository-question--resolved">2. The repository question — resolved</a></li><li><a href="#3-key-finding--ingestion-decouples-cleanly-the-read-api-does-not">3. Key finding — ingestion decouples cleanly, the read API does not</a></li><li><a href="#4-impact-analysis">4. Impact Analysis</a></li><li class="h3"><a href="#41-prd--no-change">4.1 PRD — no change</a></li><li class="h3"><a href="#42-epics--restructure-the-substance-of-this-proposal">4.2 Epics — restructure (the substance of this proposal)</a></li><li class="h3"><a href="#43-architecture--amend-rule-driven-ripples">4.3 Architecture — amend (rule-driven ripples)</a></li><li class="h3"><a href="#44-ux--no-change">4.4 UX — no change</a></li><li class="h3"><a href="#45-secondary-artefacts">4.5 Secondary artefacts</a></li><li><a href="#5-recommended-approach">5. Recommended Approach</a></li><li><a href="#6-implementation-handoff">6. Implementation Handoff</a></li></ul></aside>
+<script>window.__NAV_BASE__="./";window.__PAGE__="sprint-change-proposal-2026-06-17";</script>
+<script src="./nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

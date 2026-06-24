@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phase 0 — Foundations — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="phase-0--foundations">Phase 0 — Foundations</h1>
+<blockquote>
+<p>Phase 0 is sequenced <strong>integrations-first</strong>: Epic 0.1 ingestion → Epic 0.2 auth + UI → Epic 0.3 read API → Epic 0.4 bootstrap → Epic 0.5 notification. The ingestion runs in-process inside <code>ram-reference-data</code> — there is no <code>ram-integrations</code> repo.</p>
+</blockquote>
+<blockquote>
+<p>Phase 0 is the platform smoke-test (per PRD Key Characteristic 4). All API-as-Product standards (versioning, OpenAPI, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a>, <code>Deprecation</code>/<code>Sunset</code>) are exercised on Authorisation lookups and Reference Data <strong>reads</strong> before any domain service is built.</p>
+<p>The Phase 0 areas in <a href="../framework.html">../framework.md</a> are an <strong>architectural map</strong>. The five concrete user-value epics below are the <strong>implementation plan</strong> — each delivers a demoable user outcome and consolidates the supporting technical work as stories within the epic.</p>
+</blockquote>
+<details class="section" id="phase-0-scope-model"><summary><span class="section-title">Phase 0 scope model</span></summary><div class="section-body">
+<ul>
+<li><strong>No legacy data migration</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> — no data migrates from APEX or ListAssist, ever. Judicial-holder reference data is <strong>ingested from upstream sources of truth</strong>: the JOH eLinks API (nightly in-process sync) and MRD (weekly Excel via blob drop). Historical data stays in each jurisdiction's incumbent system.</li>
+<li><strong>Upstream ingestion is Epic 0.1 — the first deliverable</strong>: eLinks sync (Story 0.1.3) + MRD ingestion (Story 0.1.4). <code>ram-reference-data</code> is scaffolded first and carries the shared Azure estate Terraform (AR53). In-process — <strong>no <code>ram-integrations</code> repo</strong>.</li>
+<li><strong>Two user populations</strong><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>: JOH users resolve IdP email → <code>jo_people</code> → personnel number; HMCTS admin staff resolve via <code>ram_auth_staff_identities</code> → RAM-assigned UUID. Both share one authorisation model.</li>
+<li><strong>Jurisdiction is first-class</strong><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>: authz responses carry roles + jurisdiction + Region/Area scope; reference-data API responses are jurisdiction-filtered; activation flags key on the (jurisdiction, region) tuple (FR57).</li>
+<li><strong>Admin UI is post-MVP</strong><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>: tier-(b) reference data and user/role/scope maintenance are DBA-via-SQL per runbook.</li>
+</ul>
+</div></details><details class="section" id="epics"><summary><span class="section-title">Epics</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Epic</th>
+<th>Title</th>
+<th>Stories</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="epic-0.1-upstream-reference-data-ingested.html">0.1</a></td>
+<td>Upstream JOH/MRD reference data is ingested</td>
+<td>4</td>
+<td>🟡 Planned</td>
+</tr>
+<tr>
+<td><a href="epic-0.2-user-authenticates.html">0.2</a></td>
+<td>User authenticates and lands on a role-scoped Home page</td>
+<td>5</td>
+<td>🟡 Planned</td>
+</tr>
+<tr>
+<td><a href="epic-0.3-reference-data-read-only-api.html">0.3</a></td>
+<td>Reference data is served read-only via a versioned, jurisdiction-filtered API</td>
+<td>2</td>
+<td>🟡 Planned</td>
+</tr>
+<tr>
+<td><a href="epic-0.4-user-populations-bootstrapped.html">0.4</a></td>
+<td>Both user populations are bootstrapped and verifiable against the IdP</td>
+<td>1</td>
+<td>🟡 Planned</td>
+</tr>
+<tr>
+<td><a href="epic-0.5-system-dispatches-emails.html">0.5</a></td>
+<td>Notification service is scaffolded and contractually ready</td>
+<td>2</td>
+<td>🟡 Planned</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>14 stories</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="epic-summaries"><summary><span class="section-title">Epic summaries</span></summary><div class="section-body">
+<h3 id="epic-01-upstream-johmrd-reference-data-is-ingested-4-stories">Epic 0.1: Upstream JOH/MRD reference data is ingested (4 stories)</h3>
+<p><strong>User outcome:</strong> Judicial-holder reference data flows into RAM from its upstream sources of truth — the <strong>JOH eLinks API</strong> (15 <code>jo_*</code> entities, nightly in-process sync, Story 0.1.3) and the <strong>MRD</strong> weekly Excel feed (<code>mrd_*</code>, Story 0.1.4) — so <code>jo_people</code> exists and is current. This is the platform's foundational data layer. <code>ram-reference-data</code> is scaffolded first (Story 0.1.1) and carries the shared Azure estate (AR53); tier-(a) tables + write protection are Story 0.1.2.</p>
+<p><strong>FRs covered:</strong> FR1 (the <code>jo_people</code> lookup target), FR6 tier-(a), FR7 tier-(a) grants, FR8 (shared config baseline first lands); NFR24, FR59 (structured logs first exercised)</p>
+<p>→ <a href="epic-0.1-upstream-reference-data-ingested.html">Full epic with stories</a></p>
+<h3 id="epic-02-user-authenticates-and-lands-on-a-role-scoped-home-page-5-stories">Epic 0.2: User authenticates and lands on a role-scoped Home page (5 stories)</h3>
+<p><strong>User outcome:</strong> A user from <strong>either identity population</strong> — JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance, MI) — signs in via SSO, has their canonical identity resolved (personnel number via the eLinks-synced <code>jo_people</code>; staff UUID via <code>ram_auth_staff_identities</code>), and lands on a role-scoped Home page. Depends on Epic 0.1 (<code>jo_people</code> populated) and consumes the shared estate provisioned there.</p>
+<p><strong>FRs covered:</strong> FR1, FR2, FR3, FR55, FR56 (business stack); FR57 (activation surface), FR58 (Authorisation read API)</p>
+<p>→ <a href="epic-0.2-user-authenticates.html">Full epic with stories</a></p>
+<h3 id="epic-03-reference-data-is-served-read-only-via-a-versioned-jurisdiction-filtered-api-2-stories">Epic 0.3: Reference data is served read-only via a versioned, jurisdiction-filtered API (2 stories)</h3>
+<p><strong>User outcome:</strong> Tier-(b) RAM-owned reference data (regions, offices, calendar, operational vocabularies) is created, seeded, and DBA-maintained per runbook<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> (Story 0.3.1); all reference data — both tiers — is served by the versioned <strong>read-only</strong>, <strong>jurisdiction-filtered</strong> REST API (Story 0.3.2). Sequenced after Epic 0.2 (depends on <code>JWTFilter</code> + <code>authz/check</code>).</p>
+<p><strong>FRs covered (Phase 0 surface):</strong> FR6 (tier-(b) maintenance + read API over both tiers), FR7, FR58</p>
+<p>→ <a href="epic-0.3-reference-data-read-only-api.html">Full epic with stories</a></p>
+<h3 id="epic-04-both-user-populations-are-bootstrapped-and-verifiable-against-the-idp-1-story">Epic 0.4: Both user populations are bootstrapped and verifiable against the IdP (1 story)</h3>
+<p><strong>User outcome:</strong> Authorisation records for both populations exist (seeded in dev/CI; programme-bootstrapped in production per the runbook) with all-FALSE (jurisdiction, region) activation flags, and a re-runnable <strong>bootstrap-verification job</strong> proves every user maps to an IdP principal — a standing wave-cutover gate artefact (also used at the pre-Phase-9 IdP cutover per G1.3).</p>
+<p><strong>FRs covered (Phase 0 surface):</strong> FR1 (lookup data), FR4 (MVP data-layer criterion), FR57 (initial flag state)</p>
+<p>→ <a href="epic-0.4-user-populations-bootstrapped.html">Full epic with stories</a></p>
+<h3 id="epic-05-notification-service-is-scaffolded-and-contractually-ready-2-stories">Epic 0.5: Notification service is scaffolded and contractually ready (2 stories)</h3>
+<p><strong>User outcome:</strong> <code>ram-notification</code> is deployed with its API contract published, the <code>ram_notification_dispatches</code> delivery-log table created, SMTP integration configured, and <code>POST /v1/notifications/send</code> working. The contract is consumable from Phase 2+ via <strong>user-JWT propagation</strong>. Integration testing in MVP happens via Postman — <strong>no admin UI</strong>.</p>
+<p><strong>FRs covered:</strong> FR9</p>
+<p>→ <a href="epic-0.5-system-dispatches-emails.html">Full epic with stories</a></p>
+</div></details><details class="section" id="phase-0-epic-stories-summary"><summary><span class="section-title">Phase 0 Epic Stories Summary</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Epic</th>
+<th>Stories</th>
+<th>FRs covered</th>
+<th>Phase 0 demo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.1</td>
+<td>4 stories (0.1.1–0.1.4)</td>
+<td>FR1 (<code>jo_people</code> target), FR6 tier (a), FR7 tier (a), FR8, FR59; NFR24</td>
+<td>JOH/MRD reference data flows in from eLinks + MRD → <code>jo_people</code> current (verified via <code>ram_sync_status</code> + CI WireMock stub)</td>
+</tr>
+<tr>
+<td>0.2</td>
+<td>5 stories (0.2.1–0.2.5)</td>
+<td>FR1, FR2, FR3, FR55, FR56, FR57 (activation surface), FR58</td>
+<td>User (either population) signs in via mock-auth → <code>ram-authorisation</code> resolves identity/roles/jurisdiction → role-scoped Home renders</td>
+</tr>
+<tr>
+<td>0.3</td>
+<td>2 stories (0.3.1–0.3.2)</td>
+<td>FR6 (tier b + read API), FR7, FR58</td>
+<td>Jurisdiction-filtered Reference Data API serves both tiers read-only</td>
+</tr>
+<tr>
+<td>0.4</td>
+<td>1 story (0.4.1)</td>
+<td>FR1 (lookup data), FR4 (data layer), FR57 (flag bootstrap)</td>
+<td>Seeded users across both populations verified against the IdP; Epic 0.2 sign-in works against them</td>
+</tr>
+<tr>
+<td>0.5</td>
+<td>2 stories (0.5.1–0.5.2)</td>
+<td>FR9</td>
+<td><code>POST /v1/notifications/send</code> works end-to-end via Postman against Mailpit</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>14 stories</strong></td>
+<td></td>
+<td>The five demos chain together for the Phase 0 stakeholder walkthrough</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Cross-cutting NFRs verified across Phase 0 stories:</strong> NFR10 (TLS), NFR11 (data-at-rest), NFR12 (JWT propagation), NFR13 (authz enforcement incl. jurisdiction), NFR14 (no forbidden data), NFR15 (change trails per runbooks + delivery log), NFR16 (Key Vault incl. eLinks credential), NFR17–NFR19 (business UI WCAG — admin UI deferred), NFR20 (HMCTS IdP integration via mock), NFR22 (HMCTS email), NFR24 (JOH eLinks + MRD MVP integrations), NFR25–NFR28 (observability), NFR31 (Azure UK South), NFR39 (API-as-Product), NFR40 (per-service deployable), NFR42 (Postman collections).</p>
+</div></details><details class="section" id="post-mvp-roadmap-items"><summary><span class="section-title">Post-MVP roadmap items</span></summary><div class="section-body">
+<ol type="1">
+<li><strong><code>ram-admin-ui</code> repo</strong> — scaffolding + auth wrapper + GOV.UK Design System admin theme<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></li>
+<li><strong>Reference Data maintenance module</strong> (tier (b) only) in <code>ram-admin-ui</code></li>
+<li><strong>Users &amp; Roles admin module</strong> in <code>ram-admin-ui</code> — search, edit roles / jurisdiction / Region-Area scope</li>
+<li><strong>Reference Data API write endpoints</strong> (tier (b) only) — <code>POST/PUT/PATCH/DELETE</code>, admin-gated</li>
+<li><strong><code>ram-authorisation</code> admin write endpoints</strong></li>
+<li><strong>Admin "Send Test Email" UI</strong></li>
+<li><strong>Delivery-log viewer UI</strong></li>
+<li><strong>Activation-flag toggle UI</strong> (per (jurisdiction, region))</li>
+</ol>
+<p>Tier-(a) reference data never gets a write surface in any phase (corrections at source per FR6), and there is no migration-reports surface — there is no migration to report on<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p>
+<p>Not post-MVP (lands in a later MVP phase): <strong>OAuth <code>client_credentials</code> flow</strong> for batch / scheduled callers — Phase 6 alongside <code>ram-payment-batch</code>. <em>(The eLinks sync and MRD pick-up need no service identity — they run in-process inside <code>ram-reference-data</code>.)</em></p>
+</div></details><details class="section" id="validation"><summary><span class="section-title">Validation</span></summary><div class="section-body">
+<ul>
+<li>Phase 0 awaits validation via the <strong>SSCS-cohort implementation-readiness assessment</strong><a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>.</li>
+</ul>
+</div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/phase-0/index.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#phase-0-scope-model">Phase 0 scope model</a></li><li><a href="#epics">Epics</a></li><li><a href="#epic-summaries">Epic summaries</a></li><li class="h3"><a href="#epic-01-upstream-johmrd-reference-data-is-ingested-4-stories">Epic 0.1: Upstream JOH/MRD reference data is ingested (4 stories)</a></li><li class="h3"><a href="#epic-02-user-authenticates-and-lands-on-a-role-scoped-home-page-5-stories">Epic 0.2: User authenticates and lands on a role-scoped Home page (5 stories)</a></li><li class="h3"><a href="#epic-03-reference-data-is-served-read-only-via-a-versioned-jurisdiction-filtered-api-2-stories">Epic 0.3: Reference data is served read-only via a versioned, jurisdiction-filtered API (2 stories)</a></li><li class="h3"><a href="#epic-04-both-user-populations-are-bootstrapped-and-verifiable-against-the-idp-1-story">Epic 0.4: Both user populations are bootstrapped and verifiable against the IdP (1 story)</a></li><li class="h3"><a href="#epic-05-notification-service-is-scaffolded-and-contractually-ready-2-stories">Epic 0.5: Notification service is scaffolded and contractually ready (2 stories)</a></li><li><a href="#phase-0-epic-stories-summary">Phase 0 Epic Stories Summary</a></li><li><a href="#post-mvp-roadmap-items">Post-MVP roadmap items</a></li><li><a href="#validation">Validation</a></li></ul></aside>
+<script>window.__NAV_BASE__="../../";window.__PAGE__="epics/phase-0/index";</script>
+<script src="../../nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

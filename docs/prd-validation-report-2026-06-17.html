@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRD Validation Report — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="prd-validation-report">PRD Validation Report</h1>
+<p><strong>PRD Being Validated:</strong> <code>_bmad-output/planning-artifacts/prd.md</code> <strong>Validation Date:</strong> 2026-06-17</p>
+<details class="section" id="input-documents"><summary><span class="section-title">Input Documents</span></summary><div class="section-body">
+<ul>
+<li>PRD: <code>prd.md</code> ✓ (workflow complete 2026-05-05; last edited 2026-06-10; prior validation 2026-06-10)</li>
+<li>Brainstorming: <code>brainstorming-session-2026-05-05-1600.md</code> ✓</li>
+<li>As-is functional modules: <code>docs/architecture/asis/functional-modules.md</code> ✓</li>
+<li>As-is data dependencies: <code>docs/architecture/asis/data-dependencies.md</code> ✓</li>
+<li>As-is integration dependencies: <code>docs/architecture/asis/integration-dependencies.md</code> ✓</li>
+</ul>
+</div></details><details class="section" id="validation-findings"><summary><span class="section-title">Validation Findings</span></summary><div class="section-body">
+</div></details><details class="section" id="format-detection"><summary><span class="section-title">Format Detection</span></summary><div class="section-body">
+<p><strong>PRD Structure (## headers):</strong> Document Map · Executive Summary · Project Classification · Success Criteria · Product Scope · User Journeys · Domain-Specific Requirements · API Backend Specific Requirements · Project Scoping &amp; Phased Development · Functional Requirements · Non-Functional Requirements · Decisions Log (D1–D12) · Glossary · References</p>
+<p><strong>BMAD Core Sections Present:</strong></p>
+<ul>
+<li>Executive Summary: Present</li>
+<li>Success Criteria: Present</li>
+<li>Product Scope: Present</li>
+<li>User Journeys: Present</li>
+<li>Functional Requirements: Present</li>
+<li>Non-Functional Requirements: Present</li>
+</ul>
+<p><strong>Format Classification:</strong> BMAD Standard <strong>Core Sections Present:</strong> 6/6</p>
+<p>Beyond the 6 core sections, the PRD carries the expected BMAD extensions for an <code>api_backend</code>/<code>govtech</code> project: Project Classification, Domain-Specific Requirements, API Backend Specific Requirements, Project Scoping &amp; Phased Development, Decisions Log (D1–D12), Glossary, References.</p>
+</div></details><details class="section" id="information-density-validation"><summary><span class="section-title">Information Density Validation</span></summary><div class="section-body">
+<p><strong>Anti-Pattern Violations:</strong></p>
+<p><strong>Conversational Filler:</strong> 0 occurrences ("the system will allow…", "it is important to note…", "in order to", "for the purpose of", "with regard to" — none found)</p>
+<p><strong>Wordy Phrases:</strong> 0 occurrences ("due to the fact that", "in the event of", "at this point in time", "in a manner that" — none found)</p>
+<p><strong>Redundant Phrases:</strong> 0 occurrences ("future plans", "past history", "absolutely essential", "each and every" — none found)</p>
+<p><strong>Subjective FR adjectives (spot check):</strong> 0 ("easy to use", "user-friendly", "intuitive", "seamless" — none found)</p>
+<p><strong>Total Violations:</strong> 0</p>
+<p><strong>Severity Assessment:</strong> Pass</p>
+<p><strong>Recommendation:</strong> PRD demonstrates good information density with zero violations. Phrasing is direct and capability-focused (consistent with the prior 5/5 polish pass on 2026-06-10).</p>
+</div></details><details class="section" id="product-brief-coverage"><summary><span class="section-title">Product Brief Coverage</span></summary><div class="section-body">
+<p><strong>Status:</strong> N/A — no Product Brief was provided as input. The PRD's source material is a brainstorming session (<code>brainstorming-session-2026-05-05-1600.md</code>) and the as-is analysis pack (functional-modules, data-dependencies, integration-dependencies). Coverage against those is assessed implicitly in the requirements-traceability check (step 6), not here.</p>
+</div></details><details class="section" id="measurability-validation"><summary><span class="section-title">Measurability Validation</span></summary><div class="section-body">
+<h3 id="functional-requirements">Functional Requirements</h3>
+<p><strong>Total FRs Analyzed:</strong> 60 (FR1–FR60)</p>
+<p><strong>Format Violations:</strong> 0 — every FR is a capability statement ("[Actor] can …" or "RAM Pathfinder [does X]") with a testable outcome.</p>
+<p><strong>Subjective Adjectives Found:</strong> 0 — no "easy/fast/intuitive/seamless/user-friendly".</p>
+<p><strong>Vague Quantifiers Found:</strong> 0 — the only approximations (<code>~15 JOH-eLinks entities</code> in FR7; capacity <code>~50–100</code> / <code>~200–500</code> in NFR9) are explicitly labelled order-of-magnitude estimates, which is appropriate for capacity planning.</p>
+<p><strong>Implementation Specificity (Informational, not blocking):</strong> ~8 FRs reference concrete tables / SQL / mechanisms — FR1 (<code>jo_people</code>), FR6/FR7 (direct-SQL tiers), FR8 (<code>ram_configuration_values</code> + Flyway), FR30 (<code>ram_vacancies</code> in-process update), FR42 (<code>ram-payment-batch</code>, SQL JOIN), FR45 (<code>(payment_cycle_id, booking_id)</code> constraint), FR57 (<code>UPDATE ram_auth_user_activation_flags …</code>). Strict BMAD purity flags these as leakage, <strong>but</strong> each is deliberately annotated ("implementation per architecture") and reflects the brownfield-rebuild context where the FR contract co-evolves with the architecture. They do not impair testability and are consistent with the accepted 2026-06-10 5/5 assessment. Treated as informational.</p>
+<p><strong>FR Violations Total:</strong> 0 blocking (1 informational pattern noted)</p>
+<h3 id="non-functional-requirements">Non-Functional Requirements</h3>
+<p><strong>Total NFRs Analyzed:</strong> 42 (NFR1–NFR42)</p>
+<p><strong>Missing Metrics:</strong> 0 — NFR1–9 carry explicit thresholds (<code>≤3s</code>, <code>≤5s</code>, <code>≤10s</code>, <code>≤15s</code>, <code>≤30s</code>, <code>≤500ms p95</code>, <code>≤1s p95</code>); capacity and burst quantified.</p>
+<p><strong>Incomplete Template:</strong> 0 — security/accessibility/integration/observability/privacy/reliability NFRs each state criterion + measurement basis (named standards: WCAG 2.2 AA, RFC 9457/9745/8594, GovS 7, UK GDPR/DPA 2018, PSBAR 2018).</p>
+<p><strong>Missing Context:</strong> 0 — each NFR states who/why it matters (e.g. NFR8 federated-read p95 with Strategy A/C fallback; NFR35 payment-cycle continuity).</p>
+<p><strong>NFR Violations Total:</strong> 0</p>
+<h3 id="overall-assessment">Overall Assessment</h3>
+<p><strong>Total Requirements:</strong> 102 (60 FR + 42 NFR) <strong>Total Blocking Violations:</strong> 0</p>
+<p><strong>Severity:</strong> Pass</p>
+<p><strong>Recommendation:</strong> Requirements demonstrate strong measurability and testability. The only observation is intentional, annotated implementation specificity in ~8 FRs — acceptable given the brownfield-rebuild context and consistent with the prior assessment; no action required.</p>
+</div></details><details class="section" id="traceability-validation"><summary><span class="section-title">Traceability Validation</span></summary><div class="section-body">
+<h3 id="chain-validation">Chain Validation</h3>
+<p><strong>Executive Summary → Success Criteria:</strong> Intact — vision (greenfield judicial scheduling, jurisdiction-by-jurisdiction rollout, 11 services, API-first, replace GAPS + APEX) maps to User Success, Business Success, Technical Success, and the Measurable Outcomes table.</p>
+<p><strong>Success Criteria → User Journeys:</strong> Intact — six journeys span the success dimensions: J1 SSCS cover cycle (wave 1), J2 Courts cover→payment, J3 sitting confirmation, J4 judge itinerary/absence, J5 DA&amp;I MI Feed API (post-MVP), J6 cross-region edge (Risk #1).</p>
+<p><strong>User Journeys → Functional Requirements:</strong> Intact — journeys cite FRs explicitly (J1: FR11, FR15, FR18, FR23, FR27, FR29, FR30, FR32, FR37, FR42; J2: R4/R5 → FR23/FR30; J3: FR37/FR38; J4: FR19/FR49; J5: FR44/FR54/FR58). The Journey Requirements Summary maps capability areas to the 11-service decomposition.</p>
+<p><strong>Scope → FR Alignment:</strong> Intact — MVP scope (Phase 0 foundations, 11 services, business UI, Phase 9 SSCS rollout, manual UAT, log observability) and the explicit exclusions (admin UI, structured audit, event stream, allocation) align with the FR set and its post-MVP deferrals.</p>
+<h3 id="orphan-elements">Orphan Elements</h3>
+<p><strong>Orphan Functional Requirements:</strong> 0 — every FR1–FR60 traces to a journey and/or a documented success criterion. <strong>Unsupported Success Criteria:</strong> 0. <strong>User Journeys Without FRs:</strong> 0.</p>
+<h3 id="findings">Findings</h3>
+<ul>
+<li><strong>Informational (cosmetic):</strong> the Journey Requirements Summary intro reads "The <strong>five</strong> journeys reveal…" but six journeys (J1–J6) are present — J1 (SSCS) was inserted in the 2026-06-10 renumber and this counter was not updated. Suggest "six". Does not affect traceability.</li>
+</ul>
+<p><strong>Total Traceability Issues:</strong> 0 blocking (1 cosmetic)</p>
+<p><strong>Severity:</strong> Pass</p>
+<p><strong>Recommendation:</strong> Traceability chain is intact — all requirements trace to user needs or business objectives. Optionally fix the "five → six" journey-count wording.</p>
+</div></details><details class="section" id="implementation-leakage-validation"><summary><span class="section-title">Implementation Leakage Validation</span></summary><div class="section-body">
+<h3 id="capability--constraint-relevant-terms-acceptable--not-violations">Capability / Constraint-Relevant Terms (acceptable — not violations)</h3>
+<p>API · REST · OpenAPI · RFC 9457 / 9745 / 8594 · OIDC / SAML · HMCTS IdP SSO · TLS · WCAG 2.2 AA · PSBAR 2018 · JFEPS Excel + content-type negotiation · Azure UK data residency (NFR31). These are product, compliance, security, or integration <strong>requirements</strong> for a <code>govtech</code> <code>api_backend</code> — legitimately in the PRD.</p>
+<h3 id="discretionary-implementation-terms-the-how">Discretionary Implementation Terms (the "HOW")</h3>
+<table>
+<thead>
+<tr>
+<th>Term(s)</th>
+<th>Where</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spring profiles / Actuator</td>
+<td>FR8, NFR28</td>
+<td>config + probe mechanism</td>
+</tr>
+<tr>
+<td>Flyway</td>
+<td>FR8</td>
+<td>schema-management mechanism</td>
+</tr>
+<tr>
+<td>Kubernetes / AKS</td>
+<td>NFR12, NFR28, NFR40</td>
+<td>deployment substrate</td>
+</tr>
+<tr>
+<td>Azure Key Vault</td>
+<td>FR8, NFR16</td>
+<td>softened with "or equivalent"</td>
+</tr>
+<tr>
+<td>Application Insights / Log Analytics</td>
+<td>NFR27</td>
+<td>"Azure-native logging"</td>
+</tr>
+<tr>
+<td>Azure Workload Identity</td>
+<td>NFR12</td>
+<td>framed as "default recommendation" for a deferred decision</td>
+</tr>
+<tr>
+<td>JWTFilter / JWKS / OAuth <code>client_credentials</code></td>
+<td>NFR12</td>
+<td>auth mechanism</td>
+</tr>
+<tr>
+<td>Testcontainers / Postman</td>
+<td>NFR41, NFR42</td>
+<td>test tooling</td>
+</tr>
+<tr>
+<td>direct SQL / DB role / SQL JOIN / table names</td>
+<td>FR6, FR7, FR30, FR42, FR45, FR57</td>
+<td>data-access mechanism + concrete tables</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Distinct discretionary terms across ~10 requirements.</strong></p>
+<h3 id="summary">Summary</h3>
+<p><strong>Mechanical count (raw rubric):</strong> &gt; 5 → would score <strong>Critical</strong>.</p>
+<p><strong>Contextual assessment:</strong> <strong>Warning — intentional.</strong> This PRD is an <code>api_backend</code> / <code>brownfield-rebuild</code> whose FR/NFR contract deliberately threads architecture decisions, with many items annotated ("implementation per architecture") or softened ("or equivalent", "default recommendation"). The specificity does not impair the WHAT (every requirement remains testable) and was accepted in the 2026-06-10 5/5 assessment. It is a deliberate house style, not accidental leakage.</p>
+<p><strong>Recommendation:</strong> Acceptable as-is. If stricter PRD↔︎architecture separation is later desired, relocate the purely discretionary specifics (Spring, Flyway, Testcontainers, Postman, table-level SQL) into the architecture pack and reference them from the FRs — a stylistic refactor, not a correctness fix. Keep the capability/constraint terms in place.</p>
+</div></details><details class="section" id="domain-compliance-validation"><summary><span class="section-title">Domain Compliance Validation</span></summary><div class="section-body">
+<p><strong>Domain:</strong> govtech (UK HMCTS) · <strong>Complexity:</strong> High (regulated)</p>
+<p>The domain-complexity CSV frames govtech in US terms (Section 508, FedRAMP); UK equivalents are assessed.</p>
+<h3 id="required-special-sections-govtech">Required Special Sections (govtech)</h3>
+<table>
+<thead>
+<tr>
+<th>Required area</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>accessibility_standards</td>
+<td>Present (strong)</td>
+<td>WCAG 2.2 AA + PSBAR 2018; NFR17–19, FR56; per-phase UI testing; regression risk mitigation</td>
+</tr>
+<tr>
+<td>transparency_requirements</td>
+<td>Present</td>
+<td>FOI Act 2000; aggregate-only MI Feed (NFR33); case-level data forbidden by contract</td>
+</tr>
+<tr>
+<td>security_clearance</td>
+<td>Present</td>
+<td>Acknowledged + scoped to programme-management (Risk mitigations); GovS 7 Security (NFR15)</td>
+</tr>
+<tr>
+<td>procurement_compliance</td>
+<td>Partial</td>
+<td>GDS Service Standard principles noted; no dedicated procurement-framework section — appropriate for an internal HMCTS rebuild (procurement is programme-management territory)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Also present (UK govtech):</strong> UK GDPR / DPA 2018 (NFR30), data residency Azure UK only (NFR31), MoJ authentication policy, HMCTS retention schedules.</p>
+<h3 id="findings-1">Findings</h3>
+<ul>
+<li><strong>Moderate (consistency defect):</strong> §Domain-Specific Requirements → Technical Constraints (prd.md ~line 379) states "User records and role/scope mappings <strong>migrated from APEX in Phase 0</strong>[^d9]". This contradicts the current model — revised D3 / restructured D9: <strong>no legacy user migration</strong>; auth data is bootstrapped outside the PRD's scope. The 2026-06-10 SSCS-pivot edit pass swept Success Criteria / Product Scope / NFR cohorts but did not reach this line. <strong>Recommend edit</strong> to remove the migration claim (e.g. "auth records are bootstrapped per the restructured D9, keyed to the IdP principal — no APEX migration").</li>
+<li><strong>Informational:</strong> <code>procurement_compliance</code> is the lightest area (Partial) — acceptable for an internal rebuild; flag only if a formal procurement-assurance section is required by HMCTS governance.</li>
+</ul>
+<h3 id="summary-1">Summary</h3>
+<p><strong>Required areas addressed:</strong> 4/4 (3 fully, 1 partial). <strong>Compliance gaps:</strong> 0 blocking; 1 moderate consistency defect (stale "migrated from APEX" line).</p>
+<p><strong>Severity:</strong> Pass (with one moderate edit recommended)</p>
+<p><strong>Recommendation:</strong> UK govtech compliance coverage is strong and correctly substitutes UK frameworks for the CSV's US ones. Fix the stale "migrated from APEX" line in Technical Constraints to keep the Domain section consistent with the no-migration model.</p>
+</div></details><details class="section" id="project-type-compliance-validation"><summary><span class="section-title">Project-Type Compliance Validation</span></summary><div class="section-body">
+<p><strong>Project Type:</strong> api_backend (with documented D4 overrides: <code>ux_ui</code>, <code>visual_design</code>, <code>user_journeys</code> in scope)</p>
+<h3 id="required-sections-api_backend">Required Sections (api_backend)</h3>
+<table>
+<thead>
+<tr>
+<th>Required</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>endpoint_specs</td>
+<td>Present</td>
+<td>"Endpoint Specifications" — per-service tables (cross-cutting / domain / read-model)</td>
+</tr>
+<tr>
+<td>auth_model</td>
+<td>Present</td>
+<td>"Authentication Model" — SSO + two-population authz + service-to-service + external</td>
+</tr>
+<tr>
+<td>data_schemas</td>
+<td>Present</td>
+<td>JSON canonical; versioned content-types (<code>+json</code>/<code>+xlsx</code>); forbidden fields. Definitive schemas as Phase 0 paper contracts</td>
+</tr>
+<tr>
+<td>error_codes</td>
+<td>Present</td>
+<td>HTTP status semantics + RFC 9457 problem-details</td>
+</tr>
+<tr>
+<td>rate_limits</td>
+<td>Present (deferred)</td>
+<td>Section present; decision deferred to architecture with rationale (bounded internal user population)</td>
+</tr>
+<tr>
+<td>api_docs</td>
+<td>Present</td>
+<td>OpenAPI 3.x + Swagger UI + Postman + API Versioning + deprecation policy</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Required Sections:</strong> 6/6 present.</p>
+<h3 id="excluded-sections-should-be-absent-for-api_backend">Excluded Sections (should be absent for api_backend)</h3>
+<table>
+<thead>
+<tr>
+<th>Excluded</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ux_ui</td>
+<td>Present — <strong>authorized override</strong></td>
+<td>D4 override in frontmatter (modern UI replicates legacy surface); FR56, NFR17–19</td>
+</tr>
+<tr>
+<td>visual_design</td>
+<td>Present — <strong>authorized override</strong></td>
+<td>D4 override</td>
+</tr>
+<tr>
+<td>user_journeys</td>
+<td>Present — <strong>authorized override</strong></td>
+<td>D4 override; 6 journeys</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Excluded-section violations:</strong> 0 (all three are documented D4 overrides, not violations).</p>
+<h3 id="findings-2">Findings</h3>
+<ul>
+<li><strong>Informational:</strong> the API Backend section carries pre-SSCS-pivot illustrative content — legacy "JI" / "Judge" naming (e.g. "JI is composed of 11 services"; <code>Judge</code> service; <code>POST/GET/PUT /judges</code>) that predates the <code>ram-judge</code>→<code>ram-joh</code> rename (D11 / architecture v3.0), and a Reference Data "admin-gated <code>POST/PUT</code> writes" endpoint (line ~445) that contradicts the D11 read-only tier-(a) model + D10 admin-write deferral. The section is self-labelled "illustrative — definitive contracts are Phase 0 artefacts," which lowers severity. Recommend a light terminology + endpoint-illustration refresh.</li>
+</ul>
+<h3 id="summary-2">Summary</h3>
+<p><strong>Required Sections:</strong> 6/6 present. <strong>Excluded-section violations:</strong> 0. <strong>Compliance Score:</strong> 100%.</p>
+<p><strong>Severity:</strong> Pass</p>
+<p><strong>Recommendation:</strong> All required api_backend sections present; the three normally-excluded UX sections are authorized D4 overrides. Optionally refresh the illustrative API Backend content for JOH terminology and the Reference Data read-only model.</p>
+</div></details><details class="section" id="smart-requirements-validation"><summary><span class="section-title">SMART Requirements Validation</span></summary><div class="section-body">
+<p><strong>Total Functional Requirements:</strong> 60 (FR1–FR60)</p>
+<h3 id="scoring-summary">Scoring Summary</h3>
+<p><strong>All scores ≥ 3:</strong> 100% (60/60) · <strong>All scores ≥ 4:</strong> ~95% (57/60) · <strong>Overall Average:</strong> ~4.5/5.0</p>
+<p>For an FR, "Measurable" is read as testable/verifiable (numeric thresholds live in the NFRs). Every FR is a binary-testable capability.</p>
+<h3 id="scoring-by-cluster-representative">Scoring by Cluster (representative)</h3>
+<table>
+<thead>
+<tr>
+<th>Cluster (FRs)</th>
+<th>Specific</th>
+<th>Measurable</th>
+<th>Attainable</th>
+<th>Relevant</th>
+<th>Traceable</th>
+<th>Flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Identity &amp; Authorisation (FR1–FR5)</td>
+<td>4</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Foundational Data (FR6–FR9)</td>
+<td>4</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>JOH Records &amp; Working Patterns (FR10–FR18)</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Absence (FR19–FR22)</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Vacancy (FR23–FR28)</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Booking (FR29–FR34)</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Sitting (FR35–FR40)</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Payment (FR41–FR47)</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Itinerary &amp; Reporting (FR48–FR54)</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Platform Ops (FR55–FR60)</td>
+<td>5</td>
+<td>4</td>
+<td>5</td>
+<td>5</td>
+<td>5</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<h3 id="lowest-scoring-requirement">Lowest-Scoring Requirement</h3>
+<ul>
+<li><strong>FR5</strong> (external M2M consumer auth) — Specific/Measurable ≈ 3. Intentionally framed as a <strong>post-MVP open question</strong> with options enumerated and the decision deferred to architecture (gaps.md G7). This is an honest deferral, not a quality defect — no MVP M2M consumers are in scope. Not flagged.</li>
+</ul>
+<h3 id="overall-assessment-1">Overall Assessment</h3>
+<p><strong>FRs flagged (any category &lt; 3):</strong> 0 (0%).</p>
+<p><strong>Severity:</strong> Pass</p>
+<p><strong>Recommendation:</strong> Functional Requirements demonstrate strong SMART quality. The capability-contract framing is consistent throughout, with metrics correctly delegated to the NFR cohort.</p>
+</div></details><details class="section" id="holistic-quality-assessment"><summary><span class="section-title">Holistic Quality Assessment</span></summary><div class="section-body">
+<h3 id="document-flow--coherence">Document Flow &amp; Coherence</h3>
+<p><strong>Assessment:</strong> Excellent.</p>
+<p><strong>Strengths:</strong></p>
+<ul>
+<li>Clean vision → success → scope → journeys → requirements narrative; Document Map orients both humans and LLMs up front.</li>
+<li>Footnote-based decision traceability (D1–D12) threads consistency through every section; retractions/supersessions are explicitly annotated rather than silently dropped.</li>
+<li>Dual-jurisdiction (SSCS wave 1 / Courts waves 2+) framing held consistently; capability-contract tone throughout.</li>
+</ul>
+<p><strong>Areas for Improvement:</strong></p>
+<ul>
+<li>A few localized spots survived the 2026-06-10 SSCS pivot: the Domain §Technical Constraints "migrated from APEX" line (contradicts no-migration), and the illustrative API Backend section (legacy "JI"/"Judge" naming, Reference Data <code>POST/PUT</code>).</li>
+</ul>
+<h3 id="dual-audience-effectiveness">Dual Audience Effectiveness</h3>
+<p><strong>For Humans:</strong> Executive-friendly summary + Success Criteria + Scope; developers get a precise FR/NFR contract; designers get six journeys + D4 UX scope. Strong.</p>
+<p><strong>For LLMs:</strong> <code>##</code> L2 headers, numbered FR/NFR, decision log, consistent tables → highly extractable. Proven in practice — this PRD already fed Architecture v3.0 and the Phase 0 epic pack. UX / architecture / epic readiness: demonstrated.</p>
+<p><strong>Dual Audience Score:</strong> 5/5</p>
+<h3 id="bmad-prd-principles-compliance">BMAD PRD Principles Compliance</h3>
+<table>
+<thead>
+<tr>
+<th>Principle</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Information Density</td>
+<td>Met</td>
+<td>0 anti-patterns (step 3)</td>
+</tr>
+<tr>
+<td>Measurability</td>
+<td>Met</td>
+<td>FRs testable; NFRs metric-bearing</td>
+</tr>
+<tr>
+<td>Traceability</td>
+<td>Met</td>
+<td>Chain intact; 0 orphan FRs; D-log</td>
+</tr>
+<tr>
+<td>Domain Awareness</td>
+<td>Met</td>
+<td>Strong UK govtech compliance</td>
+</tr>
+<tr>
+<td>Zero Anti-Patterns</td>
+<td>Met</td>
+<td>Clean density scan</td>
+</tr>
+<tr>
+<td>Dual Audience</td>
+<td>Met</td>
+<td>Human + LLM optimized</td>
+</tr>
+<tr>
+<td>Markdown Format</td>
+<td>Met</td>
+<td>L2 headers, tables, consistent structure</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Principles Met:</strong> 7/7</p>
+<h3 id="overall-quality-rating">Overall Quality Rating</h3>
+<p><strong>Rating:</strong> 4/5 — Good (strong; a near-5 held just below by residual SSCS-pivot staleness)</p>
+<p>The document is structurally exemplary and passes every systematic check with <strong>zero blocking issues</strong>. It is held just below 5/5 by one <strong>Moderate</strong> consistency defect (the Domain-section "migrated from APEX" line, which directly contradicts a core decision) plus two cosmetic drifts. Fixing the three items below restores it to 5/5.</p>
+<h3 id="top-3-improvements">Top 3 Improvements</h3>
+<ol type="1">
+<li><p><strong>Fix the "migrated from APEX" line</strong> (Domain §Technical Constraints, ~line 379). It contradicts the no-migration model (revised D3 / restructured D9 — auth data bootstrapped outside the PRD scope). Reword to the bootstrap model. <em>(Moderate — the only decision-contradiction in the document.)</em></p></li>
+<li><p><strong>Refresh the illustrative API Backend section.</strong> Update legacy "JI"/"Judge" naming to RAM Pathfinder / <code>ram-joh</code> (per D11 / architecture v3.0), and drop the Reference Data "admin-gated <code>POST/PUT</code> writes" endpoint illustration to match the D11 read-only tier-(a) model + D10 admin-write deferral. <em>(Informational — section self-labels as illustrative.)</em></p></li>
+<li><p><strong>Correct the journey count.</strong> Journey Requirements Summary says "the <strong>five</strong> journeys" but there are six (J1–J6). <em>(Cosmetic.)</em></p></li>
+</ol>
+<h3 id="summary-3">Summary</h3>
+<p><strong>This PRD is:</strong> an exemplary, dense, well-traced, dual-audience BMAD PRD that has already proven its downstream value (architecture + epics derived from it) — currently carrying a small amount of residual staleness from the SSCS pivot.</p>
+<p><strong>To make it great:</strong> apply the three fixes above (one Moderate, two cosmetic) to restore the 5/5 it achieved on 2026-06-10.</p>
+</div></details><details class="section" id="completeness-validation"><summary><span class="section-title">Completeness Validation</span></summary><div class="section-body">
+<h3 id="template-completeness">Template Completeness</h3>
+<p><strong>Template Variables Found:</strong> 0 — the <code>{id}</code> / <code>{roles|…}</code> / <code>{path}</code> / <code>{method}</code> matches are REST path-parameter notation in endpoint specifications, not unresolved placeholders. No <code>{{var}}</code> or <code>[PLACEHOLDER]</code> remain. ✓</p>
+<h3 id="content-completeness-by-section">Content Completeness by Section</h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Executive Summary</td>
+<td>Complete (vision, users, problems, success, key characteristics)</td>
+</tr>
+<tr>
+<td>Success Criteria</td>
+<td>Complete (User / Business / Technical + Measurable Outcomes table)</td>
+</tr>
+<tr>
+<td>Product Scope</td>
+<td>Complete (MVP, explicit exclusions, growth, vision)</td>
+</tr>
+<tr>
+<td>User Journeys</td>
+<td>Complete (6 journeys + Journey Requirements Summary)</td>
+</tr>
+<tr>
+<td>Functional Requirements</td>
+<td>Complete (FR1–FR60)</td>
+</tr>
+<tr>
+<td>Non-Functional Requirements</td>
+<td>Complete (NFR1–NFR42)</td>
+</tr>
+<tr>
+<td>Extensions</td>
+<td>Complete (Classification, Domain, API Backend, Project Scoping, Decisions Log, Glossary, References)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="section-specific-completeness">Section-Specific Completeness</h3>
+<ul>
+<li><strong>Success Criteria measurable:</strong> All — Measurable Outcomes table carries targets + source per outcome.</li>
+<li><strong>User Journeys coverage:</strong> Yes — both jurisdictions (SSCS + Courts) plus Finance, MI, and a cross-region edge case.</li>
+<li><strong>FRs cover MVP scope:</strong> Yes — span all 11 services + platform operations.</li>
+<li><strong>NFRs have specific criteria:</strong> All — each NFR states a metric, named standard, or explicit constraint.</li>
+</ul>
+<h3 id="intentional-deferrals-not-gaps">Intentional Deferrals (not gaps)</h3>
+<p>~11 <code>TBD</code> markers, each a labelled deferral to the architecture phase (sync mechanism, service-to-service auth, rate limits, versioning N, UI client) or to programme management (post-MVP integration date). Two ("TBD architecture" for eLinks sync + service-to-service auth) have since been resolved in architecture v3.0 — the PRD need not track that.</p>
+<h3 id="frontmatter-completeness">Frontmatter Completeness</h3>
+<p><code>stepsCompleted</code> ✓ · <code>classification</code> (domain + projectType) ✓ · <code>inputDocuments</code> ✓ · date / editHistory ✓ — <strong>4/4.</strong></p>
+<h3 id="completeness-summary">Completeness Summary</h3>
+<p><strong>Overall Completeness:</strong> 100% (all required sections + content present). <strong>Critical Gaps:</strong> 0. <strong>Minor Gaps:</strong> 0 (intentional deferrals excluded).</p>
+<p><strong>Severity:</strong> Pass</p>
+<hr />
+</div></details><details class="section" id="overall-validation-result"><summary><span class="section-title">Overall Validation Result</span></summary><div class="section-body">
+<p><strong>Status: PASS WITH RECOMMENDATIONS · Rating 4/5 (Good — near-5).</strong></p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>Format detection</td>
+<td>BMAD Standard (6/6 core)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Information density</td>
+<td>Pass (0 anti-patterns)</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Product Brief coverage</td>
+<td>N/A (no brief)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Measurability</td>
+<td>Pass (0 blocking)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Traceability</td>
+<td>Pass (0 orphans; 1 cosmetic)</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Implementation leakage</td>
+<td>Warning — intentional (annotated house style)</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Domain compliance</td>
+<td>Pass (4/4 govtech areas; 1 moderate consistency defect)</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Project-type compliance</td>
+<td>Pass (6/6 required; D4 UX overrides)</td>
+</tr>
+<tr>
+<td>10</td>
+<td>SMART</td>
+<td>Pass (100% ≥3; 0 flagged)</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Holistic quality</td>
+<td>Good 4/5 (7/7 principles)</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Completeness</td>
+<td>Pass (0 template vars; 100%)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>No blocking issues.</strong> Three fixes restore 5/5:</p>
+<ol type="1">
+<li><strong>[Moderate]</strong> Domain §Technical Constraints — remove the stale "User records … migrated from APEX in Phase 0" line (contradicts no-migration D3/D9).</li>
+<li><strong>[Informational]</strong> API Backend section — refresh legacy "JI"/"Judge" naming and the Reference Data <code>POST/PUT</code> endpoint illustration (D11 read-only tier-(a) + D10).</li>
+<li><strong>[Cosmetic]</strong> Journey Requirements Summary — "five" → "six" journeys.</li>
+</ol>
+<p>The integrations-first restructure (SCP 2026-06-17) did not touch the PRD; all three findings predate it (residual SSCS-pivot staleness from 2026-06-10).</p>
+</div></details><details class="section" id="fixes-applied-2026-06-17-fix-simpler-items"><summary><span class="section-title">Fixes Applied (2026-06-17, "Fix Simpler Items")</span></summary><div class="section-body">
+<p>All three recommendations applied directly to <code>prd.md</code>:</p>
+<ol type="1">
+<li><strong>[Moderate — resolved]</strong> Domain §Technical Constraints: "User records … migrated from APEX in Phase 0" → "bootstrapped per the restructured D9 … there is no APEX migration". The three stale "JI" self-references in that bullet also corrected to "RAM Pathfinder". Now consistent with revised D3 / restructured D9.</li>
+<li><strong>[Informational — resolved]</strong> API Backend section: "JI is composed of 11 services" → "RAM Pathfinder…"; "Domain services: Judge, …" → "JOH (<code>ram-joh</code>), …"; the Judge endpoint row → JOH endpoints keyed by <code>personnelNumber</code> (person record read-only); Reference Data "admin-gated <code>POST/PUT</code> writes" → "read-only over both tiers; no write endpoints in MVP" (D10/D11).</li>
+<li><strong>[Cosmetic — resolved]</strong> Journey Requirements Summary: "five journeys" → "six journeys".</li>
+</ol>
+<p>PRD <code>lastEdited</code> bumped to 2026-06-17; editHistory entry added.</p>
+<p><strong>Post-fix rating: 5/5 — Excellent.</strong> No residual SSCS-pivot staleness remains; the PRD is internally consistent with D1–D12 and the current architecture/epics packs.</p>
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/prd-validation-report-2026-06-17.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#input-documents">Input Documents</a></li><li><a href="#validation-findings">Validation Findings</a></li><li><a href="#format-detection">Format Detection</a></li><li><a href="#information-density-validation">Information Density Validation</a></li><li><a href="#product-brief-coverage">Product Brief Coverage</a></li><li><a href="#measurability-validation">Measurability Validation</a></li><li class="h3"><a href="#functional-requirements">Functional Requirements</a></li><li class="h3"><a href="#non-functional-requirements">Non-Functional Requirements</a></li><li class="h3"><a href="#overall-assessment">Overall Assessment</a></li><li><a href="#traceability-validation">Traceability Validation</a></li><li class="h3"><a href="#chain-validation">Chain Validation</a></li><li class="h3"><a href="#orphan-elements">Orphan Elements</a></li><li class="h3"><a href="#findings">Findings</a></li><li><a href="#implementation-leakage-validation">Implementation Leakage Validation</a></li><li class="h3"><a href="#capability--constraint-relevant-terms-acceptable--not-violations">Capability / Constraint-Relevant Terms (acceptable — not violations)</a></li><li class="h3"><a href="#discretionary-implementation-terms-the-how">Discretionary Implementation Terms (the "HOW")</a></li><li class="h3"><a href="#summary">Summary</a></li><li><a href="#domain-compliance-validation">Domain Compliance Validation</a></li><li class="h3"><a href="#required-special-sections-govtech">Required Special Sections (govtech)</a></li><li class="h3"><a href="#findings-1">Findings</a></li><li class="h3"><a href="#summary-1">Summary</a></li><li><a href="#project-type-compliance-validation">Project-Type Compliance Validation</a></li><li class="h3"><a href="#required-sections-api_backend">Required Sections (api_backend)</a></li><li class="h3"><a href="#excluded-sections-should-be-absent-for-api_backend">Excluded Sections (should be absent for api_backend)</a></li><li class="h3"><a href="#findings-2">Findings</a></li><li class="h3"><a href="#summary-2">Summary</a></li><li><a href="#smart-requirements-validation">SMART Requirements Validation</a></li><li class="h3"><a href="#scoring-summary">Scoring Summary</a></li><li class="h3"><a href="#scoring-by-cluster-representative">Scoring by Cluster (representative)</a></li><li class="h3"><a href="#lowest-scoring-requirement">Lowest-Scoring Requirement</a></li><li class="h3"><a href="#overall-assessment-1">Overall Assessment</a></li><li><a href="#holistic-quality-assessment">Holistic Quality Assessment</a></li><li class="h3"><a href="#document-flow--coherence">Document Flow &amp; Coherence</a></li><li class="h3"><a href="#dual-audience-effectiveness">Dual Audience Effectiveness</a></li><li class="h3"><a href="#bmad-prd-principles-compliance">BMAD PRD Principles Compliance</a></li><li class="h3"><a href="#overall-quality-rating">Overall Quality Rating</a></li><li class="h3"><a href="#top-3-improvements">Top 3 Improvements</a></li><li class="h3"><a href="#summary-3">Summary</a></li><li><a href="#completeness-validation">Completeness Validation</a></li><li class="h3"><a href="#template-completeness">Template Completeness</a></li><li class="h3"><a href="#content-completeness-by-section">Content Completeness by Section</a></li><li class="h3"><a href="#section-specific-completeness">Section-Specific Completeness</a></li><li class="h3"><a href="#intentional-deferrals-not-gaps">Intentional Deferrals (not gaps)</a></li><li class="h3"><a href="#frontmatter-completeness">Frontmatter Completeness</a></li><li class="h3"><a href="#completeness-summary">Completeness Summary</a></li><li><a href="#overall-validation-result">Overall Validation Result</a></li><li><a href="#fixes-applied-2026-06-17-fix-simpler-items">Fixes Applied (2026-06-17, "Fix Simpler Items")</a></li></ul></aside>
+<script>window.__NAV_BASE__="./";window.__PAGE__="prd-validation-report-2026-06-17";</script>
+<script src="./nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

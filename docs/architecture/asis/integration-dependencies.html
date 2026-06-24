@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Judicial Itineraries (JI) - Integration Dependencies — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="judicial-itineraries-ji---integration-dependencies">Judicial Itineraries (JI) - Integration Dependencies</h1>
+<p>This document maps the integration flows between the Judicial Itineraries (JI) system and external systems, describing what data moves, how it moves, and who is involved at each step.</p>
+<details class="section" id="at-a-glance"><summary><span class="section-title">At a Glance</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Flow</th>
+<th>Source</th>
+<th>Destination</th>
+<th>Data</th>
+<th>Mechanism</th>
+<th>Frequency</th>
+<th>Criticality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><a href="#flow-1--judge-master-data-elinks--hr--ji">Judge Master Data</a></td>
+<td>eLinks, HR Records</td>
+<td>JI</td>
+<td>Judge profiles, working patterns, contractual sitting days</td>
+<td>Manual entry / manual copy</td>
+<td>On change</td>
+<td>High</td>
+</tr>
+<tr>
+<td>2</td>
+<td><a href="#flow-2--planned-activity-capture-listing-systems--ji">Planned Activity Capture</a></td>
+<td>Court Listing Systems</td>
+<td>JI</td>
+<td>Planned sittings, work types, daily judicial activity</td>
+<td>Manual copy into JI</td>
+<td>Daily</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>3</td>
+<td><a href="#flow-3--sitting--booking-confirmation-court-staff--ji">Sitting &amp; Booking Confirmation</a></td>
+<td>Court Staff</td>
+<td>JI</td>
+<td>Confirmed sittings, actual work types, session durations</td>
+<td>Manual entry via JI UI</td>
+<td>Daily</td>
+<td>High</td>
+</tr>
+<tr>
+<td>4</td>
+<td><a href="#flow-4--absence--vacancy-management-courts--rsu--ji">Absence &amp; Vacancy Management</a></td>
+<td>Courts, RSU</td>
+<td>JI</td>
+<td>Absence requests, vacancy creation, NTBF decisions</td>
+<td>Manual entry via JI UI with approval workflow</td>
+<td>Event-driven</td>
+<td>High</td>
+</tr>
+<tr>
+<td>5</td>
+<td><a href="#flow-5--fee-paid-payment-export-ji--jfeps--liberata">Fee-Paid Payment Export</a></td>
+<td>JI</td>
+<td>JFEPS, Liberata</td>
+<td>Payment files for fee-paid judges</td>
+<td>Excel export, email, manual upload</td>
+<td>Weekly</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>6</td>
+<td><a href="#flow-6--payment-reconciliation-jfeps--ji">Payment Reconciliation</a></td>
+<td>JFEPS</td>
+<td>JI</td>
+<td>Payment confirmations, discrepancies</td>
+<td>Manual flagging in JI</td>
+<td>Ongoing</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>7</td>
+<td><a href="#flow-7--management-information--reporting-ji--dai">Management Information &amp; Reporting</a></td>
+<td>JI</td>
+<td>DA&amp;I</td>
+<td>Sitting days, utilisation, vacancy/absence analysis</td>
+<td>Excel / PDF report exports</td>
+<td>Reporting cycles</td>
+<td>High</td>
+</tr>
+<tr>
+<td>8</td>
+<td><a href="#flow-8--notifications--communications-ji--hmcts-email">Notifications &amp; Communications</a></td>
+<td>JI</td>
+<td>HMCTS Email, Judges, Court Staff</td>
+<td>Itineraries, booking confirmations, absence alerts, payment files</td>
+<td>Automated email (some batch)</td>
+<td>Event-driven</td>
+<td>High</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></details><details class="section" id="flow-index"><summary><span class="section-title">Flow Index</span></summary><div class="section-body">
+<ol type="1">
+<li><a href="#flow-1--judge-master-data-elinks--hr--ji">Judge Master Data (eLinks / HR -&gt; JI)</a></li>
+<li><a href="#flow-2--planned-activity-capture-listing-systems--ji">Planned Activity Capture (Listing Systems -&gt; JI)</a></li>
+<li><a href="#flow-3--sitting--booking-confirmation-court-staff--ji">Sitting &amp; Booking Confirmation (Court Staff -&gt; JI)</a></li>
+<li><a href="#flow-4--absence--vacancy-management-courts--rsu--ji">Absence &amp; Vacancy Management (Courts / RSU -&gt; JI)</a></li>
+<li><a href="#flow-5--fee-paid-payment-export-ji--jfeps--liberata">Fee-Paid Payment Export (JI -&gt; JFEPS -&gt; Liberata)</a></li>
+<li><a href="#flow-6--payment-reconciliation-jfeps--ji">Payment Reconciliation (JFEPS -&gt; JI)</a></li>
+<li><a href="#flow-7--management-information--reporting-ji--dai">Management Information &amp; Reporting (JI -&gt; DA&amp;I)</a></li>
+<li><a href="#flow-8--notifications--communications-ji--hmcts-email">Notifications &amp; Communications (JI -&gt; HMCTS Email)</a></li>
+</ol>
+<hr />
+</div></details><details class="section" id="flow-1----judge-master-data-elinks--hr---ji"><summary><span class="section-title">Flow 1 -- Judge Master Data (eLinks / HR -&gt; JI)</span></summary><div class="section-body">
+<p>Judge profile and working pattern data originates in external HR systems and the eLinks Judicial Database, and is manually entered into JI by RSU users. JI is not the system of record for judge employment data; it reflects what has been agreed elsewhere.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sources</strong></td>
+<td>eLinks (Judicial Database), HR / administrative records</td>
+</tr>
+<tr>
+<td><strong>Destination</strong></td>
+<td>JI (Manage Judges screens)</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Judge names, titles, contact details, judge type (salaried / fee-paid), base location, roles, authorisations, tickets, working patterns (days, locations, work types), contractual sitting days, part-time arrangements, jurisdictional split, retirement dates, payroll numbers, fee payment status</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Manual entry by RSU / judicial team users. The SRS states an eLinks integration requirement (NFR-3: "The system shall support eLinks integration for importing judiciary data") but the technical mechanism is not implemented.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>On change -- new judge onboarding, base court transfers, part-time conversions, role updates</td>
+</tr>
+<tr>
+<td><strong>Users involved</strong></td>
+<td>RSU Admin, Regional (Full Access) users</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High -- all itineraries, bookings, and reports depend on accurate judge data</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Source Systems
+        HR[HR / Admin Records]
+        EL[eLinks\nJudicial Database]
+    end
+
+    subgraph Users
+        RSU[RSU / Judicial\nTeam User]
+    end
+
+    subgraph JI
+        MJ[Manage Judges\nScreen]
+        WP[Working Patterns]
+        ITIN[Judge Itineraries\nautogenerated]
+    end
+
+    HR -- &quot;Working patterns,\ncontractual days\n(manual reference)&quot; --&gt; RSU
+    EL -- &quot;Judge profiles,\nroles, locations\n(manual copy)&quot; --&gt; RSU
+    RSU -- &quot;Manual data entry\nvia JI UI&quot; --&gt; MJ
+    MJ --&gt; WP
+    WP -- &quot;Auto-generates&quot; --&gt; ITIN</code></pre>
+<p><strong>Gap:</strong> There is no automated synchronisation. Users must manually keep both eLinks and JI updated. The training documentation notes this will be revisited once the Judicial Database replacement is complete.</p>
+<hr />
+</div></details><details class="section" id="flow-2----planned-activity-capture-listing-systems---ji"><summary><span class="section-title">Flow 2 -- Planned Activity Capture (Listing Systems -&gt; JI)</span></summary><div class="section-body">
+<p>Data on how judges plan to spend their working day is sourced from court listing systems and entered into JI manually. There is no direct integration with case management systems (CaseMan, FamilyMan, Common Platform).</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source</strong></td>
+<td>Court listing systems</td>
+</tr>
+<tr>
+<td><strong>Destination</strong></td>
+<td>JI (Sittings, Judge Itinerary screens)</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Planned sittings, work types (Crime, Civil, Family, S9, Off Circuit), session durations (full day / half day AM/PM), sitting locations</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Manual copy from listing systems into JI by HMCTS court staff. Ad-hoc sittings can also be created directly in JI.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Daily (progressive entry recommended)</td>
+</tr>
+<tr>
+<td><strong>Users involved</strong></td>
+<td>Court (Full Access), Regional (Full Access)</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>Medium -- feeds into utilisation reporting once confirmed</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Court Systems
+        LS[Listing Systems\ne.g. CaseMan,\nFamilyMan, CP]
+    end
+
+    subgraph Users
+        CS[Court Staff]
+    end
+
+    subgraph JI
+        SIT[Sittings Screen]
+        JI_IT[Judge Itinerary]
+        CI[Court Itinerary]
+    end
+
+    LS -- &quot;Planned activity\n(manual reference,\nno system link)&quot; --&gt; CS
+    CS -- &quot;Manual entry\nvia JI UI&quot; --&gt; SIT
+    SIT --&gt; JI_IT
+    SIT --&gt; CI</code></pre>
+<p><strong>Gap:</strong> No system-to-system integration exists. The documentation explicitly states no direct integration with CaseMan, FamilyMan, or Common Platform.</p>
+<hr />
+</div></details><details class="section" id="flow-3----sitting--booking-confirmation-court-staff---ji"><summary><span class="section-title">Flow 3 -- Sitting &amp; Booking Confirmation (Court Staff -&gt; JI)</span></summary><div class="section-body">
+<p>After a sitting or fee-paid booking occurs, court staff confirm it in JI -- verifying that it took place, recording the actual work type, and adjusting the session duration if needed. Confirmed data drives both payment processing and MI reporting.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source</strong></td>
+<td>Court staff (local knowledge of what actually happened)</td>
+</tr>
+<tr>
+<td><strong>Destination</strong></td>
+<td>JI (Sittings, Fee-paid Bookings screens)</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Confirmation status (confirmed / cancelled / rejected), actual work type, actual session duration, verifier sign-off (County Courts)</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Manual entry via JI UI. Sittings can be confirmed individually or in bulk. County Courts have an additional verification step by a senior manager.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Daily (strongly recommended), at minimum before monthly verification deadline</td>
+</tr>
+<tr>
+<td><strong>Users involved</strong></td>
+<td>Court (Full Access), Court (Enhanced CJ), Regional (Verifier)</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High -- unconfirmed bookings cannot be exported for payment; unconfirmed sittings are excluded from MI</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Court
+        CS[Court Staff]
+        VER[Verifier\nCounty Courts only]
+    end
+
+    subgraph JI
+        FPB[Fee-paid Bookings\nAwaiting Confirmation]
+        SAL[Salaried Sittings\nAwaiting Confirmation]
+        CONF[Confirmed\nBookings / Sittings]
+        VERIF[Verified Data\nread-only, published]
+    end
+
+    subgraph Downstream
+        PAY[Payment Export]
+        MI[MI Reports]
+    end
+
+    CS -- &quot;Confirm booking:\nactual work type,\nsession duration&quot; --&gt; FPB
+    CS -- &quot;Confirm sitting:\nactual work type\n(County Courts)&quot; --&gt; SAL
+    FPB -- &quot;Confirmed&quot; --&gt; CONF
+    SAL -- &quot;Confirmed&quot; --&gt; CONF
+    VER -- &quot;Verify month\n(County Courts)&quot; --&gt; VERIF
+    CONF --&gt; PAY
+    CONF --&gt; MI
+    VERIF --&gt; MI</code></pre>
+<p><strong>Note:</strong> Accuracy of confirmation directly affects payment correctness. The training documentation emphasises that "the accuracy of the payment schedules sent to Liberata is highly dependent on the checking that goes on here."</p>
+<hr />
+</div></details><details class="section" id="flow-4----absence--vacancy-management-courts--rsu---ji"><summary><span class="section-title">Flow 4 -- Absence &amp; Vacancy Management (Courts / RSU -&gt; JI)</span></summary><div class="section-body">
+<p>Absence recording triggers a multi-step workflow involving court staff, RSU judicial teams, and vacancy/booking management. This is an internal JI workflow with human actors at each step.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Actors</strong></td>
+<td>Court staff (requesters), RSU / Judicial Team (approvers), Court staff (vacancy decision)</td>
+</tr>
+<tr>
+<td><strong>System</strong></td>
+<td>JI (Absences, Vacancies, Fee-paid Bookings screens)</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Absence type, dates, NTBF status, vacancy requirements, fee-paid judge allocations, booking confirmations</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Multi-step approval workflow within JI UI. Email notifications at each stage.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Event-driven</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High -- drives vacancy creation, fee-paid bookings, and downstream payments</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart TD
+    subgraph Court
+        CS[Court Staff]
+    end
+
+    subgraph RSU
+        JT[Judicial Team\nRSU]
+    end
+
+    subgraph JI Workflow
+        ABS[Absence Request\ncreated]
+        APPROVE{RSU Approves?}
+        REJECT[Absence Rejected]
+        COVER{Needs\nFee-paid Cover?}
+        NTBF[Marked NTBF\nNo vacancy created]
+        VAC[Vacancy Created]
+        BOOK[Fee-paid Judge\nBooked]
+    end
+
+    subgraph Downstream
+        ITIN[Itineraries Updated]
+        PAY[Payment Flow\nwhen confirmed]
+    end
+
+    CS -- &quot;Request absence&quot; --&gt; ABS
+    JT -- &quot;Also can create\ndirectly&quot; --&gt; ABS
+    ABS --&gt; APPROVE
+    APPROVE -- &quot;Yes&quot; --&gt; COVER
+    APPROVE -- &quot;No&quot; --&gt; REJECT
+    COVER -- &quot;Yes&quot; --&gt; VAC
+    COVER -- &quot;No / NTBF&quot; --&gt; NTBF
+    VAC -- &quot;RSU allocates\nfee-paid judge&quot; --&gt; BOOK
+    BOOK --&gt; ITIN
+    NTBF --&gt; ITIN
+    BOOK --&gt; PAY</code></pre>
+<hr />
+</div></details><details class="section" id="flow-5----fee-paid-payment-export-ji---jfeps---liberata"><summary><span class="section-title">Flow 5 -- Fee-Paid Payment Export (JI -&gt; JFEPS -&gt; Liberata)</span></summary><div class="section-body">
+<p>This is the most operationally critical integration flow. JI generates payment files from confirmed fee-paid bookings and routes them through a human approval chain to the finance system and payment processor.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source</strong></td>
+<td>JI (Payments screen)</td>
+</tr>
+<tr>
+<td><strong>Destinations</strong></td>
+<td>JFEPS (finance system), Liberata (payment processor)</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Judge details, payroll numbers, court codes, sitting dates, session types (full/half day), booking IDs, work types, fee amounts, London weighting</td>
+</tr>
+<tr>
+<td><strong>Format</strong></td>
+<td>JFEPS-compatible Excel file</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>JI validates data (dates, court codes, booking IDs) -&gt; generates Excel -&gt; emails to Payment Authoriser -&gt; authoriser reviews and forwards to Liberata -&gt; authoriser uploads to JFEPS</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Weekly</td>
+</tr>
+<tr>
+<td><strong>Users involved</strong></td>
+<td>RSU / Judicial Team (generates schedule), Payment Authoriser (reviews and forwards)</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>Critical -- Crown Courts rely on this as the only mechanism to pay fee-paid judges without manual individual payments</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart LR
+    subgraph JI
+        CONF[Confirmed\nFee-paid Bookings]
+        VAL[Data Validation\ndates, court codes,\nbooking IDs]
+        GEN[Generate Payment\nSchedule]
+    end
+
+    subgraph Human Review
+        PA[Payment Authoriser]
+    end
+
+    subgraph Finance
+        JFEPS[JFEPS\nFinance System]
+        LIB[Liberata\nPayment Processor]
+    end
+
+    subgraph Output
+        PAID[Fee-paid Judge\nReceives Payment]
+    end
+
+    CONF --&gt; VAL
+    VAL --&gt; GEN
+    GEN -- &quot;JFEPS-compatible\nExcel file\nvia email&quot; --&gt; PA
+    PA -- &quot;Reviews, approves,\nuploads&quot; --&gt; JFEPS
+    PA -- &quot;Forwards\npayment schedule\nvia email&quot; --&gt; LIB
+    LIB -- &quot;Processes\npayment&quot; --&gt; PAID</code></pre>
+<p><strong>Note:</strong> JI does not hold bank details or process payments directly. Sensitive financial data remains in JFEPS and Liberata. Double-submission is prevented by tracking which bookings have been exported.</p>
+<hr />
+</div></details><details class="section" id="flow-6----payment-reconciliation-jfeps---ji"><summary><span class="section-title">Flow 6 -- Payment Reconciliation (JFEPS -&gt; JI)</span></summary><div class="section-body">
+<p>After payments are processed, finance users reconcile the results back into JI to track which payments succeeded, which are pending, and flag discrepancies.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source</strong></td>
+<td>JFEPS / Finance System (payment confirmations)</td>
+</tr>
+<tr>
+<td><strong>Destination</strong></td>
+<td>JI (Payment Reconciliation screen)</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Payment status (paid / pending / queried), reconciliation notes, discrepancy flags</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Finance users manually check JFEPS payment confirmations, then flag payments as reconciled in JI. No automated data feed from JFEPS back to JI.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Ongoing as payments are processed</td>
+</tr>
+<tr>
+<td><strong>Users involved</strong></td>
+<td>Finance / Payment Authoriser</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>Medium -- prevents double-payment and surfaces discrepancies</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart LR
+    subgraph Finance
+        JFEPS[JFEPS\nPayment Confirmations]
+    end
+
+    subgraph Users
+        FIN[Finance User /\nPayment Authoriser]
+    end
+
+    subgraph JI
+        REC[Payment\nReconciliation Screen]
+        STATUS[Booking Payment\nStatus Updated]
+    end
+
+    JFEPS -- &quot;Payment confirmation\n(out-of-band,\nnot automated)&quot; --&gt; FIN
+    FIN -- &quot;Manually flags\nas reconciled\nin JI&quot; --&gt; REC
+    REC --&gt; STATUS</code></pre>
+<p><strong>Gap:</strong> Reconciliation is entirely manual. There is no automated feed from JFEPS back into JI. Finance users must cross-reference two systems.</p>
+<hr />
+</div></details><details class="section" id="flow-7----management-information--reporting-ji---dai"><summary><span class="section-title">Flow 7 -- Management Information &amp; Reporting (JI -&gt; DA&amp;I)</span></summary><div class="section-body">
+<p>JI is the primary source of sitting day data for Civil, Family, and Crown Courts. DA&amp;I extracts this data for management information, performance reporting, and strategic decision-making.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source</strong></td>
+<td>JI (Reports screens)</td>
+</tr>
+<tr>
+<td><strong>Destination</strong></td>
+<td>DA&amp;I team systems, senior leadership, ministers</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>Sitting day summaries, judicial utilisation, vacancy analysis, booking analysis, absence/official business analysis, jurisdictional splits, work type distributions</td>
+</tr>
+<tr>
+<td><strong>Format</strong></td>
+<td>Excel and PDF exports from JI report screens</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Export-based -- users run reports in JI, copy/paste or download to Excel/PDF. DA&amp;I then transforms and aggregates. Manual extraction via spreadsheets also used.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Aligned to reporting cycles (monthly, quarterly, annual)</td>
+</tr>
+<tr>
+<td><strong>Users involved</strong></td>
+<td>MI / Reporting Users, DA&amp;I analysts</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High -- ministers require performance reporting across jurisdictions; JI is the primary data source for courts</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart LR
+    subgraph JI
+        DATA[(Confirmed Sittings,\nBookings, Absences,\nVacancies)]
+        RPT[Reports Screens\nSitting analysis,\nVacancy analysis,\nUtilisation reports]
+    end
+
+    subgraph Export
+        XLS[Excel Export\ncopy-paste / download]
+        PDF[PDF Export]
+    end
+
+    subgraph DA&amp;I
+        ETL[DA&amp;I\nTransform &amp; Aggregate]
+        MI[Management\nInformation\nOutputs]
+    end
+
+    subgraph Consumers
+        LEAD[Senior Leadership]
+        MIN[Ministers]
+        PERF[Performance Teams]
+    end
+
+    DATA --&gt; RPT
+    RPT --&gt; XLS
+    RPT --&gt; PDF
+    XLS --&gt; ETL
+    PDF --&gt; ETL
+    ETL --&gt; MI
+    MI --&gt; LEAD
+    MI --&gt; MIN
+    MI --&gt; PERF</code></pre>
+<p><strong>Gap:</strong> Tribunals data is not captured in JI. Tribunal sitting data is collected manually via spreadsheets managed by different Chamber Presidents' Offices, leaving a significant gap in cross-jurisdictional reporting.</p>
+<hr />
+</div></details><details class="section" id="flow-8----notifications--communications-ji---hmcts-email"><summary><span class="section-title">Flow 8 -- Notifications &amp; Communications (JI -&gt; HMCTS Email)</span></summary><div class="section-body">
+<p>JI uses HMCTS email infrastructure as a transport layer for operational notifications, itinerary distribution, and payment file delivery.</p>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source</strong></td>
+<td>JI (various screens)</td>
+</tr>
+<tr>
+<td><strong>Destination</strong></td>
+<td>HMCTS email infrastructure -&gt; judges, court staff, RSU, Payment Authorisers</td>
+</tr>
+<tr>
+<td><strong>Data</strong></td>
+<td>See trigger table below</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Automated email from JI. Some emails are sent immediately on action; others (e.g. booking acknowledgements) are batched via an overnight process.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Event-driven</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High -- operational communications depend on email delivery</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Email triggers:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Trigger Event</th>
+<th>Recipients</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Booking created</td>
+<td>Fee-paid judge</td>
+<td>Booking confirmation with dates, court, work type</td>
+</tr>
+<tr>
+<td>Booking cancelled / rejected</td>
+<td>Impacted judge and court staff</td>
+<td>Cancellation notification</td>
+</tr>
+<tr>
+<td>Absence confirmed</td>
+<td>Judge</td>
+<td>Absence acknowledgement</td>
+</tr>
+<tr>
+<td>Itinerary updated</td>
+<td>Judge and relevant staff</td>
+<td>Updated itinerary</td>
+</tr>
+<tr>
+<td>Payment schedule generated</td>
+<td>Payment Authoriser</td>
+<td>JFEPS-compatible Excel file attached</td>
+</tr>
+<tr>
+<td>Sitting/booking changes</td>
+<td>Court staff</td>
+<td>Alerts within system and optionally via email</td>
+</tr>
+</tbody>
+</table>
+<pre class="mermaid"><code>flowchart LR
+    subgraph JI Events
+        BK[Booking\nCreated / Cancelled]
+        AB[Absence\nConfirmed]
+        IT[Itinerary\nUpdated]
+        PS[Payment Schedule\nGenerated]
+    end
+
+    subgraph JI
+        EM[Email Engine\nimmediate + overnight batch]
+    end
+
+    subgraph HMCTS Email
+        SMTP[HMCTS Email\nInfrastructure]
+    end
+
+    subgraph Recipients
+        JDG[Judges]
+        CST[Court Staff]
+        PA[Payment\nAuthorisers]
+        RSU[RSU / Judicial\nTeam]
+    end
+
+    BK --&gt; EM
+    AB --&gt; EM
+    IT --&gt; EM
+    PS --&gt; EM
+    EM --&gt; SMTP
+    SMTP --&gt; JDG
+    SMTP --&gt; CST
+    SMTP --&gt; PA
+    SMTP --&gt; RSU</code></pre>
+<hr />
+</div></details><details class="section" id="key-observations"><summary><span class="section-title">Key Observations</span></summary><div class="section-body">
+<ol type="1">
+<li><p><strong>No API integrations exist.</strong> Every integration is either manual data entry, file-based export (Excel/PDF), or email. This limits automation and introduces data quality risks from manual transcription.</p></li>
+<li><p><strong>The payment flow is the most critical end-to-end integration.</strong> It spans four steps (confirmation -&gt; export -&gt; authorisation -&gt; payment) with human checkpoints at each stage. Any delay in court confirmation cascades into delayed payments.</p></li>
+<li><p><strong>eLinks integration is aspirational, not operational.</strong> The SRS records it as a non-functional requirement, but no automated data exchange is implemented today.</p></li>
+<li><p><strong>Reconciliation has no return feed.</strong> Payment outcomes from JFEPS are not automatically reflected in JI. Finance users must manually bridge the two systems.</p></li>
+<li><p><strong>Tribunals are a blind spot.</strong> JI has no integration with Tribunal listing or scheduling systems. Extending coverage to Tribunals (Employment, Immigration &amp; Asylum, SSCS) is a stated strategic priority.</p></li>
+<li><p><strong>Future integration pressure.</strong> The Actuals programme and Scheduling &amp; Listing (S&amp;L) reforms both require JI data. The current export-only model will not scale to support these needs.</p></li>
+</ol>
+<hr />
+</div></details><details class="section" id="source-documents"><summary><span class="section-title">Source Documents</span></summary><div class="section-body">
+<p>This analysis is based on the following input documents:</p>
+<ul>
+<li>High Level Capabilities JI.docx</li>
+<li>JI Functional and Non Functional Requirements.docx</li>
+<li>Judicial Itineraries High Level Requirements.docx</li>
+<li>Judicial Itinerary KB.docx</li>
+<li>OPT JI Training Brief DRAFT 02.doc</li>
+<li>UCD resource request.docx</li>
+</ul>
+</div></details>
+<p class="source-note">Source: <code>docs/architecture/asis/integration-dependencies.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#at-a-glance">At a Glance</a></li><li><a href="#flow-index">Flow Index</a></li><li><a href="#flow-1----judge-master-data-elinks--hr---ji">Flow 1 -- Judge Master Data (eLinks / HR -&gt; JI)</a></li><li><a href="#flow-2----planned-activity-capture-listing-systems---ji">Flow 2 -- Planned Activity Capture (Listing Systems -&gt; JI)</a></li><li><a href="#flow-3----sitting--booking-confirmation-court-staff---ji">Flow 3 -- Sitting &amp; Booking Confirmation (Court Staff -&gt; JI)</a></li><li><a href="#flow-4----absence--vacancy-management-courts--rsu---ji">Flow 4 -- Absence &amp; Vacancy Management (Courts / RSU -&gt; JI)</a></li><li><a href="#flow-5----fee-paid-payment-export-ji---jfeps---liberata">Flow 5 -- Fee-Paid Payment Export (JI -&gt; JFEPS -&gt; Liberata)</a></li><li><a href="#flow-6----payment-reconciliation-jfeps---ji">Flow 6 -- Payment Reconciliation (JFEPS -&gt; JI)</a></li><li><a href="#flow-7----management-information--reporting-ji---dai">Flow 7 -- Management Information &amp; Reporting (JI -&gt; DA&amp;I)</a></li><li><a href="#flow-8----notifications--communications-ji---hmcts-email">Flow 8 -- Notifications &amp; Communications (JI -&gt; HMCTS Email)</a></li><li><a href="#key-observations">Key Observations</a></li><li><a href="#source-documents">Source Documents</a></li></ul></aside>
+<script>window.__NAV_BASE__="../../";window.__PAGE__="architecture/asis/integration-dependencies";</script>
+<script src="../../nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

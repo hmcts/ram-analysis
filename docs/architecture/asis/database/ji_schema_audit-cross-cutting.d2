@@ -1,0 +1,41 @@
+vars: { d2-config: { layout-engine: elk } }
+direction: right
+
+title: |md
+  ## JI as-is schema — Audit & Cross-cutting
+  PK / FK (in-area) / UNQ markers · trigger badges `[B/A × I/U/D]` · intra-area FK edges only · cross-area & external refs shown in the type cell
+| { near: top-center; style.font-size: 22 }
+
+TBL_JI_CHANGES: "TBL_JI_CHANGES [BI]" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JI_CHANGE_ID: "NUMBER" {constraint: [primary_key]}
+  JI_CHANGE_TYPE_ID: "NUMBER(2,0)" {constraint: [foreign_key]}
+  COMMENTS: "VARCHAR2(4000)"
+  CREATED_BY: "VARCHAR2(255)"
+  CREATED_DATE: "DATE"
+}
+
+TBL_JI_CHANGE_TYPES: "TBL_JI_CHANGE_TYPES" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  JI_CHANGE_TYPE_ID: "NUMBER(2,0)" {constraint: [primary_key]}
+  JI_CHANGE_TYPE_NAME: "VARCHAR2(100)"
+  IN_USE: "CHAR(1)"
+}
+
+TBL_JI_RESTR_ITIN_USERS: "TBL_JI_RESTR_ITIN_USERS" {
+  shape: sql_table
+  style.fill: "#6e7781"
+  USER_ID: "VARCHAR2(255)" {constraint: [primary_key]}
+  REGION_ID: "NUMBER(6,0) → REGIONS" {constraint: [primary_key]}
+  CREATED_BY: "VARCHAR2(255)"
+  CREATED_DATE: "DATE"
+}
+
+TBL_JI_CHANGES.JI_CHANGE_TYPE_ID -> TBL_JI_CHANGE_TYPES.JI_CHANGE_TYPE_ID: { style.stroke: "#1f6feb"; style.stroke-width: 2 }
+
+legend: |md
+  **Legend** — `PK` primary · `FK` in-area (line) · `UNQ` unique · `→ TBL_X` cross-area ref (no line) · `→ hint` external (not in PDF)  
+  ━━ blue solid = HIGH-confidence FK · - - grey dashed = MEDIUM-confidence FK
+| { near: bottom-center; style.font-size: 13 }

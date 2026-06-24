@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Judicial Itineraries (JI) - Data Dependencies — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="judicial-itineraries-ji---data-dependencies">Judicial Itineraries (JI) - Data Dependencies</h1>
+<p>This document catalogues the external data dependencies of the Judicial Itineraries (JI) system, identifying what data flows in and out, the source or destination system, and the mechanism of exchange.</p>
+<details class="section" id="summary"><summary><span class="section-title">Summary</span></summary><div class="section-body">
+<p>JI is largely a standalone system with <strong>limited direct integrations</strong>. Most data exchange is file-based (Excel exports) or email-based rather than API-driven. The system both consumes and produces data critical to HMCTS judicial operations.</p>
+</div></details><details class="section" id="at-a-glance"><summary><span class="section-title">At a Glance</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Direction</th>
+<th>External System</th>
+<th>Data</th>
+<th>Mechanism</th>
+<th>Criticality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Inbound</td>
+<td>HR / Admin Records</td>
+<td>Working patterns, contractual sitting days</td>
+<td>Manual entry by RSU users</td>
+<td>High</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Inbound</td>
+<td>eLinks (Judicial Database)</td>
+<td>Judge profiles, roles, base locations</td>
+<td>Manual (automated import is a stated NFR, not yet implemented)</td>
+<td>High</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Inbound</td>
+<td>Court Listing Systems</td>
+<td>Planned judicial activity (how judges spend the day)</td>
+<td>Manual copy / data entry</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Inbound</td>
+<td>Court Staff</td>
+<td>Sitting confirmations, actual work types, absence requests</td>
+<td>Manual entry via JI UI</td>
+<td>High</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Outbound</td>
+<td>JFEPS / Finance System</td>
+<td>Fee-paid judge payment files</td>
+<td>JFEPS-compatible Excel export, emailed to Payment Authoriser</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Outbound</td>
+<td>Liberata</td>
+<td>Payment schedules</td>
+<td>Email (forwarded by Payment Authoriser)</td>
+<td>Critical</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Outbound</td>
+<td>DA&amp;I (Data, Analysis &amp; Insight)</td>
+<td>Sitting days, utilisation, vacancy &amp; absence analysis</td>
+<td>Excel / PDF report exports</td>
+<td>High</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Outbound</td>
+<td>HMCTS Email Infrastructure</td>
+<td>Itineraries, booking confirmations, absence notifications, payment files</td>
+<td>Automated email (some overnight batch)</td>
+<td>High</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Both</td>
+<td>JFEPS (Reconciliation)</td>
+<td>Payment status, discrepancies between bookings and payments</td>
+<td>Manual flagging in JI after finance confirmation</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Platform</td>
+<td>OPT / Oracle APEX</td>
+<td>Runtime, authentication, shared assets, session management</td>
+<td>Tightly coupled platform dependency</td>
+<td>Critical</td>
+</tr>
+</tbody>
+</table>
+<p>For detailed descriptions of each dependency, see the sections below.</p>
+<hr />
+</div></details><details class="section" id="inbound-data-dependencies"><summary><span class="section-title">Inbound Data Dependencies</span></summary><div class="section-body">
+<p>These are external systems or sources from which JI receives or imports data.</p>
+<h3 id="1-hr--administrative-records">1. HR / Administrative Records</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>HR systems / administrative records (specific system not named in documentation)</td>
+</tr>
+<tr>
+<td><strong>Data consumed</strong></td>
+<td>Judge working patterns, contractual sitting days, part-time arrangements, agreed working arrangements</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Reference / configuration data</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Manual entry by RSU users into JI. No automated integration.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>As changes occur (e.g. new judge, change to part-time, base court transfer)</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High - working patterns are the foundation for generating judge itineraries and sitting targets</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> JI is explicitly <em>not</em> the system of record for HR or employment contracts. It reflects working patterns that have already been agreed elsewhere.</p>
+<h3 id="2-elinks-judicial-database">2. eLinks (Judicial Database)</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>eLinks - the Judicial Database</td>
+</tr>
+<tr>
+<td><strong>Data consumed</strong></td>
+<td>Judiciary data: judge names, details, roles, base locations, status</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Master / reference data</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>The SRS states "The system shall support eLinks integration for importing judiciary data" (NFR-3). However, the current technical mechanism, frequency, and detailed data mapping are not described - it is a stated requirement, not a fully implemented integration. Currently data is manually copied.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Unknown / manual</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High - judge profile data is foundational to all JI operations</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> The training documentation states that once the new Judicial Database replacement is complete, processes for updating JI from it will be examined. Currently all judge data maintenance is done manually and users must keep both systems updated.</p>
+<h3 id="3-listing-systems-courts">3. Listing Systems (Courts)</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>Court listing systems (e.g. systems used by courts for case listing)</td>
+</tr>
+<tr>
+<td><strong>Data consumed</strong></td>
+<td>Planned judicial activity data - how judges plan to spend their working day</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Operational / transactional data</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Manual - data is copied from listing systems or entered manually by HMCTS staff, then confirmed after the fact ("recording the actual")</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Daily (courts are encouraged to confirm sittings daily)</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>Medium - provides the "actuals" that drive utilisation reporting and payment processing</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> There is no direct system-to-system integration between JI and core case management systems (CaseMan, FamilyMan, Common Platform). This is explicitly stated in the documentation.</p>
+<h3 id="4-court-staff-manual-confirmation-data">4. Court Staff (Manual Confirmation Data)</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Source system</strong></td>
+<td>Local court offices</td>
+</tr>
+<tr>
+<td><strong>Data consumed</strong></td>
+<td>Confirmation of sittings and bookings (did the sitting actually occur, session duration, actual work type), absence requests</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Operational / transactional data</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Manual entry via JI user interface</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Daily (recommended), at minimum before monthly verification deadline</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High - confirmed data drives payment exports and MI reporting</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></details><details class="section" id="outbound-data-dependencies"><summary><span class="section-title">Outbound Data Dependencies</span></summary><div class="section-body">
+<p>These are external systems or processes that consume data produced by JI.</p>
+<h3 id="5-jfeps--finance-system-judicial-fee-payments">5. JFEPS / Finance System (Judicial Fee Payments)</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Destination system</strong></td>
+<td>JFEPS (Judicial Fee Payment System)</td>
+</tr>
+<tr>
+<td><strong>Data produced</strong></td>
+<td>Payment data for fee-paid judges derived from confirmed bookings: judge details, court codes, dates, session types, booking IDs, fee amounts</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Financial / transactional data</td>
+</tr>
+<tr>
+<td><strong>Format</strong></td>
+<td>JFEPS-compatible Excel export files</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>JI generates Excel files, validates data before export (dates, court codes, booking IDs), and emails the file to designated Payment Authorisers. The authoriser reviews, approves, and manually uploads to JFEPS.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Typically weekly</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>Critical - this is the primary mechanism for paying fee-paid judges in Crown Courts. Without JI, courts would need to manually create each payment.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> JI does not process payments directly. It does not store or expose judge bank details or sensitive financial information - those remain in the finance system.</p>
+<h3 id="6-liberata-lberata---payment-processing">6. Liberata (L!BERATA) - Payment Processing</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Destination system</strong></td>
+<td>Liberata (payment processing partner)</td>
+</tr>
+<tr>
+<td><strong>Data produced</strong></td>
+<td>Payment schedules for fee-paid judicial sittings</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Financial / transactional data</td>
+</tr>
+<tr>
+<td><strong>Format</strong></td>
+<td>Payment schedule (via email, forwarded by Payment Authoriser)</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>JI generates payment schedule -&gt; sent to Payment Authoriser -&gt; authoriser reviews and forwards to Liberata</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Weekly</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>Critical - Liberata processes the actual fee payments</td>
+</tr>
+</tbody>
+</table>
+<h3 id="7-dai-data-analysis--insight---management-information">7. DA&amp;I (Data, Analysis &amp; Insight) - Management Information</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Destination system</strong></td>
+<td>DA&amp;I team systems / analytics platforms</td>
+</tr>
+<tr>
+<td><strong>Data produced</strong></td>
+<td>Sitting day data, judicial utilisation statistics, vacancy analysis, booking analysis, absence analysis</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Aggregated management information</td>
+</tr>
+<tr>
+<td><strong>Format</strong></td>
+<td>Excel and PDF exports from JI report screens; manual extraction via spreadsheets</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Export-based - DA&amp;I extracts and transforms JI data into management information. Reports are exported via browser copy-paste to Excel or PDF download.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>As required for reporting cycles</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High - JI is currently the primary source of sitting day data for Civil, Family, and Crown Courts. DA&amp;I aggregates this to produce MI on planned and actual sittings.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="8-email-infrastructure-hmcts">8. Email Infrastructure (HMCTS)</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Destination system</strong></td>
+<td>HMCTS email infrastructure</td>
+</tr>
+<tr>
+<td><strong>Data produced</strong></td>
+<td>Itinerary emails to judges and staff, absence acknowledgement notifications, booking confirmation/cancellation notifications, payment export files to Payment Authorisers, alerts to court staff</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Notifications and document distribution</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Automated email sending from JI (some immediate, some via overnight batch process)</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Event-driven (on booking, absence, cancellation, payment export)</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>High - operational communications depend on email delivery</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></details><details class="section" id="bidirectional--reconciliation-dependencies"><summary><span class="section-title">Bidirectional / Reconciliation Dependencies</span></summary><div class="section-body">
+<h3 id="9-payment-reconciliation-jfeps---ji">9. Payment Reconciliation (JFEPS -&gt; JI)</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Systems</strong></td>
+<td>JFEPS / Finance System &lt;-&gt; JI</td>
+</tr>
+<tr>
+<td><strong>Data exchanged</strong></td>
+<td>Reconciliation data: which payments have been made, which remain pending, discrepancies between JI-generated payment requests and finance confirmations</td>
+</tr>
+<tr>
+<td><strong>Data type</strong></td>
+<td>Financial reconciliation</td>
+</tr>
+<tr>
+<td><strong>Mechanism</strong></td>
+<td>Finance users manually flag payments as reconciled in JI once confirmation is received from JFEPS. No automated data feed back into JI from finance.</td>
+</tr>
+<tr>
+<td><strong>Frequency</strong></td>
+<td>Ongoing as payments are processed</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>Medium - ensures bookings are not double-paid and discrepancies are tracked</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></details><details class="section" id="platform-dependencies"><summary><span class="section-title">Platform Dependencies</span></summary><div class="section-body">
+<h3 id="10-opt--oracle-apex-platform">10. OPT / Oracle APEX Platform</h3>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>System</strong></td>
+<td>One Performance Truth (OPT) platform</td>
+</tr>
+<tr>
+<td><strong>Dependency type</strong></td>
+<td>Runtime platform</td>
+</tr>
+<tr>
+<td><strong>Services consumed</strong></td>
+<td>Oracle APEX runtime and authentication, shared JavaScript/CSS assets (<code>opt.common.js</code>, <code>opt.ji.js</code>), session management and timeout controls, APEX page templates, session timeout plug-ins</td>
+</tr>
+<tr>
+<td><strong>Criticality</strong></td>
+<td>Critical - JI cannot operate without the OPT APEX platform</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note:</strong> The OPT platform is unsupported legacy technology. There is an active initiative to transition OPT-based applications under DTS management, with the Board endorsing full replacement as the strategic direction.</p>
+<hr />
+</div></details><details class="section" id="data-dependency-diagram"><summary><span class="section-title">Data Dependency Diagram</span></summary><div class="section-body">
+<p>The numbered badge in the top-right of each box matches the <code>#</code> column in the <strong>At a Glance</strong> table above, so the diagram can be walked through in sequence (1 → 10).</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" width="100%" font-family="Arial, sans-serif" role="img" aria-label="JI data dependency diagram with numbered badges 1 to 10"><defs><marker id="dd-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#37474f"/></marker><marker id="dd-arr-recon" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#c0392b"/></marker></defs><text x="140" y="26" font-size="14" font-weight="700" text-anchor="middle" fill="#263238">INBOUND</text><text x="500" y="26" font-size="14" font-weight="700" text-anchor="middle" fill="#263238">JUDICIAL ITINERARIES</text><text x="860" y="26" font-size="14" font-weight="700" text-anchor="middle" fill="#263238">OUTBOUND</text><rect x="20" y="55" width="240" height="64" rx="8" fill="#f5f7fa" stroke="#37474f" stroke-width="1.5"/><text x="140" y="85" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">HR / Admin Records</text><text x="140" y="103" font-size="11" text-anchor="middle" fill="#555555">working patterns, contractual days</text><circle cx="258" cy="57" r="14" fill="#1a5490" stroke="#ffffff" stroke-width="2"/><text x="258" y="61" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">1</text><rect x="20" y="140" width="240" height="64" rx="8" fill="#f5f7fa" stroke="#37474f" stroke-width="1.5"/><text x="140" y="170" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">eLinks</text><text x="140" y="188" font-size="11" text-anchor="middle" fill="#555555">Judicial Database — judge profiles</text><circle cx="258" cy="142" r="14" fill="#1a5490" stroke="#ffffff" stroke-width="2"/><text x="258" y="146" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">2</text><rect x="20" y="225" width="240" height="64" rx="8" fill="#f5f7fa" stroke="#37474f" stroke-width="1.5"/><text x="140" y="255" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">Listing Systems</text><text x="140" y="273" font-size="11" text-anchor="middle" fill="#555555">planned judicial activity</text><circle cx="258" cy="227" r="14" fill="#1a5490" stroke="#ffffff" stroke-width="2"/><text x="258" y="231" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">3</text><rect x="20" y="310" width="240" height="64" rx="8" fill="#f5f7fa" stroke="#37474f" stroke-width="1.5"/><text x="140" y="340" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">Court Staff</text><text x="140" y="358" font-size="11" text-anchor="middle" fill="#555555">sitting confirmations, absences</text><circle cx="258" cy="312" r="14" fill="#1a5490" stroke="#ffffff" stroke-width="2"/><text x="258" y="316" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">4</text><rect x="380" y="150" width="240" height="230" rx="10" fill="#d6e6ff" stroke="#1a5490" stroke-width="2"/><text x="500" y="255" font-size="20" font-weight="700" text-anchor="middle" fill="#0d3a6b">Judicial Itineraries</text><text x="500" y="285" font-size="20" font-weight="700" text-anchor="middle" fill="#0d3a6b">(JI)</text><line x1="260" y1="87" x2="380" y2="190" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><line x1="260" y1="172" x2="380" y2="225" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><line x1="260" y1="257" x2="380" y2="275" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><line x1="260" y1="342" x2="380" y2="320" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><rect x="740" y="55" width="240" height="64" rx="8" fill="#f5f7fa" stroke="#37474f" stroke-width="1.5"/><text x="860" y="85" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">JFEPS / Finance</text><text x="860" y="103" font-size="11" text-anchor="middle" fill="#555555">payment files (Excel)</text><circle cx="978" cy="57" r="14" fill="#1a5490" stroke="#ffffff" stroke-width="2"/><text x="978" y="61" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">5</text><rect x="740" y="140" width="240" height="64" rx="8" fill="#f5f7fa" stroke="#37474f" stroke-width="1.5"/><text x="860" y="170" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">Liberata</text><text x="860" y="188" font-size="11" text-anchor="middle" fill="#555555">payment processing</text><circle cx="978" cy="142" r="14" fill="#1a5490" stroke="#ffffff" stroke-width="2"/><text x="978" y="146" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">6</text><rect x="740" y="225" width="240" height="64" rx="8" fill="#f5f7fa" stroke="#37474f" stroke-width="1.5"/><text x="860" y="255" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">DA&amp;I</text><text x="860" y="273" font-size="11" text-anchor="middle" fill="#555555">management information</text><circle cx="978" cy="227" r="14" fill="#1a5490" stroke="#ffffff" stroke-width="2"/><text x="978" y="231" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">7</text><rect x="740" y="310" width="240" height="64" rx="8" fill="#f5f7fa" stroke="#37474f" stroke-width="1.5"/><text x="860" y="340" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">HMCTS Email</text><text x="860" y="358" font-size="11" text-anchor="middle" fill="#555555">notifications, itineraries</text><circle cx="978" cy="312" r="14" fill="#1a5490" stroke="#ffffff" stroke-width="2"/><text x="978" y="316" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">8</text><line x1="620" y1="190" x2="740" y2="87" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><line x1="620" y1="225" x2="740" y2="172" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><line x1="620" y1="275" x2="740" y2="257" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><line x1="620" y1="320" x2="740" y2="342" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><path d="M 740 105 C 680 125 660 150 620 215" stroke="#c0392b" stroke-width="1.5" fill="none" stroke-dasharray="6,3" marker-end="url(#dd-arr-recon)"/><text x="678" y="135" font-size="11" text-anchor="middle" fill="#c0392b" font-style="italic">reconciliation</text><circle cx="690" cy="158" r="14" fill="#c0392b" stroke="#ffffff" stroke-width="2"/><text x="690" y="162" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">9</text><rect x="380" y="450" width="240" height="80" rx="8" fill="#fff4cc" stroke="#b8860b" stroke-width="2"/><text x="500" y="482" font-size="13" font-weight="700" text-anchor="middle" fill="#263238">OPT / Oracle APEX</text><text x="500" y="500" font-size="11" text-anchor="middle" fill="#555555">runtime, authentication, sessions</text><text x="500" y="518" font-size="11" text-anchor="middle" fill="#555555" font-style="italic">platform dependency</text><circle cx="618" cy="452" r="14" fill="#b8860b" stroke="#ffffff" stroke-width="2"/><text x="618" y="456" font-size="13" font-weight="700" text-anchor="middle" fill="#ffffff">10</text><line x1="500" y1="380" x2="500" y2="450" stroke="#37474f" stroke-width="1.5" fill="none" marker-end="url(#dd-arr)"/><text x="540" y="418" font-size="11" text-anchor="middle" fill="#455a64">runs on</text></svg></p>
+<hr />
+</div></details><details class="section" id="key-observations"><summary><span class="section-title">Key Observations</span></summary><div class="section-body">
+<ol type="1">
+<li><p><strong>Heavy reliance on manual data entry</strong> - Most inbound data flows are manual. Judge details are manually maintained from HR records and eLinks. Sitting confirmations are manual. Working patterns are manually entered.</p></li>
+<li><p><strong>No case management system integration</strong> - JI explicitly does not integrate with CaseMan, FamilyMan, or Common Platform. It operates at the judicial scheduling level only, not at case/hearing level.</p></li>
+<li><p><strong>Export-based outbound integration</strong> - All outbound data flows are file-based (Excel, PDF) or email-based. There are no API integrations.</p></li>
+<li><p><strong>JFEPS is the most critical integration</strong> - The payment export to JFEPS is the most operationally critical data dependency. Crown Courts rely on this to pay fee-paid judges.</p></li>
+<li><p><strong>Tribunals gap</strong> - JI currently does not cover Tribunals, which is a significant data gap. Tribunal sitting data is collected manually via spreadsheets managed by different Chamber Presidents' Offices.</p></li>
+<li><p><strong>Future integration needs</strong> - The Actuals programme and Scheduling &amp; Listing (S&amp;L) reforms require JI data and integration, which the current export-based model cannot easily support.</p></li>
+</ol>
+<hr />
+</div></details><details class="section" id="source-documents"><summary><span class="section-title">Source Documents</span></summary><div class="section-body">
+<p>This analysis is based on the following input documents:</p>
+<ul>
+<li>High Level Capabilities JI.docx</li>
+<li>JI Functional and Non Functional Requirements.docx</li>
+<li>Judicial Itineraries High Level Requirements.docx</li>
+<li>Judicial Itinerary KB.docx</li>
+<li>OPT JI Training Brief DRAFT 02.doc</li>
+<li>UCD resource request.docx</li>
+</ul>
+</div></details>
+<p class="source-note">Source: <code>docs/architecture/asis/data-dependencies.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#summary">Summary</a></li><li><a href="#at-a-glance">At a Glance</a></li><li><a href="#inbound-data-dependencies">Inbound Data Dependencies</a></li><li class="h3"><a href="#1-hr--administrative-records">1. HR / Administrative Records</a></li><li class="h3"><a href="#2-elinks-judicial-database">2. eLinks (Judicial Database)</a></li><li class="h3"><a href="#3-listing-systems-courts">3. Listing Systems (Courts)</a></li><li class="h3"><a href="#4-court-staff-manual-confirmation-data">4. Court Staff (Manual Confirmation Data)</a></li><li><a href="#outbound-data-dependencies">Outbound Data Dependencies</a></li><li class="h3"><a href="#5-jfeps--finance-system-judicial-fee-payments">5. JFEPS / Finance System (Judicial Fee Payments)</a></li><li class="h3"><a href="#6-liberata-lberata---payment-processing">6. Liberata (L!BERATA) - Payment Processing</a></li><li class="h3"><a href="#7-dai-data-analysis--insight---management-information">7. DA&amp;I (Data, Analysis &amp; Insight) - Management Information</a></li><li class="h3"><a href="#8-email-infrastructure-hmcts">8. Email Infrastructure (HMCTS)</a></li><li><a href="#bidirectional--reconciliation-dependencies">Bidirectional / Reconciliation Dependencies</a></li><li class="h3"><a href="#9-payment-reconciliation-jfeps---ji">9. Payment Reconciliation (JFEPS -&gt; JI)</a></li><li><a href="#platform-dependencies">Platform Dependencies</a></li><li class="h3"><a href="#10-opt--oracle-apex-platform">10. OPT / Oracle APEX Platform</a></li><li><a href="#data-dependency-diagram">Data Dependency Diagram</a></li><li><a href="#key-observations">Key Observations</a></li><li><a href="#source-documents">Source Documents</a></li></ul></aside>
+<script>window.__NAV_BASE__="../../";window.__PAGE__="architecture/asis/data-dependencies";</script>
+<script src="../../nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>
