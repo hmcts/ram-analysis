@@ -192,41 +192,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tbody>
 </table>
 </div></details><details class="section" id="module-overview"><summary><span class="section-title">Module overview</span></summary><div class="section-body">
-<pre class="mermaid"><code>flowchart LR
-    subgraph operational [Operational planning &amp; activity]
-        direction TB
-        M1[&quot;1. Home&quot;]
-        M2[&quot;2. Manage&lt;br/&gt;Judges&quot;]
-        M3[&quot;3. Court&lt;br/&gt;Itinerary&quot;]
-        M4[&quot;4. Judge&lt;br/&gt;Itinerary&quot;]
-        M5[&quot;5. Absences&quot;]
-        M6[&quot;6. Vacancies&quot;]
-        M7[&quot;7. Fee-paid&lt;br/&gt;Bookings&quot;]
-        M10[&quot;10. Sittings&quot;]
-    end
-
-    subgraph finance [Finance]
-        direction TB
-        M8[&quot;8. Payments&quot;]
-        M9[&quot;9. Payment&lt;br/&gt;Reconciliation&quot;]
-    end
-
-    subgraph admin [Admin &amp; MI]
-        direction TB
-        M11[&quot;11. Admin&quot;]
-        M12[&quot;12. Reports&quot;]
-    end
-
-    M2 --&gt;|&quot;working&lt;br/&gt;patterns&quot;| M3
-    M2 --&gt;|&quot;working&lt;br/&gt;patterns&quot;| M4
-    M5 --&gt;|&quot;creates&quot;| M6
-    M6 --&gt;|&quot;filled by&quot;| M7
-    M7 --&gt;|&quot;confirmed&quot;| M8
-    M10 --&gt;|&quot;confirmed&quot;| M8
-    M8 --&gt;|&quot;schedule&quot;| M9
-    M3 --&gt;|&quot;data&quot;| M12
-    M4 --&gt;|&quot;data&quot;| M12
-    M10 --&gt;|&quot;data&quot;| M12</code></pre>
+<p><img src="module-overview.png" alt="Module overview — JI functional modules grouped into Operational planning &amp; activity, Finance, and Admin &amp; MI, with the data flows between them" style="max-width:100%;height:auto;" /></p>
 <hr />
 </div></details><details class="section" id="modules"><summary><span class="section-title">Modules</span></summary><div class="section-body">
 <p>These are the first-class functional modules of JI. Each section below mirrors the row above in the <em>At a Glance</em> table and provides the full Capabilities list, Attribute / Detail summary and Sources for that module.</p>

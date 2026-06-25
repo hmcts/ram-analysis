@@ -31,43 +31,8 @@ The table below is a compact summary of every module described in this document.
 
 ## Module overview
 
-```mermaid
-flowchart LR
-    subgraph operational [Operational planning & activity]
-        direction TB
-        M1["1. Home"]
-        M2["2. Manage<br/>Judges"]
-        M3["3. Court<br/>Itinerary"]
-        M4["4. Judge<br/>Itinerary"]
-        M5["5. Absences"]
-        M6["6. Vacancies"]
-        M7["7. Fee-paid<br/>Bookings"]
-        M10["10. Sittings"]
-    end
+![Module overview — JI functional modules grouped into Operational planning & activity, Finance, and Admin & MI, with the data flows between them](module-overview.png)
 
-    subgraph finance [Finance]
-        direction TB
-        M8["8. Payments"]
-        M9["9. Payment<br/>Reconciliation"]
-    end
-
-    subgraph admin [Admin & MI]
-        direction TB
-        M11["11. Admin"]
-        M12["12. Reports"]
-    end
-
-    M2 -->|"working<br/>patterns"| M3
-    M2 -->|"working<br/>patterns"| M4
-    M5 -->|"creates"| M6
-    M6 -->|"filled by"| M7
-    M7 -->|"confirmed"| M8
-    M10 -->|"confirmed"| M8
-    M8 -->|"schedule"| M9
-    M3 -->|"data"| M12
-    M4 -->|"data"| M12
-    M10 -->|"data"| M12
-```
 
 ---
 
