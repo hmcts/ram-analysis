@@ -7,3 +7,4 @@ _bmad/*
 .DS_Store
 */.DS_Store
 scripts/python/__pycache__/
+scripts/python/__pycache__/build_html.cpython-314.pyc
