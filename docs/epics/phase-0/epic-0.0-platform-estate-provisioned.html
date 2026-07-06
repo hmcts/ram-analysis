@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Epic 0.0: Platform estate is provisioned, verifiable, and CNP-compliant — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+.living-doc-notice{background:#fff8c5;border:1px solid #d4a72c;border-left:4px solid #d4a72c;border-radius:6px;padding:12px 16px;margin:0 0 22px;font-size:14px;color:#4d3800;line-height:1.55}
+.living-doc-notice strong{color:#3d2e00}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="epic-00-platform-estate-is-provisioned-verifiable-and-cnp-compliant">Epic 0.0: Platform estate is provisioned, verifiable, and CNP-compliant</h1>
+<p><strong>User outcome:</strong> The shared Azure estate — <strong>AKS, a global PostgreSQL Flexible Server, Azure Container Registry, APIM, Application Insights / Log Analytics, and Key Vault</strong> — is stood up via <strong>Terraform</strong> in its own dedicated repository, <strong><code>ram-shared-infrastructure</code></strong>, following the HMCTS Cloud Native Platform standard that product-level shared infrastructure lives in a <code>{product}-shared-infrastructure</code> repo (not colocated in a service repo). The estate is provisioned <strong>layer-by-layer, and each layer is independently verifiable at deploy time</strong> — so that every Phase 0 service (<code>ram-reference-data</code> first, then <code>ram-authorisation</code>, <code>ram-notification</code>, <code>ram-ui</code>) has a <em>tested</em> platform to deploy onto, and the team can prove the platform works before any domain service is scaffolded.</p>
+<p><strong>Hosting:</strong> the shared estate lives in <strong><code>ram-shared-infrastructure</code></strong> (CNP <code>{product}-shared-infrastructure</code> convention). This <strong>supersedes AR53's colocated first-consumer rule</strong> — the shared estate is no longer carried inside <code>ram-reference-data/terraform/</code>. Each service repo's own <code>terraform/</code> continues to hold <strong>only that service's own resources</strong> (e.g. the MRD storage account in <code>ram-reference-data</code>, Story 0.1.4).</p>
+<p><strong>Why this is Epic 0.0 (precedes ingestion):</strong> the shared cluster/database/registry/gateway/observability were always an implicit prerequisite of Story 0.1.1. Making them a first-class, independently-tested epic (a) aligns RAM with the CNP <code>-shared-infrastructure</code> standard, (b) lets the estate be validated on its own before a service depends on it, and (c) tightens <code>ram-reference-data</code> down to its domain — consistent with the polyrepo "minimise shared coupling" principle. The integrations-first ordering of the <strong>domain</strong> deliverables (0.1 → 0.5) is unchanged.</p>
+<p><strong>Vertical slice:</strong></p>
+<ul>
+<li><strong>New dedicated repo <code>ram-shared-infrastructure</code></strong> (CNP naming), scaffolded per the manual GitHub web-UI setup runbook (<code>ram-architecture/runbooks/github-setup.md</code> — the <code>gh</code> CLI is not available)</li>
+<li><strong>Terraform-only</strong> provisioning (no Bicep, no portal click-ops), remote state backend, per-environment stacks (<code>dev</code> / <code>staging</code> / <code>production</code>)</li>
+<li>Shared estate: <strong>AKS</strong> (UK South, multi-AZ) → <strong>PostgreSQL Flexible Server</strong> (zone-redundant HA) + <strong>Key Vault</strong> → <strong>ACR</strong> + <strong>App Insights / Log Analytics</strong> → <strong>APIM</strong></li>
+<li>Each layer carries its own <strong>deploy-time acceptance test</strong> so infrastructure is verified as it lands, not assumed</li>
+</ul>
+<p><strong>FRs covered:</strong> none — this is foundational platform infrastructure with no functional-requirement surface. It is the enablement layer for every Phase 0 FR.</p>
+<p><strong>Key NFRs first exercised here:</strong> NFR10 (TLS at APIM), NFR11 (data-at-rest), NFR16 (Key Vault), NFR25–NFR28 (structured logs + Application Insights ingestion + liveness/readiness plumbing), NFR31 (Azure UK South data residency), NFR40 (per-service deployable on Kubernetes — the cluster it deploys to).</p>
+<p><strong>Architecture requirements:</strong> <strong>AR53 (revised — dedicated <code>ram-shared-infrastructure</code> per CNP)</strong>; A34 (zone-redundant SKUs); gaps.md G9 (Terraform state backend + plan/apply pipeline pattern).</p>
+<p><strong>Out of scope (explicitly):</strong> any domain service scaffolding (<code>ram-reference-data</code> — Epic 0.1, Story 0.1.1); any service's own per-repo <code>terraform/</code> resources (they stay in their service repos); production-region rollout gating (Phase 9+); the <code>ram_configuration_values</code> Liquibase baseline (owned by <code>ram-architecture</code>, lands ahead of Epic 0.1).</p>
+<hr />
+<details class="section" id="story-001-scaffold-ram-shared-infrastructure-and-establish-the-terraform-foundation"><summary><span class="section-title">Story 0.0.1: Scaffold <code>ram-shared-infrastructure</code> and establish the Terraform foundation</span></summary><div class="section-body">
+<p>As a <strong>platform engineer</strong>, I want the dedicated <strong><code>ram-shared-infrastructure</code></strong> repo scaffolded per the HMCTS CNP standard, with a working Terraform backend, per-environment stacks, and a plan/apply CI pipeline, So that <strong>the shared estate has a CNP-compliant home with safe, reviewable, state-backed change management before any resource is provisioned</strong>.</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> the engineer has performed the GitHub manual-setup checklist (<code>ram-architecture/runbooks/github-setup.md</code>) <strong>before</strong> scaffolding:</p>
+<ul>
+<li>Created the repo <strong><code>ram-shared-infrastructure</code></strong> under the HMCTS org <strong>via the GitHub web UI</strong> (name follows the CNP <code>{product}-shared-infrastructure</code> convention — <code>product</code> = <code>ram</code>),</li>
+<li>Enabled branch protection on <code>main</code> (require PR review, require status checks, require linear history),</li>
+<li>Configured <code>CODEOWNERS</code> scoped to the platform/infra team,</li>
+<li>Note: the <code>gh</code> CLI is <strong>NOT</strong> available — all GitHub admin config happens manually via the web UI per the runbook<br/><strong>When</strong> the engineer lays down the Terraform skeleton<br/><strong>Then</strong> the repo contains per-environment stacks <code>terraform/dev/</code>, <code>terraform/staging/</code>, <code>terraform/production/</code> with pinned provider versions (<code>azurerm</code>)<br/><strong>And</strong> a remote state backend is configured (Azure Storage account + container, per the HMCTS-confirmed pattern — gaps.md G9)<br/><strong>And</strong> <code>.github/workflows/ci.yml</code> runs <code>terraform fmt -check</code>, <code>terraform validate</code>, and <code>terraform plan</code> on every PR<br/><strong>And</strong> a gated <code>apply</code> workflow runs only on merge to <code>main</code>, per environment, with manual approval for staging/production<br/><strong>And</strong> <code>CODEOWNERS</code> and <code>PULL_REQUEST_TEMPLATE.md</code> (infra-change checklist) exist.</li>
+</ul>
+<p><strong>Given</strong> the Terraform skeleton is in place with no resources yet defined<br/><strong>When</strong> the engineer opens a PR<br/><strong>Then</strong> <code>terraform validate</code> passes and <code>terraform plan</code> renders a clean, empty (no-op) plan in CI<br/><strong>And</strong> on merge, a no-op <code>apply</code> against the dev stack succeeds and writes state to the remote backend<br/><strong>And</strong> the run is observable in the CI logs with the plan output attached to the PR.</p>
+<p><strong>References:</strong> AR53 (revised); gaps.md G9; D10 (<code>gh</code> CLI not available — manual GitHub web-UI setup).</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>Any actual Azure resources — Stories 0.0.2–0.0.5</li>
+<li>Any service repo scaffolding — Epic 0.1</li>
+</ul>
+<hr />
+</div></details><details class="section" id="story-002-provision-networking-and-the-aks-cluster-dev-verifiable-via-kubectl"><summary><span class="section-title">Story 0.0.2: Provision networking and the AKS cluster (dev), verifiable via kubectl</span></summary><div class="section-body">
+<p>As a <strong>platform engineer</strong>, I want the resource group, virtual network, and AKS cluster provisioned in UK South via Terraform, So that <strong>there is a verified Kubernetes target — zone-spread and reachable — for every RAM Pathfinder service to deploy onto</strong>.</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> the Terraform foundation exists per Story 0.0.1<br/><strong>When</strong> the engineer adds the networking + AKS module and runs <code>terraform apply</code> for the dev stack<br/><strong>Then</strong> a resource group, VNet, and subnets are created in <strong>UK South</strong> (per NFR31)<br/><strong>And</strong> an AKS cluster is provisioned with a <strong>multi-AZ node pool</strong> and zone-spread configuration (per NFR31, A34)<br/><strong>And</strong> cluster and node SKUs match the documented Phase 0 baseline<br/><strong>And</strong> the kubeconfig is retrievable by authorised engineers via Azure RBAC (no cluster-admin static credentials committed).</p>
+<p><strong>Given</strong> the AKS cluster is provisioned<br/><strong>When</strong> the engineer runs <code>kubectl get nodes</code><br/><strong>Then</strong> all nodes report <code>Ready</code> and are distributed across availability zones<br/><strong>And</strong> a throwaway <code>hello</code>/echo pod (e.g. <code>kubectl run</code>) schedules successfully and responds to an in-cluster request<br/><strong>And</strong> the smoke check is captured as a documented post-apply verification step (runnable in CI or by hand) — infrastructure is verified as deployed.</p>
+<p><strong>References:</strong> AR53 (revised); NFR31, NFR40; A34.</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>PostgreSQL, Key Vault, ACR, App Insights, APIM — Stories 0.0.3–0.0.5</li>
+<li>Deploying any RAM service — Epic 0.1</li>
+</ul>
+<hr />
+</div></details><details class="section" id="story-003-provision-postgresql-and-key-vault-dev-verifiable-over-tls-from-the-cluster"><summary><span class="section-title">Story 0.0.3: Provision PostgreSQL and Key Vault (dev), verifiable over TLS from the cluster</span></summary><div class="section-body">
+<p>As a <strong>platform engineer</strong>, I want a PostgreSQL Flexible Server and a Key Vault provisioned via Terraform, with AKS workload identity wired to the vault, So that <strong>services have an encrypted, TLS-only shared database and a secret store — proven reachable and secure from inside the cluster before any service needs them</strong>.</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> the AKS cluster exists per Story 0.0.2<br/><strong>When</strong> the engineer adds the PostgreSQL + Key Vault module and runs <code>terraform apply</code> for dev<br/><strong>Then</strong> an Azure Database for <strong>PostgreSQL Flexible Server</strong> is provisioned with <strong>zone-redundant HA</strong> (per A34), <strong>storage encryption at rest</strong> (per NFR11), and <strong>TLS enforced / plaintext connections refused</strong> (per NFR10)<br/><strong>And</strong> an <strong>Azure Key Vault</strong> is provisioned with soft-delete + purge protection<br/><strong>And</strong> AKS <strong>workload identity</strong> is configured so pods can read Key Vault secrets without static credentials (per NFR16)<br/><strong>And</strong> no database or vault secrets are committed to the repo — all live in Key Vault.</p>
+<p><strong>Given</strong> PostgreSQL and Key Vault are provisioned<br/><strong>When</strong> the engineer runs the verification from an in-cluster pod<br/><strong>Then</strong> a TLS connection to PostgreSQL succeeds and a <strong>non-TLS connection is refused</strong> (NFR10 verified as deployed)<br/><strong>And</strong> a scratch database can be created and dropped (connectivity + privilege baseline confirmed)<br/><strong>And</strong> a test secret written to Key Vault round-trips back to the pod via workload identity (NFR16 verified)<br/><strong>And</strong> these checks are captured as documented post-apply verification steps.</p>
+<p><strong>References:</strong> AR53 (revised); NFR10, NFR11, NFR16; A34.</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>Per-service DB roles/grants and the <code>ram_configuration_values</code> baseline (owned by <code>ram-architecture</code>; consumed in Epic 0.1)</li>
+<li>ACR, App Insights, APIM — Stories 0.0.4–0.0.5</li>
+</ul>
+<hr />
+</div></details><details class="section" id="story-004-provision-acr-and-observability-dev-verifiable-via-image-pull-and-a-test-trace"><summary><span class="section-title">Story 0.0.4: Provision ACR and observability (dev), verifiable via image pull and a test trace</span></summary><div class="section-body">
+<p>As a <strong>platform engineer</strong>, I want an Azure Container Registry and an Application Insights / Log Analytics workspace provisioned via Terraform and wired to AKS, So that <strong>there is a proven image supply chain and a proven telemetry sink before any service ships a container or emits a log</strong>.</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> the AKS cluster exists per Story 0.0.2<br/><strong>When</strong> the engineer adds the ACR + observability module and runs <code>terraform apply</code> for dev<br/><strong>Then</strong> an <strong>Azure Container Registry</strong> is provisioned (zone-redundant SKU per A34) with AKS granted pull access via managed identity (no registry passwords in cluster)<br/><strong>And</strong> an <strong>Application Insights</strong> resource backed by a <strong>Log Analytics workspace</strong> is provisioned in UK South<br/><strong>And</strong> log retention is set to the agreed Phase 0 default (<strong>90 days non-prod</strong>, subject to HMCTS sign-off; per NFR26) via Terraform<br/><strong>And</strong> the App Insights connection string is stored in Key Vault (not committed).</p>
+<p><strong>Given</strong> ACR and observability are provisioned<br/><strong>When</strong> the engineer runs the verification<br/><strong>Then</strong> a test image pushes to ACR and pulls successfully into AKS (supply chain confirmed)<br/><strong>And</strong> a test trace and a structured log entry emitted from an in-cluster pod appear in Application Insights within the query window (NFR25–NFR28 telemetry pipeline verified as deployed)<br/><strong>And</strong> these checks are captured as documented post-apply verification steps.</p>
+<p><strong>References:</strong> AR53 (revised); NFR25, NFR26, NFR27, NFR28; A34.</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>Per-service log dashboards / alerts (land with each service)</li>
+<li>APIM — Story 0.0.5</li>
+</ul>
+<hr />
+</div></details><details class="section" id="story-005-provision-apim-dev-verifiable-end-to-end-via-a-smoke-api-over-tls"><summary><span class="section-title">Story 0.0.5: Provision APIM (dev), verifiable end-to-end via a smoke API over TLS</span></summary><div class="section-body">
+<p>As a <strong>platform engineer</strong>, I want APIM provisioned via Terraform with base policies and a smoke API, So that <strong>the shared public gateway is proven to terminate TLS and route to the cluster before any real service publishes an API through it</strong>.</p>
+<p><strong>Acceptance Criteria:</strong></p>
+<p><strong>Given</strong> the AKS cluster exists per Story 0.0.2<br/><strong>When</strong> the engineer adds the APIM module and runs <code>terraform apply</code> for dev<br/><strong>Then</strong> an <strong>APIM instance</strong> is provisioned (zone-redundant SKU per A34) with base policies (TLS termination at the latest platform-supported version — NFR10; correlation-ID pass-through; default rate limits)<br/><strong>And</strong> a <strong>smoke API</strong> is registered pointing at an in-cluster echo service<br/><strong>And</strong> HTTP-only requests are rejected/redirected to HTTPS.</p>
+<p><strong>Given</strong> APIM and the smoke API are provisioned<br/><strong>When</strong> the engineer calls the smoke operation through the APIM gateway<br/><strong>Then</strong> the call returns <code>200</code> over TLS from the in-cluster echo service (end-to-end path gateway → AKS confirmed)<br/><strong>And</strong> a request below the platform's minimum TLS version is refused (verified by a CI check using <code>testssl.sh</code> or equivalent — NFR10 verified as deployed)<br/><strong>And</strong> an unauthenticated call to a policy-protected route is rejected<br/><strong>And</strong> these checks are captured as documented post-apply verification steps.</p>
+<p><strong>Given</strong> all five layers are applied<br/><strong>When</strong> the engineer reviews the dev estate<br/><strong>Then</strong> the full shared estate (AKS + PostgreSQL + Key Vault + ACR + App Insights + APIM) exists in UK South, each layer independently verified<br/><strong>And</strong> the estate is ready for <code>ram-reference-data</code> to scaffold and deploy onto (Epic 0.1, Story 0.1.1).</p>
+<p><strong>References:</strong> AR53 (revised); NFR10, NFR31; A34; gaps.md G9.</p>
+<p><strong>Explicitly NOT in scope:</strong></p>
+<ul>
+<li>Per-service API registration in APIM (each service publishes its own OpenAPI-backed API)</li>
+<li>Any domain service — Epic 0.1 onward</li>
+</ul>
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/epics/phase-0/epic-0.0-platform-estate-provisioned.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#story-001-scaffold-ram-shared-infrastructure-and-establish-the-terraform-foundation">Story 0.0.1: Scaffold ram-shared-infrastructure and establish the Terraform foundation</a></li><li><a href="#story-002-provision-networking-and-the-aks-cluster-dev-verifiable-via-kubectl">Story 0.0.2: Provision networking and the AKS cluster (dev), verifiable via kubectl</a></li><li><a href="#story-003-provision-postgresql-and-key-vault-dev-verifiable-over-tls-from-the-cluster">Story 0.0.3: Provision PostgreSQL and Key Vault (dev), verifiable over TLS from the cluster</a></li><li><a href="#story-004-provision-acr-and-observability-dev-verifiable-via-image-pull-and-a-test-trace">Story 0.0.4: Provision ACR and observability (dev), verifiable via image pull and a test trace</a></li><li><a href="#story-005-provision-apim-dev-verifiable-end-to-end-via-a-smoke-api-over-tls">Story 0.0.5: Provision APIM (dev), verifiable end-to-end via a smoke API over TLS</a></li></ul></aside>
+<script>window.__NAV_BASE__="../../";window.__PAGE__="epics/phase-0/epic-0.0-platform-estate-provisioned";</script>
+<script src="../../nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

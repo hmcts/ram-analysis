@@ -222,11 +222,11 @@ sourceDocuments:
 
 ### Infrastructure / deployment
 
-- AR23 — Kubernetes on Azure AKS, production in UK South, multi-AZ HA. Container images → Azure Container Registry. Each of the 11 services is a containerised Spring Boot app. The AKS/ACR estate is Terraform-provisioned per AR53 (lives in `ram-reference-data` as first consumer).
+- AR23 — Kubernetes on Azure AKS, production in UK South, multi-AZ HA. Container images → Azure Container Registry. Each of the 11 services is a containerised Spring Boot app. The AKS/ACR estate is Terraform-provisioned per AR53 (revised — provisioned in `ram-shared-infrastructure`, Epic 0.0).
 - AR24 — Helm chart per service with `values-{env}.yaml` overlay per environment (`dev`, `staging`, `production`). Production values include `topologySpreadConstraints` for AZ spread, min replicas, multi-AZ node pool selection. Helm chart is **not** in HMCTS template baseline — added by `ram-scaffold.sh` per G1.4a.
 - AR25 — Secrets in Azure Key Vault (via Spring Cloud Azure); no secrets in source control or env-baked images. Each service's Key Vault namespace is Terraform-provisioned in that service's repo (AR53).
 - AR26 — Per-environment configuration via Spring profiles + `application-{env}.yml`; cross-service runtime policy values in the shared `ram_configuration_values` table (read-only via direct SQL).
-- AR27 — Azure API Management (APIM) at the edge for rate limits, header injection, deprecation/`Sunset` policies, and ops-restricting `/actuator/*` namespace. APIM instance + base policies Terraform-provisioned in `ram-reference-data` (first consumer); per-API policy additions in each service's `terraform/` (AR53).
+- AR27 — Azure API Management (APIM) at the edge for rate limits, header injection, deprecation/`Sunset` policies, and ops-restricting `/actuator/*` namespace. APIM instance + base policies Terraform-provisioned in `ram-shared-infrastructure` (Epic 0.0); per-API policy additions in each service's `terraform/` (AR53 revised).
 
 ### CI / CD pipeline (per service)
 
@@ -279,13 +279,13 @@ sourceDocuments:
 
 ### Infrastructure provisioning (HMCTS standard)
 
-- AR53 — **All Azure infrastructure is provisioned via Terraform** (HMCTS standard) — no Bicep, no portal click-ops. **Terraform code is colocated with the application: it lives in the first repo that needs the resource** — infra cannot live separate from the application that needs it. Allocation under this rule:
-  - **`ram-reference-data`** (the first scaffolded service, Epic 0.1 Story 0.1.1) carries the **shared estate**: AKS cluster + node pools, PostgreSQL Flexible Server, Azure Container Registry, APIM instance + base policies, Application Insights / Log Analytics workspace (incl. retention settings).
-  - **Each service repo** carries Terraform for its **own resources**: its Key Vault namespace, service-specific storage, APIM per-API policy additions.
-  - **`ram-reference-data`** additionally carries the MRD feed storage account + blob container (Epic 0.1 Story 0.1.4 — first consumer).
+- AR53 — **(revised 2026-07-06)** **All Azure infrastructure is provisioned via Terraform** (HMCTS standard) — no Bicep, no portal click-ops. **Product-level *shared* infrastructure lives in its own dedicated repository, `ram-shared-infrastructure`**, per the HMCTS Cloud Native Platform `{product}-shared-infrastructure` standard. This **supersedes the prior "colocated first-consumer" rule** (SCP 2026-06-17): the shared estate is no longer carried inside `ram-reference-data`. Allocation under the revised rule:
+  - **`ram-shared-infrastructure`** carries the **shared estate**: AKS cluster + node pools, PostgreSQL Flexible Server, Azure Container Registry, APIM instance + base policies, Application Insights / Log Analytics workspace (incl. retention settings), Key Vault — provisioned and **independently verified in Epic 0.0**, ahead of any service.
+  - **Each service repo** carries Terraform for its **own resources only**: its Key Vault namespace/secrets, service-specific storage, APIM per-API policy additions.
+  - **`ram-reference-data`** carries the MRD feed storage account + blob container (Epic 0.1 Story 0.1.4 — its own resource).
   - **`ram-ui`** carries its Azure Static Web App.
-  - Terraform lives under `terraform/` in each repo with per-environment stacks (`dev` / `staging` / `production`); `ram-scaffold.sh` adds the `terraform/` skeleton alongside the Helm chart (same pattern as G1.4a).
-  - **Helm remains the application-deployment mechanism** onto the Terraform-provisioned AKS cluster — Terraform provisions the estate; Helm deploys workloads onto it; Liquibase owns DB schema. The three do not overlap.
+  - Terraform lives under `terraform/` with per-environment stacks (`dev` / `staging` / `production`) in **`ram-shared-infrastructure`** (shared estate) and in each service repo (own resources); `ram-scaffold.sh` adds the per-service `terraform/` skeleton alongside the Helm chart (same pattern as G1.4a).
+  - **Helm remains the application-deployment mechanism** onto the shared AKS cluster provisioned in Epic 0.0 — Terraform provisions the estate; Helm deploys workloads onto it; Liquibase owns DB schema. The three do not overlap.
   - Terraform state backend and plan/apply pipeline arrangement are HMCTS-side details to confirm — gaps.md G9.
 
 ### Identity bootstrap + verification

@@ -76,6 +76,8 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 .breadcrumb a{color:#0969da;text-decoration:none}
 .source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
 .source-note a{color:#57606a;text-decoration:underline}
+.living-doc-notice{background:#fff8c5;border:1px solid #d4a72c;border-left:4px solid #d4a72c;border-radius:6px;padding:12px 16px;margin:0 0 22px;font-size:14px;color:#4d3800;line-height:1.55}
+.living-doc-notice strong{color:#3d2e00}
 @media (max-width: 1200px){
   aside.toc{display:none}
   body.has-toc main.content{margin-right:0}
@@ -153,7 +155,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 │   ├── service/
 │   ├── repository/                              (integration tests, Testcontainers)
 │   └── client/
-├── terraform/                                   (this repo&#39;s Azure resources, per-env stacks dev/staging/production — AR53 colocated first-consumer rule; ram-reference-data additionally carries the shared estate: AKS, PostgreSQL, ACR, APIM, App Insights — it is the first service scaffolded under the integrations-first sequencing, decision #12 / SCP 2026-06-17; relocated from ram-authorisation)
+├── terraform/                                   (this repo&#39;s OWN Azure resources only, per-env stacks dev/staging/production — AR53 revised; the shared estate — AKS, PostgreSQL, ACR, APIM, App Insights, Key Vault — lives in the dedicated ram-shared-infrastructure repo, provisioned in Epic 0.0 per the HMCTS CNP {product}-shared-infrastructure standard)
 │   ├── dev/
 │   ├── staging/
 │   └── production/
@@ -374,6 +376,37 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li>It <strong>calls RAM Pathfinder APIs</strong> (Reference Data API, Authorisation API) — it does not write directly to RAM Pathfinder tables. Per the v1.6 decision, writes go via the API so validation, idempotency, and any audit-logging hooks fire.</li>
 <li>It is <strong>separate from Liquibase</strong>. Liquibase in RAM Pathfinder is for RAM Pathfinder's DDL (creating tables, adding columns, granting permissions). The ETL is for moving APEX data into RAM Pathfinder tables that Liquibase has already created.</li>
 </ul>
+</div></details><details class="section" id="complete-project-directory-structure--ram-shared-infrastructure-repo"><summary><span class="section-title">Complete Project Directory Structure — <code>ram-shared-infrastructure</code> repo</span></summary><div class="section-body">
+<pre><code>ram-shared-infrastructure/
+├── README.md                          (estate overview, provisioning runbook, contacts)
+├── terraform/
+│   ├── modules/
+│   │   ├── network/                   (resource group, VNet, subnets)
+│   │   ├── aks/                       (cluster + multi-AZ node pools)
+│   │   ├── postgres/                  (Flexible Server, zone-redundant HA, TLS-enforced)
+│   │   ├── keyvault/                  (vault + AKS workload-identity wiring)
+│   │   ├── acr/                       (container registry)
+│   │   ├── observability/             (App Insights + Log Analytics + retention)
+│   │   └── apim/                      (instance + base policies + smoke API)
+│   ├── dev/                           (stack: composes modules; remote state backend)
+│   ├── staging/
+│   └── production/                    (UK South; zone-redundant SKUs — A34)
+├── verification/                      (per-layer deploy-time smoke checks — Epic 0.0 ACs)
+│   ├── aks-nodes.sh                   (kubectl get nodes + hello pod schedules)
+│   ├── postgres-tls.sh                (TLS-only connect; plaintext refused; scratch DB)
+│   ├── keyvault-roundtrip.sh          (secret round-trips from a pod via workload identity)
+│   ├── acr-observability.sh           (image push/pull; test trace + log land in App Insights)
+│   └── apim-smoke.sh                  (gateway → echo 200; testssl.sh TLS floor)
+├── .github/
+│   ├── CODEOWNERS                     (platform/infra team)
+│   ├── PULL_REQUEST_TEMPLATE.md       (infra-change checklist)
+│   └── workflows/
+│       ├── ci.yml                     (terraform fmt + validate + plan on PR)
+│       └── apply-{env}.yml            (gated apply on merge; manual approval staging/prod)
+└── docs/
+    ├── README.md
+    └── decisions/                     (estate-level ADRs)</code></pre>
+<p><strong>Why the shared estate lives here, not in a service repo:</strong> product-level shared infrastructure gets its own dedicated <code>{product}-shared-infrastructure</code> repo per the HMCTS Cloud Native Platform standard (AR53 revised) — it is not colocated inside the first service scaffolded. The <code>verification/</code> scripts are the deploy-time acceptance tests from Epic 0.0: each Terraform layer is proven as it lands (AKS reachable, PostgreSQL TLS-only, Key Vault round-trips, ACR pull works, telemetry ingests, APIM routes over TLS) before any service depends on it. This repo has <strong>no <code>src/</code>, no Helm chart, no deployable workload</strong> — Terraform provisions the estate; services (via Helm) deploy onto it.</p>
 </div></details><details class="section" id="file-organisation-patterns"><summary><span class="section-title">File Organisation Patterns</span></summary><div class="section-body">
 <p><strong>Configuration files:</strong></p>
 <ul>
@@ -461,7 +494,7 @@ Manual approval (per region/wave)
 </div></details>
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture/repo-structure.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#complete-project-directory-structure--per-backend-service">Complete Project Directory Structure — per backend service</a></li><li><a href="#complete-project-directory-structure--ui-repos">Complete Project Directory Structure — UI repos</a></li><li class="h3"><a href="#ram-ui-business">ram-ui (business)</a></li><li class="h3"><a href="#ram-admin-ui-admin">ram-admin-ui (admin)</a></li><li><a href="#complete-project-directory-structure--ram-architecture-repo">Complete Project Directory Structure — ram-architecture repo</a></li><li><a href="#file-organisation-patterns">File Organisation Patterns</a></li><li><a href="#development-workflow-integration">Development Workflow Integration</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#complete-project-directory-structure--per-backend-service">Complete Project Directory Structure — per backend service</a></li><li><a href="#complete-project-directory-structure--ui-repos">Complete Project Directory Structure — UI repos</a></li><li class="h3"><a href="#ram-ui-business">ram-ui (business)</a></li><li class="h3"><a href="#ram-admin-ui-admin">ram-admin-ui (admin)</a></li><li><a href="#complete-project-directory-structure--ram-architecture-repo">Complete Project Directory Structure — ram-architecture repo</a></li><li><a href="#complete-project-directory-structure--ram-shared-infrastructure-repo">Complete Project Directory Structure — ram-shared-infrastructure repo</a></li><li><a href="#file-organisation-patterns">File Organisation Patterns</a></li><li><a href="#development-workflow-integration">Development Workflow Integration</a></li></ul></aside>
 <script>window.__NAV_BASE__="../../";window.__PAGE__="architecture/tobe/repo-structure";</script>
 <script src="../../nav.js"></script>
 <script>

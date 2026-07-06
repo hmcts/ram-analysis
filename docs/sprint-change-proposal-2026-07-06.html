@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprint Change Proposal — Shared infrastructure to a dedicated repo (CNP alignment) — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+.living-doc-notice{background:#fff8c5;border:1px solid #d4a72c;border-left:4px solid #d4a72c;border-radius:6px;padding:12px 16px;margin:0 0 22px;font-size:14px;color:#4d3800;line-height:1.55}
+.living-doc-notice strong{color:#3d2e00}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="sprint-change-proposal--shared-infrastructure-to-a-dedicated-repo-cnp-alignment">Sprint Change Proposal — Shared infrastructure to a dedicated repo (CNP alignment)</h1>
+<p><strong>Date:</strong> 2026-07-06 <strong>Project:</strong> ram-analysis (RAM Pathfinder) <strong>Change scope:</strong> Moderate (backlog reorganisation + architecture doc updates; no code to unwind) <strong>Mode:</strong> Incremental <strong>Decision:</strong> #13 · <strong>Architecture version:</strong> v3.8</p>
+<hr />
+<details class="section" id="1-issue-summary"><summary><span class="section-title">1. Issue Summary</span></summary><div class="section-body">
+<p><strong>Problem statement.</strong> The HMCTS Cloud Native Platform onboarding guidance for new components (<a href="https://hmcts.github.io/cloud-native-platform/new-component/github-repo.html"><code>new-component/github-repo.html</code></a>) states that <strong>product-level (shared) infrastructure must live in its own dedicated repository</strong>, named <code>{product}-shared-infrastructure</code> — for RAM Pathfinder, <code>ram-shared-infrastructure</code>.</p>
+<p>The current architecture does the opposite. Per <strong>AR53 (the "colocated first-consumer" rule, adopted v3.1 and re-affirmed by decision #12 / SCP 2026-06-17)</strong>, the shared Azure estate — <strong>AKS, PostgreSQL Flexible Server, ACR, APIM, Application Insights</strong> — is provisioned from Terraform <strong>inside <code>ram-reference-data/terraform/</code></strong>, because that is the first service scaffolded under the integrations-first sequencing. (It was itself relocated there from <code>ram-authorisation</code>.)</p>
+<p><strong>Discovery.</strong> Identified during a review of the CNP new-component standards on 2026-07-06, while orienting Phase 0 for sprint planning.</p>
+<p><strong>Why it matters now.</strong> Phase 0 is at the sprint-planning boundary. Deferring the change means either building the estate the non-standard way and re-homing it later, or blocking sprint planning. Neither is necessary: <strong>no implementation has started</strong> (<code>implementation-artifacts/</code> is empty), so this is a re-plan of not-yet-started stories, not a rollback of built work. This is the cheapest possible moment to absorb it.</p>
+<hr />
+</div></details><details class="section" id="2-impact-analysis"><summary><span class="section-title">2. Impact Analysis</span></summary><div class="section-body">
+<p><strong>Epic impact.</strong></p>
+<ul>
+<li><strong>New Epic 0.0</strong> — "Platform estate is provisioned, verifiable, and CNP-compliant" (5 stories). Sequenced first in Phase 0.</li>
+<li><strong>Epic 0.1</strong> — Story 0.1.1 shed its shared-estate provisioning responsibility; it now scaffolds <code>ram-reference-data</code> and <strong>deploys onto</strong> the Epic 0.0 estate. Still 4 stories.</li>
+<li><strong>Epics 0.2–0.5</strong> — dependency wording repointed from "the estate provisioned in <code>ram-reference-data</code>" to "the estate provisioned in Epic 0.0". No story-count change.</li>
+<li><strong>Phase 0 totals:</strong> 5 → <strong>6 epics</strong>, 14 → <strong>19 stories</strong>.</li>
+</ul>
+<p><strong>Story impact.</strong> No stories were completed, so none are re-opened. Story 0.1.1 is reduced in scope; five new stories (0.0.1–0.0.5) are added, each carrying a <strong>deploy-time acceptance test</strong> so infrastructure is verified as each Terraform layer lands (the sponsor's explicit requirement).</p>
+<p><strong>Artifact conflicts (all resolved in §4).</strong></p>
+<ul>
+<li><code>requirements-inventory.md</code> — <strong>AR53 inverted</strong>; incidental AR23/AR27 mentions repointed.</li>
+<li><code>architecture/repository-strategy.md</code> — repo list <strong>15 → 16</strong> (new <code>ram-shared-infrastructure</code> row); <code>ram-reference-data</code> row trimmed; strategy/decision lines updated.</li>
+<li><code>architecture/repo-structure.md</code> — per-service <code>terraform/</code> note reworded; <strong>new <code>ram-shared-infrastructure</code> directory structure</strong> added (incl. a <code>verification/</code> folder for the Epic 0.0 smoke checks).</li>
+<li><code>architecture/framework.md</code> — Platform scope line repointed.</li>
+<li><code>architecture.md</code> — <strong>new decision #13</strong> (supersedes the relocation part of #12).</li>
+<li><code>architecture/changelog.md</code> — <strong>new v3.8</strong> entry.</li>
+<li><code>epics/index.md</code>, <code>epics/phase-0/index.md</code> — epic table, story counts, sequencing narrative, per-epic summaries.</li>
+</ul>
+<p><strong>Technical impact.</strong></p>
+<ul>
+<li><strong>Repos:</strong> +1 (<code>ram-shared-infrastructure</code>, Terraform-only, no deployable workload). 16 total.</li>
+<li><strong>Code:</strong> none written yet — zero rework.</li>
+<li><strong>Sequencing:</strong> the <em>domain</em> deliverable ordering (0.1 → 0.5) is unchanged; a "platform estate stands up and is verified first" unit is inserted ahead of it (it was always an implicit prerequisite of old Story 0.1.1).</li>
+<li><strong>Cleaner separation:</strong> <code>ram-reference-data</code> is reduced to its domain, consistent with the polyrepo "minimise shared coupling" principle.</li>
+</ul>
+<p><strong>Secondary flag (not blocking).</strong> The CNP page also states <em>"Repository should be public."</em> This conflicts with the standing "new repos private" default; HMCTS gov-guidance governs the org here. Flagged for a conscious decision at repo-creation time — recorded, not resolved by this SCP.</p>
+<hr />
+</div></details><details class="section" id="3-recommended-approach"><summary><span class="section-title">3. Recommended Approach</span></summary><div class="section-body">
+<p><strong>Chosen path: Direct Adjustment</strong> — add/modify stories and epics within the existing plan; no rollback, no MVP-scope reduction.</p>
+<p><strong>Rationale.</strong> The change is a repo-topology and doc-wording correction plus one new foundational epic. Because nothing is built, Direct Adjustment carries no rework cost. Structuring the estate as its own independently-verified epic (a) satisfies the CNP standard, (b) makes the platform testable in isolation before a service depends on it, and (c) tightens <code>ram-reference-data</code>'s responsibilities.</p>
+<ul>
+<li><strong>Effort estimate:</strong> ~1 day of planning/doc edits (this SCP, applied). The engineering effort was always required — it is re-homed and made explicit as Epic 0.0, not net-new.</li>
+<li><strong>Risk:</strong> Low. No built work touched; the change reduces coupling. Residual risk is the public-vs-private repo policy decision (§2 secondary flag) and the standing G9 Terraform-state/pipeline confirmation.</li>
+<li><strong>Timeline impact:</strong> Neutral-to-positive — the estate work moves earlier and becomes independently testable, de-risking every downstream Phase 0 epic.</li>
+</ul>
+<hr />
+</div></details><details class="section" id="4-detailed-change-proposals"><summary><span class="section-title">4. Detailed Change Proposals</span></summary><div class="section-body">
+<p>All seven edit groups below were reviewed and <strong>approved incrementally</strong>, and have been <strong>applied</strong> to the planning artifacts.</p>
+<p><strong>Stories / Epics</strong></p>
+<ol type="1">
+<li><strong>NEW <code>epics/phase-0/epic-0.0-platform-estate-provisioned.md</code></strong> — 5 stories, each a Terraform layer + deploy-time acceptance test:
+<ul>
+<li>0.0.1 Repo + Terraform foundation (state backend, per-env stacks, plan/apply CI) — verify: <code>validate</code> passes, clean <code>plan</code>, no-op <code>apply</code> writes state.</li>
+<li>0.0.2 Network + AKS — verify: <code>kubectl get nodes</code> Ready across AZs; hello pod schedules.</li>
+<li>0.0.3 PostgreSQL + Key Vault — verify: TLS-only connect (plaintext refused, NFR10); scratch DB; Key Vault secret round-trip (NFR16).</li>
+<li>0.0.4 ACR + observability — verify: image push/pull; test trace + log land in App Insights (NFR25–28).</li>
+<li>0.0.5 APIM + smoke API — verify: gateway → echo 200 over TLS; sub-floor TLS refused (<code>testssl.sh</code>); unauth call rejected.</li>
+</ul></li>
+<li><strong><code>epic-0.1</code> Story 0.1.1</strong> — retitled "(onto the Epic 0.0 estate)"; provisioning ACs removed; consume-the-estate ACs added; header/vertical-slice/references updated.</li>
+</ol>
+<p><strong>Architecture</strong> 3. <strong>AR53 inverted</strong> (<code>requirements-inventory.md</code>) — shared estate in dedicated <code>ram-shared-infrastructure</code>; per-service repos keep own resources only. AR23/AR27 and <code>framework.md</code> repointed. 4. <strong><code>repository-strategy.md</code></strong> — new <code>ram-shared-infrastructure</code> row; <code>ram-reference-data</code> row trimmed; total 15 → 16; decision/strategy lines updated. 5. <strong><code>repo-structure.md</code></strong> — per-service <code>terraform/</code> note reworded; new <code>ram-shared-infrastructure</code> tree (Terraform modules + <code>verification/</code> smoke checks) + rationale. 6. <strong><code>epics/phase-0/index.md</code> + <code>epics/index.md</code></strong> — sequencing blockquote, scope-model bullet, epics table (+0.0), summaries, stories-summary table, totals (6 epics / 19 stories); Epics 0.2 dependency repointed. 7. <strong>Audit trail</strong> — new <strong>decision #13</strong> in <code>architecture.md</code> (supersedes #12's relocation); new <strong>changelog v3.8</strong>.</p>
+<hr />
+</div></details><details class="section" id="5-implementation-handoff"><summary><span class="section-title">5. Implementation Handoff</span></summary><div class="section-body">
+<p><strong>Change scope classification: Moderate</strong> — backlog reorganisation across epics + architecture doc updates; no code to reorganise (implementation not started).</p>
+<p><strong>Routing:</strong></p>
+<ul>
+<li><strong>Product Owner / Dev</strong> — Epic 0.0 enters sprint planning as the <strong>first</strong> Phase 0 unit; Story 0.1.1 re-estimated to its reduced (scaffold-and-deploy) scope.</li>
+<li><strong>Platform/Infra</strong> — own <code>ram-shared-infrastructure</code>: create the repo (CNP naming, manual GitHub web-UI setup per the runbook; <strong>decide public-vs-private per §2</strong>), stand up the Terraform foundation, and confirm the G9 state-backend/pipeline pattern before the first <code>apply</code>.</li>
+</ul>
+<p><strong>Success criteria.</strong></p>
+<ul>
+<li><code>ram-shared-infrastructure</code> exists and provisions the dev estate via Terraform.</li>
+<li>Each Epic 0.0 story passes its deploy-time acceptance test (nodes Ready, Postgres TLS-only, Key Vault round-trip, ACR pull, APIM smoke 200).</li>
+<li><code>ram-reference-data</code> (Story 0.1.1) deploys onto the verified estate with no colocated shared-estate Terraform.</li>
+<li>Architecture pack self-consistent at v3.8; Phase 0 shows 6 epics / 19 stories throughout.</li>
+</ul>
+<p><strong>Deliverables produced:</strong> this Sprint Change Proposal; the seven applied edit groups (§4); the new Epic 0.0 file.</p>
+<hr />
+<blockquote>
+<p><strong>Next step:</strong> re-run <code>bmad-check-implementation-readiness</code> against the updated Phase 0 (it understands the sharded shape), then proceed to <code>bmad-sprint-planning</code> with Epic 0.0 sequenced first.</p>
+</blockquote>
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-06.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#1-issue-summary">1. Issue Summary</a></li><li><a href="#2-impact-analysis">2. Impact Analysis</a></li><li><a href="#3-recommended-approach">3. Recommended Approach</a></li><li><a href="#4-detailed-change-proposals">4. Detailed Change Proposals</a></li><li><a href="#5-implementation-handoff">5. Implementation Handoff</a></li></ul></aside>
+<script>window.__NAV_BASE__="./";window.__PAGE__="sprint-change-proposal-2026-07-06";</script>
+<script src="./nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

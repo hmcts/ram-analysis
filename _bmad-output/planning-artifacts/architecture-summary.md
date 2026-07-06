@@ -154,7 +154,7 @@ Details:
 
 ## Deployment topology
 
-- **Infrastructure provisioning** — **Terraform** (HMCTS standard), colocated with the first repo that needs each resource: shared estate (AKS, PostgreSQL, ACR, APIM, App Insights) in `ram-authorisation`'s `terraform/`; per-service resources (Key Vault namespaces, MRD blob storage, Static Web App) in their own repos. Terraform provisions; Helm deploys; Liquibase owns schema.
+- **Infrastructure provisioning** — **Terraform** (HMCTS standard). Product-level shared estate (AKS, PostgreSQL, ACR, APIM, App Insights, Key Vault) lives in the dedicated **`ram-shared-infrastructure`** repo (HMCTS CNP standard; decision #13), provisioned + independently verified in Epic 0.0; per-service resources (Key Vault namespaces, MRD blob storage, Static Web App) in their own repos. Terraform provisions; Helm deploys; Liquibase owns schema.
 - **Production region** — Azure UK South.
 - **HA** — multi-AZ within UK South for every component:
   - AKS node pools span all three UK South AZs with pod anti-affinity (zone topology spread).

@@ -76,6 +76,8 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 .breadcrumb a{color:#0969da;text-decoration:none}
 .source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
 .source-note a{color:#57606a;text-decoration:underline}
+.living-doc-notice{background:#fff8c5;border:1px solid #d4a72c;border-left:4px solid #d4a72c;border-radius:6px;padding:12px 16px;margin:0 0 22px;font-size:14px;color:#4d3800;line-height:1.55}
+.living-doc-notice strong{color:#3d2e00}
 @media (max-width: 1200px){
   aside.toc{display:none}
   body.has-toc main.content{margin-right:0}
@@ -234,7 +236,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td><strong>G3.6</strong> <em>(open; consolidated v2.8, 2026-05-08)</em></td>
-<td><strong>Disaster recovery (DR) — open gap.</strong> MVP runs in a single Azure region (UK South) with multi-AZ HA. All DR design and scope is held here; no DR detail is asserted elsewhere. Decision points: (a) <strong>DR in MVP scope?</strong> Programme decision; default post-MVP (programme accepts full-region-UK-South-unavailability risk for MVP and pilot waves). (b) <strong>Target region</strong> — UK West is the natural candidate (data-residency-compliant per NFR31); not committed. (c) <strong>Standby model</strong> — cold-standby (manual failover) vs warm-standby vs active/active. Working assumption: cold-standby. Active/active is incompatible with the shared global PostgreSQL without multi-master replication (premature per Principle 2). (d) <strong>PostgreSQL geo-redundant backup</strong> with the chosen DR region as restore target. (e) <strong>DR-region stack defined in Terraform</strong> (held in source control alongside the production stacks per the colocated first-consumer rule) + AKS Helm definitions for the DR region; cluster not pre-provisioned until activation. (f) <strong>DNS failover</strong> (Azure Front Door / Traffic Manager) and runbook. (g) <strong>RTO/RPO targets</strong> agreed with HMCTS.</td>
+<td><strong>Disaster recovery (DR) — open gap.</strong> MVP runs in a single Azure region (UK South) with multi-AZ HA. All DR design and scope is held here; no DR detail is asserted elsewhere. Decision points: (a) <strong>DR in MVP scope?</strong> Programme decision; default post-MVP (programme accepts full-region-UK-South-unavailability risk for MVP and pilot waves). (b) <strong>Target region</strong> — UK West is the natural candidate (data-residency-compliant per NFR31); not committed. (c) <strong>Standby model</strong> — cold-standby (manual failover) vs warm-standby vs active/active. Working assumption: cold-standby. Active/active is incompatible with the shared global PostgreSQL without multi-master replication (premature per Principle 2). (d) <strong>PostgreSQL geo-redundant backup</strong> with the chosen DR region as restore target. (e) <strong>DR-region stack defined in Terraform</strong> (held in <code>ram-shared-infrastructure</code> alongside the production stacks, per decision #13) + AKS Helm definitions for the DR region; cluster not pre-provisioned until activation. (f) <strong>DNS failover</strong> (Azure Front Door / Traffic Manager) and runbook. (g) <strong>RTO/RPO targets</strong> agreed with HMCTS.</td>
 <td>Programme (in/out of MVP) + RAM Pathfinder architecture team (design once in scope). Pre-broad-GA at the latest.</td>
 </tr>
 </tbody>
@@ -416,8 +418,8 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tbody>
 <tr>
 <td><strong>G9.1</strong></td>
-<td><strong>Terraform state backend + plan/apply pipeline arrangement unconfirmed.</strong> The 2026-06-11 decision mandates Terraform for all Azure provisioning, colocated with the first repo that needs each resource (shared estate in <code>ram-authorisation</code>; per-service resources per repo). To confirm with HMCTS: the state backend (Azure Storage backend per HMCTS convention vs Terraform Cloud), state isolation per environment stack, who runs plan/apply (GitHub Actions workflow per repo vs platform team), and approval gating for production applies. Cross-repo references (e.g. a service's Key Vault referencing the shared estate's AKS identity) need remote-state or data-source conventions agreed.</td>
-<td>Phase 0 prerequisite — confirm HMCTS Terraform conventions before the Story 0.1.1 estate apply; record the pattern in <code>ram-architecture/runbooks/terraform.md</code>.</td>
+<td><strong>Terraform state backend + plan/apply pipeline arrangement unconfirmed.</strong> The 2026-06-11 decision mandates Terraform for all Azure provisioning; per decision #13 (2026-07-06) the shared estate lives in the dedicated <code>ram-shared-infrastructure</code> repo (per-service resources per repo). To confirm with HMCTS: the state backend (Azure Storage backend per HMCTS convention vs Terraform Cloud), state isolation per environment stack, who runs plan/apply (GitHub Actions workflow per repo vs platform team), and approval gating for production applies. Cross-repo references (e.g. a service's Key Vault referencing the shared estate's AKS identity) need remote-state or data-source conventions agreed.</td>
+<td>Phase 0 prerequisite — confirm HMCTS Terraform conventions before the Epic 0.0 estate apply; record the pattern in <code>ram-architecture/runbooks/terraform.md</code>.</td>
 </tr>
 </tbody>
 </table>

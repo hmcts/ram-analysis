@@ -72,7 +72,7 @@ So that **the authorisation service follows the same consistent, version-pinned,
 **And** structured JSON logs via Logstash Logback Encoder 9.0 appear on stdout (per AR30, NFR25),
 **And** logs include a `correlationId` populated by `CorrelationIdFilter` for each request (per AR32).
 
-**Given** the shared Azure estate (AKS, encrypted-at-rest PostgreSQL Flexible Server, ACR, APIM, Application Insights / Log Analytics) was provisioned by `ram-reference-data`'s `terraform/` in Epic 0.1 (Story 0.1.1, AR53 first-consumer rule),
+**Given** the shared Azure estate (AKS, encrypted-at-rest PostgreSQL Flexible Server, ACR, APIM, Application Insights / Log Analytics, Key Vault) was provisioned and independently verified in `ram-shared-infrastructure` in **Epic 0.0** (AR53 revised),
 **When** `ram-authorisation` deploys,
 **Then** it **consumes** the shared cluster, database, registry, gateway, and observability workspace without re-provisioning them,
 **And** `ram-authorisation`'s `terraform/` contains only its own resources (Key Vault namespace, APIM per-API policy),

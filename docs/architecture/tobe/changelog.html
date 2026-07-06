@@ -76,6 +76,8 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 .breadcrumb a{color:#0969da;text-decoration:none}
 .source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
 .source-note a{color:#57606a;text-decoration:underline}
+.living-doc-notice{background:#fff8c5;border:1px solid #d4a72c;border-left:4px solid #d4a72c;border-radius:6px;padding:12px 16px;margin:0 0 22px;font-size:14px;color:#4d3800;line-height:1.55}
+.living-doc-notice strong{color:#3d2e00}
 @media (max-width: 1200px){
   aside.toc{display:none}
   body.has-toc main.content{margin-right:0}
@@ -153,6 +155,12 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><strong>v3.8 — shared infrastructure to dedicated <code>ram-shared-infrastructure</code> repo (CNP)</strong></td>
+<td>2026-07-06</td>
+<td>Aligns with the HMCTS Cloud Native Platform <code>{product}-shared-infrastructure</code> standard. The shared Azure estate (AKS, PostgreSQL, ACR, APIM, App Insights, Key Vault) moves <strong>out of <code>ram-reference-data</code></strong> into a new dedicated <strong><code>ram-shared-infrastructure</code></strong> repo (16 repos total); provisioned + <strong>independently verified</strong> in the new <strong>Epic 0.0</strong> (5 stories, each a Terraform layer with a deploy-time acceptance test). <strong>AR53 inverted</strong> (dedicated repo — supersedes the "colocated first-consumer" rule of v3.1/#12). Story 0.1.1 reduced to scaffold-and-deploy-onto-estate. Phase 0: 5 → 6 epics, 14 → 19 stories. Decision #13. <strong>No code impact</strong> — implementation not started.</td>
+<td><a href="../../architecture.html"><code>../architecture.md</code> decision #13</a>; <a href="repository-strategy.html"><code>./repository-strategy.md</code> repo list 15 → 16</a>; <a href="repo-structure.html"><code>./repo-structure.md</code> per-service terraform note + new shared-infra tree</a>; <a href="../../epics/requirements-inventory.html"><code>../epics/requirements-inventory.md</code> AR53 + AR23/AR27</a>; <a href="../../epics/framework.html"><code>../epics/framework.md</code></a>; epics <a href="../../epics/index.html"><code>index.md</code></a>, <a href="../../epics/phase-0/index.html"><code>phase-0/index.md</code></a>, new <a href="../../epics/phase-0/epic-0.0-platform-estate-provisioned.html"><code>epic-0.0-platform-estate-provisioned.md</code></a>, <a href="../../epics/phase-0/epic-0.1-upstream-reference-data-ingested.html"><code>epic-0.1</code> Story 0.1.1</a>; <a href="../../sprint-change-proposal-2026-07-06.html">SCP</a></td>
+</tr>
 <tr>
 <td><strong>v3.7 — SSCS wave 1 replaces ListAssist, not GAPS (GAPS retained)</strong></td>
 <td>2026-06-18</td>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Business Case — RAM Pathfinder — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+.living-doc-notice{background:#fff8c5;border:1px solid #d4a72c;border-left:4px solid #d4a72c;border-radius:6px;padding:12px 16px;margin:0 0 22px;font-size:14px;color:#4d3800;line-height:1.55}
+.living-doc-notice strong{color:#3d2e00}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="business-case--ram-pathfinder">Business Case — RAM Pathfinder</h1>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Author</strong></td>
+<td>Ramnish</td>
+</tr>
+<tr>
+<td><strong>Date</strong></td>
+<td>2026-06-24</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Draft for review</td>
+</tr>
+<tr>
+<td><strong>Decision sought</strong></td>
+<td>Approval to fund and proceed with the RAM Pathfinder MVP, delivering the SSCS Tribunals jurisdiction as wave 1.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>All financial figures, dates, headcounts and named milestones marked <code>[PLACEHOLDER]</code> require confirmation before this case is submitted for approval.</p>
+</blockquote>
+<hr />
+<details class="section" id="1-executive-summary"><summary><span class="section-title">1. Executive Summary</span></summary><div class="section-body">
+<p>RAM Pathfinder is a greenfield, API-driven platform for judicial scheduling across HMCTS Tribunals and Courts — the planning, allocation, confirmation and payment of sittings for Judicial Office Holders (JOHs). This case seeks approval to fund the <strong>MVP</strong>, rolled out <strong>jurisdiction by jurisdiction</strong>, starting with the <strong>SSCS Tribunals jurisdiction in wave 1</strong>.</p>
+<p>Two problems drive the investment:</p>
+<ol type="1">
+<li><strong>Aged and unsupported incumbents.</strong> In Courts, the JI application runs on <strong>Oracle APEX (OPT)</strong>, which is unsupported with a fixed end-of-life <code>Dec 2028</code>. In Tribunals, SSCS judicial scheduling runs on a combination of <strong>ListAssist</strong> (used by Cardiff only) and other legacy systems (used by other SSCS jurisdictions), which RAM Pathfinder replaces in wave 1.</li>
+<li><strong>An export-only integration model</strong> (Excel, PDF, email) that cannot serve the upcoming HMCTS programmes (Actuals, Scheduling &amp; Listing reform, DA&amp;I MI consumption).</li>
+</ol>
+<p>The recommended option is to build RAM Pathfinder as a modern, accessible, API-first platform on the HMCTS-approved cloud stack (Azure, Java/Spring Boot, Kubernetes), and to <strong>prove it on SSCS first</strong> before committing to the wider Courts rollout. SSCS is a contained, lower-risk wave that exercises the full platform end-to-end and de-risks every subsequent wave.</p>
+<p><strong>Investment sought:</strong> <code>[PLACEHOLDER: total MVP cost / wave 1 funding envelope]</code>. <strong>Indicative benefit:</strong> retirement of ListAssist for SSCS scheduling, a reusable API platform for all judicial jurisdictions, and a path to decommissioning the unsupported APEX estate in later waves — quantified benefits at <code>[PLACEHOLDER]</code>.</p>
+<hr />
+</div></details><details class="section" id="2-strategic-context"><summary><span class="section-title">2. Strategic Context</span></summary><div class="section-body">
+<p>RAM Pathfinder aligns with HMCTS's strategic direction on several fronts:</p>
+<ul>
+<li><strong>Reform and digital service standards.</strong> A modern, WCAG 2.2 AA, GDS-aligned service replaces two dated legacy user interfaces.</li>
+<li><strong>Platform over point solutions.</strong> One API driven platform serves both Tribunals and Courts. Capability is built once and reused per jurisdiction, rather than rebuilt per system.</li>
+<li><strong>API-as-Product.</strong> Versioned, documented, deprecation-governed APIs let downstream HMCTS programmes integrate directly, replacing brittle file exports.</li>
+<li><strong>Risk reduction.</strong> The unsupported APEX platform is a standing operational and security risk; this programme provides the only credible replacement path.</li>
+</ul>
+<p><strong>Why now:</strong> APEX is unsupported with its own end-of-life; every month on the legacy systems delays the API integration the wider HMCTS ecosystem depends on. SSCS is ready as a first wave and provides a low-risk proving ground.</p>
+<hr />
+</div></details><details class="section" id="3-the-problem"><summary><span class="section-title">3. The Problem</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Problem</th>
+<th>Impact if not addressed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>JI runs on <strong>unsupported Oracle APEX</strong> with a fixed end-of-life</td>
+<td>Operational, security and continuity risk to Courts judicial scheduling; no vendor support</td>
+</tr>
+<tr>
+<td>2</td>
+<td>SSCS scheduling depends on <strong>ListAssist</strong>, a separate aged tool</td>
+<td>Fragmented tooling; no shared platform or modern UX for Tribunals</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Export-only integration</strong> (Excel/PDF/email)</td>
+<td>Cannot support Actuals, Scheduling &amp; Listing reform, or DA&amp;I MI; manual, error-prone, non-scalable</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Dated, less-accessible legacy UIs</strong></td>
+<td>Accessibility and usability below modern public-sector standards; re-training burden</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></details><details class="section" id="4-options-considered"><summary><span class="section-title">4. Options Considered</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A — Do nothing</strong></td>
+<td>Keep APEX and ListAssist as-is</td>
+<td><strong>Rejected.</strong> APEX is unsupported; continuity and security risk grows; integration debt compounds. Not viable past APEX EOL.</td>
+</tr>
+<tr>
+<td><strong>B — Do minimum</strong></td>
+<td>Lift-and-shift / extend the existing systems</td>
+<td><strong>Rejected.</strong> Neither incumbent supports incremental decomposition (no strangler path); does not deliver the API platform or modern UX; spends money without removing the core risk.</td>
+</tr>
+<tr>
+<td><strong>C — Greenfield platform, phased per jurisdiction (Recommended)</strong></td>
+<td>Build RAM Pathfinder end-to-end; prove on SSCS wave 1; roll out to Courts regions in later waves</td>
+<td><strong>Recommended.</strong> Removes the legacy risk, delivers the strategic API platform, and contains delivery risk through phased, wave-by-wave cutover.</td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="why-greenfield-not-strangler-neither-listassist-nor-apex-supports-strangler-decomposition-ram-pathfinder-is-built-end-to-end-before-any-user-moves-each-jurisdictions-legacy-system-runs-unchanged-for-non-migrated-users-during-phased-rollout-no-dual-write-no-synchronisation-layer--a-simpler-lower-risk-delivery-model"><summary><span class="section-title"><strong>Why greenfield, not strangler:</strong> neither ListAssist nor APEX supports strangler decomposition. RAM Pathfinder is built end-to-end before any user moves; each jurisdiction's legacy system runs unchanged for non-migrated users during phased rollout. No dual-write, no synchronisation layer — a simpler, lower-risk delivery model.</span></summary><div class="section-body">
+</div></details><details class="section" id="5-recommended-option-c--scope"><summary><span class="section-title">5. Recommended Option (C) — Scope</span></summary><div class="section-body">
+<p><strong>This investment decision covers the MVP, delivered as SSCS wave 1.</strong></p>
+<p>In scope for the MVP:</p>
+<ul>
+<li>All services built end-to-end (Reference Data, Authorisation, Notification, JOH, Absence, Vacancy, Booking, Sitting, Payment, Itinerary, MI Feed).</li>
+<li>Reference data sourced live from the <strong>JOH eLinks API + MRD feed</strong> — no legacy data migration, no ETL.</li>
+<li>SSO authentication (HMCTS IdP) with RAM-owned authorisation; two user populations (JOHs and admin staff).</li>
+<li>Modern, accessible business-user UI replicating the SSCS incumbent's functional surface.</li>
+<li><strong>SSCS Tribunals jurisdiction cutover (wave 1)</strong>, with behavioural parity verified by manual UAT performed by ListAssist-experienced users.</li>
+<li>API-as-Product standards from Phase 0; JFEPS-compatible payment export preserved unchanged.</li>
+</ul>
+<p>Deferred (post-MVP roadmap, <strong>not in this case</strong>): admin UI and admin-write APIs; structured user-action audit; full metrics/traces observability; event streams/webhooks; active matching/allocation (an external-system concern); historical-data access policy.</p>
+<p><strong>Strategic horizon (subsequent business cases / waves):</strong> Courts jurisdictions (Civil, Family, Crown, Crime) migrate region by region in waves 2+, retiring APEX; external HMCTS programmes onboard onto RAM Pathfinder's APIs.</p>
+<hr />
+</div></details><details class="section" id="6-expected-benefits"><summary><span class="section-title">6. Expected Benefits</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Benefit</th>
+<th>Type</th>
+<th>Measure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ListAssist replaced for Tribunals/SSCS judicial scheduling</td>
+<td>Operational</td>
+<td>SSCS jurisdiction live on RAM Pathfinder; ListAssist retired for scheduling</td>
+</tr>
+<tr>
+<td>Reusable API platform for judicial scheduling</td>
+<td>Strategic</td>
+<td>Same core services serve later Courts waves with no re-architecture</td>
+</tr>
+<tr>
+<td>Path to retiring unsupported APEX</td>
+<td>Risk reduction</td>
+<td>APEX decommissioned progressively as Courts regions migrate (waves 2+)</td>
+</tr>
+<tr>
+<td>Modern, accessible, performant UX</td>
+<td>Quality / compliance</td>
+<td>WCAG 2.2 AA; page-level performance meets or beats incumbent baselines</td>
+</tr>
+<tr>
+<td>Direct API integration for downstream programmes</td>
+<td>Strategic / efficiency</td>
+<td>At least one HMCTS programme (Actuals / Scheduling &amp; Listing) integrating via API <code>[PLACEHOLDER: target date]</code>, replacing exports</td>
+</tr>
+<tr>
+<td>Payment continuity at cutover</td>
+<td>Operational</td>
+<td>Zero failed JFEPS payment cycles attributable to cutover</td>
+</tr>
+<tr>
+<td>Quantified cost / efficiency savings</td>
+<td>Financial</td>
+<td><code>Reduced licence/support costs, manual-effort savings, avoided APEX risk cost</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></details><details class="section" id="7-costs--funding"><summary><span class="section-title">7. Costs &amp; Funding</span></summary><div class="section-body">
+<blockquote>
+<p>Figures to be confirmed with programme finance. All values below are placeholders.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Cost category</th>
+<th>Wave 1 / MVP</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Build / delivery (team)</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td><code>[PLACEHOLDER: team size, blended day rate, duration]</code></td>
+</tr>
+<tr>
+<td>Cloud / infrastructure (Azure)</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td>AKS, Key Vault, database, App Insights; UK South region</td>
+</tr>
+<tr>
+<td>Licences / tooling</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td></td>
+</tr>
+<tr>
+<td>UAT, accessibility &amp; security assurance</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Contingency</td>
+<td><code>[PLACEHOLDER: % of total]</code></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Total MVP (wave 1)</strong></td>
+<td><strong><code>[PLACEHOLDER]</code></strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Indicative whole-programme (waves 2+)</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td>For context only; funded under subsequent cases</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Funding source:</strong> <code>[PLACEHOLDER: programme budget line / sponsor]</code>. <strong>Commercial route:</strong> delivered by ScrumConnect as delivery partner under <code>[PLACEHOLDER: framework / contract vehicle]</code>.</p>
+<hr />
+</div></details><details class="section" id="8-delivery-approach--timeline"><summary><span class="section-title">8. Delivery Approach &amp; Timeline</span></summary><div class="section-body">
+<p>Delivery follows a phased build (Phase 0 foundations → Phases 1–8 domain services) then a per-jurisdiction cutover (Phase 9 — SSCS wave 1). Phase 0 doubles as a <strong>platform smoke-test</strong>, exercising the API, deployment and authorisation foundations before any domain service is built.</p>
+<table>
+<thead>
+<tr>
+<th>Milestone</th>
+<th>Target</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phase 0 — Foundations (ingestion-first; reference data, auth, notification, CI/CD)</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td>Planned — implementation-ready (readiness assessed 2026-06-17)</td>
+</tr>
+<tr>
+<td>Phases 1–8 — Domain services build</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>Phase 9 — SSCS wave 1 cutover</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td>Planned</td>
+</tr>
+<tr>
+<td>Waves 2+ — Courts regions / APEX retirement</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td>Future cases</td>
+</tr>
+</tbody>
+</table>
+<p>The Phase 0 implementation-readiness assessment (2026-06-17) returned <strong>READY for sprint planning</strong> with no critical issues, indicating the MVP is well-defined and de-risked at the requirements and architecture level.</p>
+<hr />
+</div></details><details class="section" id="9-key-risks--mitigations"><summary><span class="section-title">9. Key Risks &amp; Mitigations</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Risk</th>
+<th>Likelihood / Impact</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>JOH eLinks API contract unconfirmed</td>
+<td>Med / High</td>
+<td>Build against a WireMock stub now; contract gates production cutover only. Tracked as the #1 external dependency.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cross-region operations during partial Courts rollout</td>
+<td>Med / Med</td>
+<td>Documented manual coordination for the rollout window; resolves as regions migrate (waves 2+, not wave 1).</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Federated read-model performance (Itinerary, Forward Look)</td>
+<td>Med / Med</td>
+<td>Strategy A federation at MVP; Strategy C cache fallback designed as contingency.</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Behavioural-parity gaps vs incumbent</td>
+<td>Med / Med</td>
+<td>Manual UAT by incumbent-experienced users; sign-off is the wave gate.</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Historical-data access at cutover</td>
+<td>Low / Med</td>
+<td>History remains in the incumbent (ListAssist/APEX); access policy is a separate, deferred decision.</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Funding / resourcing certainty</td>
+<td><code>[PLACEHOLDER]</code></td>
+<td><code>[PLACEHOLDER]</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div></details><details class="section" id="10-assumptions--dependencies"><summary><span class="section-title">10. Assumptions &amp; Dependencies</span></summary><div class="section-body">
+<ul>
+<li>Judiciary/HMCTS IdP (SSO) available for authentication; password/session/account lifecycle owned centrally, external to RAM Pathfinder.</li>
+<li>JOH eLinks API and MRD weekly feed available as the reference-data sources (no legacy migration).</li>
+<li>JFEPS / Liberata payment process unchanged; RAM generates the JFEPS-shaped Excel only.</li>
+<li>RAM Pathfinder serves the Tribunals/SSCS case-management system via APIs (RAM manages availability/scheduling, not case/hearing management/listing cases).</li>
+<li>HMCTS-approved technology stack confirmed (Azure UK South, Java 25 / Spring Boot 4, Kubernetes).</li>
+<li>Tribunals/SSCS as the chosen wave-1 jurisdiction.</li>
+<li><code>[PLACEHOLDER: any procurement / commercial / security-accreditation dependencies]</code>.</li>
+</ul>
+<hr />
+</div></details><details class="section" id="11-recommendation"><summary><span class="section-title">11. Recommendation</span></summary><div class="section-body">
+<p>Proceed with <strong>Option C</strong> and fund the <strong>RAM Pathfinder MVP delivered as Tribunals/SSCS wave 1</strong>. It is the only option that removes the unsupported-APEX risk over time, delivers the strategic API platform HMCTS programmes need, and contains delivery risk by proving the platform on a single, lower-risk jurisdiction before the wider Courts rollout.</p>
+<p><strong>Decision requested from the Programme Board:</strong></p>
+<ol type="1">
+<li>Approve the MVP / SSCS wave-1 funding envelope of <code>[PLACEHOLDER]</code>.</li>
+<li>Confirm the funding source and commercial route.</li>
+<li>Endorse the phased, per-jurisdiction rollout strategy, with Courts waves 2+ funded under subsequent business cases.</li>
+</ol>
+<hr />
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/business-case.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#1-executive-summary">1. Executive Summary</a></li><li><a href="#2-strategic-context">2. Strategic Context</a></li><li><a href="#3-the-problem">3. The Problem</a></li><li><a href="#4-options-considered">4. Options Considered</a></li><li><a href="#why-greenfield-not-strangler-neither-listassist-nor-apex-supports-strangler-decomposition-ram-pathfinder-is-built-end-to-end-before-any-user-moves-each-jurisdictions-legacy-system-runs-unchanged-for-non-migrated-users-during-phased-rollout-no-dual-write-no-synchronisation-layer--a-simpler-lower-risk-delivery-model">Why greenfield, not strangler: neither ListAssist nor APEX supports strangler decomposition. RAM Pathfinder is built end-to-end before any user moves; each jurisdiction's legacy system runs unchanged for non-migrated users during phased rollout. No dual-write, no synchronisation layer — a simpler, lower-risk delivery model.</a></li><li><a href="#5-recommended-option-c--scope">5. Recommended Option (C) — Scope</a></li><li><a href="#6-expected-benefits">6. Expected Benefits</a></li><li><a href="#7-costs--funding">7. Costs &amp; Funding</a></li><li><a href="#8-delivery-approach--timeline">8. Delivery Approach &amp; Timeline</a></li><li><a href="#9-key-risks--mitigations">9. Key Risks &amp; Mitigations</a></li><li><a href="#10-assumptions--dependencies">10. Assumptions &amp; Dependencies</a></li><li><a href="#11-recommendation">11. Recommendation</a></li></ul></aside>
+<script>window.__NAV_BASE__="./";window.__PAGE__="business-case";</script>
+<script src="./nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

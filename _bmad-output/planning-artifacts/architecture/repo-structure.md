@@ -79,7 +79,7 @@ ram-{service}/
 │   ├── service/
 │   ├── repository/                              (integration tests, Testcontainers)
 │   └── client/
-├── terraform/                                   (this repo's Azure resources, per-env stacks dev/staging/production — AR53 colocated first-consumer rule; ram-reference-data additionally carries the shared estate: AKS, PostgreSQL, ACR, APIM, App Insights — it is the first service scaffolded under the integrations-first sequencing, decision #12 / SCP 2026-06-17; relocated from ram-authorisation)
+├── terraform/                                   (this repo's OWN Azure resources only, per-env stacks dev/staging/production — AR53 revised; the shared estate — AKS, PostgreSQL, ACR, APIM, App Insights, Key Vault — lives in the dedicated ram-shared-infrastructure repo, provisioned in Epic 0.0 per the HMCTS CNP {product}-shared-infrastructure standard)
 │   ├── dev/
 │   ├── staging/
 │   └── production/
@@ -317,6 +317,42 @@ ram-architecture/
 - It is **owned by the architecture team** (and the named Phase 0 owners per Risk #13), not by any single domain service. Living under `ram-architecture/` keeps that ownership visible.
 - It **calls RAM Pathfinder APIs** (Reference Data API, Authorisation API) — it does not write directly to RAM Pathfinder tables. Per the v1.6 decision, writes go via the API so validation, idempotency, and any audit-logging hooks fire.
 - It is **separate from Liquibase**. Liquibase in RAM Pathfinder is for RAM Pathfinder's DDL (creating tables, adding columns, granting permissions). The ETL is for moving APEX data into RAM Pathfinder tables that Liquibase has already created.
+
+## Complete Project Directory Structure — `ram-shared-infrastructure` repo
+
+```
+ram-shared-infrastructure/
+├── README.md                          (estate overview, provisioning runbook, contacts)
+├── terraform/
+│   ├── modules/
+│   │   ├── network/                   (resource group, VNet, subnets)
+│   │   ├── aks/                       (cluster + multi-AZ node pools)
+│   │   ├── postgres/                  (Flexible Server, zone-redundant HA, TLS-enforced)
+│   │   ├── keyvault/                  (vault + AKS workload-identity wiring)
+│   │   ├── acr/                       (container registry)
+│   │   ├── observability/             (App Insights + Log Analytics + retention)
+│   │   └── apim/                      (instance + base policies + smoke API)
+│   ├── dev/                           (stack: composes modules; remote state backend)
+│   ├── staging/
+│   └── production/                    (UK South; zone-redundant SKUs — A34)
+├── verification/                      (per-layer deploy-time smoke checks — Epic 0.0 ACs)
+│   ├── aks-nodes.sh                   (kubectl get nodes + hello pod schedules)
+│   ├── postgres-tls.sh                (TLS-only connect; plaintext refused; scratch DB)
+│   ├── keyvault-roundtrip.sh          (secret round-trips from a pod via workload identity)
+│   ├── acr-observability.sh           (image push/pull; test trace + log land in App Insights)
+│   └── apim-smoke.sh                  (gateway → echo 200; testssl.sh TLS floor)
+├── .github/
+│   ├── CODEOWNERS                     (platform/infra team)
+│   ├── PULL_REQUEST_TEMPLATE.md       (infra-change checklist)
+│   └── workflows/
+│       ├── ci.yml                     (terraform fmt + validate + plan on PR)
+│       └── apply-{env}.yml            (gated apply on merge; manual approval staging/prod)
+└── docs/
+    ├── README.md
+    └── decisions/                     (estate-level ADRs)
+```
+
+**Why the shared estate lives here, not in a service repo:** product-level shared infrastructure gets its own dedicated `{product}-shared-infrastructure` repo per the HMCTS Cloud Native Platform standard (AR53 revised) — it is not colocated inside the first service scaffolded. The `verification/` scripts are the deploy-time acceptance tests from Epic 0.0: each Terraform layer is proven as it lands (AKS reachable, PostgreSQL TLS-only, Key Vault round-trips, ACR pull works, telemetry ingests, APIM routes over TLS) before any service depends on it. This repo has **no `src/`, no Helm chart, no deployable workload** — Terraform provisions the estate; services (via Helm) deploy onto it.
 
 ## File Organisation Patterns
 

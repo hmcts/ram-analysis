@@ -42,7 +42,7 @@ Assumptions that affect implementation correctness (not just convenience) are fl
 | **A17** | DA&I and future programmes adopt API-based integration post-MVP | Aspirational | Programme dependency |
 | **A18** | UK GDPR + DPA 2018 are the binding privacy regimes; no EU GDPR cross-border concerns | Load-bearing | UK-only deployment |
 | **A19** | No bank details, no case-level data invariants from APEX continue to apply to RAM Pathfinder | Load-bearing | Per PRD |
-| **A20** | Azure subscription is provisioned per HMCTS / MoJ standard with appropriate RBAC; all resources within it are Terraform-provisioned per the 2026-06-11 decision (colocated first-consumer rule) | Reversible | Phase 0 prerequisite; Terraform conventions per G9.1 |
+| **A20** | Azure subscription is provisioned per HMCTS / MoJ standard with appropriate RBAC; all resources within it are Terraform-provisioned per the 2026-06-11 decision (shared estate in the dedicated `ram-shared-infrastructure` repo per decision #13, 2026-07-06) | Reversible | Phase 0 prerequisite; Terraform conventions per G9.1 |
 | **A21** | CI/CD platform is Azure DevOps Pipelines or GitHub Actions per HMCTS standard | Reversible | HMCTS standard |
 | **A22** | HMCTS-approved security tooling is available and integrated at platform level | Reversible | HMCTS infrastructure |
 | **A23** | The locked decisions D1–D9 from the PRD are programme-approved and binding | Load-bearing | Per PRD |

@@ -76,6 +76,8 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 .breadcrumb a{color:#0969da;text-decoration:none}
 .source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
 .source-note a{color:#57606a;text-decoration:underline}
+.living-doc-notice{background:#fff8c5;border:1px solid #d4a72c;border-left:4px solid #d4a72c;border-radius:6px;padding:12px 16px;margin:0 0 22px;font-size:14px;color:#4d3800;line-height:1.55}
+.living-doc-notice strong{color:#3d2e00}
 @media (max-width: 1200px){
   aside.toc{display:none}
   body.has-toc main.content{margin-right:0}
@@ -222,7 +224,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p>The Areas below are the <strong>architectural map</strong>. The <strong>implementation plan</strong> is the four concrete user-value epics in <a href="phase-0/index.html">phase-0/</a>.</p>
 </blockquote>
 <h3 id="phase-0--area-platform--devex">Phase 0 · Area: Platform &amp; DevEx</h3>
-<p><strong>Scope</strong>: <strong>Terraform provisioning of the Azure estate</strong> (HMCTS standard, per AR53 — colocated with the first repo that needs each resource: shared estate in <code>ram-authorisation</code>; per-service resources in each service's <code>terraform/</code>). Service scaffolding (<code>ram-scaffold.sh</code> over HMCTS Crime SpringBoot template, incl. the per-repo <code>terraform/</code> skeleton), per-service GitHub Actions pipeline (<code>ci.yml</code> + <code>deploy-{env}.yml</code> + per-region per-wave gated production deploy), OpenAPI/Spectral/ArchUnit/Spotless/Checkstyle tooling, structured Logback JSON logging conventions, OpenTelemetry → Application Insights wiring, shared <code>ram_configuration_values</code> infrastructure table managed by <code>ram-architecture</code> Liquibase baseline changelog, Azure API Management at the edge (rate limits, deprecation headers, <code>/actuator/*</code> restriction), AKS UK South multi-AZ HA, Helm chart conventions, Azure Key Vault integration.</p>
+<p><strong>Scope</strong>: <strong>Terraform provisioning of the Azure estate</strong> (HMCTS standard, per AR53 revised — shared estate in the dedicated <code>ram-shared-infrastructure</code> repo, provisioned in Epic 0.0; per-service resources in each service's <code>terraform/</code>). Service scaffolding (<code>ram-scaffold.sh</code> over HMCTS Crime SpringBoot template, incl. the per-repo <code>terraform/</code> skeleton), per-service GitHub Actions pipeline (<code>ci.yml</code> + <code>deploy-{env}.yml</code> + per-region per-wave gated production deploy), OpenAPI/Spectral/ArchUnit/Spotless/Checkstyle tooling, structured Logback JSON logging conventions, OpenTelemetry → Application Insights wiring, shared <code>ram_configuration_values</code> infrastructure table managed by <code>ram-architecture</code> Liquibase baseline changelog, Azure API Management at the edge (rate limits, deprecation headers, <code>/actuator/*</code> restriction), AKS UK South multi-AZ HA, Helm chart conventions, Azure Key Vault integration.</p>
 <p><strong>Component(s)</strong>: <code>ram-architecture</code> (scaffolding script + ADRs), GitHub Actions workflows, shared Liquibase baseline changelog, APIM policies, Helm chart conventions.</p>
 <p><strong>Primary FR/NFR coverage</strong>: FR8, FR58, FR59, NFR25–NFR28, NFR40, NFR42; underpins every AR1–AR52.</p>
 <h3 id="phase-0--area-identity--authorisation">Phase 0 · Area: Identity &amp; Authorisation</h3>
