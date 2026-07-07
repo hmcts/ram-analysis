@@ -379,7 +379,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ul>
 <li><strong>The PostgreSQL database</strong> (one instance, one schema, per-service roles with explicit grants).</li>
 <li><strong>API contracts</strong> — OpenAPI specs, <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> envelope, content-type negotiation. Specification, not runtime code.</li>
-<li><strong>API spec Maven artefacts</strong> — <code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>. Contract, not runtime code.</li>
+<li><strong>API spec artefacts (Maven-format, published by Gradle <code>maven-publish</code>)</strong> — <code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>. Contract, not runtime code.</li>
 <li><strong>Runtime infrastructure services</strong> (Authorisation, Reference Data, Notification) — by API call (workflows) or direct DB read (simple lookups).</li>
 <li><strong>Scaffolding templates</strong> (HMCTS Crime SpringBoot template) — at scaffold time, then forked.</li>
 <li><strong>CI/CD and operational conventions</strong> (Gradle idioms, OpenTelemetry → Application Insights ingestion contract, Liquibase baseline) — by convention and tooling, not library.</li>
@@ -649,7 +649,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p><strong>Build / version metadata</strong> is served by Spring Boot Actuator's <code>/actuator/info</code> (populated by <code>gradle-git-properties</code>), ops-restricted at the APIM layer. The OpenAPI spec is the consumer-facing contract.</p>
 <p><strong>Rate limiting: Azure API Management at ingress. (Resolves PRD TBD #1.)</strong> 100 req/sec/principal default; 10 req/sec/principal for MI Feed; 200 req/sec burst (sliding 1-second window). The <code>429 Too Many Requests</code> status code is per <a href="https://datatracker.ietf.org/doc/html/rfc6585">RFC 6585</a>; the <code>Retry-After</code> response header is per <a href="https://datatracker.ietf.org/doc/html/rfc9110#section-10.2.3">RFC 9110 §10.2.3</a>.</p>
 <p><strong>Error handling:</strong> <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> problem-details (<code>application/problem+json</code>). Per-service <code>@ControllerAdvice</code> converts domain exceptions. Standard <code>type</code> URIs: <code>/errors/validation</code>, <code>/errors/authorisation</code>, <code>/errors/business-rule</code>, <code>/errors/dependency</code>, <code>/errors/conflict</code>. Correlation ID echoed in the response.</p>
-<p><strong>API documentation:</strong> Swagger Core. Each service's OpenAPI 3.x spec is published as a Maven artefact (<code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>); consumers pull it at compile time. Postman collections per phase derived from the spec (FR42 / NFR42). The artefact is contract, not runtime code.</p>
+<p><strong>API documentation:</strong> Swagger Core. Each service's OpenAPI 3.x spec is published by Gradle (via the <code>maven-publish</code> plugin) as a Maven-format artefact (<code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>) to the internal artefact repository; consumers pull it at compile time. Postman collections per phase derived from the spec (FR42 / NFR42). The artefact is contract, not runtime code.</p>
 <p><strong>Service-to-service communication:</strong> REST over HTTPS. Service discovery via Kubernetes DNS (<code>http://ram-joh.{namespace}.svc.cluster.local:8080</code>). No service mesh. Synchronous workflows only. Retry safety via native DB primitives — see <em>Data Architecture</em>.</p>
 <h3 id="frontend-architecture">Frontend Architecture</h3>
 <p><strong>Two UI repos with the same stack and conventions, separated by audience</strong> (v2.10); <strong>only <code>ram-ui</code> is in MVP scope</strong><a href="#fn30" class="footnote-ref" id="fnref30" role="doc-noteref"><sup>30</sup></a>:</p>
@@ -961,7 +961,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td>OpenAPI 3.x generation (FR58)</td>
-<td><code>src/main/java/.../config/OpenApiConfig.java</code> (Swagger Core); spec published as Maven artefact (<code>uk.gov.hmcts.ram:api-ram-{service}</code>)</td>
+<td><code>src/main/java/.../config/OpenApiConfig.java</code> (Swagger Core); spec published by Gradle (<code>maven-publish</code>) as a Maven-format artefact (<code>uk.gov.hmcts.ram:api-ram-{service}</code>)</td>
 </tr>
 <tr>
 <td>Structured logging (FR59)</td>
@@ -1141,7 +1141,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <p><strong>Decision compatibility:</strong></p>
 <ul>
 <li><strong>Stack</strong> (Java 25 + Spring Boot 4.1.0 + Gradle Groovy DSL + PostgreSQL 17 + Liquibase + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.</li>
-<li><strong>Foundational principles</strong> (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) — consistent with polyrepo, per-service Spring Boot, per-service Helm, one PostgreSQL with per-service roles, per-service OpenAPI specs as Maven artefacts, and per-service boilerplate.</li>
+<li><strong>Foundational principles</strong> (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) — consistent with polyrepo, per-service Spring Boot, per-service Helm, one PostgreSQL with per-service roles, per-service OpenAPI specs as Maven-format artefacts (published by Gradle), and per-service boilerplate.</li>
 <li><strong>REST-first synchronous + SQL read-model federation</strong> — workflows go via API; read models query the shared DB directly. No event bus.</li>
 <li><strong>Mock-first authentication + OIDC for humans + two inter-service patterns (JWT propagation, service-principal <code>client_credentials</code> for batch)</strong> — issuer-agnostic OIDC contract; mock-to-real cutover is a configuration change.</li>
 <li><strong>GOV.UK Design System + WCAG 2.2 AA + axe-core</strong> — GDS components are built to WCAG 2.2 AA.</li>

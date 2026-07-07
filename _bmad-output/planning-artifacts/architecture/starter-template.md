@@ -67,7 +67,7 @@ Reasons:
 - **Gradle Groovy DSL**; `application` + `java` plugins.
 - **Spring Boot Gradle plugin 4.1.0**.
 - **`io.spring.dependency-management:1.1.7`** for BOM-based dependency management.
-- **JaCoCo** for code coverage; **`maven-publish`** for artefact publication.
+- **JaCoCo** for code coverage; **`maven-publish`** (the Gradle publishing plugin) for publishing Maven-format artefacts.
 - **`org.cyclonedx.bom:3.2.4`** for SBOM (supply-chain security).
 - **`com.gorylenko.gradle-git-properties:4.0.1`** to embed Git metadata in `/actuator/info`.
 - **`com.github.ben-manes.versions:0.54.0`** for dependency-update reports.
@@ -94,7 +94,7 @@ Reasons:
 | **Custom `JWTFilter`** + `io.jsonwebtoken:jjwt` | Security demo (JWT filters / Entra ID) | jjwt 0.13.0 |
 | **`org.owasp.encoder:encoder`** (XSS-safe output) | RAM convention | 1.4.0 |
 | **`com.avast.gradle.docker-compose`** plugin (local dev deps) | RAM convention | 0.17.21 |
-| **OpenAPI tooling** (springdoc / Swagger Core; Maven-published spec artefact) | Controllers & API demo | per AR8 |
+| **OpenAPI tooling** (springdoc / Swagger Core; spec artefact published by Gradle `maven-publish` in Maven format) | Controllers & API demo | per AR8 |
 | **Helm chart** for AKS | RAM convention (G1.4a) | — |
 | **Azure Key Vault** via Spring Cloud Azure | Azure demo / `azure-vault-demo` (G1.4b) | — |
 | **Spectral · ArchUnit · Spotless · Checkstyle** (CI quality gates) | RAM convention (AR17) | — |

@@ -232,6 +232,7 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
         ("Changelog", "architecture/tobe/changelog", False),
     ]),
     ("Change Control & Readiness", [
+        ("Sprint Change Proposal — 2026-07-07 (Gradle vs Maven-format terminology; contract read-only mirror)", "sprint-change-proposal-2026-07-07", False),
         ("Sprint Change Proposal — 2026-07-06 (shared infra to dedicated repo, CNP)", "sprint-change-proposal-2026-07-06", False),
         ("Sprint Change Proposal — 2026-06-17 (integrations-first carve-out)", "sprint-change-proposal-2026-06-17", False),
         ("Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)", "sprint-change-proposal-2026-06-10", False),
@@ -242,6 +243,7 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
         ("Readiness — 2026-05-05 (historical)", "implementation-readiness-report-2026-05-05", False),
     ]),
     ("Implementation — Epics (Foundations)", [
+        ("Delivery operating model (control plane · context bus · execution units)", "architecture/tobe/delivery-operating-model", False),
         ("Epics index", "epics/index", False),
         ("Requirements inventory", "epics/requirements-inventory", False),
         ("Phase × Area framework", "epics/framework", False),

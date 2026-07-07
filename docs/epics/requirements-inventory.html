@@ -265,7 +265,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li>AR5 — Java 25 (LTS), Spring Boot 4.1.x, Gradle Groovy DSL with Gradle Wrapper, Spring Boot Gradle plugin 4.1.0, <code>io.spring.dependency-management:1.1.7</code>.</li>
 <li>AR6 — Lombok 1.18.46, MapStruct 1.6.3 for boilerplate reduction and DTO ↔︎ entity mapping.</li>
 <li>AR7 — <code>io.jsonwebtoken:jjwt:0.13.0</code> for JWT validation in custom <code>JWTFilter</code>; <code>org.owasp.encoder:encoder:1.4.0</code> for XSS-safe output encoding.</li>
-<li>AR8 — <code>springdoc-openapi</code> (Swagger Core) for OpenAPI 3.x generation. Per-service OpenAPI spec published as a Maven artefact <code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>.</li>
+<li>AR8 — <code>springdoc-openapi</code> (Swagger Core) for OpenAPI 3.x generation. Per-service OpenAPI spec published by Gradle (via the <code>maven-publish</code> plugin) as a Maven-format artefact <code>uk.gov.hmcts.ram:api-ram-{service}:{version}</code>.</li>
 </ul>
 <h3 id="build--supply-chain-tooling-per-hmcts-crime-template">Build / supply-chain tooling (per HMCTS Crime template)</h3>
 <ul>

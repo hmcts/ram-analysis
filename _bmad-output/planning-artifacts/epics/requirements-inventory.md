@@ -195,7 +195,7 @@ sourceDocuments:
 - AR5 — Java 25 (LTS), Spring Boot 4.1.x, Gradle Groovy DSL with Gradle Wrapper, Spring Boot Gradle plugin 4.1.0, `io.spring.dependency-management:1.1.7`.
 - AR6 — Lombok 1.18.46, MapStruct 1.6.3 for boilerplate reduction and DTO ↔ entity mapping.
 - AR7 — `io.jsonwebtoken:jjwt:0.13.0` for JWT validation in custom `JWTFilter`; `org.owasp.encoder:encoder:1.4.0` for XSS-safe output encoding.
-- AR8 — `springdoc-openapi` (Swagger Core) for OpenAPI 3.x generation. Per-service OpenAPI spec published as a Maven artefact `uk.gov.hmcts.ram:api-ram-{service}:{version}`.
+- AR8 — `springdoc-openapi` (Swagger Core) for OpenAPI 3.x generation. Per-service OpenAPI spec published by Gradle (via the `maven-publish` plugin) as a Maven-format artefact `uk.gov.hmcts.ram:api-ram-{service}:{version}`.
 
 ### Build / supply-chain tooling (per HMCTS Crime template)
 

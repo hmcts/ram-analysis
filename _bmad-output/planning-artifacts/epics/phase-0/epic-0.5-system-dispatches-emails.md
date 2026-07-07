@@ -22,7 +22,7 @@ storyCount: 2
 - `POST /v1/notifications/send` endpoint accepting structured request (`{templateId, recipient, payload}`)
 - JWT propagation for user-initiated calls (per NFR12 — Phase 2+ Absence and Phase 4 Booking acknowledgement flows are user-initiated)
 - Delivery-log read endpoint (`GET /v1/notifications/delivery-log`, `system-admin` role required — accessed via Postman in MVP, no UI)
-- OpenAPI spec published as Maven artefact + Postman collection
+- OpenAPI spec published (by Gradle `maven-publish`) as a Maven-format artefact + Postman collection
 - Phase 0 integration testing via Postman: send → queued → sent → verify in Mailpit
 
 **FRs covered:** FR9 (notification dispatch + delivery log)

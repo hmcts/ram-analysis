@@ -397,7 +397,7 @@ The six journeys reveal these capability areas (mapped to the 11-service decompo
 - **UI stack:** modern UI[^d4]; specific framework family is an implementation decision in the architecture phase, not locked here.
 - **Implications worth carrying forward:**
   - Spring Boot 4 + Java 25 fits REST-first synchronous coordination. The HTTP client, JSON content-type negotiation, and OpenAPI tooling are all standard.
-  - Spring Actuator endpoints serve build/version metadata (`/actuator/info`, populated by `gradle-git-properties`) and Kubernetes liveness/readiness probes (`/actuator/health`, `/actuator/readiness`); the `/actuator/*` namespace is ops-restricted at the APIM layer. The OpenAPI spec (Swagger Core, published as a Maven artefact) is the consumer-facing contract.
+  - Spring Actuator endpoints serve build/version metadata (`/actuator/info`, populated by `gradle-git-properties`) and Kubernetes liveness/readiness probes (`/actuator/health`, `/actuator/readiness`); the `/actuator/*` namespace is ops-restricted at the APIM layer. The OpenAPI spec (Swagger Core, published by Gradle via the `maven-publish` plugin as a Maven-format artefact) is the consumer-facing contract.
   - Kubernetes orchestration on Azure enables the per-region phased rollout[^d8] — region-scoped deployments, rolling updates, isolated rollbacks per wave.
   - Azure UK regions support UK GDPR and HMCTS data-sovereignty requirements (data residency in-country); avoids the need for Standard Contractual Clauses or transfer impact assessments that would apply if data left the UK.
   - Azure-native logging (Application Insights / Log Analytics) is a natural fit for the log-based audit / observability minimum[^d7]; structured logging conventions defined in Phase 0 should target Azure-native ingestion.
@@ -511,7 +511,7 @@ Canonical representation: **JSON** for all REST endpoints. Specific resource sch
 - **Versioning policy is a Phase 0 deliverable** as part of API-as-Product standards[^d1].
 - Working assumption (architecture-phase confirmable): versioning via the URI path prefix (e.g. `/v1/judges`, `/v2/judges`) for major versions; backwards-compatible additions within a major version don't require a new path.
 - **Deprecation policy** is part of the same Phase 0 artefact: deprecated endpoints emit `Deprecation` ([RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745)) and `Sunset` ([RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)) response headers, are documented, and are retired no sooner than N months after first deprecation notice (specific N TBD).
-- **Consumer contract surface** is the published OpenAPI spec (Maven artefact; Swagger UI for browsing). Build/version metadata is exposed via Spring Actuator `/actuator/info` (ops-restricted).
+- **Consumer contract surface** is the published OpenAPI spec (Maven-format artefact published by Gradle `maven-publish`; Swagger UI for browsing). Build/version metadata is exposed via Spring Actuator `/actuator/info` (ops-restricted).
 
 ### Client Tooling
 

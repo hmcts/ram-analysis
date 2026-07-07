@@ -53,7 +53,7 @@ ram-{service}/
 │   ├── config/
 │   │   ├── JWTFilter.java                       (custom JWT filter, per HMCTS template)
 │   │   ├── AuthDetails.java                     (request-scoped bean populated by JWTFilter)
-│   │   ├── OpenApiConfig.java                   (Swagger Core + Maven-published spec artefact)
+│   │   ├── OpenApiConfig.java                   (Swagger Core; spec published by Gradle maven-publish as a Maven-format artefact)
 │   │   └── CorrelationIdFilter.java
 │                                                 (no IdempotencyFilter — retry safety is via native DB primitives; see ../architecture.md → Data Architecture)
 │   ├── error/

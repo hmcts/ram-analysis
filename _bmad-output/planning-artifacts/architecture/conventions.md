@@ -299,7 +299,7 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 - Use Gradle Groovy DSL (per HMCTS Crime SpringBoot template) with Gradle Wrapper.
 - Implement RFC 9457 errors via per-service `@ControllerAdvice` (no shared library).
 - Implement Authorisation enforcement via per-service custom `JWTFilter` + `AuthDetails` request-scoped bean (HMCTS template pattern); the filter calls RAM Pathfinder Authorisation per request to resolve roles + jurisdiction + Region/Area scope and the activation flag (RAM Pathfinder variance from template's claims-only approach — required by FR2/FR57).
-- Generate OpenAPI 3.x specs via Swagger Core; publish per-service spec as a Maven artefact (`uk.gov.hmcts.ram:api-ram-{service}:{version}`).
+- Generate OpenAPI 3.x specs via Swagger Core; publish per-service spec by Gradle (via the `maven-publish` plugin) as a Maven-format artefact (`uk.gov.hmcts.ram:api-ram-{service}:{version}`) to the internal artefact repository.
 - Emit structured JSON logs (Logstash encoder) with correlation IDs; export traces via OpenTelemetry.
 - Use Liquibase changelogs in `src/main/resources/db/changelog/` (added by the RAM scaffolding overlay — RAM convention; the HMCTS demo repo uses Flyway, RAM standardises on Liquibase; **not** in the template baseline, see G1.4a).
 - Use **Lombok** (base template) and **MapStruct** (scaffolding overlay — not in the baseline) for boilerplate reduction and DTO/entity mapping.

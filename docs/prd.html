@@ -543,7 +543,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong>Implications worth carrying forward:</strong>
 <ul>
 <li>Spring Boot 4 + Java 25 fits REST-first synchronous coordination. The HTTP client, JSON content-type negotiation, and OpenAPI tooling are all standard.</li>
-<li>Spring Actuator endpoints serve build/version metadata (<code>/actuator/info</code>, populated by <code>gradle-git-properties</code>) and Kubernetes liveness/readiness probes (<code>/actuator/health</code>, <code>/actuator/readiness</code>); the <code>/actuator/*</code> namespace is ops-restricted at the APIM layer. The OpenAPI spec (Swagger Core, published as a Maven artefact) is the consumer-facing contract.</li>
+<li>Spring Actuator endpoints serve build/version metadata (<code>/actuator/info</code>, populated by <code>gradle-git-properties</code>) and Kubernetes liveness/readiness probes (<code>/actuator/health</code>, <code>/actuator/readiness</code>); the <code>/actuator/*</code> namespace is ops-restricted at the APIM layer. The OpenAPI spec (Swagger Core, published by Gradle via the <code>maven-publish</code> plugin as a Maven-format artefact) is the consumer-facing contract.</li>
 <li>Kubernetes orchestration on Azure enables the per-region phased rollout<a href="#fn62" class="footnote-ref" id="fnref62" role="doc-noteref"><sup>62</sup></a> — region-scoped deployments, rolling updates, isolated rollbacks per wave.</li>
 <li>Azure UK regions support UK GDPR and HMCTS data-sovereignty requirements (data residency in-country); avoids the need for Standard Contractual Clauses or transfer impact assessments that would apply if data left the UK.</li>
 <li>Azure-native logging (Application Insights / Log Analytics) is a natural fit for the log-based audit / observability minimum<a href="#fn63" class="footnote-ref" id="fnref63" role="doc-noteref"><sup>63</sup></a>; structured logging conventions defined in Phase 0 should target Azure-native ingestion.</li>
@@ -760,7 +760,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong>Versioning policy is a Phase 0 deliverable</strong> as part of API-as-Product standards<a href="#fn76" class="footnote-ref" id="fnref76" role="doc-noteref"><sup>76</sup></a>.</li>
 <li>Working assumption (architecture-phase confirmable): versioning via the URI path prefix (e.g. <code>/v1/judges</code>, <code>/v2/judges</code>) for major versions; backwards-compatible additions within a major version don't require a new path.</li>
 <li><strong>Deprecation policy</strong> is part of the same Phase 0 artefact: deprecated endpoints emit <code>Deprecation</code> (<a href="https://datatracker.ietf.org/doc/html/rfc9745">RFC 9745</a>) and <code>Sunset</code> (<a href="https://datatracker.ietf.org/doc/html/rfc8594">RFC 8594</a>) response headers, are documented, and are retired no sooner than N months after first deprecation notice (specific N TBD).</li>
-<li><strong>Consumer contract surface</strong> is the published OpenAPI spec (Maven artefact; Swagger UI for browsing). Build/version metadata is exposed via Spring Actuator <code>/actuator/info</code> (ops-restricted).</li>
+<li><strong>Consumer contract surface</strong> is the published OpenAPI spec (Maven-format artefact published by Gradle <code>maven-publish</code>; Swagger UI for browsing). Build/version metadata is exposed via Spring Actuator <code>/actuator/info</code> (ops-restricted).</li>
 </ul>
 <h3 id="client-tooling">Client Tooling</h3>
 <ul>

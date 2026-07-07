@@ -19,7 +19,7 @@ storyCount: 2
 - Tier-(b) seed data via a Liquibase seed changeset + the DBA maintenance runbook (D10 operating model)
 - Per-service `SELECT` grants pattern completed for direct-SQL reads across both tiers (per FR7 / Principle 2)
 - Reference Data **read-only** REST API: `GET` endpoints over both tiers, **jurisdiction-filtered responses**[^d8], for consumption by `ram-ui`, downstream services, and OpenAPI clients. **No `POST`/`PUT`/`DELETE` endpoints** — tier (a) is written only by the Epic 0.1 ingestion mechanisms; tier (b) by DBAs via SQL per runbook
-- First end-to-end exercise of API-as-Product **read-side** standards: URL versioning (`/v1/reference-data/...`), OpenAPI 3.x spec published as Maven artefact, RFC 9457 problem-details errors, RFC 9745 `Deprecation` + RFC 8594 `Sunset` deprecation signalling (FR58)
+- First end-to-end exercise of API-as-Product **read-side** standards: URL versioning (`/v1/reference-data/...`), OpenAPI 3.x spec published (by Gradle `maven-publish`) as a Maven-format artefact, RFC 9457 problem-details errors, RFC 9745 `Deprecation` + RFC 8594 `Sunset` deprecation signalling (FR58)
 - First Postman collection for Phase 0 published under `postman/ram-reference-data-phase0.postman_collection.json` (NFR42 first instance)
 
 **FRs covered:** FR6 (tier-(b) maintenance per runbook; read API over both tiers), FR7 (direct-SQL read pattern + writes-follow-the-tier), FR58 (versioned read API contract), FR59 (structured logs)
@@ -98,7 +98,7 @@ So that **Phase 1+ services can query controlled lists and JOH reference data at
 **Given** the OpenAPI spec is generated and Spectral lint runs in CI,
 **When** the spec is built,
 **Then** the spec passes Spectral lint (per AR17),
-**And** the spec is published to internal Maven as `uk.gov.hmcts.ram:api-ram-reference-data:1.0.0` (per AR8),
+**And** the spec is published by Gradle (`maven-publish`) to the internal Maven-format artefact repository as `uk.gov.hmcts.ram:api-ram-reference-data:1.0.0` (per AR8),
 **And** Swagger UI is exposed for developer browsing (ops-restricted at APIM).
 
 **Given** APIM is configured for `ram-reference-data` per AR27 + AR39,

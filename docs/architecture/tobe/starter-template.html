@@ -134,7 +134,7 @@ git push -u origin main</code></pre>
 <li><strong>Gradle Groovy DSL</strong>; <code>application</code> + <code>java</code> plugins.</li>
 <li><strong>Spring Boot Gradle plugin 4.1.0</strong>.</li>
 <li><strong><code>io.spring.dependency-management:1.1.7</code></strong> for BOM-based dependency management.</li>
-<li><strong>JaCoCo</strong> for code coverage; <strong><code>maven-publish</code></strong> for artefact publication.</li>
+<li><strong>JaCoCo</strong> for code coverage; <strong><code>maven-publish</code></strong> (the Gradle publishing plugin) for publishing Maven-format artefacts.</li>
 <li><strong><code>org.cyclonedx.bom:3.2.4</code></strong> for SBOM (supply-chain security).</li>
 <li><strong><code>com.gorylenko.gradle-git-properties:4.0.1</code></strong> to embed Git metadata in <code>/actuator/info</code>.</li>
 <li><strong><code>com.github.ben-manes.versions:0.54.0</code></strong> for dependency-update reports.</li>
@@ -192,7 +192,7 @@ git push -u origin main</code></pre>
 <td>0.17.21</td>
 </tr>
 <tr>
-<td><strong>OpenAPI tooling</strong> (springdoc / Swagger Core; Maven-published spec artefact)</td>
+<td><strong>OpenAPI tooling</strong> (springdoc / Swagger Core; spec artefact published by Gradle <code>maven-publish</code> in Maven format)</td>
 <td>Controllers &amp; API demo</td>
 <td>per AR8</td>
 </tr>

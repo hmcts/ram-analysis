@@ -221,7 +221,7 @@ What is shared:
 
 - **The PostgreSQL database** (one instance, one schema, per-service roles with explicit grants).
 - **API contracts** — OpenAPI specs, [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) envelope, content-type negotiation. Specification, not runtime code.
-- **API spec Maven artefacts** — `uk.gov.hmcts.ram:api-ram-{service}:{version}`. Contract, not runtime code.
+- **API spec artefacts (Maven-format, published by Gradle `maven-publish`)** — `uk.gov.hmcts.ram:api-ram-{service}:{version}`. Contract, not runtime code.
 - **Runtime infrastructure services** (Authorisation, Reference Data, Notification) — by API call (workflows) or direct DB read (simple lookups).
 - **Scaffolding templates** (HMCTS Crime SpringBoot template) — at scaffold time, then forked.
 - **CI/CD and operational conventions** (Gradle idioms, OpenTelemetry → Application Insights ingestion contract, Liquibase baseline) — by convention and tooling, not library.
@@ -450,7 +450,7 @@ Two patterns at MVP:
 
 **Error handling:** [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details (`application/problem+json`). Per-service `@ControllerAdvice` converts domain exceptions. Standard `type` URIs: `/errors/validation`, `/errors/authorisation`, `/errors/business-rule`, `/errors/dependency`, `/errors/conflict`. Correlation ID echoed in the response.
 
-**API documentation:** Swagger Core. Each service's OpenAPI 3.x spec is published as a Maven artefact (`uk.gov.hmcts.ram:api-ram-{service}:{version}`); consumers pull it at compile time. Postman collections per phase derived from the spec (FR42 / NFR42). The artefact is contract, not runtime code.
+**API documentation:** Swagger Core. Each service's OpenAPI 3.x spec is published by Gradle (via the `maven-publish` plugin) as a Maven-format artefact (`uk.gov.hmcts.ram:api-ram-{service}:{version}`) to the internal artefact repository; consumers pull it at compile time. Postman collections per phase derived from the spec (FR42 / NFR42). The artefact is contract, not runtime code.
 
 **Service-to-service communication:** REST over HTTPS. Service discovery via Kubernetes DNS (`http://ram-joh.{namespace}.svc.cluster.local:8080`). No service mesh. Synchronous workflows only. Retry safety via native DB primitives — see *Data Architecture*.
 
@@ -646,7 +646,7 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 | Per-(jurisdiction, region) phased activation check (FR57) | Resolved in `JWTFilter` via authz path |
 | Retry safety (FR45, FR30) | Native DB primitives — see *Data Architecture* and [`./architecture/data-tables.md`](./architecture/data-tables.md). No filter, custom table, or client class. |
 | [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) problem-details error handling (FR58) | `src/main/java/.../error/GlobalExceptionHandler.java` |
-| OpenAPI 3.x generation (FR58) | `src/main/java/.../config/OpenApiConfig.java` (Swagger Core); spec published as Maven artefact (`uk.gov.hmcts.ram:api-ram-{service}`) |
+| OpenAPI 3.x generation (FR58) | `src/main/java/.../config/OpenApiConfig.java` (Swagger Core); spec published by Gradle (`maven-publish`) as a Maven-format artefact (`uk.gov.hmcts.ram:api-ram-{service}`) |
 | Structured logging (FR59) | `src/main/resources/logback-spring.xml` + `config/CorrelationIdFilter.java` |
 | Manual UAT scripts (FR60 / NFR41 revised) | `docs/uat/` per service (domain services only); not in `src/test/` |
 | Upstream ingestion (FR6/FR7, NFR24 — `ram-reference-data` only) | `src/main/java/.../ingestion/JohElinksSyncTask.java` + `ingestion/MrdExcelIngestionTask.java` (`@Scheduled`); sync state in `ram_sync_status` |
@@ -758,7 +758,7 @@ Rollback path: revert the wave's activation flags (FR57, keyed by jurisdiction +
 **Decision compatibility:**
 
 - **Stack** (Java 25 + Spring Boot 4.1.0 + Gradle Groovy DSL + PostgreSQL 17 + Liquibase + AKS + Azure UK + OpenTelemetry → App Insights + Key Vault + APIM, per HMCTS Crime template) — current GA, mutually compatible, Azure-native or first-party on Azure.
-- **Foundational principles** (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) — consistent with polyrepo, per-service Spring Boot, per-service Helm, one PostgreSQL with per-service roles, per-service OpenAPI specs as Maven artefacts, and per-service boilerplate.
+- **Foundational principles** (API for workflows + shared DB for simple data access; no premature optimisation; no shared runtime library) — consistent with polyrepo, per-service Spring Boot, per-service Helm, one PostgreSQL with per-service roles, per-service OpenAPI specs as Maven-format artefacts (published by Gradle), and per-service boilerplate.
 - **REST-first synchronous + SQL read-model federation** — workflows go via API; read models query the shared DB directly. No event bus.
 - **Mock-first authentication + OIDC for humans + two inter-service patterns (JWT propagation, service-principal `client_credentials` for batch)** — issuer-agnostic OIDC contract; mock-to-real cutover is a configuration change.
 - **GOV.UK Design System + WCAG 2.2 AA + axe-core** — GDS components are built to WCAG 2.2 AA.

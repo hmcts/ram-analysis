@@ -99,7 +99,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><code>POST /v1/notifications/send</code> endpoint accepting structured request (<code>{templateId, recipient, payload}</code>)</li>
 <li>JWT propagation for user-initiated calls (per NFR12 — Phase 2+ Absence and Phase 4 Booking acknowledgement flows are user-initiated)</li>
 <li>Delivery-log read endpoint (<code>GET /v1/notifications/delivery-log</code>, <code>system-admin</code> role required — accessed via Postman in MVP, no UI)</li>
-<li>OpenAPI spec published as Maven artefact + Postman collection</li>
+<li>OpenAPI spec published (by Gradle <code>maven-publish</code>) as a Maven-format artefact + Postman collection</li>
 <li>Phase 0 integration testing via Postman: send → queued → sent → verify in Mailpit</li>
 </ul>
 <p><strong>FRs covered:</strong> FR9 (notification dispatch + delivery log)</p>
