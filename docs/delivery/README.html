@@ -156,7 +156,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tr>
 <tr>
 <td>Signal</td>
-<td><code>bmad-sprint-status</code> (updates <code>ledger.yaml</code>)</td>
+<td><code>bmad-sprint-status</code> (updates the epic's <code>ledger/epic-*.yaml</code> shard)</td>
 <td><code>ram-analysis</code></td>
 </tr>
 </tbody>
@@ -173,7 +173,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </div></details><details class="section" id="current-state-2026-07-09"><summary><span class="section-title">Current state (2026-07-09)</span></summary><div class="section-body">
 <ul>
 <li><strong>Phase 0 fully seeded:</strong> 6 epics, 19 stories, all <code>not-started</code>, unassigned (<code>owner: null</code>).</li>
-<li><strong>Phases 1–8 + post-MVP:</strong> repo-level placeholders in <code>dispatch-graph.yaml</code> under <code>future:</code> (<code>decomposed: false</code>). Promote each to an epic node with a <code>stories:</code> list after running <code>bmad-create-epics-and-stories</code> for that phase, and add its rows to <code>ledger.yaml</code>.</li>
+<li><strong>Phases 1–8 + post-MVP:</strong> repo-level placeholders in <code>dispatch-graph.yaml</code> under <code>future:</code> (<code>decomposed: false</code>). Promote each to an epic node with a <code>stories:</code> list after running <code>bmad-create-epics-and-stories</code> for that phase, and add a new <code>ledger/epic-*.yaml</code> shard for it.</li>
 <li><strong>Optional resolver</strong> ("what's buildable now?") is intentionally deferred until dispatch begins.</li>
 </ul>
 </div></details>

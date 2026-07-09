@@ -4,13 +4,13 @@
 # buildable next". Consumed by sprint planning / dispatch; see ./README.md.
 #
 # Granularity: EPIC-LEVEL. Nodes are epics (they roll up to the story-level
-# ledger.yaml). Epic-level is required for Phase 0 because a single repo appears
+# ledger shards, ledger/epic-*.yaml). Epic-level is required for Phase 0 because a single repo appears
 # in more than one epic at different points in the order (e.g. ram-reference-data
 # in epic-0.1 then again in epic-0.3 after auth; ram-architecture publishes the
 # bus early but runs the bootstrap epic 0.4 late).
 #
 # Buildable-now rule: an epic is dispatchable iff every epic in its `depends_on`
-# has status `done` in ledger.yaml. Epics with disjoint dependency sets and no
+# has status `done` in its ledger shard (ledger/epic-*.yaml). Epics with disjoint dependency sets and no
 # shared state may run IN PARALLEL (the AI-led advantage).
 #
 # Authoritative sources: repository-strategy.md, epics/framework.md,

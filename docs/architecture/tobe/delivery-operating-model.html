@@ -281,29 +281,36 @@ status: dispatched               # dispatched | in-progress | in-review | done
 ## Acceptance criteria (Gherkin, verbatim from the epic)
 ## Out of scope / boundaries
 ## Definition of done (tests, ArchUnit, Spectral, UAT hooks per repo-structure.md)</code></pre>
-<h3 id="traceability-ledger-_bmad-outputplanning-artifactsdeliveryledgeryaml-in-the-control-plane">Traceability ledger (<code>_bmad-output/planning-artifacts/delivery/ledger.yaml</code> in the control plane)</h3>
-<p>One authoritative view of programme progress — the thing a fat orchestrator would give you, without the coupling:</p>
-<pre class="yaml"><code>- story: 0.1.4
-  epic: epic-0.1-upstream-reference-data-ingested
-  repo: ram-reference-data
-  frs: [FR6, FR7, NFR24]
-  bus_version: arch-v1.0
-  status: done
-  pr: https://github.com/hmcts/ram-reference-data/pull/12</code></pre>
-<p>Reverse lookups it enables: <em>which stories cover FR6?</em> · <em>which repos are on which bus version?</em> · <em>what's blocked vs. buildable-now?</em> · <em>is every FR/NFR delivered?</em></p>
+<h3 id="traceability-ledger-_bmad-outputplanning-artifactsdeliveryledger--sharded-per-epic">Traceability ledger (<code>_bmad-output/planning-artifacts/delivery/ledger/</code> — sharded per epic)</h3>
+<p>One authoritative view of programme progress — the thing a fat orchestrator would give you, without the coupling. It is <strong>sharded one file per epic</strong> (<code>ledger/epic-0.x.yaml</code>) so multiple people update different epics without git conflicts; each shard carries epic-level <code>status</code>+<code>owner</code> and per-story <code>status</code>+<code>owner</code>+<code>pr</code> for "who is working on what" visibility (schema + concurrency rules in <code>delivery/ledger/README.md</code>):</p>
+<pre class="yaml"><code># ledger/epic-0.1.yaml
+epic: epic-0.1
+title: Upstream JOH/MRD reference data is ingested
+repo: ram-reference-data
+status: in-progress            # epic rollup: not-started | in-progress | blocked | in-review | done
+owner: alice
+stories:
+  - story: 0.1.4
+    repo: ram-reference-data
+    frs: [FR6, FR7, NFR24]
+    bus_version: arch-v1.0
+    status: done               # not-started | dispatched | in-progress | in-review | done
+    owner: bob
+    pr: https://github.com/hmcts/ram-reference-data/pull/12</code></pre>
+<p>Reverse lookups it enables: <em>which stories cover FR6?</em> · <em>which repos are on which bus version?</em> · <em>what's blocked vs. buildable-now?</em> · <em>who owns each epic/story?</em> · <em>is every FR/NFR delivered?</em></p>
 </div></details><details class="section" id="human-gates-and-the-git-write-constraint"><summary><span class="section-title">Human gates and the git-write constraint</span></summary><div class="section-body">
 <p>Claude does not perform git operations in this programme (per the repo-root <a href="../../../CLAUDE.md"><code>CLAUDE.md</code></a>; enforced by the <code>.claude/hooks/block-git-writes.sh</code> hook in this workspace). That is a <strong>feature of this model, not friction</strong>: each repo boundary is a deliberate human gate. Claude <em>prepares</em> work (generates packets, writes code, surfaces diffs); the human reviews and commits via VSCode — which is exactly what per-repo CODEOWNERS/branch-protection exist to enforce. Dispatch and signal steps likewise produce reviewable diffs in <code>ram-analysis</code>, committed the same way.</p>
 </div></details><details class="section" id="parallel-execution"><summary><span class="section-title">Parallel execution</span></summary><div class="section-body">
 <p>Because polyrepo has no shared runtime state, stories whose dependencies are satisfied can be implemented concurrently — one isolated Claude session (or git worktree) per repo. The <code>dispatch-graph.yaml</code> makes the safe-to-parallelise set explicit at any moment. Recommended ceiling: parallelise across <em>repos</em>, serialise <em>within</em> a repo (per-repo history stays linear and reviewable).</p>
 </div></details><details class="section" id="what-this-means-for-the-two-planning-homes"><summary><span class="section-title">What this means for the two planning homes</span></summary><div class="section-body">
 <ul>
-<li><strong><code>ram-analysis</code> (this workspace)</strong> stays the canonical author of PRD/architecture/epics/stories and gains two new control-plane artefacts: <code>delivery/dispatch-graph.yaml</code> and <code>delivery/ledger.yaml</code>.</li>
+<li><strong><code>ram-analysis</code> (this workspace)</strong> stays the canonical author of PRD/architecture/epics/stories and gains two new control-plane artefacts: <code>delivery/dispatch-graph.yaml</code> and <code>delivery/ledger/</code> (traceability ledger, sharded per epic).</li>
 <li><strong><code>ram-architecture</code></strong> becomes the <em>published</em> context bus — a mirror/publish target of the canonical architecture, tagged per version (<code>arch-vN</code>), consumed by every service repo as a pinned submodule. When it is scaffolded, this operating-model shard travels into it with the rest of the architecture, per <a href="repo-structure.html"><code>./repo-structure.md</code></a>'s <code>decisions/</code> + <code>architecture/</code> layout.</li>
 </ul>
 </div></details><details class="section" id="bootstrapping-order-first-moves"><summary><span class="section-title">Bootstrapping order (first moves)</span></summary><div class="section-body">
 <ol type="1">
 <li>Publish <code>ram-architecture</code> and tag <code>arch-v1.0</code> (the current architecture set becomes the first bus version).</li>
-<li>Encode <code>dispatch-graph.yaml</code> + initialise an empty <code>ledger.yaml</code> in this workspace.</li>
+<li>Encode <code>dispatch-graph.yaml</code> + initialise the per-epic <code>delivery/ledger/</code> shards in this workspace.</li>
 <li>Scaffold <code>ram-shared-infrastructure</code> (no <code>depends_on</code>) via <code>ram-scaffold.sh</code>; wire its <code>_arch/</code> submodule + <code>CLAUDE.md</code>.</li>
 <li>Dispatch epic 0.0's stories → execute → signal. Then follow the graph: mock-auth / reference-data / notification (parallelisable) → authorisation → UI shell.</li>
 </ol>
@@ -311,7 +318,7 @@ status: dispatched               # dispatched | in-progress | in-review | done
 </div></details>
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture/delivery-operating-model.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#the-problem-this-shard-resolves">The problem this shard resolves</a></li><li><a href="#core-principle-separate-the-control-plane-from-the-data-plane-join-them-with-a-versioned-context-bus">Core principle: separate the control plane from the data plane, join them with a versioned context bus</a></li><li><a href="#decision-1--context-bus-binding-git-submodule-version-pinned">Decision 1 — Context bus binding: git submodule, version-pinned</a></li><li class="h3"><a href="#the-bus-pinning-rule-this-is-what-makes-the-model-safe">The bus-pinning rule (this is what makes the model safe)</a></li><li class="h3"><a href="#contract-placement-within-the-bus-producer-owned-source-read-only-mirror-only">Contract placement within the bus: producer-owned source, read-only mirror only</a></li><li><a href="#decision-2--sequencing-driver-a-machine-readable-dispatch-graph">Decision 2 — Sequencing driver: a machine-readable dispatch graph</a></li><li><a href="#the-per-story-delivery-flow">The per-story delivery flow</a></li><li class="h3"><a href="#story-packet-schema-docsstoriesidmd-in-the-target-repo">Story packet schema (docs/stories/&lt;id&gt;.md in the target repo)</a></li><li class="h3"><a href="#traceability-ledger-_bmad-outputplanning-artifactsdeliveryledgeryaml-in-the-control-plane">Traceability ledger (_bmad-output/planning-artifacts/delivery/ledger.yaml in the control plane)</a></li><li><a href="#human-gates-and-the-git-write-constraint">Human gates and the git-write constraint</a></li><li><a href="#parallel-execution">Parallel execution</a></li><li><a href="#what-this-means-for-the-two-planning-homes">What this means for the two planning homes</a></li><li><a href="#bootstrapping-order-first-moves">Bootstrapping order (first moves)</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#the-problem-this-shard-resolves">The problem this shard resolves</a></li><li><a href="#core-principle-separate-the-control-plane-from-the-data-plane-join-them-with-a-versioned-context-bus">Core principle: separate the control plane from the data plane, join them with a versioned context bus</a></li><li><a href="#decision-1--context-bus-binding-git-submodule-version-pinned">Decision 1 — Context bus binding: git submodule, version-pinned</a></li><li class="h3"><a href="#the-bus-pinning-rule-this-is-what-makes-the-model-safe">The bus-pinning rule (this is what makes the model safe)</a></li><li class="h3"><a href="#contract-placement-within-the-bus-producer-owned-source-read-only-mirror-only">Contract placement within the bus: producer-owned source, read-only mirror only</a></li><li><a href="#decision-2--sequencing-driver-a-machine-readable-dispatch-graph">Decision 2 — Sequencing driver: a machine-readable dispatch graph</a></li><li><a href="#the-per-story-delivery-flow">The per-story delivery flow</a></li><li class="h3"><a href="#story-packet-schema-docsstoriesidmd-in-the-target-repo">Story packet schema (docs/stories/&lt;id&gt;.md in the target repo)</a></li><li class="h3"><a href="#traceability-ledger-_bmad-outputplanning-artifactsdeliveryledger--sharded-per-epic">Traceability ledger (_bmad-output/planning-artifacts/delivery/ledger/ — sharded per epic)</a></li><li><a href="#human-gates-and-the-git-write-constraint">Human gates and the git-write constraint</a></li><li><a href="#parallel-execution">Parallel execution</a></li><li><a href="#what-this-means-for-the-two-planning-homes">What this means for the two planning homes</a></li><li><a href="#bootstrapping-order-first-moves">Bootstrapping order (first moves)</a></li></ul></aside>
 <script>window.__NAV_BASE__="../../";window.__PAGE__="architecture/tobe/delivery-operating-model";</script>
 <script src="../../nav.js"></script>
 <script>

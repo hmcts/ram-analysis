@@ -178,21 +178,28 @@ status: dispatched               # dispatched | in-progress | in-review | done
 ## Definition of done (tests, ArchUnit, Spectral, UAT hooks per repo-structure.md)
 ```
 
-### Traceability ledger (`_bmad-output/planning-artifacts/delivery/ledger.yaml` in the control plane)
+### Traceability ledger (`_bmad-output/planning-artifacts/delivery/ledger/` — sharded per epic)
 
-One authoritative view of programme progress — the thing a fat orchestrator would give you, without the coupling:
+One authoritative view of programme progress — the thing a fat orchestrator would give you, without the coupling. It is **sharded one file per epic** (`ledger/epic-0.x.yaml`) so multiple people update different epics without git conflicts; each shard carries epic-level `status`+`owner` and per-story `status`+`owner`+`pr` for "who is working on what" visibility (schema + concurrency rules in `delivery/ledger/README.md`):
 
 ```yaml
-- story: 0.1.4
-  epic: epic-0.1-upstream-reference-data-ingested
-  repo: ram-reference-data
-  frs: [FR6, FR7, NFR24]
-  bus_version: arch-v1.0
-  status: done
-  pr: https://github.com/hmcts/ram-reference-data/pull/12
+# ledger/epic-0.1.yaml
+epic: epic-0.1
+title: Upstream JOH/MRD reference data is ingested
+repo: ram-reference-data
+status: in-progress            # epic rollup: not-started | in-progress | blocked | in-review | done
+owner: alice
+stories:
+  - story: 0.1.4
+    repo: ram-reference-data
+    frs: [FR6, FR7, NFR24]
+    bus_version: arch-v1.0
+    status: done               # not-started | dispatched | in-progress | in-review | done
+    owner: bob
+    pr: https://github.com/hmcts/ram-reference-data/pull/12
 ```
 
-Reverse lookups it enables: *which stories cover FR6?* · *which repos are on which bus version?* · *what's blocked vs. buildable-now?* · *is every FR/NFR delivered?*
+Reverse lookups it enables: *which stories cover FR6?* · *which repos are on which bus version?* · *what's blocked vs. buildable-now?* · *who owns each epic/story?* · *is every FR/NFR delivered?*
 
 ## Human gates and the git-write constraint
 
@@ -204,13 +211,13 @@ Because polyrepo has no shared runtime state, stories whose dependencies are sat
 
 ## What this means for the two planning homes
 
-- **`ram-analysis` (this workspace)** stays the canonical author of PRD/architecture/epics/stories and gains two new control-plane artefacts: `delivery/dispatch-graph.yaml` and `delivery/ledger.yaml`.
+- **`ram-analysis` (this workspace)** stays the canonical author of PRD/architecture/epics/stories and gains two new control-plane artefacts: `delivery/dispatch-graph.yaml` and `delivery/ledger/` (traceability ledger, sharded per epic).
 - **`ram-architecture`** becomes the *published* context bus — a mirror/publish target of the canonical architecture, tagged per version (`arch-vN`), consumed by every service repo as a pinned submodule. When it is scaffolded, this operating-model shard travels into it with the rest of the architecture, per [`./repo-structure.md`](./repo-structure.md)'s `decisions/` + `architecture/` layout.
 
 ## Bootstrapping order (first moves)
 
 1. Publish `ram-architecture` and tag `arch-v1.0` (the current architecture set becomes the first bus version).
-2. Encode `dispatch-graph.yaml` + initialise an empty `ledger.yaml` in this workspace.
+2. Encode `dispatch-graph.yaml` + initialise the per-epic `delivery/ledger/` shards in this workspace.
 3. Scaffold `ram-shared-infrastructure` (no `depends_on`) via `ram-scaffold.sh`; wire its `_arch/` submodule + `CLAUDE.md`.
 4. Dispatch epic 0.0's stories → execute → signal. Then follow the graph: mock-auth / reference-data / notification (parallelisable) → authorisation → UI shell.
 ```

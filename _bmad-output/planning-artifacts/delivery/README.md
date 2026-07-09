@@ -44,7 +44,7 @@ shared state may run **in parallel**.
 | Select / plan | `bmad-sprint-planning` (reads `dispatch-graph.yaml`) | `ram-analysis` |
 | Dispatch | `bmad-create-story` / `compile-epic-context` → story packet | `ram-analysis` |
 | Execute | `bmad-dev-story` → `bmad-code-review` | target repo |
-| Signal | `bmad-sprint-status` (updates `ledger.yaml`) | `ram-analysis` |
+| Signal | `bmad-sprint-status` (updates the epic's `ledger/epic-*.yaml` shard) | `ram-analysis` |
 
 ## Conventions
 
@@ -60,5 +60,5 @@ The ledger is **sharded per epic** for conflict-free concurrent updates, and eve
 ## Current state (2026-07-09)
 
 - **Phase 0 fully seeded:** 6 epics, 19 stories, all `not-started`, unassigned (`owner: null`).
-- **Phases 1–8 + post-MVP:** repo-level placeholders in `dispatch-graph.yaml` under `future:` (`decomposed: false`). Promote each to an epic node with a `stories:` list after running `bmad-create-epics-and-stories` for that phase, and add its rows to `ledger.yaml`.
+- **Phases 1–8 + post-MVP:** repo-level placeholders in `dispatch-graph.yaml` under `future:` (`decomposed: false`). Promote each to an epic node with a `stories:` list after running `bmad-create-epics-and-stories` for that phase, and add a new `ledger/epic-*.yaml` shard for it.
 - **Optional resolver** ("what's buildable now?") is intentionally deferred until dispatch begins.
