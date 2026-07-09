@@ -1,0 +1,24 @@
+# Ledger shard — Epic 0.5. Schema, status vocab, and concurrency model: ./README.md
+epic: epic-0.5
+title: Notification service is scaffolded and contractually ready
+repo: ram-notification
+bus_version: arch-v1.0
+status: not-started        # epic-level rollup: not-started | in-progress | blocked | in-review | done
+owner: null                # who is driving this epic (name/handle); null = unassigned
+stories:
+  - story: 0.5.1
+    repo: ram-notification
+    title: Scaffold ram-notification service + delivery log table + SMTP integration
+    frs: [FR9, NFR22]
+    bus_version: arch-v1.0
+    status: not-started      # not-started | dispatched | in-progress | in-review | done
+    owner: null
+    pr: null
+  - story: 0.5.2
+    repo: ram-notification
+    title: POST /v1/notifications/send with JWT propagation, retry semantics, delivery logging, RFC 9457 errors
+    frs: [FR9, FR58, NFR22]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null

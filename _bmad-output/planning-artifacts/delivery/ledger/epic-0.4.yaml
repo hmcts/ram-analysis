@@ -1,0 +1,16 @@
+# Ledger shard — Epic 0.4. Schema, status vocab, and concurrency model: ./README.md
+epic: epic-0.4
+title: Both user populations are bootstrapped and verifiable against the IdP
+repo: ram-architecture
+bus_version: arch-v1.0
+status: not-started        # epic-level rollup: not-started | in-progress | blocked | in-review | done
+owner: null                # who is driving this epic (name/handle); null = unassigned
+stories:
+  - story: 0.4.1
+    repo: ram-architecture
+    title: Identity seed scripts (both populations), bootstrap-verification job, and the production bootstrap runbook
+    frs: [FR1, FR4, FR57]
+    bus_version: arch-v1.0
+    status: not-started      # not-started | dispatched | in-progress | in-review | done
+    owner: null
+    pr: null

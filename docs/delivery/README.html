@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JI / RAM Pathfinder Documentation — RAM Pathfinder Documentation</title>
+<title>Delivery Control Plane — RAM Pathfinder Documentation</title>
 <style>
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:16px}
@@ -84,123 +84,104 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 }
 </style>
 </head>
-<body class="">
+<body class="has-toc has-sections">
 <aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
 <main class="content">
-
-<h1>JI / RAM Pathfinder Documentation</h1>
-<div class="living-doc-notice" role="note"><strong>⚠️ Living documents — subject to change.</strong> These pages are working artefacts that evolve as the JI / RAM Pathfinder programme progresses, so treat everything here as provisional and version-dependent. This applies <strong>especially to the <em>to-be</em> RAM Pathfinder artefacts</strong>, which capture in-flight design decisions that are still being refined. Always confirm the current position before relying on any detail for delivery, contractual, or architectural decisions.</div>
-<p>HTML rendering of the JI / RAM Pathfinder planning artefacts. The sidebar — available on every page — is organised so it is clear what belongs to the legacy <strong>as-is</strong> JI and what belongs to the <strong>to-be</strong> RAM Pathfinder rebuild.</p>
-<h2>Overview</h2>
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="delivery-control-plane">Delivery Control Plane</h1>
+<p>This folder is the <strong>control plane</strong> for RAM Pathfinder delivery. It lives in <code>ram-analysis</code> and orchestrates <em>what to build next</em>, <em>whether it traces to a requirement</em>, and <em>how a finished story reports back</em> — <strong>without ever editing service code</strong>. Full rationale: <a href="../architecture/tobe/delivery-operating-model.html"><code>../architecture/delivery-operating-model.md</code></a>.</p>
+<details class="section" id="files"><summary><span class="section-title">Files</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>dispatch-graph.yaml</code></td>
+<td>Machine-readable build order + dependencies (epic-level). Source of truth for "what is buildable next".</td>
+</tr>
+<tr>
+<td><code>ledger/</code></td>
+<td>Traceability ledger, <strong>sharded one file per epic</strong> (<code>ledger/epic-0.x.yaml</code>) so multiple people update different epics without conflicts. Each shard carries epic-level <code>status</code>+<code>owner</code> and per-story <code>status</code>+<code>owner</code>+<code>pr</code>. Schema + concurrency rules: <a href="ledger/README.html"><code>ledger/README.md</code></a>.</td>
+</tr>
+<tr>
+<td><code>README.md</code></td>
+<td>This file — the dispatch/signal loop and how it maps to BMad skills.</td>
+</tr>
+</tbody>
+</table>
+<p>Not here (deliberately): the <strong>context bus</strong> (<code>ram-architecture</code> publish + <code>arch-v1.0</code> tag) and <strong>per-repo scaffolding</strong> (<code>ram-scaffold.sh</code>, <code>_arch/</code> submodule, per-repo <code>CLAUDE.md</code>) — those are downstream. The control plane only <em>references</em> <code>bus_version</code> as a string.</p>
+</div></details><details class="section" id="the-delivery-loop"><summary><span class="section-title">The delivery loop</span></summary><div class="section-body">
+<pre><code>[ram-analysis: control plane]                    [ram-{service}: execution unit]
+  1. SELECT next  ── read dispatch-graph + ledger → next buildable epic/story
+        │
+  2. DISPATCH ──── compile story packet (story + Gherkin ACs + distilled context
+        │          + pinned bus_version) → land as docs/stories/&lt;id&gt;.md in repo
+        │          ledger: status not-started → dispatched
+        │                                                 ▼
+        │                                    3. EXECUTE dev-story in the repo
+        │                                       (reads CLAUDE.md → _arch/ bus)
+        │                                       ledger: dispatched → in-progress → in-review
+        │                                                 │  (human commits via VSCode)
+  4. SIGNAL ◄──────────────────────────────────────────────┘
+        └ ledger: → done, fill `pr`, record bus_version</code></pre>
+<p><strong>Buildable-now rule:</strong> an epic is dispatchable iff every epic in its <code>depends_on</code> is <code>done</code> in the ledger. Epics with disjoint dependency sets and no shared state may run <strong>in parallel</strong>.</p>
+</div></details><details class="section" id="bmad-skill-mapping"><summary><span class="section-title">BMad skill mapping</span></summary><div class="section-body">
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Skill</th>
+<th>Runs in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Select / plan</td>
+<td><code>bmad-sprint-planning</code> (reads <code>dispatch-graph.yaml</code>)</td>
+<td><code>ram-analysis</code></td>
+</tr>
+<tr>
+<td>Dispatch</td>
+<td><code>bmad-create-story</code> / <code>compile-epic-context</code> → story packet</td>
+<td><code>ram-analysis</code></td>
+</tr>
+<tr>
+<td>Execute</td>
+<td><code>bmad-dev-story</code> → <code>bmad-code-review</code></td>
+<td>target repo</td>
+</tr>
+<tr>
+<td>Signal</td>
+<td><code>bmad-sprint-status</code> (updates <code>ledger.yaml</code>)</td>
+<td><code>ram-analysis</code></td>
+</tr>
+</tbody>
+</table>
+</div></details><details class="section" id="conventions"><summary><span class="section-title">Conventions</span></summary><div class="section-body">
 <ul>
-<li><a href="graph.html">Knowledge graph (OKF)</a></li>
+<li><strong>Status lifecycle:</strong> <code>not-started → dispatched → in-progress → in-review → done</code>.</li>
+<li><strong>FR granularity:</strong> epic-level unless a story narrows it. Every FR/NFR should trace to at least one story once all phases are decomposed.</li>
+<li><strong>Git writes are external.</strong> Claude prepares packets, code, and ledger diffs; the human commits via VSCode (per repo CODEOWNERS/branch protection).</li>
+<li><strong>Bus pinning:</strong> a story records the <code>bus_version</code> it was built against; repos re-sync only via an explicit submodule bump.</li>
 </ul>
-<h2>Product</h2>
+</div></details><details class="section" id="multi-user--ownership"><summary><span class="section-title">Multi-user &amp; ownership</span></summary><div class="section-body">
+<p>The ledger is <strong>sharded per epic</strong> for conflict-free concurrent updates, and every epic and story carries a <code>status</code> and an <code>owner</code> so it is always visible who is driving what. Claim-before-you-start (set story <code>status: dispatched</code> + <code>owner</code> and push) is the coordination primitive. Full rules and the status vocab: <a href="ledger/README.html"><code>ledger/README.md</code></a>.</p>
+</div></details><details class="section" id="current-state-2026-07-09"><summary><span class="section-title">Current state (2026-07-09)</span></summary><div class="section-body">
 <ul>
-<li><a href="prd.html">PRD (RAM Pathfinder)</a></li>
-<li><a href="prd-validation-report-2026-06-17.html">PRD validation report — 2026-06-17 (5/5)</a></li>
-<li><a href="prd-validation-report-2026-06-10.html">PRD validation report — 2026-06-10</a></li>
+<li><strong>Phase 0 fully seeded:</strong> 6 epics, 19 stories, all <code>not-started</code>, unassigned (<code>owner: null</code>).</li>
+<li><strong>Phases 1–8 + post-MVP:</strong> repo-level placeholders in <code>dispatch-graph.yaml</code> under <code>future:</code> (<code>decomposed: false</code>). Promote each to an epic node with a <code>stories:</code> list after running <code>bmad-create-epics-and-stories</code> for that phase, and add its rows to <code>ledger.yaml</code>.</li>
+<li><strong>Optional resolver</strong> ("what's buildable now?") is intentionally deferred until dispatch begins.</li>
 </ul>
-<h2>As-is — JI Architecture Views</h2>
-<ul>
-<li><a href="asis/system-context.html">System Context (as-is)</a></li>
-<li><a href="asis/components.html">Components (as-is)</a></li>
-</ul>
-<h2>As-is — JI Analysis Pack</h2>
-<ul>
-<li><a href="architecture/asis/functional-modules.html">Functional modules (as-is)</a></li>
-<li><a href="architecture/asis/data-dependencies.html">Data dependencies (as-is)</a></li>
-<li><a href="architecture/asis/integration-dependencies.html">Integration dependencies (as-is)</a></li>
-</ul>
-<h2>As-is — Tribunals / SSCS</h2>
-<ul>
-<li><a href="architecture/asis/tribunals/sscs/tribunal-payment-templates.html">Tribunal payment templates (as-is)</a></li>
-</ul>
-<h2>As-is — JI Database Schema</h2>
-<ul>
-<li><a href="asis/database/index.html">Database index</a></li>
-<li><a href="asis/database/ji_schema_overview.html">Schema overview</a></li>
-<li><a href="asis/database/ji_schema_judges-profile.html">Judges Profile & Reference</a></li>
-<li><a href="asis/database/ji_schema_judges-patterns.html">Working Patterns, Tickets & Stats</a></li>
-<li><a href="asis/database/ji_schema_absence-cover.html">Absence & Cover Workflow</a></li>
-<li><a href="asis/database/ji_schema_bookings-sittings.html">Bookings & Sittings</a></li>
-<li><a href="asis/database/ji_schema_reference-work.html">Reference Data</a></li>
-<li><a href="asis/database/ji_schema_audit-cross-cutting.html">Audit & Cross-cutting</a></li>
-<li><a href="asis/database/ji_schema_companion.html">Companion reference (triggers, FKs, externals)</a></li>
-</ul>
-<h2>To-be — RAM Pathfinder Architecture</h2>
-<ul>
-<li><a href="architecture.html">Architecture (index)</a></li>
-<li><a href="architecture-summary.html">Architecture summary</a></li>
-</ul>
-<h2>To-be — RAM Pathfinder Analysis</h2>
-<ul>
-<li><a href="architecture/tobe/analysis/function-decomposition.html">Function decomposition (as-is capabilities)</a></li>
-</ul>
-<h2>To-be — RAM Pathfinder Reference</h2>
-<ul>
-<li><a href="architecture/tobe/user-types.html">User types</a></li>
-<li><a href="architecture/tobe/data-tables.html">Authoritative table ownership</a></li>
-<li><a href="architecture/tobe/conventions.html">Conventions</a></li>
-<li><a href="architecture/tobe/repository-strategy.html">Repository strategy</a></li>
-<li><a href="architecture/tobe/repo-structure.html">Repository structure</a></li>
-<li><a href="architecture/tobe/starter-template.html">Starter template</a></li>
-<li><a href="architecture/tobe/functional-requirements-coverage.html">Functional requirements coverage</a></li>
-<li><a href="architecture/tobe/non-functional-requirements-coverage.html">Non-functional requirements coverage</a></li>
-</ul>
-<h2>To-be — RAM Pathfinder Sequence Diagrams</h2>
-<ul>
-<li><a href="architecture/tobe/sequence-diagrams/user-authentication-and-authorisation.html">Authentication & authorisation</a></li>
-<li><a href="architecture/tobe/sequence-diagrams/joh-onboarding-and-sitting-generation.html">JOH onboarding & sitting gen.</a></li>
-<li><a href="architecture/tobe/sequence-diagrams/absence-to-reconciliation.html">Absence → Reconciliation</a></li>
-<li><a href="architecture/tobe/sequence-diagrams/salaried-sitting-confirmation.html">Salaried sitting confirmation</a></li>
-<li><a href="architecture/tobe/sequence-diagrams/payment-batch-flow.html">Payment batch flow</a></li>
-<li><a href="architecture/tobe/sequence-diagrams/itinerary-federated-read.html">Itinerary federated read</a></li>
-<li><a href="architecture/tobe/sequence-diagrams/mi-feed-and-reports-consumption.html">MI Feed & Reports</a></li>
-<li><a href="architecture/tobe/sequence-diagrams/admin-maintenance-flows.html">Admin maintenance flows</a></li>
-</ul>
-<h2>To-be — RAM Pathfinder Open Items</h2>
-<ul>
-<li><a href="architecture/tobe/gaps.html">Gaps</a></li>
-<li><a href="architecture/tobe/assumptions.html">Assumptions</a></li>
-<li><a href="architecture/tobe/changelog.html">Changelog</a></li>
-</ul>
-<h2>Change Control & Readiness</h2>
-<ul>
-<li><a href="sprint-change-proposal-2026-07-07.html">Sprint Change Proposal — 2026-07-07 (Gradle vs Maven-format terminology; contract read-only mirror)</a></li>
-<li><a href="sprint-change-proposal-2026-07-06.html">Sprint Change Proposal — 2026-07-06 (shared infra to dedicated repo, CNP)</a></li>
-<li><a href="sprint-change-proposal-2026-06-17.html">Sprint Change Proposal — 2026-06-17 (integrations-first carve-out)</a></li>
-<li><a href="sprint-change-proposal-2026-06-10.html">Sprint Change Proposal — 2026-06-10 (SSCS-first pivot)</a></li>
-<li><a href="sprint-change-proposal-2026-05-15.html">Sprint Change Proposal — 2026-05-15</a></li>
-<li><a href="implementation-readiness-report-2026-05-15-rev2.html">Readiness — 2026-05-15 rev2 (superseded by SCP 2026-06-10; SSCS-cohort assessment pending)</a></li>
-<li><a href="implementation-readiness-report-2026-05-15.html">Readiness — 2026-05-15 rev1 (superseded by rev2)</a></li>
-<li><a href="implementation-readiness-report-2026-05-06.html">Readiness — 2026-05-06 (historical)</a></li>
-<li><a href="implementation-readiness-report-2026-05-05.html">Readiness — 2026-05-05 (historical)</a></li>
-</ul>
-<h2>Implementation — Epics (Foundations)</h2>
-<ul>
-<li><a href="architecture/tobe/delivery-operating-model.html">Delivery operating model (control plane · context bus · execution units)</a></li>
-<li><a href="delivery/README.html">Delivery control plane (dispatch graph + traceability ledger)</a></li>
-<li><a href="epics/index.html">Epics index</a></li>
-<li><a href="epics/requirements-inventory.html">Requirements inventory</a></li>
-<li><a href="epics/framework.html">Phase × Area framework</a></li>
-<li><a href="epics/fr-coverage-map.html">FR coverage map</a></li>
-</ul>
-<h2>Implementation — Phase 0 (platform-then-integrations-first; Epic 0.0 added 2026-07-06)</h2>
-<ul>
-<li><a href="epics/phase-0/index.html">Phase 0 overview</a></li>
-<li><a href="epics/phase-0/epic-0.0-platform-estate-provisioned.html">Epic 0.0 — Platform estate provisioned, verifiable, CNP-compliant (5 stories)</a></li>
-<li><a href="epics/phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1 — Upstream JOH/MRD reference data is ingested (4 stories)</a></li>
-<li><a href="epics/phase-0/epic-0.2-user-authenticates.html">Epic 0.2 — User authenticates (5 stories)</a></li>
-<li><a href="epics/phase-0/epic-0.3-reference-data-read-only-api.html">Epic 0.3 — Reference data read-only API (2 stories)</a></li>
-<li><a href="epics/phase-0/epic-0.4-user-populations-bootstrapped.html">Epic 0.4 — User populations bootstrapped (1 story)</a></li>
-<li><a href="epics/phase-0/epic-0.5-system-dispatches-emails.html">Epic 0.5 — Notification scaffolded (2 stories)</a></li>
-</ul>
-
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/delivery/README.md</code></p>
 </main>
-
-<script>window.__NAV_BASE__="./";window.__PAGE__="index";</script>
-<script src="./nav.js"></script>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#files">Files</a></li><li><a href="#the-delivery-loop">The delivery loop</a></li><li><a href="#bmad-skill-mapping">BMad skill mapping</a></li><li><a href="#conventions">Conventions</a></li><li><a href="#multi-user--ownership">Multi-user &amp; ownership</a></li><li><a href="#current-state-2026-07-09">Current state (2026-07-09)</a></li></ul></aside>
+<script>window.__NAV_BASE__="../";window.__PAGE__="delivery/README";</script>
+<script src="../nav.js"></script>
 <script>
 (function(){
   // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).

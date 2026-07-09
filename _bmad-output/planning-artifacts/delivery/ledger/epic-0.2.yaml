@@ -1,0 +1,48 @@
+# Ledger shard — Epic 0.2. Schema, status vocab, and concurrency model: ./README.md
+epic: epic-0.2
+title: User authenticates and lands on a role-scoped Home page
+repo: [ram-authorisation, ram-mock-auth, ram-ui]
+bus_version: arch-v1.0
+status: not-started        # epic-level rollup: not-started | in-progress | blocked | in-review | done
+owner: null                # who is driving this epic (name/handle); null = unassigned
+stories:
+  - story: 0.2.1
+    repo: ram-authorisation
+    title: Scaffold ram-authorisation service from the HMCTS Crime SpringBoot template
+    frs: [FR1, FR2, FR3, FR4, NFR12, NFR13]
+    bus_version: arch-v1.0
+    status: not-started      # not-started | dispatched | in-progress | in-review | done
+    owner: null
+    pr: null
+  - story: 0.2.2
+    repo: ram-mock-auth
+    title: User can authenticate against ram-mock-auth and receive a JWT
+    frs: [FR1, NFR12, NFR13]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null
+  - story: 0.2.3
+    repo: ram-authorisation
+    title: ram-authorisation validates JWTs and resolves identity, roles, jurisdiction + Region/Area scope
+    frs: [FR2, FR3, FR4, FR57, NFR12, NFR13]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null
+  - story: 0.2.4
+    repo: ram-ui
+    title: Scaffold ram-ui repo with React + TypeScript + Vite + GOV.UK base + auth wrapper
+    frs: [FR55, FR56, NFR17]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null
+  - story: 0.2.5
+    repo: ram-ui
+    title: User signs into RAM Pathfinder via SSO and lands on a role-scoped Home page
+    frs: [FR1, FR55, NFR17]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null

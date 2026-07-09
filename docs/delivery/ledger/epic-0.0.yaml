@@ -1,0 +1,48 @@
+# Ledger shard — Epic 0.0. Schema, status vocab, and concurrency model: ./README.md
+epic: epic-0.0
+title: Platform estate is provisioned, verifiable, and CNP-compliant
+repo: ram-shared-infrastructure
+bus_version: arch-v1.0
+status: not-started        # epic-level rollup: not-started | in-progress | blocked | in-review | done
+owner: null                # who is driving this epic (name/handle); null = unassigned
+stories:
+  - story: 0.0.1
+    repo: ram-shared-infrastructure
+    title: Scaffold ram-shared-infrastructure and establish the Terraform foundation
+    frs: [FR8, NFR25, NFR26, NFR40, NFR42]
+    bus_version: arch-v1.0
+    status: not-started      # not-started | dispatched | in-progress | in-review | done
+    owner: null
+    pr: null
+  - story: 0.0.2
+    repo: ram-shared-infrastructure
+    title: Provision networking and the AKS cluster (dev), verifiable via kubectl
+    frs: [FR8, NFR25, NFR27, NFR28]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null
+  - story: 0.0.3
+    repo: ram-shared-infrastructure
+    title: Provision PostgreSQL and Key Vault (dev), verifiable over TLS from the cluster
+    frs: [FR8, NFR25, NFR28]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null
+  - story: 0.0.4
+    repo: ram-shared-infrastructure
+    title: Provision ACR and observability (dev), verifiable via image pull and a test trace
+    frs: [FR8, NFR25, NFR28]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null
+  - story: 0.0.5
+    repo: ram-shared-infrastructure
+    title: Provision APIM (dev), verifiable end-to-end via a smoke API over TLS
+    frs: [FR8, FR58, NFR25, NFR28]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null

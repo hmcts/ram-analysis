@@ -1,0 +1,40 @@
+# Ledger shard — Epic 0.1. Schema, status vocab, and concurrency model: ./README.md
+epic: epic-0.1
+title: Upstream JOH/MRD reference data is ingested
+repo: ram-reference-data
+bus_version: arch-v1.0
+status: not-started        # epic-level rollup: not-started | in-progress | blocked | in-review | done
+owner: null                # who is driving this epic (name/handle); null = unassigned
+stories:
+  - story: 0.1.1
+    repo: ram-reference-data
+    title: Scaffold ram-reference-data from the HMCTS starter (onto the Epic 0.0 estate)
+    frs: [FR6, FR7, FR8]
+    bus_version: arch-v1.0
+    status: not-started      # not-started | dispatched | in-progress | in-review | done
+    owner: null
+    pr: null
+  - story: 0.1.2
+    repo: ram-reference-data
+    title: Tier-(a) upstream jo_* tables, ram_sync_status, and tier-(a) write protection
+    frs: [FR6, FR7]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null
+  - story: 0.1.3
+    repo: ram-reference-data
+    title: JOH reference data flows into RAM nightly from the JOH eLinks API
+    frs: [FR6, FR7, NFR24]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null
+  - story: 0.1.4
+    repo: ram-reference-data
+    title: MRD supplementary reference data is ingested from the weekly Excel feed
+    frs: [FR6, FR7, NFR24]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null

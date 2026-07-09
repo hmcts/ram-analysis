@@ -1,0 +1,24 @@
+# Ledger shard — Epic 0.3. Schema, status vocab, and concurrency model: ./README.md
+epic: epic-0.3
+title: Reference data served read-only via a versioned, jurisdiction-filtered API
+repo: ram-reference-data
+bus_version: arch-v1.0
+status: not-started        # epic-level rollup: not-started | in-progress | blocked | in-review | done
+owner: null                # who is driving this epic (name/handle); null = unassigned
+stories:
+  - story: 0.3.1
+    repo: ram-reference-data
+    title: Tier-(b) RAM-owned reference tables, seed data, and the DBA maintenance runbook
+    frs: [FR6, FR7]
+    bus_version: arch-v1.0
+    status: not-started      # not-started | dispatched | in-progress | in-review | done
+    owner: null
+    pr: null
+  - story: 0.3.2
+    repo: ram-reference-data
+    title: Reference Data read-only REST API with jurisdiction filtering, versioning, OpenAPI, RFC 9457 errors
+    frs: [FR6, FR7, FR58]
+    bus_version: arch-v1.0
+    status: not-started
+    owner: null
+    pr: null

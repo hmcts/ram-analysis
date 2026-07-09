@@ -1,0 +1,135 @@
+# dispatch-graph.yaml — RAM Pathfinder delivery dispatch graph (control plane)
+#
+# Machine-readable build order + dependencies. Source of truth for "what is
+# buildable next". Consumed by sprint planning / dispatch; see ./README.md.
+#
+# Granularity: EPIC-LEVEL. Nodes are epics (they roll up to the story-level
+# ledger.yaml). Epic-level is required for Phase 0 because a single repo appears
+# in more than one epic at different points in the order (e.g. ram-reference-data
+# in epic-0.1 then again in epic-0.3 after auth; ram-architecture publishes the
+# bus early but runs the bootstrap epic 0.4 late).
+#
+# Buildable-now rule: an epic is dispatchable iff every epic in its `depends_on`
+# has status `done` in ledger.yaml. Epics with disjoint dependency sets and no
+# shared state may run IN PARALLEL (the AI-led advantage).
+#
+# Authoritative sources: repository-strategy.md, epics/framework.md,
+# architecture/delivery-operating-model.md. Keep in sync when those change.
+
+bus_version: arch-v1.0        # ram-architecture context-bus version repos pin against
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PHASE 0 — foundations (fully decomposed into stories)
+# ─────────────────────────────────────────────────────────────────────────────
+epics:
+  epic-0.0:
+    title: Platform estate is provisioned, verifiable, and CNP-compliant
+    repo: ram-shared-infrastructure
+    phase: 0
+    depends_on: []                       # nothing precedes the estate
+    decomposed: true
+    stories: [0.0.1, 0.0.2, 0.0.3, 0.0.4, 0.0.5]
+
+  arch-baseline:
+    title: Context-bus publish + shared Liquibase baseline (ram_configuration_values)
+    repo: ram-architecture
+    phase: 0
+    depends_on: [epic-0.0]               # baseline changelog needs the shared PostgreSQL
+    decomposed: false                    # programme setup, not a BMad-decomposed epic
+    note: >
+      Publish ram-architecture and tag arch-v1.0 (the bus). Establish the shared
+      ram_configuration_values Liquibase baseline, SELECT-granted to every service
+      role, ahead of the first domain service (epic-0.1). FR8.
+    stories: []
+
+  epic-0.1:
+    title: Upstream JOH/MRD reference data is ingested
+    repo: ram-reference-data
+    phase: 0
+    depends_on: [epic-0.0, arch-baseline]
+    decomposed: true
+    stories: [0.1.1, 0.1.2, 0.1.3, 0.1.4]
+
+  epic-0.2:
+    title: User authenticates and lands on a role-scoped Home page
+    repo: [ram-authorisation, ram-mock-auth, ram-ui]
+    phase: 0
+    depends_on: [epic-0.0, epic-0.1]     # needs jo_people (0.1.3) + the estate
+    decomposed: true
+    stories: [0.2.1, 0.2.2, 0.2.3, 0.2.4, 0.2.5]
+
+  epic-0.3:
+    title: Reference data served read-only via a versioned, jurisdiction-filtered API
+    repo: ram-reference-data
+    phase: 0
+    depends_on: [epic-0.1, epic-0.2]     # read API is downstream of auth (JWTFilter + authz/check, D8)
+    decomposed: true
+    stories: [0.3.1, 0.3.2]
+
+  epic-0.4:
+    title: Both user populations are bootstrapped and verifiable against the IdP
+    repo: ram-architecture
+    phase: 0
+    depends_on: [epic-0.1, epic-0.2]     # needs ram_auth_* tables + jo_* fixtures + mock-auth roster
+    decomposed: true
+    stories: [0.4.1]
+
+  epic-0.5:
+    title: Notification service is scaffolded and contractually ready
+    repo: ram-notification
+    phase: 0
+    depends_on: [epic-0.0]               # only needs the estate — parallelisable with 0.1/0.2
+    decomposed: true
+    stories: [0.5.1, 0.5.2]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PHASES 1–8 + post-MVP — repo-level placeholders (NOT yet decomposed into
+# stories; run bmad-create-epics-and-stories per phase, then promote to epic
+# nodes above with a `stories:` list). Dependencies are repo-level for now.
+# ─────────────────────────────────────────────────────────────────────────────
+future:
+  phase-1-joh:
+    repo: ram-joh
+    phase: 1
+    depends_on: [epic-0.2, epic-0.3]
+    decomposed: false
+  phase-2-absence:
+    repo: ram-absence
+    phase: 2
+    depends_on: [phase-1-joh, epic-0.5]
+    decomposed: false
+  phase-3-vacancy:
+    repo: ram-vacancy
+    phase: 3
+    depends_on: [phase-2-absence]
+    decomposed: false
+  phase-4-booking:
+    repo: ram-booking
+    phase: 4
+    depends_on: [phase-3-vacancy]
+    decomposed: false
+  phase-5-sitting:
+    repo: ram-sitting
+    phase: 5
+    depends_on: [phase-1-joh]
+    decomposed: false
+  phase-6-payment:
+    repo: [ram-payment, ram-payment-batch]
+    phase: 6
+    depends_on: [phase-4-booking, phase-5-sitting, epic-0.5]
+    decomposed: false
+  phase-7-itinerary:
+    repo: ram-itinerary
+    phase: 7
+    depends_on: [phase-1-joh, phase-2-absence, phase-3-vacancy, phase-4-booking, phase-5-sitting]
+    decomposed: false
+  phase-8-mi-feed:
+    repo: ram-mi-feed
+    phase: 8
+    depends_on: [phase-7-itinerary]
+    decomposed: false
+  post-mvp-admin-ui:
+    repo: ram-admin-ui
+    phase: post-mvp
+    depends_on: [epic-0.2, epic-0.3]
+    decomposed: false

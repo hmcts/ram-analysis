@@ -244,6 +244,7 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
     ]),
     ("Implementation — Epics (Foundations)", [
         ("Delivery operating model (control plane · context bus · execution units)", "architecture/tobe/delivery-operating-model", False),
+        ("Delivery control plane (dispatch graph + traceability ledger)", "delivery/README", False),
         ("Epics index", "epics/index", False),
         ("Requirements inventory", "epics/requirements-inventory", False),
         ("Phase × Area framework", "epics/framework", False),
