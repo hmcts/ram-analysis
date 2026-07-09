@@ -63,4 +63,4 @@ Assumptions that affect implementation correctness (not just convenience) are fl
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.

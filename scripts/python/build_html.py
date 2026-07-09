@@ -232,6 +232,7 @@ NAV: List[Tuple[str, List[Tuple[str, str, bool]]]] = [
         ("Changelog", "architecture/tobe/changelog", False),
     ]),
     ("Change Control & Readiness", [
+        ("Sprint Change Proposal — 2026-07-09 (RAM-assigned JOH identity; personnel_number → upstream link)", "sprint-change-proposal-2026-07-09", False),
         ("Sprint Change Proposal — 2026-07-07 (Gradle vs Maven-format terminology; contract read-only mirror)", "sprint-change-proposal-2026-07-07", False),
         ("Sprint Change Proposal — 2026-07-06 (shared infra to dedicated repo, CNP)", "sprint-change-proposal-2026-07-06", False),
         ("Sprint Change Proposal — 2026-06-17 (integrations-first carve-out)", "sprint-change-proposal-2026-06-17", False),

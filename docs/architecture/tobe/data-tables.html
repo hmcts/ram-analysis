@@ -127,7 +127,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tbody>
 </table>
 <p>Separate tables preserve lineage; <code>ram-reference-data</code>'s API exposes both tiers as appropriate but does not blend them.</p>
-</div></details><details class="section" id="reference-data-service-ram-reference-data--32-tables"><summary><span class="section-title">Reference Data service (<code>ram-reference-data</code>) — 32 tables</span></summary><div class="section-body">
+</div></details><details class="section" id="reference-data-service-ram-reference-data--33-tables"><summary><span class="section-title">Reference Data service (<code>ram-reference-data</code>) — 33 tables</span></summary><div class="section-body">
 <p>Single owner of every reference-data table in the shared schema (FR7). Reads by other services go directly via SQL JOIN with per-service SELECT grants. Writes follow the tier.</p>
 <h3 id="tier-a--joh-elinks-upstream-sourced--15-tables">Tier (a) — JOH eLinks upstream-sourced — 15 tables</h3>
 <p>The 15 <code>jo_*</code> entities named in the revised D3, refreshed nightly by the in-process scheduled sync. Upserts key on the upstream natural key; rows absent upstream are <strong>marked inactive, never hard-deleted</strong> (protects FKs from domain tables).</p>
@@ -142,7 +142,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tbody>
 <tr>
 <td><code>jo_people</code></td>
-<td>JOH person records; <strong><code>personnel_number</code> is the canonical JOH identifier</strong> referenced by every domain table and resolved at sign-in from the IdP email<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></td>
+<td>JOH person records; <code>personnel_number</code> is the <strong>upstream natural key</strong> and the link target for <code>ram_joh_identities</code>. RAM's canonical JOH identifier is the UUID in <code>ram_joh_identities</code>, resolved at sign-in from the IdP email<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></td>
 <td>Authorisation (identity lookup), JOH, Booking, Sitting, Itinerary, MI Feed</td>
 </tr>
 <tr>
@@ -247,6 +247,26 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><code>ram_sync_status</code></td>
 <td>Ingestion run log — per-run source, started/finished, outcome, row counts, error detail. RAM-internal tracking entity with no upstream source<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Feeds the wave-gate "reference data current" check and ops triage.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ram-owned-joh-identity--1-table">RAM-owned JOH identity — 1 table</h3>
+<p>RAM's canonical JOH identifier, decoupled from upstream. Written by the eLinks sync <strong>mint-only</strong> (a new <code>personnel_number</code> gets a new UUID; existing mappings are never changed or deleted) and SELECT-granted to every domain service. This insulates RAM domain data from upstream <code>jo_people</code> churn.</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Type</th>
+<th>Purpose</th>
+<th>Key consumers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ram_joh_identities</code></td>
+<td>Domain</td>
+<td><strong>RAM-assigned canonical JOH identifier.</strong> <code>id uuid PK</code> + <code>personnel_number</code> (unique — the link to <code>jo_people</code>) + audit columns. Every RAM domain table references the JOH by <code>joh_id</code> → <code>ram_joh_identities.id</code>, <strong>never</strong> by <code>personnel_number</code>. Minted eagerly during the nightly eLinks sync.</td>
+<td>Authorisation (identity resolution), JOH, Absence, Booking, Sitting, Itinerary, MI Feed</td>
 </tr>
 </tbody>
 </table>
@@ -368,7 +388,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><code>ram_auth_users</code></td>
 <td>Domain</td>
-<td>RAM Pathfinder principal records spanning <strong>both user populations</strong><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>: JOH users link to <code>jo_people</code> via <code>personnel_number</code>; admin-staff users link to <code>ram_auth_staff_identities</code>; <code>principal_kind</code> distinguishes them (and service principals). Carries the user's jurisdiction (FK → <code>jo_jurisdictions</code>).</td>
+<td>RAM Pathfinder principal records spanning <strong>both user populations</strong><a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a>: JOH users link to <code>ram_joh_identities</code> via <code>joh_id</code> (the RAM JOH UUID; <code>ram_joh_identities</code> in turn carries <code>personnel_number</code> → <code>jo_people</code>); admin-staff users link to <code>ram_auth_staff_identities</code>; <code>principal_kind</code> distinguishes them (and service principals). Carries the user's jurisdiction (FK → <code>jo_jurisdictions</code>).</td>
 </tr>
 <tr>
 <td><code>ram_auth_staff_identities</code></td>
@@ -433,7 +453,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tbody>
 </table>
 </div></details><details class="section" id="joh-service-ram-joh--5-tables"><summary><span class="section-title">JOH service (<code>ram-joh</code>) — 5 tables</span></summary><div class="section-body">
-<p>The canonical JOH person record is <strong><code>jo_people</code></strong> (tier (a), owned by <code>ram-reference-data</code>) — there is no separate <code>johs</code> profile table. <code>ram-joh</code> owns the <strong>RAM-owned operational state and overlays</strong> layered over the upstream entities (FR6 tier (b)), all <strong>keyed by <code>personnel_number</code></strong>. Profile <em>views</em> (FR11, FR15) compose tier-(a) data with these overlays via <code>ram-reference-data</code>'s read API; the overlay tables are SELECT-granted to <code>ram_reference_data</code> for that composition (Principle 1 cross-service read).</p>
+<p>The upstream JOH person record is <strong><code>jo_people</code></strong> (tier (a), owned by <code>ram-reference-data</code>); RAM's canonical JOH <em>identifier</em> is the UUID in <code>ram_joh_identities</code>. There is no separate <code>johs</code> profile table. <code>ram-joh</code> owns the <strong>RAM-owned operational state and overlays</strong> layered over the upstream entities (FR6 tier (b)), all <strong>keyed by <code>joh_id</code> → <code>ram_joh_identities</code></strong> (<code>personnel_number</code> is the upstream link held only on <code>ram_joh_identities</code>). Profile <em>views</em> (FR11, FR15) compose tier-(a) data with these overlays via <code>ram-reference-data</code>'s read API; the overlay tables are SELECT-granted to <code>ram_reference_data</code> for that composition (Principle 1 cross-service read).</p>
 <table>
 <thead>
 <tr>
@@ -483,7 +503,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><code>ram_absences</code></td>
 <td>Domain</td>
-<td>Absence records (start/end, type, NTBF flag, status, FR19–FR22); references the JOH by <code>personnel_number</code></td>
+<td>Absence records (start/end, type, NTBF flag, status, FR19–FR22); references the JOH by <code>joh_id</code> → <code>ram_joh_identities</code></td>
 </tr>
 </tbody>
 </table>
@@ -522,7 +542,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><code>ram_bookings</code></td>
 <td>Domain</td>
-<td>Fee-paid booking records (FR29, FR31); references the JOH by <code>personnel_number</code> → <code>jo_people</code>; <code>payment_lifecycle_status_id</code> column is UPDATE-granted to <code>ram_payment</code> per Principle 1. Has <code>version integer NOT NULL DEFAULT 0</code> (<code>@Version</code> for optimistic locking) and a <code>uq_ram_bookings_vacancy_joh_session_date_type</code> unique constraint enforcing natural-key dedup on retries.</td>
+<td>Fee-paid booking records (FR29, FR31); references the JOH by <code>joh_id</code> → <code>ram_joh_identities</code>; <code>payment_lifecycle_status_id</code> column is UPDATE-granted to <code>ram_payment</code> per Principle 1. Has <code>version integer NOT NULL DEFAULT 0</code> (<code>@Version</code> for optimistic locking) and a <code>uq_ram_bookings_vacancy_joh_session_date_type</code> unique constraint enforcing natural-key dedup on retries.</td>
 </tr>
 </tbody>
 </table>
@@ -539,7 +559,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><code>ram_sittings</code></td>
 <td>Domain</td>
-<td>Salaried-JOH sitting records (FR35, FR37, FR38, FR39, FR40 — including verification state); references the JOH by <code>personnel_number</code></td>
+<td>Salaried-JOH sitting records (FR35, FR37, FR38, FR39, FR40 — including verification state); references the JOH by <code>joh_id</code> → <code>ram_joh_identities</code></td>
 </tr>
 </tbody>
 </table>
@@ -571,7 +591,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </tbody>
 </table>
 </div></details><details class="section" id="itinerary-service-ram-itinerary--0-tables"><summary><span class="section-title">Itinerary service (<code>ram-itinerary</code>) — 0 tables</span></summary><div class="section-body">
-<p>Read-model service. No persistent state at MVP per Principle 2 — every read is a SQL JOIN over the shared schema across <code>jo_people</code> (+ <code>ram-joh</code> overlays), <code>ram_absences</code>, <code>ram_vacancies</code>, <code>ram_bookings</code>, <code>ram_sittings</code>. Strategy C cache is post-MVP if measurement justifies.</p>
+<p>Read-model service. No persistent state at MVP per Principle 2 — every read is a SQL JOIN over the shared schema across <code>ram_joh_identities</code> (the JOH spine; joined to <code>jo_people</code> for upstream attributes and to <code>ram-joh</code> overlays), <code>ram_absences</code>, <code>ram_vacancies</code>, <code>ram_bookings</code>, <code>ram_sittings</code>. Strategy C cache is post-MVP if measurement justifies.</p>
 </div></details><details class="section" id="mi-feed-service-ram-mi-feed--0-tables"><summary><span class="section-title">MI Feed service (<code>ram-mi-feed</code>) — 0 tables</span></summary><div class="section-body">
 <p>Read-model service. Same pattern as Itinerary; SQL JOIN over the shared schema for aggregate reporting. Aggregate-only by contract — no case-level data (D12: case/hearing data has no tables anywhere in RAM).</p>
 </div></details><details class="section" id="mock-authentication-service-ram-mock-auth--2-tables-devintegration-only"><summary><span class="section-title">Mock authentication service (<code>ram-mock-auth</code>) — 2 tables (dev/integration only)</span></summary><div class="section-body">
@@ -621,20 +641,20 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ol>
 <li id="fn1"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn9"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn10"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 
 <p class="source-note">Source: <code>_bmad-output/planning-artifacts/architecture/data-tables.md</code></p>
 </main>
-<aside class="toc"><h4>On this page</h4><ul><li><a href="#ram-pathfinder-tables-not-legacy-tables">RAM Pathfinder tables, not legacy tables</a></li><li><a href="#the-two-ownership-tiers-fr6fr7">The two ownership tiers (FR6/FR7)</a></li><li><a href="#reference-data-service-ram-reference-data--32-tables">Reference Data service (ram-reference-data) — 32 tables</a></li><li class="h3"><a href="#tier-a--joh-elinks-upstream-sourced--15-tables">Tier (a) — JOH eLinks upstream-sourced — 15 tables</a></li><li class="h3"><a href="#tier-a--mrd-upstream-sourced--1-table">Tier (a) — MRD upstream-sourced — 1 table</a></li><li class="h3"><a href="#ram-internal-sync-tracking--1-table">RAM-internal sync tracking — 1 table</a></li><li class="h3"><a href="#tier-b--ram-owned--15-tables">Tier (b) — RAM-owned — 15 tables</a></li><li><a href="#authorisation-service-ram-authorisation--6-tables">Authorisation service (ram-authorisation) — 6 tables</a></li><li><a href="#shared-infrastructure-tables-no-owning-service--1-table">Shared infrastructure tables (no owning service) — 1 table</a></li><li><a href="#notification-service-ram-notification--1-table">Notification service (ram-notification) — 1 table</a></li><li><a href="#joh-service-ram-joh--5-tables">JOH service (ram-joh) — 5 tables</a></li><li><a href="#absence-service-ram-absence--1-table">Absence service (ram-absence) — 1 table</a></li><li><a href="#vacancy-service-ram-vacancy--2-tables">Vacancy service (ram-vacancy) — 2 tables</a></li><li><a href="#booking-service-ram-booking--1-table">Booking service (ram-booking) — 1 table</a></li><li><a href="#sitting-service-ram-sitting--1-table">Sitting service (ram-sitting) — 1 table</a></li><li><a href="#payment-service-ram-payment--3-tables">Payment service (ram-payment) — 3 tables</a></li><li><a href="#itinerary-service-ram-itinerary--0-tables">Itinerary service (ram-itinerary) — 0 tables</a></li><li><a href="#mi-feed-service-ram-mi-feed--0-tables">MI Feed service (ram-mi-feed) — 0 tables</a></li><li><a href="#mock-authentication-service-ram-mock-auth--2-tables-devintegration-only">Mock authentication service (ram-mock-auth) — 2 tables (dev/integration only)</a></li><li><a href="#inventory-totals">Inventory totals</a></li></ul></aside>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#ram-pathfinder-tables-not-legacy-tables">RAM Pathfinder tables, not legacy tables</a></li><li><a href="#the-two-ownership-tiers-fr6fr7">The two ownership tiers (FR6/FR7)</a></li><li><a href="#reference-data-service-ram-reference-data--33-tables">Reference Data service (ram-reference-data) — 33 tables</a></li><li class="h3"><a href="#tier-a--joh-elinks-upstream-sourced--15-tables">Tier (a) — JOH eLinks upstream-sourced — 15 tables</a></li><li class="h3"><a href="#tier-a--mrd-upstream-sourced--1-table">Tier (a) — MRD upstream-sourced — 1 table</a></li><li class="h3"><a href="#ram-internal-sync-tracking--1-table">RAM-internal sync tracking — 1 table</a></li><li class="h3"><a href="#ram-owned-joh-identity--1-table">RAM-owned JOH identity — 1 table</a></li><li class="h3"><a href="#tier-b--ram-owned--15-tables">Tier (b) — RAM-owned — 15 tables</a></li><li><a href="#authorisation-service-ram-authorisation--6-tables">Authorisation service (ram-authorisation) — 6 tables</a></li><li><a href="#shared-infrastructure-tables-no-owning-service--1-table">Shared infrastructure tables (no owning service) — 1 table</a></li><li><a href="#notification-service-ram-notification--1-table">Notification service (ram-notification) — 1 table</a></li><li><a href="#joh-service-ram-joh--5-tables">JOH service (ram-joh) — 5 tables</a></li><li><a href="#absence-service-ram-absence--1-table">Absence service (ram-absence) — 1 table</a></li><li><a href="#vacancy-service-ram-vacancy--2-tables">Vacancy service (ram-vacancy) — 2 tables</a></li><li><a href="#booking-service-ram-booking--1-table">Booking service (ram-booking) — 1 table</a></li><li><a href="#sitting-service-ram-sitting--1-table">Sitting service (ram-sitting) — 1 table</a></li><li><a href="#payment-service-ram-payment--3-tables">Payment service (ram-payment) — 3 tables</a></li><li><a href="#itinerary-service-ram-itinerary--0-tables">Itinerary service (ram-itinerary) — 0 tables</a></li><li><a href="#mi-feed-service-ram-mi-feed--0-tables">MI Feed service (ram-mi-feed) — 0 tables</a></li><li><a href="#mock-authentication-service-ram-mock-auth--2-tables-devintegration-only">Mock authentication service (ram-mock-auth) — 2 tables (dev/integration only)</a></li><li><a href="#inventory-totals">Inventory totals</a></li></ul></aside>
 <script>window.__NAV_BASE__="../../";window.__PAGE__="architecture/tobe/data-tables";</script>
 <script src="../../nav.js"></script>
 <script>

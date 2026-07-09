@@ -12,7 +12,7 @@ storyCount: 5
 
 # Epic 0.2: User authenticates and lands on a role-scoped Home page
 
-**User outcome:** A RAM Pathfinder user from **either identity population** — a JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance/Payment Authoriser, MI/Reporting) — opens RAM Pathfinder, signs in via SSO, has their canonical identity resolved (personnel number via `jo_people` for JOHs; RAM staff UUID via `ram_auth_staff_identities` for admin staff,[^d9]), has their roles + **jurisdiction** + Region/Area scope resolved, and lands on a Home page showing the navigation and tiles they're authorised to see.
+**User outcome:** A RAM Pathfinder user from **either identity population** — a JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance/Payment Authoriser, MI/Reporting) — opens RAM Pathfinder, signs in via SSO, has their canonical identity resolved (RAM JOH UUID via `jo_people` → `personnel_number` → `ram_joh_identities` for JOHs; RAM staff UUID via `ram_auth_staff_identities` for admin staff,[^d9]), has their roles + **jurisdiction** + Region/Area scope resolved, and lands on a Home page showing the navigation and tiles they're authorised to see.
 
 **Depends on Epic 0.1:** `jo_people` (the JOH identity-lookup target) is populated by the eLinks sync (Story 0.1.3); the shared Azure estate (AKS, PostgreSQL, ACR, APIM, App Insights) is provisioned by `ram-reference-data` (Story 0.1.1) and consumed here.
 
@@ -164,7 +164,7 @@ So that **every domain operation is authorised against bootstrapped user data ac
 **Given** `ram-authorisation` is scaffolded per Story 0.2.1,
 **When** the engineer adds the authorisation tables via the service-owned Liquibase changeset `db/changelog/001-init-auth-schema.sql`,
 **Then** the **6 tables** `ram_auth_users`, `ram_auth_staff_identities`, `ram_auth_roles`, `ram_auth_user_roles`, `ram_auth_user_region_scopes`, `ram_auth_user_activation_flags` exist with the schema specified in `architecture/data-tables.md` (per AR18, AR20),
-**And** `ram_auth_users` carries `principal_kind` (JOH / staff / service) and links to `jo_people.personnel_number` (JOH users) or `ram_auth_staff_identities.id` (admin-staff users — RAM-assigned UUID[^d9]),
+**And** `ram_auth_users` carries `principal_kind` (JOH / staff / service) and links to `ram_joh_identities.id` via `joh_id` (JOH users — `ram_joh_identities` carries `personnel_number` → `jo_people`) or `ram_auth_staff_identities.id` (admin-staff users — RAM-assigned UUID[^d9]),
 **And** `ram_auth_users` carries the user's jurisdiction (FK → `jo_jurisdictions`,[^d8]),
 **And** `ram_auth_user_activation_flags` carries the **(jurisdiction, region) tuple** per FR57,
 **And** the `ram_authorisation` DB role owns the tables (per AR19) and holds SELECT on `jo_people` (identity lookup — `jo_people` is owned by `ram-reference-data` and populated by the Epic 0.1 eLinks sync),
@@ -180,8 +180,8 @@ So that **every domain operation is authorised against bootstrapped user data ac
 
 **Given** an authenticated request reaches `POST /v1/authz/check` with a body `{"principal": "joh.test@example.justice.gov.uk"}` (a **JOH** user),
 **When** the email resolves against `jo_people`,
-**Then** the response is `200 OK` with a body containing `{"principal": "...", "canonicalId": "<personnel_number>", "population": "joh", "roles": [...], "jurisdiction": "...", "regions": [...], "areas": [...], "activated": true/false}`,
-**And** the personnel number is the canonical identifier carried in `AuthDetails` (per FR1, AR34).
+**Then** the response is `200 OK` with a body containing `{"principal": "...", "canonicalId": "<ram_joh_uuid>", "personnelNumber": "...", "population": "joh", "roles": [...], "jurisdiction": "...", "regions": [...], "areas": [...], "activated": true/false}`,
+**And** the RAM JOH UUID is the canonical identifier carried in `AuthDetails` (per FR1, AR34); `personnel_number` is the upstream link only.
 
 **Given** an authenticated request reaches `POST /v1/authz/check` with a body `{"principal": "caseworker.test@example.justice.gov.uk"}` (an **admin-staff** user),
 **When** the email resolves against `ram_auth_staff_identities`,
@@ -325,5 +325,5 @@ So that **I can begin using RAM Pathfinder's workflows** — and at end of Phase
 **References:** FR1, FR2, FR3, FR55, FR56, FR57 (activation surface); NFR12, NFR13, NFR17, NFR18, NFR19, NFR20, NFR42.
 
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.

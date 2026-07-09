@@ -17,7 +17,7 @@ This is the canonical FR-to-Epic mapping. It is updated each time a phase advanc
 
 | FR | Phase 0 epic / coverage | Post-MVP residual? | Notes |
 |---|---|---|---|
-| FR1 | [Epic 0.2](phase-0/epic-0.2-user-authenticates.md) (sign-in + two-population identity resolution, Stories 0.2.3/0.2.5) + [Epic 0.1](phase-0/epic-0.1-upstream-reference-data-ingested.md) (`jo_people` ingested — the JOH lookup target) + [Epic 0.4](phase-0/epic-0.4-user-populations-bootstrapped.md) (the auth records resolved against) | — | IdP email → `jo_people` personnel number (JOH) or `ram_auth_staff_identities` UUID (staff),[^d9] |
+| FR1 | [Epic 0.2](phase-0/epic-0.2-user-authenticates.md) (sign-in + two-population identity resolution, Stories 0.2.3/0.2.5) + [Epic 0.1](phase-0/epic-0.1-upstream-reference-data-ingested.md) (`jo_people` ingested — the JOH lookup target) + [Epic 0.4](phase-0/epic-0.4-user-populations-bootstrapped.md) (the auth records resolved against) | — | IdP email → `jo_people` → `personnel_number` → `ram_joh_identities` UUID (JOH) or `ram_auth_staff_identities` UUID (staff),[^d9] |
 | FR2 | [Epic 0.2](phase-0/epic-0.2-user-authenticates.md) Story 0.2.3 | — | Authorisation principal → roles + **jurisdiction** + Region/Area scope (read-only API) |
 | FR3 | [Epic 0.2](phase-0/epic-0.2-user-authenticates.md) Story 0.2.3 | — | `GET /v1/users/{id}/effective-permissions` |
 | **FR4** | **Data layer only** in [Epic 0.4](phase-0/epic-0.4-user-populations-bootstrapped.md) (auth tables maintainable by DBAs via SQL per the identity-bootstrap runbook) | **YES — UI surface** for sysadmins **is post-MVP**[^d10] | Bootstrap mechanism itself is outside the PRD's scope[^d9] |
@@ -44,7 +44,7 @@ To be populated by subsequent runs of `bmad-create-epics-and-stories` step 2 aga
 | FR10–FR18 | 1 | JOH Records & Working Patterns (profiles are *views* over tier (a) + `ram-joh` overlays; FR14 is display-only — conversions happen upstream) | ⚪ |
 | FR19–FR22 | 2 | Absence Workflow (first user-initiated Notification consumer via FR20 ack email) | ⚪ |
 | FR23–FR28 | 3 | Vacancy & Cover | ⚪ |
-| FR29–FR34 | 4 | Booking Management (second user-initiated Notification consumer via FR32 ack email; bookings reference JOHs by `personnel_number`) | ⚪ |
+| FR29–FR34 | 4 | Booking Management (second user-initiated Notification consumer via FR32 ack email; bookings reference JOHs by `joh_id` → `ram_joh_identities`) | ⚪ |
 | FR35–FR40 | 5 | Sitting Management | ⚪ |
 | FR41 | 6 | Payment Processing | ⚪ |
 | FR42, FR43, FR45 | 6 | Payment Batch (**first non-user-initiated Notification consumer** — `client_credentials` flow established here) | ⚪ |
@@ -68,7 +68,7 @@ To be populated by subsequent runs of `bmad-create-epics-and-stories` step 2 aga
 | MRD API integration (replaces the Excel blob-drop reader) | Post-MVP — when MRD ships public APIs (the tables and consumers are unchanged; only the reader swaps) |
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
 [^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.
 [^d12]: D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.

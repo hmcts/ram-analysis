@@ -37,7 +37,7 @@ For naming convention rules (**`ram_` prefix on every RAM-owned table**; `jo_`/`
 
 Separate tables preserve lineage; `ram-reference-data`'s API exposes both tiers as appropriate but does not blend them.
 
-## Reference Data service (`ram-reference-data`) — 32 tables
+## Reference Data service (`ram-reference-data`) — 33 tables
 
 Single owner of every reference-data table in the shared schema (FR7). Reads by other services go directly via SQL JOIN with per-service SELECT grants. Writes follow the tier.
 
@@ -47,7 +47,7 @@ The 15 `jo_*` entities named in the revised D3, refreshed nightly by the in-proc
 
 | Table | Purpose | Key consumers |
 |---|---|---|
-| `jo_people` | JOH person records; **`personnel_number` is the canonical JOH identifier** referenced by every domain table and resolved at sign-in from the IdP email[^d9] | Authorisation (identity lookup), JOH, Booking, Sitting, Itinerary, MI Feed |
+| `jo_people` | JOH person records; `personnel_number` is the **upstream natural key** and the link target for `ram_joh_identities`. RAM's canonical JOH identifier is the UUID in `ram_joh_identities`, resolved at sign-in from the IdP email[^d9] | Authorisation (identity lookup), JOH, Booking, Sitting, Itinerary, MI Feed |
 | `jo_appointments` | JOH appointments | JOH profile views (FR11) |
 | `jo_judiciary_role_assignments` | JOH judiciary-role assignments | JOH profile views |
 | `jo_authorisations_with_dates` | JOH authorisations with effective dates | JOH profile views, Vacancy matching |
@@ -77,6 +77,14 @@ Weekly Excel feed via blob drop until MRD's public APIs ship; the reader swaps f
 |---|---|
 | `ram_sync_status` | Ingestion run log — per-run source, started/finished, outcome, row counts, error detail. RAM-internal tracking entity with no upstream source[^d3]. Feeds the wave-gate "reference data current" check and ops triage. |
 
+### RAM-owned JOH identity — 1 table
+
+RAM's canonical JOH identifier, decoupled from upstream. Written by the eLinks sync **mint-only** (a new `personnel_number` gets a new UUID; existing mappings are never changed or deleted) and SELECT-granted to every domain service. This insulates RAM domain data from upstream `jo_people` churn.
+
+| Table | Type | Purpose | Key consumers |
+|---|---|---|---|
+| `ram_joh_identities` | Domain | **RAM-assigned canonical JOH identifier.** `id uuid PK` + `personnel_number` (unique — the link to `jo_people`) + audit columns. Every RAM domain table references the JOH by `joh_id` → `ram_joh_identities.id`, **never** by `personnel_number`. Minted eagerly during the nightly eLinks sync. | Authorisation (identity resolution), JOH, Absence, Booking, Sitting, Itinerary, MI Feed |
+
 ### Tier (b) — RAM-owned — 15 tables
 
 Maintained in RAM (DBAs via SQL per runbook in MVP[^d10]; admin UI post-MVP). Never overwritten by upstream sync.
@@ -105,7 +113,7 @@ Strictly RAM-internal[^d9] — populated by programme-management / operational m
 
 | Table | Type | Purpose |
 |---|---|---|
-| `ram_auth_users` | Domain | RAM Pathfinder principal records spanning **both user populations**[^d9]: JOH users link to `jo_people` via `personnel_number`; admin-staff users link to `ram_auth_staff_identities`; `principal_kind` distinguishes them (and service principals). Carries the user's jurisdiction (FK → `jo_jurisdictions`). |
+| `ram_auth_users` | Domain | RAM Pathfinder principal records spanning **both user populations**[^d9]: JOH users link to `ram_joh_identities` via `joh_id` (the RAM JOH UUID; `ram_joh_identities` in turn carries `personnel_number` → `jo_people`); admin-staff users link to `ram_auth_staff_identities`; `principal_kind` distinguishes them (and service principals). Carries the user's jurisdiction (FK → `jo_jurisdictions`). |
 | `ram_auth_staff_identities` | Domain | **RAM-internal staff identity table** for HMCTS administrative staff (RSU, Court users, Tribunal Caseworkers, Finance/Payment Authoriser, MI/Reporting) — not present in JOH eLinks data. Canonical identifier: **RAM-assigned UUID** (architecture decision, 2026-06-11); IdP email is the lookup key, mirroring the JOH email → personnel-number pattern. |
 | `ram_auth_roles` | Domain | RAM Pathfinder authorisation roles (shared by both populations — the populations differ in identity source, not authorisation semantics) |
 | `ram_auth_user_roles` | Domain | User-role junction (many-to-many) |
@@ -128,7 +136,7 @@ Schema-managed by `ram-architecture`'s Liquibase baseline changelog; SELECT-gran
 
 ## JOH service (`ram-joh`) — 5 tables
 
-The canonical JOH person record is **`jo_people`** (tier (a), owned by `ram-reference-data`) — there is no separate `johs` profile table. `ram-joh` owns the **RAM-owned operational state and overlays** layered over the upstream entities (FR6 tier (b)), all **keyed by `personnel_number`**. Profile *views* (FR11, FR15) compose tier-(a) data with these overlays via `ram-reference-data`'s read API; the overlay tables are SELECT-granted to `ram_reference_data` for that composition (Principle 1 cross-service read).
+The upstream JOH person record is **`jo_people`** (tier (a), owned by `ram-reference-data`); RAM's canonical JOH *identifier* is the UUID in `ram_joh_identities`. There is no separate `johs` profile table. `ram-joh` owns the **RAM-owned operational state and overlays** layered over the upstream entities (FR6 tier (b)), all **keyed by `joh_id` → `ram_joh_identities`** (`personnel_number` is the upstream link held only on `ram_joh_identities`). Profile *views* (FR11, FR15) compose tier-(a) data with these overlays via `ram-reference-data`'s read API; the overlay tables are SELECT-granted to `ram_reference_data` for that composition (Principle 1 cross-service read).
 
 | Table | Type | Purpose |
 |---|---|---|
@@ -142,7 +150,7 @@ The canonical JOH person record is **`jo_people`** (tier (a), owned by `ram-refe
 
 | Table | Type | Purpose |
 |---|---|---|
-| `ram_absences` | Domain | Absence records (start/end, type, NTBF flag, status, FR19–FR22); references the JOH by `personnel_number` |
+| `ram_absences` | Domain | Absence records (start/end, type, NTBF flag, status, FR19–FR22); references the JOH by `joh_id` → `ram_joh_identities` |
 
 ## Vacancy service (`ram-vacancy`) — 2 tables
 
@@ -155,13 +163,13 @@ The canonical JOH person record is **`jo_people`** (tier (a), owned by `ram-refe
 
 | Table | Type | Purpose |
 |---|---|---|
-| `ram_bookings` | Domain | Fee-paid booking records (FR29, FR31); references the JOH by `personnel_number` → `jo_people`; `payment_lifecycle_status_id` column is UPDATE-granted to `ram_payment` per Principle 1. Has `version integer NOT NULL DEFAULT 0` (`@Version` for optimistic locking) and a `uq_ram_bookings_vacancy_joh_session_date_type` unique constraint enforcing natural-key dedup on retries. |
+| `ram_bookings` | Domain | Fee-paid booking records (FR29, FR31); references the JOH by `joh_id` → `ram_joh_identities`; `payment_lifecycle_status_id` column is UPDATE-granted to `ram_payment` per Principle 1. Has `version integer NOT NULL DEFAULT 0` (`@Version` for optimistic locking) and a `uq_ram_bookings_vacancy_joh_session_date_type` unique constraint enforcing natural-key dedup on retries. |
 
 ## Sitting service (`ram-sitting`) — 1 table
 
 | Table | Type | Purpose |
 |---|---|---|
-| `ram_sittings` | Domain | Salaried-JOH sitting records (FR35, FR37, FR38, FR39, FR40 — including verification state); references the JOH by `personnel_number` |
+| `ram_sittings` | Domain | Salaried-JOH sitting records (FR35, FR37, FR38, FR39, FR40 — including verification state); references the JOH by `joh_id` → `ram_joh_identities` |
 
 ## Payment service (`ram-payment`) — 3 tables
 
@@ -173,7 +181,7 @@ The canonical JOH person record is **`jo_people`** (tier (a), owned by `ram-refe
 
 ## Itinerary service (`ram-itinerary`) — 0 tables
 
-Read-model service. No persistent state at MVP per Principle 2 — every read is a SQL JOIN over the shared schema across `jo_people` (+ `ram-joh` overlays), `ram_absences`, `ram_vacancies`, `ram_bookings`, `ram_sittings`. Strategy C cache is post-MVP if measurement justifies.
+Read-model service. No persistent state at MVP per Principle 2 — every read is a SQL JOIN over the shared schema across `ram_joh_identities` (the JOH spine; joined to `jo_people` for upstream attributes and to `ram-joh` overlays), `ram_absences`, `ram_vacancies`, `ram_bookings`, `ram_sittings`. Strategy C cache is post-MVP if measurement justifies.
 
 ## MI Feed service (`ram-mi-feed`) — 0 tables
 
@@ -213,6 +221,6 @@ Per `ram_mock_auth` DB role. **Never deployed to production**; production deploy
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
 [^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.

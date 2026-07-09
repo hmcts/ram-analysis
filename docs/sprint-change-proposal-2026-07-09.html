@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sprint Change Proposal — 2026-07-09 — RAM Pathfinder Documentation</title>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;line-height:1.55;background:#fff}
+aside.nav{position:fixed;top:0;left:0;width:280px;height:100vh;overflow-y:auto;background:#f6f8fa;border-right:1px solid #d0d7de;padding:16px 12px;font-size:14px}
+aside.nav h2.site-title{font-size:14px;margin:0 0 12px;letter-spacing:.02em;text-transform:uppercase;color:#57606a}
+aside.nav h2.site-title a{color:inherit;text-decoration:none}
+aside.nav details.nav-group{margin:2px 0;border-radius:5px}
+aside.nav details.nav-group>summary{font-size:11px;padding:5px 8px 5px 4px;cursor:pointer;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-radius:4px;list-style:none;user-select:none;display:flex;align-items:center;gap:6px}
+aside.nav details.nav-group>summary::-webkit-details-marker{display:none}
+aside.nav details.nav-group>summary::before{content:'▸';display:inline-block;font-size:9px;color:#8c959f;transition:transform 0.15s ease;flex:0 0 10px;text-align:center}
+aside.nav details.nav-group[open]>summary::before{transform:rotate(90deg)}
+aside.nav details.nav-group>summary:hover{background:#eaeef2;color:#1f2328}
+aside.nav details.nav-group ul{list-style:none;margin:2px 0 6px;padding:0 0 0 16px}
+aside.nav details.nav-group li{margin:1px 0}
+aside.nav details.nav-group a{color:#0969da;text-decoration:none;display:block;padding:3px 8px;border-radius:6px;font-size:13px}
+aside.nav details.nav-group a:hover{background:#eaeef2}
+aside.nav details.nav-group a.current{background:#ddf4ff;font-weight:600;color:#0a3069}
+.nav-controls{margin:0 0 10px;font-size:11px}
+.nav-controls button{background:none;border:none;color:#0969da;cursor:pointer;padding:2px 4px;font-size:inherit;font-family:inherit;text-decoration:underline}
+.nav-controls button:hover{color:#0a3069}
+aside.toc{position:fixed;top:0;right:0;width:240px;height:100vh;overflow-y:auto;background:#fbfbfc;border-left:1px solid #eaeef2;padding:20px 14px;font-size:13px}
+aside.toc h4{font-size:11px;margin:0 0 8px;color:#57606a;text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+aside.toc ul{list-style:none;margin:0;padding:0}
+aside.toc li{margin:1px 0}
+aside.toc li.h3{padding-left:14px;font-size:12px}
+aside.toc a{color:#57606a;text-decoration:none;display:block;padding:3px 8px;border-radius:4px;line-height:1.35;border-left:2px solid transparent}
+aside.toc a:hover{background:#eaeef2;color:#0a3069}
+main.content{margin-left:280px;max-width:1000px;padding:20px 40px 80px}
+body.has-toc main.content{margin-right:240px}
+main h1,main h2,main h3,main h4{margin-top:24px;margin-bottom:8px;font-weight:600;line-height:1.25}
+main h1{border-bottom:1px solid #d0d7de;padding-bottom:6px;font-size:1.9em}
+main h2{border-bottom:1px solid #eaeef2;padding-bottom:4px;font-size:1.4em}
+main h3{font-size:1.15em}
+main p{margin:6px 0 14px}
+main code{background:#eff1f3;padding:1px 4px;border-radius:3px;font-size:.92em;font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,monospace}
+main pre{background:#f6f8fa;padding:12px 14px;border-radius:6px;overflow-x:auto;font-size:.88em;line-height:1.45;border:1px solid #eaeef2}
+main pre code{background:transparent;padding:0;font-size:1em}
+main blockquote{border-left:3px solid #d0d7de;color:#57606a;margin:8px 0;padding:0 12px}
+main table{border-collapse:collapse;margin:12px 0;font-size:.92em;display:block;overflow-x:auto;max-width:100%}
+main th,main td{border:1px solid #d0d7de;padding:6px 10px;vertical-align:top;text-align:left}
+main th{background:#f6f8fa;font-weight:600}
+main tr:nth-child(2n){background:#fafbfc}
+main img{max-width:100%;height:auto;border:1px solid #d0d7de;border-radius:4px;display:block;margin:8px 0}
+main a{color:#0969da;text-decoration:none}
+main a:hover{text-decoration:underline}
+main ul,main ol{margin:6px 0 14px;padding-left:28px}
+main section.footnotes{margin-top:40px;font-size:.85em;color:#57606a}
+main section.footnotes hr{border:none;border-top:1px solid #d0d7de;margin-bottom:10px}
+main section.footnotes p{margin:2px 0}
+a.footnote-ref{font-size:.75em;text-decoration:none;padding:0 1px}
+main li{margin:2px 0}
+main hr{border:none;border-top:1px solid #d0d7de;margin:24px 0}
+main details.section{border:1px solid #d0d7de;border-radius:6px;margin:14px 0;background:#fff;overflow:hidden}
+main details.section>summary{cursor:pointer;padding:10px 14px;background:#f6f8fa;list-style:none;user-select:none;display:flex;align-items:center;gap:10px;color:#1f2328;border-radius:5px}
+main details.section[open]>summary{border-bottom:1px solid #d0d7de;border-radius:5px 5px 0 0}
+main details.section>summary::-webkit-details-marker{display:none}
+main details.section>summary::before{content:'▸';display:inline-block;font-size:11px;color:#57606a;transition:transform 0.15s ease;flex:0 0 12px;text-align:center}
+main details.section[open]>summary::before{transform:rotate(90deg)}
+main details.section>summary:hover{background:#eaeef2}
+main details.section>summary .section-title{font-size:1.15em;font-weight:600;line-height:1.3}
+main details.section>summary .section-title code{font-size:.95em}
+main .section-body{padding:14px 18px 18px}
+main .section-body>h3:first-child,main .section-body>p:first-child,main .section-body>ul:first-child{margin-top:6px}
+.section-controls{margin:6px 0 18px;display:flex;gap:14px;font-size:13px;align-items:center}
+.section-controls .label{color:#57606a;font-size:12px}
+.section-controls button{background:none;border:1px solid #d0d7de;color:#0969da;cursor:pointer;padding:3px 10px;font-size:13px;font-family:inherit;border-radius:5px}
+.section-controls button:hover{background:#eaeef2;color:#0a3069}
+.breadcrumb{color:#57606a;font-size:13px;margin:0 0 16px}
+.breadcrumb a{color:#0969da;text-decoration:none}
+.source-note{margin-top:40px;padding-top:12px;border-top:1px solid #eaeef2;font-size:12px;color:#57606a}
+.source-note a{color:#57606a;text-decoration:underline}
+.living-doc-notice{background:#fff8c5;border:1px solid #d4a72c;border-left:4px solid #d4a72c;border-radius:6px;padding:12px 16px;margin:0 0 22px;font-size:14px;color:#4d3800;line-height:1.55}
+.living-doc-notice strong{color:#3d2e00}
+@media (max-width: 1200px){
+  aside.toc{display:none}
+  body.has-toc main.content{margin-right:0}
+}
+</style>
+</head>
+<body class="has-toc has-sections">
+<aside class="nav" id="nav-root" aria-label="Site navigation"></aside>
+<main class="content">
+<div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
+<h1 id="sprint-change-proposal--2026-07-09">Sprint Change Proposal — 2026-07-09</h1>
+<details class="section" id="section-1--issue-summary"><summary><span class="section-title">Section 1 — Issue Summary</span></summary><div class="section-body">
+<p><strong>Trigger:</strong> Rather than using <code>personnel_number</code> as the JOH identifier <em>within</em> RAM, use it only as the <strong>link to the upstream JO/eLinks system</strong>, and adopt a <strong>RAM-specific UUID</strong> as RAM's canonical JOH identifier — so that issues with upstream data (a <code>personnel_number</code> reissue, a <code>jo_people</code> full-refresh, an upstream key change) cannot negatively affect RAM services.</p>
+<p><strong>Why it matters:</strong> This reverses the core tenet of decision <strong>D9</strong> — <em>"<code>personnel_number</code> is the canonical JOH identifier referenced by every domain table."</em> <code>personnel_number</code> was threaded through every JOH-touching table, <code>ram_auth_users</code>, all JOH API routes, and both sequence diagrams.</p>
+<p><strong>Discovery context:</strong> Raised as a course-correction. Because implementation has <strong>not started</strong>, this is a <strong>documentation/architecture change with no code impact</strong> (like SCP 2026-07-06) — broad surface, low execution risk.</p>
+</div></details><details class="section" id="section-2--impact-analysis"><summary><span class="section-title">Section 2 — Impact Analysis</span></summary><div class="section-body">
+<ul>
+<li><strong>Architecture:</strong> <code>personnel_number</code> demoted from canonical identifier to upstream link; new RAM-owned identity table; FK convention reversed; API keying changed; auth resolution extended. Affected: <code>architecture.md</code>, <code>architecture-summary.md</code>, <code>conventions.md</code>, <code>data-tables.md</code>, <code>repository-strategy.md</code>, <code>functional-requirements-coverage.md</code>, <code>user-types.md</code>, <code>assumptions.md</code>, both JOH/auth sequence diagrams.</li>
+<li><strong>Epics/Stories:</strong> Epic 0.1 (<code>ram-reference-data</code>) gains the <code>ram_joh_identities</code> table + eager minting during the eLinks sync; Epic 0.2 auth resolution and <code>/authz/check</code> response now carry the RAM JOH UUID; Epic 0.4 bootstrap seeds/verifies the mapping. Also <code>framework.md</code>, <code>fr-coverage-map.md</code>, <code>requirements-inventory.md</code> (AR22/AR34/AR46), <code>phase-0/index.md</code>. <strong>No new stories; story count unchanged (19).</strong></li>
+<li><strong>PRD:</strong> JOH endpoints rekeyed to <code>{johId}</code>; FR11/FR15 overlay tables rekeyed. Requirement intent unchanged.</li>
+<li><strong>Data model:</strong> +1 table (<code>ram_joh_identities</code>); <code>ram-reference-data</code> 32 → 33 tables.</li>
+<li><strong>Technical impact:</strong> none to code (not started). At build time: one new Liquibase table, a minting step in the eLinks sync, <code>joh_id uuid</code> FK columns on JOH-touching tables, <code>UUID</code> path variables.</li>
+<li><strong>Not changed (intentional):</strong> dated reports (<code>sprint-change-proposal-2026-06-10</code>, <code>prd-validation-report-2026-06-17</code>, <code>implementation-readiness-report-2026-06-17</code>) left as historical; legitimate <em>upstream</em> <code>personnel_number</code> uses kept (<code>jo_people</code> natural key, MRD workbook validation, PII-in-logs prohibition, JSON casing/wrapping anti-pattern examples).</li>
+<li><strong>Downstream:</strong> <code>docs/*.html</code> regenerated from the edited Markdown via <code>build_html.py</code>.</li>
+</ul>
+</div></details><details class="section" id="section-3--recommended-approach"><summary><span class="section-title">Section 3 — Recommended Approach</span></summary><div class="section-body">
+<p><strong>Direct Adjustment.</strong> Decisions taken (user-approved):</p>
+<table>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Choice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mapping-table owner</td>
+<td><strong><code>ram-reference-data</code></strong> — mints the UUID in the same transaction as the <code>jo_people</code> upsert (single writer; link-to-upstream stays with the upstream owner)</td>
+</tr>
+<tr>
+<td>Structure</td>
+<td><strong>New RAM-owned table <code>ram_joh_identities</code></strong> (<code>id uuid PK</code> + unique <code>personnel_number</code> + audit). <em>Forced:</em> cannot be a column on <code>jo_people</code> (tier-(a) upstream, read-only, full-refresh)</td>
+</tr>
+<tr>
+<td>API keying</td>
+<td><strong><code>/v1/johs/{johId}</code></strong> (UUID); <code>personnel_number</code> becomes a <code>?personnelNumber=</code> filter</td>
+</tr>
+<tr>
+<td>Mint timing</td>
+<td><strong>Eagerly at ingestion</strong> — every <code>jo_people</code> row gets a mapping during the nightly eLinks sync</td>
+</tr>
+</tbody>
+</table>
+<p>Risk: negligible (no code, no requirement change). Effort: documentation sweep across ~20 living files.</p>
+</div></details><details class="section" id="section-4--detailed-change-proposals"><summary><span class="section-title">Section 4 — Detailed Change Proposals</span></summary><div class="section-body">
+<p><strong>New table (<code>data-tables.md</code>):</strong></p>
+<blockquote>
+<p><code>ram_joh_identities</code> — RAM-assigned canonical JOH identifier. <code>id uuid PK</code> + <code>personnel_number</code> (unique, link to <code>jo_people</code>). Written mint-only by the eLinks sync; SELECT-granted to every domain service. Its own subsection (parallel to <code>ram_sync_status</code>).</p>
+</blockquote>
+<p><strong>Keystone convention flip (<code>conventions.md</code>):</strong></p>
+<blockquote>
+<p>OLD: <em>JOH references use <code>personnel_number</code> → <code>jo_people</code> (the canonical JOH identifier), not a surrogate id.</em> NEW: <em>JOH references use <code>joh_id</code> (uuid) → <code>ram_joh_identities</code> — the RAM-assigned canonical JOH identifier. <code>personnel_number</code> is the upstream link, stored only on <code>ram_joh_identities</code>, never a domain FK.</em></p>
+</blockquote>
+<p><strong>Representative edits applied:</strong></p>
+<ul>
+<li>Domain tables (<code>ram_absences</code>, <code>ram_bookings</code>, <code>ram_sittings</code>, <code>ram-joh</code> overlays): "references the JOH by <code>personnel_number</code>" → "by <code>joh_id</code> → <code>ram_joh_identities</code>".</li>
+<li>API: <code>/v1/johs/{personnelNumber}</code> → <code>/v1/johs/{johId}</code> (conventions, prd, project-context; Java <code>@PathVariable UUID johId</code>).</li>
+<li>Auth resolution (architecture, architecture-summary, requirements-inventory AR34, framework, sequence diagram, epic 0.2/0.4, phase-0 index): IdP email → <code>jo_people</code> → <code>personnel_number</code> → <strong><code>ram_joh_identities</code> (RAM JOH UUID)</strong>; <code>/authz/check</code> <code>canonicalId</code> = RAM JOH UUID.</li>
+<li>eLinks sync (architecture, requirements-inventory AR46, epic 0.1, joh-onboarding sequence): now also <strong>mints <code>ram_joh_identities</code> per <code>jo_people</code> row</strong>.</li>
+<li><code>ram_auth_users</code> links JOH principals via <code>joh_id</code> → <code>ram_joh_identities</code> (not <code>personnel_number</code>).</li>
+<li><code>[^d9]</code> footnote refined across all living files; <code>ram-reference-data</code> count 32 → 33; <code>data-tables.md</code> gains the identity subsection.</li>
+<li>Changelog: new <strong>v3.9</strong> entry.</li>
+</ul>
+</div></details><details class="section" id="section-5--implementation-handoff"><summary><span class="section-title">Section 5 — Implementation Handoff</span></summary><div class="section-body">
+<ul>
+<li><strong>Scope: Major</strong> (identity-model change) but <strong>documentation-only</strong> — no code exists to rework.</li>
+<li><strong>Status:</strong> all living-doc edits applied and verified; only legitimate upstream/PII/anti-pattern <code>personnel_number</code> references remain.</li>
+<li><strong>Remaining step:</strong> regenerate <code>docs/*.html</code> via <code>build-html.sh</code>, then commit externally (VSCode).</li>
+<li><strong>When implementation starts:</strong> Story 0.1.2 creates <code>ram_joh_identities</code> (Liquibase); Story 0.1.3 mints it during the eLinks sync; every JOH-touching domain table carries <code>joh_id uuid</code> FK; JOH APIs key on <code>{johId}</code>.</li>
+<li><strong>Success criteria:</strong> no living doc treats <code>personnel_number</code> as RAM's JOH identifier; <code>ram_joh_identities</code> is the single canonical JOH id; RAM domain data is insulated from upstream churn.</li>
+</ul>
+</div></details>
+<p class="source-note">Source: <code>_bmad-output/planning-artifacts/sprint-change-proposal-2026-07-09.md</code></p>
+</main>
+<aside class="toc"><h4>On this page</h4><ul><li><a href="#section-1--issue-summary">Section 1 — Issue Summary</a></li><li><a href="#section-2--impact-analysis">Section 2 — Impact Analysis</a></li><li><a href="#section-3--recommended-approach">Section 3 — Recommended Approach</a></li><li><a href="#section-4--detailed-change-proposals">Section 4 — Detailed Change Proposals</a></li><li><a href="#section-5--implementation-handoff">Section 5 — Implementation Handoff</a></li></ul></aside>
+<script>window.__NAV_BASE__="./";window.__PAGE__="sprint-change-proposal-2026-07-09";</script>
+<script src="./nav.js"></script>
+<script>
+(function(){
+  // Sidebar accordion behaviour lives in the shared nav.js (loaded per page).
+
+  // 1. When a fragment link points to a heading inside a collapsed <details>,
+  //    open all ancestor <details> elements so the target is visible.
+  function openAncestors(id){
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    var cur = el.parentElement;
+    while (cur) {
+      if (cur.tagName === 'DETAILS') cur.open = true;
+      cur = cur.parentElement;
+    }
+    setTimeout(function(){
+      try { el.scrollIntoView({block: 'start', behavior: 'smooth'}); } catch (e) {}
+    }, 60);
+  }
+  if (window.location.hash) {
+    openAncestors(window.location.hash.slice(1));
+  }
+  window.addEventListener('hashchange', function(){
+    openAncestors(window.location.hash.slice(1));
+  });
+  document.addEventListener('click', function(e){
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    var href = a.getAttribute('href');
+    if (!href || href.length < 2) return;
+    setTimeout(function(){ openAncestors(href.slice(1)); }, 10);
+  });
+
+  // 2. Expand all / Collapse all (content sections)
+  document.querySelectorAll('button[data-section-action]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var open = b.dataset.sectionAction === 'expand';
+      document.querySelectorAll('main.content details.section').forEach(function(d){ d.open = open; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

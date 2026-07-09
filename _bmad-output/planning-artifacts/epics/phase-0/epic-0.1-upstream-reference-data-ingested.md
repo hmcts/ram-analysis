@@ -134,7 +134,7 @@ So that **`jo_people` and the rest of the tier-(a) surface exist with the correc
 **When** the engineer adds the Liquibase changeset `db/changelog/001-init-tier-a-upstream-tables.sql` (formatted-SQL, included from `db.changelog-master.yaml`),
 **Then** the 15 `jo_*` tables exist with schemas per `architecture/data-tables.md` (`jo_people`, `jo_appointments`, `jo_judiciary_role_assignments`, `jo_authorisations_with_dates`, `jo_appointment_titles`, `jo_base_locations`, `jo_contract_types`, `jo_genders`, `jo_judiciary_roles`, `jo_jurisdictions`, `jo_locations`, `jo_location_types`, `jo_tickets`, `jo_ticket_categories`, `jo_ticket_category_types`),
 **And** `ram_sync_status` exists (RAM-internal ingestion run log),
-**And** `jo_people.personnel_number` is the primary key — the canonical JOH identifier referenced by every downstream domain table (per AR22),
+**And** `jo_people.personnel_number` is the upstream natural key, to which RAM binds a stable `ram_joh_identities.id` (UUID) — the RAM-assigned canonical JOH identifier referenced by every downstream domain table (per AR22); `personnel_number` is the upstream link only,
 **And** `jo_jurisdictions` preserves the upstream parent-child hierarchy shape (or establishes it on ingest)[^d8],
 **And** the `ram_reference_data` DB role owns the tables; **no other role holds INSERT/UPDATE on any `jo_*` table** (tier-(a) write protection per AR49, FR6),
 **And** SELECT grants exist for `ram_authorisation` (identity lookup, Epic 0.2) and placeholder roles for future services,
@@ -161,7 +161,7 @@ So that **`jo_people` exists and is current — making JOH sign-in resolvable (F
 **Given** the tier-(a) `jo_*` tables and `ram_sync_status` exist per Story 0.1.2,
 **When** the engineer implements the eLinks sync as an in-process `@Scheduled` task (per AR46 — no new deployable, no service principal),
 **Then** the sync runs on its nightly schedule and pulls all 15 entities from the JOH eLinks API using the outbound credential held in Azure Key Vault (per NFR16),
-**And** it **full-refresh-upserts** each table keyed on the upstream natural key (`personnel_number` for `jo_people`),
+**And** it **full-refresh-upserts** each table keyed on the upstream natural key (`personnel_number` for `jo_people`), and mints a `ram_joh_identities` row (a stable RAM JOH UUID keyed to `personnel_number`) for any `jo_people` row lacking one,
 **And** rows absent upstream are **marked inactive — never hard-deleted** (FK protection per AR46),
 **And** the run is recorded in `ram_sync_status` with source, started/finished timestamps, outcome, per-entity row counts, and error detail (per AR48),
 **And** the sync is also manually triggerable by ops (e.g. an actuator-adjacent admin endpoint or k8s Job) for out-of-cycle refreshes.
@@ -174,7 +174,7 @@ So that **`jo_people` exists and is current — making JOH sign-in resolvable (F
 
 **Given** the sync has run successfully at least once in dev,
 **When** `ram-authorisation` (Epic 0.2, Story 0.2.3) looks up a seeded JOH email,
-**Then** the lookup resolves against `jo_people` to a personnel number,
+**Then** the lookup resolves against `jo_people` to a `personnel_number`, and via `ram_joh_identities` to the RAM JOH UUID,
 **And** dev/CI environments use seeded `jo_*` fixtures loaded by the one-off seed scripts where a live eLinks connection is unavailable (per AR52 — the sync code path is integration-tested against a WireMock/stub eLinks API in CI).
 
 **Given** the JOH eLinks API contract has not yet been confirmed (gaps.md G8.1),
@@ -232,5 +232,5 @@ So that **supplementary judicial reference data not present in JOH eLinks (notab
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.

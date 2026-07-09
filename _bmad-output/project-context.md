@@ -47,13 +47,13 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 - Single shared schema; per-service DB roles enforce writes. **Whoever writes the Liquibase changelog owns the table.**
 - **Prefix = ownership:** `ram_` (RAM-owned, entity-plural) · `jo_`/`mrd_` (upstream tier-a, **read-only in RAM**, written only by `ram-reference-data` ingestion) · `mock_` (dev-only, never prod). No `_overlays` suffix (use `ram_joh_ticket`).
-- **PK `id uuid` (never bigint).** FKs `{entity_singular}_id`; JOH refs use `personnel_number` → `jo_people`, not a surrogate. `created_at`/`updated_at timestamptz NOT NULL` on every table.
+- **PK `id uuid` (never bigint).** FKs `{entity_singular}_id`; **JOH refs use `joh_id` (uuid) → `ram_joh_identities`** (RAM-assigned JOH id); `personnel_number` is the upstream link to `jo_people`, held only on `ram_joh_identities`, never a domain FK. `created_at`/`updated_at timestamptz NOT NULL` on every table.
 - **Liquibase for DDL only** (`src/main/resources/db/changelog/NNN-name.sql`) — not for loading upstream data. Cross-table grants are explicit in the owning service's changelog (tier-a: only `ram_reference_data` writes; others SELECT at most).
 
 ### API & formats
 
 - `/v1/` prefix; plural-noun resources (`/v1/johs`, `/v1/bookings`); actions as URL segments (`POST /v1/absences/{id}/approve`) — **never RPC route names**.
-- Path vars/query params `camelCase`; JOH keyed on `{personnelNumber}`. Headers `Title-Kebab-Case`, no `X-` prefix (`Correlation-Id`, `Idempotency-Key`, `Deprecation`, `Sunset`).
+- Path vars/query params `camelCase`; JOH resources keyed on `{johId}` (RAM UUID; `?personnelNumber=` filter). Headers `Title-Kebab-Case`, no `X-` prefix (`Correlation-Id`, `Idempotency-Key`, `Deprecation`, `Sunset`).
 - **JSON `camelCase` everywhere** (DB `snake_case` → API `camelCase` via JPA/Jackson). Success = bare resource (**no `{data,error}` wrapper**). Booleans `true/false` (no 0/1, Y/N). **Timestamps ISO 8601 UTC always (`Z`)**; UI converts to UK local for display only.
 - Pagination: cursor-based for large/chronological lists; offset for small filtered lists. Rate limiting at APIM, not in-service.
 

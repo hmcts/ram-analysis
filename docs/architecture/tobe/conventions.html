@@ -109,18 +109,18 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li><strong>Fitness function in CI</strong> verifies: (a) no two services' Liquibase changesets create overlapping table names; (b) DB role grants align with the documented ownership; (c) tables not in the ownership mapping are flagged.</li>
 <li><strong>Columns:</strong> <code>snake_case</code> — <code>id</code>, <code>created_at</code>, <code>updated_at</code>, <code>payroll_number</code>, <code>is_active</code>.</li>
 <li><strong>Primary keys:</strong> <code>id</code>, type <code>uuid</code>. UUIDs avoid integer-range coupling and "guess the next ID" patterns. Cost over bigint is negligible at this scale. PK generation detail in <a href="../../architecture.html"><code>../architecture.md</code></a> → <em>Data Architecture</em>.</li>
-<li><strong>Foreign keys:</strong> <code>{referenced_entity_singular}_id</code> — <code>booking_id</code>, <code>vacancy_id</code>, <code>absence_id</code>. JOH references use <strong><code>personnel_number</code></strong> → <code>jo_people</code> (the canonical JOH identifier), not a surrogate id. FKs reference tables in the shared schema; no cross-schema FK overhead.</li>
-<li><strong>Indexes:</strong> <code>idx_{table}_{columns}</code> — <code>idx_ram_bookings_personnel_number_date</code>, <code>idx_ram_absences_personnel_number</code>.</li>
+<li><strong>Foreign keys:</strong> <code>{referenced_entity_singular}_id</code> — <code>booking_id</code>, <code>vacancy_id</code>, <code>absence_id</code>, <code>joh_id</code>. <strong>JOH references use <code>joh_id</code> (uuid) → <code>ram_joh_identities</code></strong> — the RAM-assigned canonical JOH identifier. <code>personnel_number</code> is the upstream link to <code>jo_people</code>, stored <strong>only</strong> on <code>ram_joh_identities</code>, and is <strong>never</strong> a domain FK. FKs reference tables in the shared schema; no cross-schema FK overhead.</li>
+<li><strong>Indexes:</strong> <code>idx_{table}_{columns}</code> — <code>idx_ram_bookings_joh_id_date</code>, <code>idx_ram_absences_joh_id</code>.</li>
 <li><strong>Unique constraints:</strong> named <code>uq_{table}_{columns}</code>. Per-table examples in <a href="data-tables.html"><code>./data-tables.md</code></a>.</li>
 <li><strong>Audit columns:</strong> every table has <code>created_at timestamptz NOT NULL</code>, <code>updated_at timestamptz NOT NULL</code>. <code>created_by</code> and <code>updated_by</code> (UUID, FK to user identity) added when D7 user-action audit is implemented post-MVP.</li>
 </ul>
 <p><strong>API endpoints:</strong></p>
 <ul>
 <li><strong>Resources:</strong> plural nouns — <code>/v1/johs</code>, <code>/v1/bookings</code>, <code>/v1/payments</code>.</li>
-<li><strong>Resource IDs in path:</strong> <code>/v1/bookings/{bookingId}</code>; JOH resources key on the personnel number — <code>/v1/johs/{personnelNumber}</code>.</li>
-<li><strong>Sub-resources:</strong> <code>/v1/johs/{personnelNumber}/working-patterns</code>, <code>/v1/johs/{personnelNumber}/tickets</code>.</li>
+<li><strong>Resource IDs in path:</strong> <code>/v1/bookings/{bookingId}</code>; JOH resources key on the RAM JOH UUID — <code>/v1/johs/{johId}</code> (filter by the upstream key via <code>?personnelNumber=</code>).</li>
+<li><strong>Sub-resources:</strong> <code>/v1/johs/{johId}/working-patterns</code>, <code>/v1/johs/{johId}/tickets</code>.</li>
 <li><strong>Actions on resources:</strong> <code>POST /v1/absences/{absenceId}/approve</code>, <code>POST /v1/sittings/{sittingId}/verify</code>. Actions are URL-segments, not RPC-style endpoint names.</li>
-<li><strong>Path variables:</strong> <code>{camelCase}</code> — <code>{personnelNumber}</code>, <code>{bookingId}</code>.</li>
+<li><strong>Path variables:</strong> <code>{camelCase}</code> — <code>{johId}</code>, <code>{bookingId}</code>.</li>
 <li><strong>Query parameters:</strong> <code>camelCase</code> — <code>?regionId=...&amp;fromDate=...&amp;johType=...</code>.</li>
 <li><strong>HTTP headers:</strong> <code>Title-Kebab-Case</code>, no <code>X-</code> prefix per <a href="https://datatracker.ietf.org/doc/html/rfc6648">RFC 6648</a> — <code>Idempotency-Key</code>, <code>Correlation-Id</code>, <code>Sunset</code> (per <a href="https://datatracker.ietf.org/doc/html/rfc8594">RFC 8594</a>), <code>Deprecation</code> (per <a href="https://datatracker.ietf.org/doc/html/rfc9745">RFC 9745</a>).</li>
 <li><strong>Versioning prefix:</strong> <code>/v1/</code> for major version 1, <code>/v2/</code> for v2, etc. (per Step 4 in <a href="../../architecture.html"><code>../architecture.md</code></a>).</li>
@@ -226,7 +226,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </ul>
 <p><strong>API response envelope:</strong></p>
 <ul>
-<li><strong>Success:</strong> direct resource representation, no wrapper. <code>GET /v1/johs/{personnelNumber}</code> returns the JOH JSON directly.</li>
+<li><strong>Success:</strong> direct resource representation, no wrapper. <code>GET /v1/johs/{johId}</code> returns the JOH JSON directly.</li>
 <li><strong>Error:</strong> <a href="https://datatracker.ietf.org/doc/html/rfc9457">RFC 9457</a> <code>application/problem+json</code> envelope (obsoletes RFC 7807; same content type and field shape) per Step 4 in <a href="../../architecture.html"><code>../architecture.md</code></a>.</li>
 </ul>
 <p><strong>HTTP status codes (consistent usage):</strong></p>
@@ -484,10 +484,10 @@ return &lt;ActualContent data={data} /&gt;;</code></pre></li>
 <p><strong>Good — naming:</strong></p>
 <ul>
 <li>Database: <code>ram_</code>-prefixed entity-plural table name (RAM-owned) or source-prefixed (<code>jo_</code>/<code>mrd_</code>, upstream); <code>snake_case</code> columns; <code>id uuid PRIMARY KEY</code>; <code>created_at</code> / <code>updated_at</code> audit columns; natural-key uniqueness via <code>uq_{table}_{columns}</code>. Full per-table detail in <a href="data-tables.html"><code>./data-tables.md</code></a>.</li>
-<li>API: <code>GET /v1/johs/{personnelNumber}</code></li>
-<li>Java: <code>@RestController class JohController { ResponseEntity&lt;JohDto&gt; getJoh(@PathVariable String personnelNumber) { ... } }</code></li>
-<li>TypeScript: <code>function JohProfile({ personnelNumber }: { personnelNumber: string }) { ... }</code></li>
-<li>JSON: <code>{ "personnelNumber": "...", "firstName": "...", "payrollNumber": "...", "isActive": true, "createdAt": "2026-05-06T10:00:00Z" }</code></li>
+<li>API: <code>GET /v1/johs/{johId}</code></li>
+<li>Java: <code>@RestController class JohController { ResponseEntity&lt;JohDto&gt; getJoh(@PathVariable UUID johId) { ... } }</code></li>
+<li>TypeScript: <code>function JohProfile({ johId }: { johId: string }) { ... }</code></li>
+<li>JSON: <code>{ "johId": "...", "personnelNumber": "...", "firstName": "...", "payrollNumber": "...", "isActive": true, "createdAt": "2026-05-06T10:00:00Z" }</code> (<code>johId</code> is the RAM identifier; <code>personnelNumber</code> is the upstream link)</li>
 </ul>
 <p><strong>Anti-patterns — do not:</strong></p>
 <ul>

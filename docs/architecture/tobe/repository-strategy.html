@@ -128,14 +128,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><strong><code>ram-reference-data</code></strong></td>
 <td>0</td>
-<td>Owns all 32 reference-data tables — tier (a) upstream-sourced (15 <code>jo_*</code> + <code>mrd_*</code>) and tier (b) RAM-owned (<code>ram_regions</code> / <code>ram_offices</code> / <code>ram_calendar_periods</code> + vocabularies), plus <code>ram_sync_status</code>. <strong>First domain service scaffolded</strong> (integrations-first sequencing, decision #12 / SCP 2026-06-17); <strong>deploys onto the shared estate provisioned in <code>ram-shared-infrastructure</code></strong> (Epic 0.0, AR53 revised); carries only its own per-repo Terraform (MRD storage, Story 0.1.4).</td>
+<td>Owns all 33 reference-data tables — tier (a) upstream-sourced (15 <code>jo_*</code> + <code>mrd_*</code>) and tier (b) RAM-owned (<code>ram_regions</code> / <code>ram_offices</code> / <code>ram_calendar_periods</code> + vocabularies), plus <code>ram_sync_status</code> and <code>ram_joh_identities</code> (the RAM-assigned JOH identifier, minted during the eLinks sync). <strong>First domain service scaffolded</strong> (integrations-first sequencing, decision #12 / SCP 2026-06-17); <strong>deploys onto the shared estate provisioned in <code>ram-shared-infrastructure</code></strong> (Epic 0.0, AR53 revised); carries only its own per-repo Terraform (MRD storage, Story 0.1.4).</td>
 <td>In-process JOH eLinks nightly sync + MRD weekly blob pick-up (tier a — the programme's first deliverable and first external integration); versioned read API (jurisdiction-filtered<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> — downstream of auth, lands after the auth epic); tier-(b) maintenance by DBAs via SQL in MVP<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>; reads happen via direct SQL by other services.</td>
 </tr>
 <tr>
 <td><strong><code>ram-authorisation</code></strong></td>
 <td>0</td>
 <td>Owns the 6 Authorisation tables; <strong>the per-request authz authority</strong>.</td>
-<td>Manage <code>ram_auth_users</code>, <code>ram_auth_staff_identities</code>, <code>ram_auth_roles</code>, <code>ram_auth_user_roles</code>, <code>ram_auth_user_region_scopes</code>, <code>ram_auth_user_activation_flags</code>; expose <code>POST /authz/check</code> with two-population identity resolution (IdP email → <code>jo_people</code> personnel number for JOHs; → <code>ram_auth_staff_identities</code> RAM UUID for admin staff,<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>); enforce per-(jurisdiction, region) phased activation (FR57).</td>
+<td>Manage <code>ram_auth_users</code>, <code>ram_auth_staff_identities</code>, <code>ram_auth_roles</code>, <code>ram_auth_user_roles</code>, <code>ram_auth_user_region_scopes</code>, <code>ram_auth_user_activation_flags</code>; expose <code>POST /authz/check</code> with two-population identity resolution (IdP email → <code>jo_people</code> → <code>personnel_number</code> → <code>ram_joh_identities</code> RAM JOH UUID for JOHs; → <code>ram_auth_staff_identities</code> RAM UUID for admin staff,<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>); enforce per-(jurisdiction, region) phased activation (FR57).</td>
 </tr>
 <tr>
 <td><strong><code>ram-notification</code></strong></td>
@@ -146,7 +146,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td><strong><code>ram-joh</code></strong></td>
 <td>1</td>
-<td>JOH operational state — working patterns + ticket/location overlays + jurisdictional split, keyed by <code>personnel_number</code>. <em>(Renamed from <code>ram-joh</code><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>; the canonical JOH person record is <code>jo_people</code>, owned by Reference Data.)</em></td>
+<td>JOH operational state — working patterns + ticket/location overlays + jurisdictional split, keyed by <code>joh_id</code> → <code>ram_joh_identities</code>. <em>(Renamed from <code>ram-joh</code><a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>; the canonical JOH person record is <code>jo_people</code>, owned by Reference Data.)</em></td>
 <td>Manage working patterns (FR12); generate forward sittings (FR13); manage ticket overlays (FR15b) and location overlays (FR17); jurisdictional splits with 100% sum constraint (FR16); JOH search/profile views compose <code>jo_*</code> + overlays (FR10, FR11).</td>
 </tr>
 <tr>
@@ -212,7 +212,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <ol>
 <li id="fn1"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>

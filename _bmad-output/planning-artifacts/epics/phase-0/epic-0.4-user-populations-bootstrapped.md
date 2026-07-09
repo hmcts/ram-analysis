@@ -1,6 +1,6 @@
 ---
 type: 'Epic'
-description: 'User outcome: RAM Pathfinder''s two user populations — JOH users (resolved via jo_people → personnel number) and HMCTS admin staff (resolved via ram_auth_staff_identities → RAM-assigned UUID) — have…'
+description: 'User outcome: RAM Pathfinder''s two user populations — JOH users (resolved via jo_people → personnel_number → RAM JOH UUID in ram_joh_identities) and HMCTS admin staff (resolved via ram_auth_staff_identities → RAM-assigned UUID) — have…'
 resource: 'epics/phase-0/epic-0.4-user-populations-bootstrapped.html'
 tags: [ram-pathfinder, epics, phase-0, sscs]
 timestamp: '2026-06-17'
@@ -12,7 +12,7 @@ storyCount: 1
 
 # Epic 0.4: Both user populations are bootstrapped and verifiable against the IdP
 
-**User outcome:** RAM Pathfinder's two user populations[^d9] — **JOH users** (resolved via `jo_people` → personnel number) and **HMCTS admin staff** (resolved via `ram_auth_staff_identities` → RAM-assigned UUID) — have authorisation records (roles, jurisdiction, Region/Area scope, all-FALSE activation flags) in place: seeded by scripts in dev/CI, bootstrapped by programme-management mechanisms in production (outside the PRD's scope), and **verifiable** by a bootstrap-verification job that confirms every user maps to a real IdP principal before any wave cutover. Epic 0.2's sign-in works against this data.
+**User outcome:** RAM Pathfinder's two user populations[^d9] — **JOH users** (resolved via `jo_people` → `personnel_number` → RAM JOH UUID in `ram_joh_identities`) and **HMCTS admin staff** (resolved via `ram_auth_staff_identities` → RAM-assigned UUID) — have authorisation records (roles, jurisdiction, Region/Area scope, all-FALSE activation flags) in place: seeded by scripts in dev/CI, bootstrapped by programme-management mechanisms in production (outside the PRD's scope), and **verifiable** by a bootstrap-verification job that confirms every user maps to a real IdP principal before any wave cutover. Epic 0.2's sign-in works against this data.
 
 **No legacy user migration of any kind**[^d3]: no APEX user dump, no IdP reconciliation ETL, no unmatched-record CSV workflow — none of these exist or will exist. **No admin UI in MVP**[^d10] — operational user/role/scope maintenance happens via direct SQL by DBAs; an admin UI surface is on the post-MVP roadmap.
 
@@ -46,9 +46,9 @@ So that **Epic 0.2's two-population sign-in works end-to-end in every environmen
 
 **Given** the engineer creates the dev/CI seed scripts (one-off scripts per AR52; not a runtime API, not Liquibase changesets),
 **When** the scripts run against a fresh dev/CI database,
-**Then** they populate: representative `jo_*` fixtures (incl. `jo_people` rows whose emails match `ram-mock-auth`'s JOH test users, with stable personnel numbers, and `jo_jurisdictions` covering Tribunals/SSCS + Courts examples) where no live eLinks connection exists,
+**Then** they populate: representative `jo_*` fixtures (incl. `jo_people` rows whose emails match `ram-mock-auth`'s JOH test users, with stable personnel numbers, a minted `ram_joh_identities` UUID per JOH fixture, and `jo_jurisdictions` covering Tribunals/SSCS + Courts examples) where no live eLinks connection exists,
 **And** `ram_auth_staff_identities` rows (RAM-assigned UUIDs) whose emails match the mock-auth admin-staff test users,
-**And** `ram_auth_users` rows for both populations with `principal_kind`, the link to `jo_people.personnel_number` or `ram_auth_staff_identities.id`, and a jurisdiction (FK → `jo_jurisdictions`),
+**And** `ram_auth_users` rows for both populations with `principal_kind`, the link to `ram_joh_identities.id` (JOH) or `ram_auth_staff_identities.id` (staff), and a jurisdiction (FK → `jo_jurisdictions`),
 **And** role assignments (`ram_auth_user_roles`) and Region/Area scopes (`ram_auth_user_region_scopes`) covering every documented role across both populations,
 **And** `ram_auth_user_activation_flags` rows keyed by (jurisdiction, region), **all FALSE** except designated test users flagged TRUE so the Epic 0.2 demo can show both the activated and non-activated paths (FR57),
 **And** the scripts are idempotent (safe re-run on an already-seeded database).
@@ -56,7 +56,7 @@ So that **Epic 0.2's two-population sign-in works end-to-end in every environmen
 **Given** the bootstrap-verification job is implemented (a re-runnable script/k8s Job owned by `ram-architecture`),
 **When** it runs against an environment,
 **Then** for every `ram_auth_users` row it verifies the principal resolves at the configured IdP — by email against the IdP directory (`ram-mock-auth` roster in Phase 0–8; real HMCTS IdP principal export/query at the pre-Phase-9 cutover per gaps.md G1.3),
-**And** it verifies referential integrity per population: every JOH `ram_auth_users` row links to an existing, active `jo_people` personnel number; every staff row links to an existing `ram_auth_staff_identities` UUID,
+**And** it verifies referential integrity per population: every JOH `ram_auth_users` row links to an existing `ram_joh_identities` row whose `personnel_number` maps to an active `jo_people` row; every staff row links to an existing `ram_auth_staff_identities` UUID,
 **And** it produces a verification report (total users per population, verified count, failures with per-row reason),
 **And** a non-empty failure list exits non-zero — wiring the job into the wave-cutover gate (the Phase 9+ rollout runbook and the pre-Phase-9 cutover checklist both require a clean run; per architecture *Wave rollout flow* gate 3),
 **And** the job never modifies data — it is verification-only.
@@ -71,7 +71,7 @@ So that **Epic 0.2's two-population sign-in works end-to-end in every environmen
 
 **Given** the seeds have run in dev,
 **When** the Epic 0.2 Playwright suite executes,
-**Then** the JOH test user signs in and resolves to a personnel number, the admin-staff test user signs in and resolves to a staff UUID (Story 0.2.5),
+**Then** the JOH test user signs in and resolves to a RAM JOH UUID, the admin-staff test user signs in and resolves to a staff UUID (Story 0.2.5),
 **And** the bootstrap-verification job passes cleanly against the seeded environment in CI.
 
 **References:** FR1, FR4 (MVP data-layer criterion), FR57 (initial flag state); NFR13, NFR15 (change trail per runbook), NFR16; AR18–AR20, AR34, AR35, AR52; restructured D9; gaps.md G1.3.
@@ -82,5 +82,5 @@ So that **Epic 0.2's two-population sign-in works end-to-end in every environmen
 - *(No APEX user ETL, IdP-reconciliation matching, or unmatched-decisions CSV workflow exists — revised D3)*
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.

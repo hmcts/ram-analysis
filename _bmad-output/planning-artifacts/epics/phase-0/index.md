@@ -23,7 +23,7 @@ phaseName: 'Foundations'
 - **No legacy data migration**[^d3] — no data migrates from APEX or ListAssist, ever. Judicial-holder reference data is **ingested from upstream sources of truth**: the JOH eLinks API (nightly in-process sync) and MRD (weekly Excel via blob drop). Historical data stays in each jurisdiction's incumbent system.
 - **Platform estate is Epic 0.0 — the first deliverable**: the shared Azure estate (AKS, PostgreSQL, ACR, APIM, App Insights, Key Vault) is provisioned via Terraform in the dedicated `ram-shared-infrastructure` repo and independently verified layer-by-layer (AR53 revised, HMCTS CNP `{product}-shared-infrastructure` standard).
 - **Upstream ingestion is Epic 0.1 — the first domain deliverable**: eLinks sync (Story 0.1.3) + MRD ingestion (Story 0.1.4). `ram-reference-data` is the first domain service scaffolded and deploys onto the Epic 0.0 estate. In-process — **no `ram-integrations` repo**.
-- **Two user populations**[^d9]: JOH users resolve IdP email → `jo_people` → personnel number; HMCTS admin staff resolve via `ram_auth_staff_identities` → RAM-assigned UUID. Both share one authorisation model.
+- **Two user populations**[^d9]: JOH users resolve IdP email → `jo_people` → `personnel_number` → RAM JOH UUID (`ram_joh_identities`); HMCTS admin staff resolve via `ram_auth_staff_identities` → RAM-assigned UUID. Both share one authorisation model and both key on a RAM-assigned UUID.
 - **Jurisdiction is first-class**[^d8]: authz responses carry roles + jurisdiction + Region/Area scope; reference-data API responses are jurisdiction-filtered; activation flags key on the (jurisdiction, region) tuple (FR57).
 - **Admin UI is post-MVP**[^d10]: tier-(b) reference data and user/role/scope maintenance are DBA-via-SQL per runbook.
 
@@ -59,7 +59,7 @@ phaseName: 'Foundations'
 
 ### Epic 0.2: User authenticates and lands on a role-scoped Home page (5 stories)
 
-**User outcome:** A user from **either identity population** — JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance, MI) — signs in via SSO, has their canonical identity resolved (personnel number via the eLinks-synced `jo_people`; staff UUID via `ram_auth_staff_identities`), and lands on a role-scoped Home page. Depends on Epic 0.1 (`jo_people` populated) and consumes the shared estate provisioned in Epic 0.0.
+**User outcome:** A user from **either identity population** — JOH (Judge, Tribunal Judge, Tribunal Member) or HMCTS admin staff (RSU, Court user, Tribunal Caseworker, Finance, MI) — signs in via SSO, has their canonical identity resolved (RAM JOH UUID via the eLinks-synced `jo_people` → `personnel_number` → `ram_joh_identities`; staff UUID via `ram_auth_staff_identities`), and lands on a role-scoped Home page. Depends on Epic 0.1 (`jo_people` populated) and consumes the shared estate provisioned in Epic 0.0.
 
 **FRs covered:** FR1, FR2, FR3, FR55, FR56 (business stack); FR57 (activation surface), FR58 (Authorisation read API)
 
@@ -124,6 +124,6 @@ Not post-MVP (lands in a later MVP phase): **OAuth `client_credentials` flow** f
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
 [^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.

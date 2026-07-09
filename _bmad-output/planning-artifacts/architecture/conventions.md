@@ -32,18 +32,18 @@ This document is the consistency contract for the 11 services and the UI. Patter
 - **Fitness function in CI** verifies: (a) no two services' Liquibase changesets create overlapping table names; (b) DB role grants align with the documented ownership; (c) tables not in the ownership mapping are flagged.
 - **Columns:** `snake_case` — `id`, `created_at`, `updated_at`, `payroll_number`, `is_active`.
 - **Primary keys:** `id`, type `uuid`. UUIDs avoid integer-range coupling and "guess the next ID" patterns. Cost over bigint is negligible at this scale. PK generation detail in [`../architecture.md`](../architecture.md) → *Data Architecture*.
-- **Foreign keys:** `{referenced_entity_singular}_id` — `booking_id`, `vacancy_id`, `absence_id`. JOH references use **`personnel_number`** → `jo_people` (the canonical JOH identifier), not a surrogate id. FKs reference tables in the shared schema; no cross-schema FK overhead.
-- **Indexes:** `idx_{table}_{columns}` — `idx_ram_bookings_personnel_number_date`, `idx_ram_absences_personnel_number`.
+- **Foreign keys:** `{referenced_entity_singular}_id` — `booking_id`, `vacancy_id`, `absence_id`, `joh_id`. **JOH references use `joh_id` (uuid) → `ram_joh_identities`** — the RAM-assigned canonical JOH identifier. `personnel_number` is the upstream link to `jo_people`, stored **only** on `ram_joh_identities`, and is **never** a domain FK. FKs reference tables in the shared schema; no cross-schema FK overhead.
+- **Indexes:** `idx_{table}_{columns}` — `idx_ram_bookings_joh_id_date`, `idx_ram_absences_joh_id`.
 - **Unique constraints:** named `uq_{table}_{columns}`. Per-table examples in [`./data-tables.md`](./data-tables.md).
 - **Audit columns:** every table has `created_at timestamptz NOT NULL`, `updated_at timestamptz NOT NULL`. `created_by` and `updated_by` (UUID, FK to user identity) added when D7 user-action audit is implemented post-MVP.
 
 **API endpoints:**
 
 - **Resources:** plural nouns — `/v1/johs`, `/v1/bookings`, `/v1/payments`.
-- **Resource IDs in path:** `/v1/bookings/{bookingId}`; JOH resources key on the personnel number — `/v1/johs/{personnelNumber}`.
-- **Sub-resources:** `/v1/johs/{personnelNumber}/working-patterns`, `/v1/johs/{personnelNumber}/tickets`.
+- **Resource IDs in path:** `/v1/bookings/{bookingId}`; JOH resources key on the RAM JOH UUID — `/v1/johs/{johId}` (filter by the upstream key via `?personnelNumber=`).
+- **Sub-resources:** `/v1/johs/{johId}/working-patterns`, `/v1/johs/{johId}/tickets`.
 - **Actions on resources:** `POST /v1/absences/{absenceId}/approve`, `POST /v1/sittings/{sittingId}/verify`. Actions are URL-segments, not RPC-style endpoint names.
-- **Path variables:** `{camelCase}` — `{personnelNumber}`, `{bookingId}`.
+- **Path variables:** `{camelCase}` — `{johId}`, `{bookingId}`.
 - **Query parameters:** `camelCase` — `?regionId=...&fromDate=...&johType=...`.
 - **HTTP headers:** `Title-Kebab-Case`, no `X-` prefix per [RFC 6648](https://datatracker.ietf.org/doc/html/rfc6648) — `Idempotency-Key`, `Correlation-Id`, `Sunset` (per [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594)), `Deprecation` (per [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745)).
 - **Versioning prefix:** `/v1/` for major version 1, `/v2/` for v2, etc. (per Step 4 in [`../architecture.md`](../architecture.md)).
@@ -161,7 +161,7 @@ ram-ui/
 
 **API response envelope:**
 
-- **Success:** direct resource representation, no wrapper. `GET /v1/johs/{personnelNumber}` returns the JOH JSON directly.
+- **Success:** direct resource representation, no wrapper. `GET /v1/johs/{johId}` returns the JOH JSON directly.
 - **Error:** [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) `application/problem+json` envelope (obsoletes RFC 7807; same content type and field shape) per Step 4 in [`../architecture.md`](../architecture.md).
 
 **HTTP status codes (consistent usage):**
@@ -331,10 +331,10 @@ The MVP-relevant case is the **payment-processing batch** (`ram-payment-batch`),
 **Good — naming:**
 
 - Database: `ram_`-prefixed entity-plural table name (RAM-owned) or source-prefixed (`jo_`/`mrd_`, upstream); `snake_case` columns; `id uuid PRIMARY KEY`; `created_at` / `updated_at` audit columns; natural-key uniqueness via `uq_{table}_{columns}`. Full per-table detail in [`./data-tables.md`](./data-tables.md).
-- API: `GET /v1/johs/{personnelNumber}`
-- Java: `@RestController class JohController { ResponseEntity<JohDto> getJoh(@PathVariable String personnelNumber) { ... } }`
-- TypeScript: `function JohProfile({ personnelNumber }: { personnelNumber: string }) { ... }`
-- JSON: `{ "personnelNumber": "...", "firstName": "...", "payrollNumber": "...", "isActive": true, "createdAt": "2026-05-06T10:00:00Z" }`
+- API: `GET /v1/johs/{johId}`
+- Java: `@RestController class JohController { ResponseEntity<JohDto> getJoh(@PathVariable UUID johId) { ... } }`
+- TypeScript: `function JohProfile({ johId }: { johId: string }) { ... }`
+- JSON: `{ "johId": "...", "personnelNumber": "...", "firstName": "...", "payrollNumber": "...", "isActive": true, "createdAt": "2026-05-06T10:00:00Z" }` (`johId` is the RAM identifier; `personnelNumber` is the upstream link)
 
 **Anti-patterns — do not:**
 

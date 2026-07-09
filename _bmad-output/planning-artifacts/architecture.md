@@ -140,7 +140,7 @@ Architectural implications:
 - **Stack:** Java 25 (LTS) + Spring Boot 4 + Kubernetes + Microsoft Azure (UK regions only).
 - **Coordination:** REST-first synchronous; no event stream, no message bus, no webhook fabric.
 - **Read-model strategy:** SQL JOINs over the shared schema; no API federation, no cache fallback.
-- **Identity:** OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9 cutover); RAM Pathfinder owns Authorisation; password/session/account lifecycle external. Two distinct user populations[^d9]: JOHs (IdP email → `jo_people` → personnel number) and HMCTS admin staff (RAM-internal staff identity table).
+- **Identity:** OIDC issuer (mock auth Phase 0–8; HMCTS IdP from pre-Phase-9 cutover); RAM Pathfinder owns Authorisation; password/session/account lifecycle external. Two distinct user populations[^d9]: JOHs (IdP email → `jo_people` → `personnel_number` → RAM JOH UUID in `ram_joh_identities`) and HMCTS admin staff (RAM-internal staff identity table). Both populations resolve to a RAM-assigned UUID; `personnel_number` is the upstream link, not the RAM identifier.
 - **Data residency:** Azure UK regions only (no personal data leaves the UK).
 - **No bank details, no case-level data** anywhere by contract.
 - **JOH eLinks API + MRD are MVP integrations** (NFR24 reframed[^d11]); other HR systems remain out of MVP scope.
@@ -285,7 +285,7 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 - **RAM-owned tables** — `ram_` prefix, entity-plural: `ram_absences`, `ram_vacancies`, `ram_bookings`, `ram_sittings`, `ram_payments`, `ram_payment_schedules`, `ram_regions`, `ram_offices`, `ram_calendar_periods`, plus the RAM-owned vocabulary tables. The prefix makes RAM ownership visible at a glance against the upstream-sourced tables. No `_overlays` suffix pattern — JOH operational state over upstream entities is named directly (`ram_joh_ticket`, `ram_joh_location`).
 - **Upstream-sourced tables** — source-system-prefixed: `jo_*` (15 JOH eLinks entities, e.g. `jo_people`, `jo_jurisdictions`, `jo_tickets`) and `mrd_*` (MRD entities). The prefix marks tier-(a) lineage: read-only in RAM, written exclusively by the ingestion mechanisms (FR6/FR7).
 - **Service-internal or ambiguous tables** — service-prefixed: `ram_payment_reconciliations`, `ram_notification_dispatches`, `ram_auth_user_roles`.
-- **JOH operational-state tables** — owned by `ram-joh`, keyed by `personnel_number` (the canonical JOH identifier from `jo_people`): `ram_working_patterns`, `ram_joh_ticket`, `ram_joh_location`, `ram_jurisdictional_splits`.
+- **JOH operational-state tables** — owned by `ram-joh`, keyed by `joh_id` (uuid → `ram_joh_identities`, the RAM-assigned canonical JOH identifier): `ram_working_patterns`, `ram_joh_ticket`, `ram_joh_location`, `ram_jurisdictional_splits`.
 - **Ownership table** in [`./architecture/data-tables.md`](./architecture/data-tables.md).
 - **The team that writes the Liquibase changeset creating the table owns it.** The `db/changelog/NNN-*.sql` lives in the owning service's repo.
 
@@ -306,7 +306,7 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 | Service performs a workflow on another service's data | ❌ Direct DB; ✅ via API | Owning service's REST endpoint |
 | Service writes non-granted columns/tables | ❌ Forbidden | DB rejects |
 
-**Foreign keys within the shared schema** are allowed and encouraged (e.g. `bookings.personnel_number REFERENCES jo_people(personnel_number)`). Domain tables reference JOHs by `personnel_number` — the canonical JOH identifier[^d9]. The eLinks sync **never hard-deletes** `jo_people` rows (departures are marked inactive), so FK targets are stable.
+**Foreign keys within the shared schema** are allowed and encouraged (e.g. `ram_bookings.joh_id REFERENCES ram_joh_identities(id)`). Domain tables reference JOHs by `joh_id` (uuid) — the RAM-assigned canonical JOH identifier[^d9]; `ram_joh_identities.personnel_number` is the stable link to `jo_people`. The eLinks sync **never hard-deletes** `jo_people` rows (departures are marked inactive), and `ram_joh_identities` rows are never deleted, so RAM domain FKs are insulated from upstream churn.
 
 **Per-service DB roles with explicit grants** — `ram_joh`, `ram_booking`, etc. (one per service; `ram_mock_auth` for dev/integration). `ALL` privileges on owned tables. Cross-table access granted explicitly: `GRANT SELECT ON ram_vacancies TO ram_booking; GRANT UPDATE (filled, filled_at) ON ram_vacancies TO ram_booking;`. Grants live in Liquibase changelogs owned by the table-owning service. **Day 1: grants start broad, tighten as patterns become visible.** Tier-(a) tables (`jo_*`, `mrd_*`) are INSERT/UPDATE-able by `ram_reference_data` only (the ingestion writer); every other role gets at most SELECT — the DB enforces "read-only in RAM".
 
@@ -327,7 +327,7 @@ See [`./architecture/starter-template.md`](./architecture/starter-template.md).
 
 **Upstream reference-data ingestion (replaces the retracted Phase 0 ETL):**
 
-- **JOH eLinks sync** — an in-process `@Scheduled` task inside `ram-reference-data` pulls the JOH eLinks API **nightly** and full-refresh-upserts the 15 `jo_*` tables. Upserts key on the upstream natural key (`personnel_number` for `jo_people`); rows absent upstream are **marked inactive, never hard-deleted** (protects FKs from domain tables). Sync runs, outcomes, and row counts are recorded in `ram_sync_status` (RAM-internal tracking entity[^d3]). No new service principal and no new deployable: the task writes the service's own tables in-process, sidestepping the G7 service-auth question entirely; the only credential is the outbound JOH eLinks API credential, held in Key Vault.
+- **JOH eLinks sync** — an in-process `@Scheduled` task inside `ram-reference-data` pulls the JOH eLinks API **nightly** and full-refresh-upserts the 15 `jo_*` tables. Upserts key on the upstream natural key (`personnel_number` for `jo_people`); **for every `jo_people` row the sync also mints, if absent, a `ram_joh_identities` row — a stable RAM JOH UUID keyed to `personnel_number` — so RAM's canonical JOH identifier exists eagerly for every known JOH** (single-writer: `ram_reference_data`). Rows absent upstream are **marked inactive, never hard-deleted** (protects FKs from domain tables); `ram_joh_identities` rows are likewise never deleted. Sync runs, outcomes, and row counts are recorded in `ram_sync_status` (RAM-internal tracking entity[^d3]). No new service principal and no new deployable: the task writes the service's own tables in-process, sidestepping the G7 service-auth question entirely; the only credential is the outbound JOH eLinks API credential, held in Key Vault.
 - **MRD ingestion** — the MRD team's **weekly Excel feed** lands in a dedicated Azure Blob container; a `@Scheduled` task in `ram-reference-data` polls the container, validates the workbook (shape, vocabulary, referential checks), upserts the `mrd_*` tables, and archives the file (retained for lineage/audit). Idempotent per file. The blob-drop seam swaps cleanly for direct MRD API integration when MRD's public APIs ship — only the reader changes, not the tables.
 - **Failure handling** — a failed sync leaves the previous good state in place (each ingestion is transactional per entity set); failures surface via structured logs + `ram_sync_status` for ops triage. Reference data is at most one cycle stale, never partially written.
 - **Jurisdiction hierarchy** — sourced directly from `jo_jurisdictions`[^d8]. The parent-child shape is preserved natively if upstream provides it, or established on ingest. No separate tagging step.
@@ -396,7 +396,7 @@ Each service runs a custom `JWTFilter` (HMCTS Crime template pattern, `io.jsonwe
 
 1. Validate JWT signature and issuer against the issuer's JWKS (mock auth in Phase 0–8; HMCTS IdP from pre-Phase-9). Public keys cached per the issuer's cache headers.
 2. Extract principal identity (sub, email) from JWT claims.
-3. Call `POST /authz/check` against RAM Pathfinder Authorisation. Authorisation resolves the IdP email to the **canonical RAM identifier**[^d9] — **personnel number** via `jo_people` lookup for JOH users, or the **RAM-assigned staff UUID** via `ram_auth_staff_identities` for HMCTS admin staff — then returns roles + **jurisdiction** + Region/Area scope + activation flag (FR57). Both populations share the same authorisation model; only the identity-lookup path differs. RAM Pathfinder's authz state lives in Authorisation, not the IdP — this differs from the template's claims-only approach.
+3. Call `POST /authz/check` against RAM Pathfinder Authorisation. Authorisation resolves the IdP email to the **canonical RAM identifier**[^d9] — the **RAM JOH UUID** via `jo_people` → `personnel_number` → `ram_joh_identities` for JOH users, or the **RAM-assigned staff UUID** via `ram_auth_staff_identities` for HMCTS admin staff — then returns roles + **jurisdiction** + Region/Area scope + activation flag (FR57). Both populations share the same authorisation model; only the identity-lookup path differs. RAM Pathfinder's authz state lives in Authorisation, not the IdP — this differs from the template's claims-only approach.
 4. Store the result in a request-scoped `AuthDetails` bean.
 
 The filter caches authorisation decisions for the request lifecycle only.
@@ -425,7 +425,7 @@ Two patterns at MVP:
 
 **(Reframes the original TBD #7 resolution — the APEX ⇄ IdP ETL matching scheme is retired with the ETL.)** Identity resolution now happens **at sign-in**,[^d9]:
 
-- **JOH users** — the IdP email claim is looked up against `jo_people` (JOH eLinks data ingested into RAM) to resolve the **personnel number**, the canonical, stable RAM identifier for JOHs. Email is the lookup key, not the identifier — emails may change; personnel number is stable across syncs.
+- **JOH users** — the IdP email claim is looked up against `jo_people` to resolve the `personnel_number`, which maps (via `ram_joh_identities`) to the **RAM JOH UUID — the canonical, stable RAM identifier for JOHs**. Email is the lookup key and `personnel_number` the upstream link; neither is the RAM identifier. The RAM UUID stays stable even if a `personnel_number` is reissued or upstream data changes.
 - **HMCTS admin staff** (RSU, Court users, Tribunal Caseworkers, Finance/Payment Authoriser, MI/Reporting) — not present in JOH eLinks data. The IdP email is looked up against **`ram_auth_staff_identities`**, a RAM-internal staff identity table owned by `ram-authorisation`. Canonical identifier: a **RAM-assigned UUID** — consistent with the pack's UUID-PK convention and independent of upstream identifier schemes RAM can't validate at MVP. Populated by programme-management / operational mechanisms outside the PRD's scope.
 - **Unresolvable principals** (valid IdP JWT, no match in either lookup) are rejected at the `JWTFilter` boundary with an [RFC 9457](https://datatracker.ietf.org/doc/html/rfc9457) authorisation problem — same handling as a non-activated user.
 - The lookup result is part of the `POST /authz/check` response and cached for the request lifetime only, like every other authz decision.
@@ -584,7 +584,7 @@ Single-AZ failure within UK South is tolerated transparently: AKS reschedules po
 | 4 | Log retention | 30 days hot in App Insights; 90 days cold in Log Analytics archive |
 | 5 | API versioning | URI prefix major versioning (`/v1/`); 6-month internal / 12-month external deprecation; `Deprecation` header per [RFC 9745](https://datatracker.ietf.org/doc/html/rfc9745); `Sunset` header per [RFC 8594](https://datatracker.ietf.org/doc/html/rfc8594) |
 | 6 | Historical-data access | Historical data stays in the incumbent[^d3]. Courts waves: read-only APEX bridge for 12 months post-region-cutover; one-shot extract thereafter. SSCS wave 1: ListAssist scheduling-data historical-access window settled in the SSCS-cohort readiness assessment (GAPS case management retained). |
-| 7 | Identity-key scheme *(reframed 2026-06-11)* | Runtime identity resolution at sign-in: IdP email → `jo_people` → personnel number (JOHs); IdP email → `ram_auth_staff_identities` → RAM-assigned UUID (admin staff). The APEX ⇄ IdP ETL matching scheme is retired with the ETL. |
+| 7 | Identity-key scheme *(reframed 2026-06-11; revised 2026-07-09)* | Runtime identity resolution at sign-in: IdP email → `jo_people` → `personnel_number` → **RAM JOH UUID (`ram_joh_identities`)** for JOHs; IdP email → `ram_auth_staff_identities` → RAM-assigned UUID for admin staff. Both populations key on a RAM-assigned UUID; `personnel_number` is the upstream link only. The APEX ⇄ IdP ETL matching scheme is retired with the ETL. |
 
 ## Implementation Patterns & Consistency Rules
 
@@ -611,7 +611,7 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 - A service owns its tables and is the only writer (except for cross-service single-field updates per Principle 1).
 - Cross-service reads: SQL JOINs on whitelisted tables.
 - Cross-service writes: direct SQL on whitelisted columns (explicit `UPDATE` grants).
-- FKs within the shared schema are encouraged. Domain tables reference JOHs by `personnel_number` → `jo_people`.
+- FKs within the shared schema are encouraged. Domain tables reference JOHs by `joh_id` (uuid) → `ram_joh_identities`; `personnel_number` is the upstream link to `jo_people`.
 - Reference Data is single-owner, two-tier (FR6/FR7): tier-(a) `jo_*`/`mrd_*` tables written only by the ingestion mechanisms; tier-(b) RAM-owned tables maintained in RAM. Other services read both directly via SQL.
 - Forbidden data: no bank-detail or case-level columns anywhere. Case management, panel composition, and hearing types are external-system concerns[^d12] — no tables for them in RAM.
 - No legacy transactional history anywhere in RAM[^d3]; historical data stays in the cohort's incumbent. RAM Pathfinder domain tables are empty at wave cutover.
@@ -626,7 +626,7 @@ See [`./architecture/repo-structure.md`](./architecture/repo-structure.md).
 |---|---|
 | Identity & Authorisation (FR1–FR5) | `ram-authorisation` repo (incl. `ram_auth_staff_identities` + the `jo_people` identity lookup) + per-service `config/JWTFilter.java`, `config/AuthDetails.java`, `client/AuthorisationClient.java`. **FR4 (User & Role admin)** surface is post-MVP `ram-admin-ui`[^d10]; DBA-via-SQL per runbook in MVP. |
 | Foundational Data Management (FR6–FR9) | `ram-reference-data` (incl. the JOH eLinks sync + MRD ingestion tasks and the two-tier table set), `ram-notification` repos + per-service direct JPA reads from the Reference Data tables. **FR6 tier-(b) maintenance** surface is post-MVP `ram-admin-ui`[^d10]; DBA-via-SQL per runbook in MVP. Tier (a) has no RAM write surface in any phase. **Configuration**: per-service Spring profiles + Key Vault; shared `ram_configuration_values` table (no API) for cross-service policy values, schema-managed by `ram-architecture` Liquibase baseline changelog. |
-| JOH Records & Working Patterns (FR10–FR18) | `ram-joh` repo (JOH operational-state overlays keyed by `personnel_number`); profile *views* compose tier-(a) `jo_*` data with the overlays via `ram-reference-data`'s read API (FR11, FR15) |
+| JOH Records & Working Patterns (FR10–FR18) | `ram-joh` repo (JOH operational-state overlays keyed by `joh_id` → `ram_joh_identities`); profile *views* compose tier-(a) `jo_*` data with the overlays via `ram-reference-data`'s read API (FR11, FR15) |
 | Absence Workflow (FR19–FR22) | `ram-absence` repo |
 | Vacancy & Cover (FR23–FR28) | `ram-vacancy` repo. Booking marks the linked vacancy as filled within Booking's transaction (per Principle 1; see *Data Architecture*). |
 | Booking Management (FR29–FR34) | `ram-booking` repo |
@@ -866,7 +866,7 @@ See [`./architecture/changelog.md`](./architecture/changelog.md). **Latest:** v3
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d7]: D7 — MVP observability is log-based; user-action audit is post-MVP.
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`, owned by `ram-reference-data`); HMCTS admin staff via the RAM-internal staff identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only, insulating RAM domain data from upstream churn. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
 [^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.
 [^d12]: D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.

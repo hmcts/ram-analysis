@@ -36,7 +36,7 @@ This file describes what is built and how it runs. For rationale, alternatives, 
 
 | Service | Responsibility |
 |---|---|
-| `ram-authorisation` | Per-request authz authority; **two-population identity resolution** (JOH via `jo_people` → personnel number; admin staff via `ram_auth_staff_identities` → RAM-assigned UUID); roles, **jurisdiction**, Region/Area scope, (jurisdiction, region) activation flags |
+| `ram-authorisation` | Per-request authz authority; **two-population identity resolution** (JOH via `jo_people` → `personnel_number` → `ram_joh_identities` RAM JOH UUID; admin staff via `ram_auth_staff_identities` → RAM-assigned UUID); roles, **jurisdiction**, Region/Area scope, (jurisdiction, region) activation flags |
 | `ram-reference-data` | Facade over the two-tier reference datastore — tier (a) upstream-sourced `jo_*` (JOH eLinks, nightly in-process sync) + `mrd_*` (MRD weekly Excel via blob drop), read-only in RAM; tier (b) RAM-owned regions/offices/calendar/vocabularies. Read directly via SQL by other services; jurisdiction-filtered API |
 | `ram-notification` | Outbound transactional email (booking / absence acks; JFEPS schedule emails) |
 
@@ -82,7 +82,7 @@ This file describes what is built and how it runs. For rationale, alternatives, 
 - One PostgreSQL Flexible Server instance in UK South. One shared schema. Zone-redundant HA (primary + standby in different AZs; synchronous replication; automatic failover <60 s).
 - 55 tables: 52 service-owned production + 1 shared infrastructure (`ram_configuration_values`) + 2 dev-only (mock-auth).
 - **Two-tier reference data (FR6/FR7):** tier (a) upstream-sourced `jo_*`/`mrd_*` tables — written only by the ingestion mechanisms, never hand-edited, corrections at source; tier (b) RAM-owned tables — maintained in RAM. Separate tables preserve lineage.
-- Domain tables reference JOHs by `personnel_number` → `jo_people` (the canonical JOH identifier). The sync never hard-deletes `jo_people` rows, so FK targets are stable.
+- Domain tables reference JOHs by `joh_id` → `ram_joh_identities` (the RAM-assigned canonical JOH identifier); `personnel_number` is the upstream link to `jo_people`. The sync never hard-deletes `jo_people` rows and `ram_joh_identities` rows are never deleted, so RAM domain FKs are insulated from upstream churn.
 - Per-service DB roles (`ram_joh`, `ram_booking`, `ram_payment`, …) with explicit grants. A service has `ALL` on its own tables; only the specific grants it needs on others. Only `ram_reference_data` holds INSERT/UPDATE on tier-(a) tables.
 - **Cross-service reads** — direct SQL JOIN using SELECT grants. No caching at MVP.
 - **Cross-service simple writes** — direct UPDATE on UPDATE-granted columns within the writer's transaction (e.g. Booking writes `ram_vacancies.filled`).
@@ -106,7 +106,7 @@ Details:
 
 - **End-user authentication** — HMCTS IdP, OIDC `authorization_code`. SSO. JWT issued. `ram-mock-auth` (Spring Authorization Server) is the OIDC issuer in non-production. Mock-to-real cutover is a Spring profile change (issuer-url + JWKS URL flip; no code change).
 - **JWT signature validation** — each service's `JWTFilter` (HMCTS Crime template, `io.jsonwebtoken:jjwt`) validates signature and issuer using the IdP's JWKS endpoint (`/oauth2/jwks` on mock; HMCTS IdP's JWKS URL in production). Validation runs before any controller. Public keys cached per the issuer's cache headers.
-- **End-user authorisation** — after JWT validation, `JWTFilter` calls `POST /authz/check` against `ram-authorisation`. Authorisation resolves the IdP email to the canonical RAM identifier[^d9] — **personnel number** via `jo_people` for JOH users, or the **RAM-assigned staff UUID** via `ram_auth_staff_identities` for HMCTS admin staff — then returns roles + **jurisdiction** + Region/Area scope + activation flag (FR57). Both populations share the same authorisation model. Result stored in a request-scoped `AuthDetails` bean.
+- **End-user authorisation** — after JWT validation, `JWTFilter` calls `POST /authz/check` against `ram-authorisation`. Authorisation resolves the IdP email to the canonical RAM identifier[^d9] — the **RAM JOH UUID** via `jo_people` → `personnel_number` → `ram_joh_identities` for JOH users, or the **RAM-assigned staff UUID** via `ram_auth_staff_identities` for HMCTS admin staff — then returns roles + **jurisdiction** + Region/Area scope + activation flag (FR57). Both populations share the same authorisation model. Result stored in a request-scoped `AuthDetails` bean.
 - **JWT propagation (user-initiated cross-service calls)** — the `RestClient` interceptor copies the inbound `Authorization: Bearer <user-jwt>` header onto outbound calls. The downstream `JWTFilter` validates the same JWT.
 - **Service-principal auth (batch)** — the payment batch authenticates against `ram-mock-auth` (non-prod) via OAuth `client_credentials`, then attaches the service JWT to outbound calls (e.g. Notification). Production issuer is deferred (default: Azure Workload Identity — `architecture/gaps.md` G7.1).
 - **Identity bootstrap verification** — user/authorisation records are bootstrapped by mechanisms outside the PRD's scope (restructured D9 — no legacy user migration); before each wave's cutover, a verification pass confirms every bootstrapped user in both populations maps to a real IdP principal.
@@ -215,7 +215,7 @@ Per the revised D3 (2026-06-10), **RAM Pathfinder migrates nothing from ListAssi
 | PRD | [`./prd.md`](./prd.md) |
 
 [^d8]: D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
 [^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.
 [^d12]: D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.

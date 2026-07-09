@@ -105,7 +105,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <td>FR1</td>
 <td><a href="phase-0/epic-0.2-user-authenticates.html">Epic 0.2</a> (sign-in + two-population identity resolution, Stories 0.2.3/0.2.5) + <a href="phase-0/epic-0.1-upstream-reference-data-ingested.html">Epic 0.1</a> (<code>jo_people</code> ingested — the JOH lookup target) + <a href="phase-0/epic-0.4-user-populations-bootstrapped.html">Epic 0.4</a> (the auth records resolved against)</td>
 <td>—</td>
-<td>IdP email → <code>jo_people</code> personnel number (JOH) or <code>ram_auth_staff_identities</code> UUID (staff),<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
+<td>IdP email → <code>jo_people</code> → <code>personnel_number</code> → <code>ram_joh_identities</code> UUID (JOH) or <code>ram_auth_staff_identities</code> UUID (staff),<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
 </tr>
 <tr>
 <td>FR2</td>
@@ -229,7 +229,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td>FR29–FR34</td>
 <td>4</td>
-<td>Booking Management (second user-initiated Notification consumer via FR32 ack email; bookings reference JOHs by <code>personnel_number</code>)</td>
+<td>Booking Management (second user-initiated Notification consumer via FR32 ack email; bookings reference JOHs by <code>joh_id</code> → <code>ram_joh_identities</code>)</td>
 <td>⚪</td>
 </tr>
 <tr>
@@ -326,14 +326,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 </div></details><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr />
 <ol>
-<li id="fn1"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn2"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn3"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn5"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn6"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn7"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn8"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn9"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn10"><p>D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>

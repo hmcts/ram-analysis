@@ -14,7 +14,7 @@ amended_in: architecture.md v3.0 — Sprint Change Proposal 2026-06-10 cascade (
 
 Sequence diagram of how a new JOH (Judicial Office Holder) enters RAM Pathfinder and how that JOH's working pattern automatically populates planned sittings up to the next 31 March. This is the upstream of every downstream operational flow — absences, vacancies, bookings, sittings, payments, itineraries all depend on the JOH records and planned sittings produced here.
 
-JOH person records are not created manually in RAM[^d3][^d11]. The canonical record is `jo_people`, refreshed nightly from the **JOH eLinks API** by `ram-reference-data`'s in-process scheduled sync. RAM keeps **RAM-owned operational state** over the upstream records — working patterns, ticket overlays, location overlays, jurisdictional splits — owned by `ram-joh` and keyed by `personnel_number`.
+JOH person records are not created manually in RAM[^d3][^d11]. The canonical record is `jo_people`, refreshed nightly from the **JOH eLinks API** by `ram-reference-data`'s in-process scheduled sync. RAM keeps **RAM-owned operational state** over the upstream records — working patterns, ticket overlays, location overlays, jurisdictional splits — owned by `ram-joh` and keyed by `joh_id` → `ram_joh_identities` (RAM's canonical JOH identifier; `personnel_number` is the upstream link).
 
 The as-is equivalent is Module 2 *Manage Judges* in [`../../../docs/architecture/asis/functional-modules.md`](../../../../docs/architecture/asis/functional-modules.md) and Integration Flow 1 *Judge Master Data (eLinks / HR → JI)* in [`../../../docs/architecture/asis/integration-dependencies.md`](../../../../docs/architecture/asis/integration-dependencies.md). In the as-is system the data is copied in manually from eLinks and HR records; RAM Pathfinder replaces the manual copy with the live eLinks integration (NFR24 reframed[^d11]).
 
@@ -42,8 +42,8 @@ Three phases: (1) JOH record arrives via the eLinks sync; (2) working pattern + 
 
 | Phase | Driver | Architectural rule | Outcome |
 |---|---|---|---|
-| 1 — JOH record via eLinks sync | `ram-reference-data` (nightly in-process `@Scheduled` sync) | Revised D3 / FR6 tier (a) — `jo_*` tables refreshed by full-refresh upsert on `personnel_number`; soft-deactivation, never hard-delete; run recorded in `ram_sync_status`; read-only in RAM, corrections at source | New JOH present in `jo_people`; visible to search/profile views (FR10/FR11) |
-| 2 — Working pattern + jurisdictional split | RSU (Full Access) | FR12 + FR16 — pattern type (None / Daily / Weekly), target sit %, per-day work types; jurisdictional split percentages must total exactly 100%. RAM-owned operational state (tier (b)) | Working pattern persisted in `ram_working_patterns`, keyed by `personnel_number` |
+| 1 — JOH record via eLinks sync | `ram-reference-data` (nightly in-process `@Scheduled` sync) | Revised D3 / FR6 tier (a) — `jo_*` tables refreshed by full-refresh upsert on `personnel_number`; a `ram_joh_identities` UUID minted per `jo_people` row; soft-deactivation, never hard-delete; run recorded in `ram_sync_status`; read-only in RAM, corrections at source | New JOH present in `jo_people`; visible to search/profile views (FR10/FR11) |
+| 2 — Working pattern + jurisdictional split | RSU (Full Access) | FR12 + FR16 — pattern type (None / Daily / Weekly), target sit %, per-day work types; jurisdictional split percentages must total exactly 100%. RAM-owned operational state (tier (b)) | Working pattern persisted in `ram_working_patterns`, keyed by `joh_id` → `ram_joh_identities` |
 | 3 — Forward-sitting generation | `ram-joh` (server-side, in-transaction with pattern save) | FR13 — auto-populate planned sittings up to the next 31 March, preserving any prior absences on the affected dates | `ram_sittings` rows in `planned` status for the JOH over the generation horizon; visible to `ram-sitting` for confirmation flows and to `ram-itinerary` for read federation |
 
 ## Where to find more detail
@@ -61,6 +61,6 @@ Three phases: (1) JOH record arrives via the eLinks sync; (2) working pattern + 
 | As-is equivalent (Module 2 Manage Judges; manual eLinks/HR entry) | [`../../../docs/architecture/asis/functional-modules.md` → Module 2](../../../../docs/architecture/asis/functional-modules.md); [`../../../docs/architecture/asis/integration-dependencies.md` → Flow 1](../../../../docs/architecture/asis/integration-dependencies.md) |
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
 [^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.

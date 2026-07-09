@@ -20,7 +20,7 @@ The 60 Functional Requirements are organised into 9 capability areas. Each subse
 
 ## Identity & Authorisation (FR1–FR5)
 
-- **FR1** *(amended 2026-06-10)* — Authenticated users access RAM Pathfinder via HMCTS IdP single sign-on; password, session, and account lifecycle are owned by the IdP. At authentication time, the IdP email is resolved to RAM Pathfinder's canonical identifier — the **personnel number** (JOH users, via `jo_people`) or the RAM-internal staff identifier (admin-staff users, via `ram_auth_staff_identities`)[^d9].
+- **FR1** *(amended 2026-06-10)* — Authenticated users access RAM Pathfinder via HMCTS IdP single sign-on; password, session, and account lifecycle are owned by the IdP. At authentication time, the IdP email is resolved to RAM Pathfinder's canonical identifier — the **RAM JOH UUID** (JOH users, via `jo_people` → `personnel_number` → `ram_joh_identities`) or the RAM-internal staff identifier (admin-staff users, via `ram_auth_staff_identities`)[^d9].
 - **FR2** *(amended 2026-06-10)* — RAM Pathfinder's Authorisation service maps each authenticated principal to one or more roles, a **jurisdiction**, and a Region/Area scope, and authorises every system call against that mapping.
 - **FR3** — Authorised users can retrieve their effective permissions for their authenticated session.
 - **FR4**[^d10] — System administrators can update role, jurisdiction, and Region/Area assignments for any user. In MVP the data layer is editable by DBAs via direct SQL per runbook; the admin UI surface (`ram-admin-ui` Users & Roles module) is post-MVP.
@@ -40,16 +40,16 @@ The 60 Functional Requirements are organised into 9 capability areas. Each subse
 ## JOH Records & Working Patterns (FR10–FR18)
 
 - **FR10** — RSU users can search and filter **JOHs** by name, base location, location type, and JOH type.
-- **FR11** — RSU users can **view** JOH profiles through `ram-reference-data`'s read API. Upstream-sourced fields (`jo_people`, `jo_appointments`, …, MRD Specialisations) are tier (a) — read-only, corrections at source. RAM-owned operational state and overlays (location per FR17, working patterns per FR12, ticket overlays per FR15) are tier (b) — separate tables **keyed by personnel_number**.
+- **FR11** — RSU users can **view** JOH profiles through `ram-reference-data`'s read API. Upstream-sourced fields (`jo_people`, `jo_appointments`, …, MRD Specialisations) are tier (a) — read-only, corrections at source. RAM-owned operational state and overlays (location per FR17, working patterns per FR12, ticket overlays per FR15) are tier (b) — separate tables **keyed by `joh_id` → `ram_joh_identities`**.
 - **FR12** — Authorised users can define and update Working Patterns (None / Daily / Weekly) for JOHs, with target sit %, jurisdictional split, and per-day work-type pattern. RAM-owned operational state (tier (b)).
 - **FR13** — RAM Pathfinder auto-populates JOH itineraries up to the next 31st March from the working pattern, preserving any prior absences.
 - **FR14** *(reframed 2026-06-10)* — Salaried full-time / part-time status is sourced from JOH eLinks (`jo_contract_types`); RAM displays the current status; conversions happen upstream and are reflected at the next sync. The previous in-RAM conversion capability is retracted.
-- **FR15** — Ticket information per JOH role is exposed through `ram-reference-data`'s read API, combining (a) upstream `jo_tickets` (read-only) and (b) RAM-overlay tickets/authorisations in `ram_joh_ticket`, keyed by personnel_number; overlay rows editable by admin staff (DBAs via SQL in MVP).
+- **FR15** — Ticket information per JOH role is exposed through `ram-reference-data`'s read API, combining (a) upstream `jo_tickets` (read-only) and (b) RAM-overlay tickets/authorisations in `ram_joh_ticket`, keyed by `joh_id` → `ram_joh_identities`; overlay rows editable by admin staff (DBAs via SQL in MVP).
 - **FR16** — RAM Pathfinder validates that jurisdictional split percentages total 100% before saving.
 - **FR17** — RSU users can switch a JOH's base location to another office within the same Region; cross-Region changes require OPT Advice Point and are out-of-system. Location changes are RAM-owned operational state (`ram_joh_location`) — not propagated back to JOH eLinks.
 - **FR18** — Authorised users can link to JOHs managed by other offices (off-circuit / cross-Region) for booking purposes (e.g. composing tribunal panels with members from other regions).
 
-**Architectural support:** `ram-joh` repo (Phase 1) — owns the RAM-owned operational overlays keyed by `personnel_number`; the canonical JOH person record is `jo_people` (owned by Reference Data, refreshed by the eLinks sync). Profile views compose tier (a) + tier (b) via `ram-reference-data`'s read API. Working-pattern engine owned by JOH.
+**Architectural support:** `ram-joh` repo (Phase 1) — owns the RAM-owned operational overlays keyed by `joh_id` → `ram_joh_identities`; the upstream JOH person record is `jo_people` (owned by Reference Data, refreshed by the eLinks sync), and RAM's canonical JOH identifier is the UUID in `ram_joh_identities`. Profile views compose tier (a) + tier (b) via `ram-reference-data`'s read API. Working-pattern engine owned by JOH.
 
 ## Absence Workflow (FR19–FR22)
 
@@ -80,7 +80,7 @@ The 60 Functional Requirements are organised into 9 capability areas. Each subse
 - **FR33** — RAM Pathfinder requires a Y/N answer at booking time when a **JOH's** fee entitlement is *Ask when booking*.
 - **FR34** — RAM Pathfinder prevents double-booking of fee-paid **JOHs** for overlapping sessions.
 
-**Architectural support:** `ram-booking` repo (Phase 4); bookings reference the JOH by `personnel_number` → `jo_people`; retry safety via native DB primitives — natural-key uniqueness, optimistic locking, and pessimistic row locking on the target vacancy. No custom idempotency table. Detail in [`../architecture.md`](../architecture.md) → *Data Architecture* and [`./data-tables.md`](./data-tables.md).
+**Architectural support:** `ram-booking` repo (Phase 4); bookings reference the JOH by `joh_id` → `ram_joh_identities`; retry safety via native DB primitives — natural-key uniqueness, optimistic locking, and pessimistic row locking on the target vacancy. No custom idempotency table. Detail in [`../architecture.md`](../architecture.md) → *Data Architecture* and [`./data-tables.md`](./data-tables.md).
 
 ## Sitting Management (FR35–FR40)
 
@@ -132,7 +132,7 @@ The 60 Functional Requirements are organised into 9 capability areas. Each subse
 
 [^d3]: Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.
 [^d5]: D5 — the jurisdiction's incumbent system is the behavioural reference, verified by manual UAT.
-[^d9]: Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.
+[^d9]: Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → `jo_people` → `personnel_number` → a **RAM-assigned JOH UUID** (`ram_joh_identities`); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; `personnel_number` is the upstream link only. No legacy user migration.
 [^d10]: D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.
 [^d11]: D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces **ListAssist** (the SSCS judicial-scheduling tool); **GAPS (SSCS case management) is retained, not replaced**; waves 2+ replace JI/APEX per Courts region.
 [^d12]: D12 (2026-06-10) — RAM is the system of record for JOH availability and scheduling only; case and hearing management live in external systems.

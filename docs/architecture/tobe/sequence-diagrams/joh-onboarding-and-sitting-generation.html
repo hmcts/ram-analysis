@@ -90,7 +90,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <div class="section-controls"><span class="label">Sections:</span><button data-section-action="expand">Expand all</button><button data-section-action="collapse">Collapse all</button></div>
 <h1 id="joh-onboarding--working-pattern-driven-sitting-generation">JOH onboarding + working-pattern-driven sitting generation</h1>
 <p>Sequence diagram of how a new JOH (Judicial Office Holder) enters RAM Pathfinder and how that JOH's working pattern automatically populates planned sittings up to the next 31 March. This is the upstream of every downstream operational flow — absences, vacancies, bookings, sittings, payments, itineraries all depend on the JOH records and planned sittings produced here.</p>
-<p>JOH person records are not created manually in RAM<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. The canonical record is <code>jo_people</code>, refreshed nightly from the <strong>JOH eLinks API</strong> by <code>ram-reference-data</code>'s in-process scheduled sync. RAM keeps <strong>RAM-owned operational state</strong> over the upstream records — working patterns, ticket overlays, location overlays, jurisdictional splits — owned by <code>ram-joh</code> and keyed by <code>personnel_number</code>.</p>
+<p>JOH person records are not created manually in RAM<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. The canonical record is <code>jo_people</code>, refreshed nightly from the <strong>JOH eLinks API</strong> by <code>ram-reference-data</code>'s in-process scheduled sync. RAM keeps <strong>RAM-owned operational state</strong> over the upstream records — working patterns, ticket overlays, location overlays, jurisdictional splits — owned by <code>ram-joh</code> and keyed by <code>joh_id</code> → <code>ram_joh_identities</code> (RAM's canonical JOH identifier; <code>personnel_number</code> is the upstream link).</p>
 <p>The as-is equivalent is Module 2 <em>Manage Judges</em> in <a href="../../asis/functional-modules.html"><code>../../../docs/architecture/asis/functional-modules.md</code></a> and Integration Flow 1 <em>Judge Master Data (eLinks / HR → JI)</em> in <a href="../../asis/integration-dependencies.html"><code>../../../docs/architecture/asis/integration-dependencies.md</code></a>. In the as-is system the data is copied in manually from eLinks and HR records; RAM Pathfinder replaces the manual copy with the live eLinks integration (NFR24 reframed<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>).</p>
 <p>Three phases: (1) JOH record arrives via the eLinks sync; (2) working pattern + jurisdictional split; (3) forward-sitting generation up to next 31 March.</p>
 <details class="section" id="not-in-this-diagram"><summary><span class="section-title">Not in this diagram</span></summary><div class="section-body">
@@ -123,14 +123,14 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <tr>
 <td>1 — JOH record via eLinks sync</td>
 <td><code>ram-reference-data</code> (nightly in-process <code>@Scheduled</code> sync)</td>
-<td>Revised D3 / FR6 tier (a) — <code>jo_*</code> tables refreshed by full-refresh upsert on <code>personnel_number</code>; soft-deactivation, never hard-delete; run recorded in <code>ram_sync_status</code>; read-only in RAM, corrections at source</td>
+<td>Revised D3 / FR6 tier (a) — <code>jo_*</code> tables refreshed by full-refresh upsert on <code>personnel_number</code>; a <code>ram_joh_identities</code> UUID minted per <code>jo_people</code> row; soft-deactivation, never hard-delete; run recorded in <code>ram_sync_status</code>; read-only in RAM, corrections at source</td>
 <td>New JOH present in <code>jo_people</code>; visible to search/profile views (FR10/FR11)</td>
 </tr>
 <tr>
 <td>2 — Working pattern + jurisdictional split</td>
 <td>RSU (Full Access)</td>
 <td>FR12 + FR16 — pattern type (None / Daily / Weekly), target sit %, per-day work types; jurisdictional split percentages must total exactly 100%. RAM-owned operational state (tier (b))</td>
-<td>Working pattern persisted in <code>ram_working_patterns</code>, keyed by <code>personnel_number</code></td>
+<td>Working pattern persisted in <code>ram_working_patterns</code>, keyed by <code>joh_id</code> → <code>ram_joh_identities</code></td>
 </tr>
 <tr>
 <td>3 — Forward-sitting generation</td>
@@ -194,7 +194,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <li id="fn2"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>D11 (2026-06-10, amended 2026-06-18) — SSCS-first pilot: wave 1 replaces <strong>ListAssist</strong> (the SSCS judicial-scheduling tool); <strong>GAPS (SSCS case management) is retained, not replaced</strong>; waves 2+ replace JI/APEX per Courts region.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn4"><p>D10 (2026-05-15) — admin UI is post-MVP; MVP admin operations are DBA-via-SQL per operational runbooks.<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn5"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
 

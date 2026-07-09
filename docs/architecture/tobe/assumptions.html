@@ -336,7 +336,7 @@ main .section-body>h3:first-child,main .section-body>p:first-child,main .section
 <hr />
 <ol>
 <li id="fn1"><p>Revised D3 (2026-06-10) — no data migration from any legacy system; judicial-holder reference data is ingested from the JOH eLinks API and MRD.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-<li id="fn2"><p>Restructured D9 (2026-06-10) — two user populations: JOHs resolve via jo_people to a personnel number; HMCTS admin staff via a RAM-internal identity table. No legacy user migration.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Restructured D9 (2026-06-10; refined 2026-07-09 per SCP) — two user populations. JOHs resolve IdP email → <code>jo_people</code> → <code>personnel_number</code> → a <strong>RAM-assigned JOH UUID</strong> (<code>ram_joh_identities</code>); HMCTS admin staff via a RAM-internal identity table. Both key on a RAM-assigned UUID; <code>personnel_number</code> is the upstream link only. No legacy user migration.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 <li id="fn3"><p>D8 — rollout is jurisdiction-first, then per-region; jurisdiction is a first-class hierarchical attribute.<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
