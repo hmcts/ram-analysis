@@ -1,6 +1,6 @@
-# Tribunal Payment Templates — As-Is (Tribunals / SSCS)
+# Payment Templates — As-Is (Courts + Tribunals)
 
-This document records the spreadsheet templates currently used by tribunal systems to supply fee-paid judicial payment information to the JFEPS team. It is a record of the **as-is** process. Six templates were reviewed from the source pack `ji-input-docs/Tribunal-Payment-Templates/`. For each template the full structure is documented — sheets, layout, every column, header conventions, totals conventions and observed value vocabularies. No payment data, personal identifiers or fee amounts are reproduced; sample rows in the source files were inspected only to establish structure and field formats.
+This document records the spreadsheet templates currently used by court and tribunal systems to supply fee-paid judicial payment information to the JFEPS team. It is a record of the **as-is** process. Six templates were reviewed from the source pack `ji-input-docs/Tribunal-Payment-Templates/`. For each template the full structure is documented — sheets, layout, every column, header conventions, totals conventions and observed value vocabularies. No payment data, personal identifiers or fee amounts are reproduced; sample rows in the source files were inspected only to establish structure and field formats.
 
 ## At a Glance
 
