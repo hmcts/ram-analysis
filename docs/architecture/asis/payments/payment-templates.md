@@ -2,6 +2,19 @@
 
 This document records the spreadsheet templates currently used by court and tribunal systems to supply fee-paid judicial payment information to the JFEPS team. It is a record of the **as-is** process. Six templates were reviewed from the source pack `ji-input-docs/Tribunal-Payment-Templates/`. For each template the full structure is documented — sheets, layout, every column, header conventions, totals conventions and observed value vocabularies. No payment data, personal identifiers or fee amounts are reproduced; sample rows in the source files were inspected only to establish structure and field formats.
 
+## Terminology
+
+Abbreviations used in the source filenames and flows below:
+
+| Term | Meaning |
+|---|---|
+| **BF** | **Bulk File** — the destination the payment feeds are prepared for. Each template's flow reads `<source system> → BF` (e.g. `Crystal → BF`, `OPT → BF`): the source system exports a bulk file of fee-paid judicial payment lines that is submitted to the JFEPS team. |
+| **JFEPS** | The judicial fees/expenses payment team that consumes these bulk files. |
+| **OPT** | The legacy JI (Judicial Itineraries) platform on Oracle APEX — a source system. |
+| **Crystal** | Crystal Reports — the reporting tool that produces the SSCS/SEND attendance exports. |
+| **JEF** | The expense-import schema used by template 4 (AST sittings file → JEF import). |
+| **BEC / NAC** | Budget Expenditure Code (8-digit cost centre) / Nominal Account Code (10-digit general-ledger account) — template 3's naming for the Cost Centre / Account Code pair. |
+
 ## At a Glance
 
 | # | Template file | Flow (as named in file) | Jurisdiction / area | Format | Sheets | Layout style |
